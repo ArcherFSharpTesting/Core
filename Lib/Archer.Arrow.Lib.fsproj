@@ -7,11 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="Library.fs" />
+    <Compile Include="Types.fs" />
+    <Compile Include="Types.Internal.fs" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Archer.CoreTypes.Lib" Version="0.0.4" />
+    <PackageReference Include="Archer.CoreTypes.Lib" Version="0.0.5" />
   </ItemGroup>
 
 </Project>

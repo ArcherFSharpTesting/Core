@@ -5,7 +5,7 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Archer.Arrow.Lib", "Lib\Archer.Arrow.Lib.fsproj", "{548CCE7E-160D-4873-8829-D2D2F4580C8A}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Archer.Arrow.Tests.Scripts", "Test.Scripts\Archer.Arrow.Tests.Scripts.fsproj", "{40AFEC71-AA20-4DB8-BB4C-E28865BD3D67}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Archer.Arrow.Tests", "Test.Scripts\Archer.Arrow.Tests.fsproj", "{40AFEC71-AA20-4DB8-BB4C-E28865BD3D67}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{066FA65F-0C45-472F-8F68-64860B4D393A}"
 	ProjectSection(SolutionItems) = preProject
