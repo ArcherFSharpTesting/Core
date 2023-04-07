@@ -14,4 +14,12 @@ let ``Test Cases`` = [
         test.TestName
         |> expectsToBe expectedTestName
     )
+    
+    container.Test ("have the container name", fun () ->
+        let expectedContainerName = "My Awesome Test Container name"
+        let test = TestCase (ignoreString (), ignoreString (), expectedContainerName, ignoreString (), ignoreInt (), [], { Setup = None; TestAction = (fun _ _ -> TestSuccess); TearDown = None })
+        
+        test.ContainerName
+        |> expectsToBe expectedContainerName
+    )
 ]

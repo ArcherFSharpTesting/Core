@@ -15,3 +15,4 @@ type TestParts<'a> = {
 
 type TestCase (filePath: string, containerPath: string, containerName: string, testName: string, lineNumber: int, tags: TestTag seq, parts: TestParts<'a>) =
     member _.TestName with get () = testName
+    member _.ContainerName with get () = containerName
