@@ -1,6 +1,6 @@
 ﻿namespace Archer.Arrow.Internal
 
-open Archer.CoreTypes
+open Archer
 open Archer.CoreTypes.InternalTypes
 
 type InitError =

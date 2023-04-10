@@ -1,6 +1,6 @@
 ﻿module Archer.Arrow.Tests.TestCase.Should
 
-open Archer.CoreTypes
+open Archer
 open Archer.MicroLang
 open Archer.Arrow.Internal
 
