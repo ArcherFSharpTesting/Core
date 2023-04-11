@@ -37,6 +37,18 @@
         {
             "name": "undo",
             "command": "git reset . && git checkout . && git clean -xfd"
+        },
+        {
+            "name": "pack",
+            "command": "gittey up-version && gittey push && dotnet pack"
+        },
+        {
+            "name": "pack-unsafe",
+            "command": "gittey up-version && dotnet pack ./Lib/"
+        },
+        {
+            "name": "up-version",
+            "command": "\"DotVersion.exe\" --subpatch ./Lib/"
         }
     ],
     "collaborators": []

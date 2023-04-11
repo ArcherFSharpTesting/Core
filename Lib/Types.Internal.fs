@@ -13,6 +13,6 @@ type TestParts<'a> = {
     TearDown: (TestResult -> Result<'a, InitError> -> Result<unit, InitError>) option
 }
 
-type TestCase (filePath: string, containerPath: string, containerName: string, testName: string, lineNumber: int, tags: TestTag seq, parts: TestParts<'a>) =
+type TestCase (containerPath: string, containerName: string, testName: string, parts: TestParts<'a>, tags: TestTag seq, filePath: string, lineNumber: int) =
     member _.TestName with get () = testName
     member _.ContainerName with get () = containerName
