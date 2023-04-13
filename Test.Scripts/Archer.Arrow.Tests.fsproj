@@ -16,8 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Archer.Bow.Lib" Version="0.0.8.4" />
-    <PackageReference Include="MicroLang.Lib" Version="0.0.12.1" />
+    <PackageReference Include="Archer.Bow.Lib" Version="0.0.9.11" />
+    <PackageReference Include="MicroLang.Lib" Version="0.0.12.17" />
   </ItemGroup>
 
 </Project>

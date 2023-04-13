@@ -1,4 +1,15 @@
 ﻿namespace Archer.Arrow
 
-type Something =
-    | Nothing
+open System
+open Archer
+
+type ApiEnvironment = {
+    ApiName: string
+    ApiVersion: Version
+}
+
+type TestEnvironment = {
+    FrameworkEnvironment: FrameworkEnvironment
+    ApiEnvironment: ApiEnvironment
+    TestInfo: ITestInfo
+}
