@@ -24,68 +24,16 @@ type TestCaseExecutor<'a> (parent: ITest, parts: TestParts<'a>) =
             ApiVersion = version
         }
     
+    member _.Execute environment =  failwith "Not Implemented"
+    
     interface ITestExecutor with
-        member _.Execute environment =
-            let cancelEventArgs = CancelEventArgs ()
-            testLifecycleEvent.Trigger (parent, TestStartExecution cancelEventArgs)
-            
-            if cancelEventArgs.Cancel then
-                CancelFailure |> TestFailure
-            else
-                testLifecycleEvent.Trigger (parent, TestStartSetup cancelEventArgs)
-                if cancelEventArgs.Cancel then
-                    testLifecycleEvent.Trigger (parent, TestEndExecution (CancelFailure |> TestFailure))
-                    CancelFailure |> TestFailure
-                else
-                    let setupResult =
-                        try
-                            parts.Setup ()
-                        with
-                        | e -> e |> SetupTearDownExceptionFailure |> Error
-                        
-                    let testResult =
-                        match setupResult with
-                        | Error setupTearDownFailure -> setupTearDownFailure |> SetupFailure |> TestFailure
-                        | Ok v ->
-                            if cancelEventArgs.Cancel then
-                                CancelFailure |> TestFailure
-                            else
-                                testLifecycleEvent.Trigger (parent, TestStart cancelEventArgs)
-                                if cancelEventArgs.Cancel then
-                                    CancelFailure |> TestFailure
-                                else
-                                    try
-                                        let env = {
-                                            ApiEnvironment = getApiEnvironment ()
-                                            FrameworkEnvironment = environment
-                                            TestInfo = parent :> ITestInfo 
-                                        }
-                                        
-                                        let r = parts.TestAction env v
-                                        testLifecycleEvent.Trigger (parent, TestEnd r)
-                                        r
-                                    with
-                                    | e ->
-                                        e |> TestExceptionFailure |> TestExecutionFailure |> TestFailure
-                    
-                    let endResult =
-                        testLifecycleEvent.Trigger (parent, TestStartTearDown)
-                        try
-                            let teardownResult = parts.TearDown testResult setupResult
-                            match teardownResult with
-                            | Error setupTearDownFailure -> setupTearDownFailure |> TearDownFailure |> TestFailure
-                            | Ok _ -> testResult
-                        with
-                        | e -> e |> SetupTearDownExceptionFailure |> TearDownFailure |> TestFailure
-                        
-                    testLifecycleEvent.Trigger (parent, TestEndExecution endResult)
-                            
-                    endResult
-                
         member this.Parent = parent
+        
+        member this.Execute environment = this.Execute environment
         
         [<CLIEvent>]
         member this.TestLifecycleEvent = testLifecycleEvent.Publish
+
 
 type TestCase<'a> (containerPath: string, containerName: string, testName: string, parts: TestParts<'a>, tags: TestTag seq, filePath: string, fileName: string,  lineNumber: int) =
     let location = {

@@ -1,4 +1,4 @@
-﻿open Archer.Arrow.Tests.TestCase
+﻿open Archer.Arrow.Tests.RawTestObjects
 open Archer.Bow
 open Archer
 open MicroLang.Lang
@@ -7,6 +7,6 @@ let framework = bow.Framework ()
 
 framework
 |> addManyTests [
-    Should.``Test Cases``
+    ``TestCase Should``.``Test Cases``
 ]
 |> runAndReport

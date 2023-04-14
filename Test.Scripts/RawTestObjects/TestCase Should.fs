@@ -1,4 +1,4 @@
-﻿module Archer.Arrow.Tests.TestCase.Should
+﻿module Archer.Arrow.Tests.RawTestObjects.``TestCase Should``
 
 open System
 open Archer
