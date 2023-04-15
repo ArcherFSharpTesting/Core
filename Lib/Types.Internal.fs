@@ -7,9 +7,9 @@ open Archer.CoreTypes.InternalTypes
 open WhatsYourVersion
 
 type TestParts<'a> = {
-    Setup: unit -> Result<'a, SetupTearDownFailure>
+    Setup: unit -> Result<'a, SetupTeardownFailure>
     TestAction: TestEnvironment -> 'a -> TestResult
-    TearDown: TestResult -> Result<'a, SetupTearDownFailure> -> Result<unit, SetupTearDownFailure>
+    TearDown: TestResult -> Result<'a, SetupTeardownFailure> -> Result<unit, SetupTeardownFailure>
 }
 
 type TestCaseExecutor<'a> (parent: ITest, parts: TestParts<'a>) =
