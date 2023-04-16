@@ -32,7 +32,7 @@ let getDummyTest containerPath containerName testName fileName lineNumber =
 let getEmptyDummyTest () =
     getDummyTest (ignoreString ()) (ignoreString ()) (ignoreString ()) (ignoreString ()) (ignoreInt ())
     
-let getEmptyFrameworkEnvironment () =
+let getFakeEnvironment () =
     {
         FrameworkName = ignoreString ()
         FrameworkVersion = Version ("0.0.0.0")

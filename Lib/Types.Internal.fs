@@ -21,8 +21,17 @@ type TestCaseExecutor<'a> (parent: ITest, setup: unit -> Result<'a, SetupTeardow
             ApiVersion = version
         }
     
-    member _.Execute _environment =
-        setup () |> ignore
+    member _.Execute environment =
+        let (Ok setupValue) = setup ()
+        
+        {
+            ApiEnvironment = getApiEnvironment ()
+            FrameworkEnvironment = environment
+            TestInfo = parent 
+        }
+        |> testBody setupValue 
+        |> ignore
+        
         TestSuccess |> TestExecutionResult
     
     interface ITestExecutor with
