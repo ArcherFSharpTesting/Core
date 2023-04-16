@@ -9,10 +9,13 @@ open Archer
 open Archer.Arrow
 open Archer.CoreTypes.InternalTypes
 
-type ExecutionResultsAccumulator<'a> = {
-    SetupResult: Result<'a, SetupTeardownFailure> option
-    TestBodyResult: TestExecutionResult option
-}
+type ExecutionStates<'a> =
+    | IgnoredState
+    | RanState of 'a
+
+type ExecutionResultsAccumulator<'a> =
+    | SetupRun of ExecutionStates<Result<'a, SetupTeardownFailure>>
+    | TestRun of ExecutionStates<TestResult>
 
 type TestCaseExecutor<'a> (parent: ITest, setup: unit -> Result<'a, SetupTeardownFailure>, testBody: 'a -> TestEnvironment -> TestResult, tearDown: Result<'a, SetupTeardownFailure> -> TestResult option -> Result<unit, SetupTeardownFailure>) =
     let testLifecycleEvent = Event<TestExecutionDelegate, TestEventLifecycle> ()
@@ -26,19 +29,14 @@ type TestCaseExecutor<'a> (parent: ITest, setup: unit -> Result<'a, SetupTeardow
             ApiVersion = version
         }
         
-    let runSetup _ acc =
-        { acc with
-            SetupResult = setup () |> Some
-        }
+    let runSetup _ =
+        () |> setup |> RanState |> SetupRun
         
     let runTestBody environment acc =
-        match acc.SetupResult with
-        | Some (Ok setupValue) ->
-            { acc with
-                TestBodyResult = testBody setupValue environment |> TestExecutionResult |> Some
-            }
-        | Some (Error error) ->
-            acc
+        match acc with
+        | SetupRun (RanState (Ok value)) ->
+            environment |> testBody value |> RanState |> TestRun
+        | _ -> acc
         
         
     member _.Execute environment =
@@ -49,12 +47,14 @@ type TestCaseExecutor<'a> (parent: ITest, setup: unit -> Result<'a, SetupTeardow
                 TestInfo = parent 
             }
         
-        { SetupResult = None; TestBodyResult = None }
-        |> runSetup ()
-        |> runTestBody env
-        |> ignore
+        let result =
+            runSetup ()
+            |> runTestBody env
         
-        TestSuccess |> TestExecutionResult
+        match result with
+        | SetupRun (RanState (Error error)) ->
+            error |> SetupExecutionFailure
+        | _ -> TestSuccess |> TestExecutionResult
     
     interface ITestExecutor with
         member this.Parent = parent

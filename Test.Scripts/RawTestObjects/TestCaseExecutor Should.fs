@@ -133,5 +133,28 @@ let ``Return the setup error if setup fails`` =
             result
             |> expects.ToBe (expectedFailure |> SetupExecutionFailure)
     )
+    
+let ``Return the result of a failing test body when executed`` =
+    container.Test (
+        SetupPart setupBuildExecutorWithTestBody,
+        
+        fun testBuilder _ ->
+            let expectedFailure = 
+                "A failing test"
+                |> newFailure.With.OtherTestExecutionFailure
+                |> TestFailure
+                
+            let testAction _ _ = expectedFailure
+            
+            let executor = testBuilder testAction
+            
+            let result = executor.Execute (getFakeEnvironment ())
+            
+            result
+            |> expects.ToBe (
+                expectedFailure
+                |> TestExecutionResult
+            )
+    )
 
 let ``Test Cases`` = container.Tests
