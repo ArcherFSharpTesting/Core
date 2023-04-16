@@ -1,10 +1,13 @@
 ﻿namespace Archer.Arrow.Internal
 
-open System.ComponentModel
+open System
+open System.Diagnostics
+open System.IO
+open System.Runtime.CompilerServices
+open System.Runtime.InteropServices
 open Archer
 open Archer.Arrow
 open Archer.CoreTypes.InternalTypes
-open WhatsYourVersion
 
 type TestCaseExecutor<'a> (parent: ITest, setup: unit -> Result<'a, SetupTeardownFailure>, testBody: 'a -> TestEnvironment -> TestResult, tearDown: Result<'a, SetupTeardownFailure> -> TestResult option -> Result<unit, SetupTeardownFailure>) =
     let testLifecycleEvent = Event<TestExecutionDelegate, TestEventLifecycle> ()
@@ -51,3 +54,33 @@ type TestCase<'a> (containerPath: string, containerName: string, testName: strin
         member this.Location = this.Location
         member this.Tags = this.Tags
         member this.TestName = this.TestName
+        
+type Feature (featurePath, featureName) =
+    member _. Test<'a> (tags: TagsIndicator, setup: SetupIndicator<'a>, testBody: TestBodyIndicator<'a>, teardown: TeardownIndicator<'a>, [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>]lineNumber: int) =
+        let fileInfo = FileInfo fileFullName
+        let filePath = fileInfo.Directory.FullName
+        let fileName = fileInfo.Name
+        
+        match tags, setup, testBody, teardown with
+        | TestTags tags, Setup setup, TestBody testBody, Teardown teardown -> 
+            TestCase (featurePath, featureName, testName, setup, testBody, teardown, tags, filePath, fileName, lineNumber) :> ITest
+            
+    member this.Test (setup: SetupIndicator<'a>, testBody: TestBodyIndicator<'a>, [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>]lineNumber: int) =
+        this.Test (TestTags [], setup, testBody, Teardown (fun _ _ -> Ok ()), testName, fileFullName, lineNumber)
+        
+
+
+type ArrowBuilder () =
+    member _.NewFeature () =
+        let featureName, featurePath =
+            let trace = StackTrace ()
+            let method = trace.GetFrame(1).GetMethod ()
+            let containerName = method.ReflectedType.Name
+            let containerPath = method.ReflectedType.Namespace |> fun s -> s.Split ([|"$"|], StringSplitOptions.RemoveEmptyEntries) |> Array.last
+                
+            containerName, containerPath
+            
+        Feature (featurePath, featureName)
+        
+    member _.NewFeature (featurePath, featureName) =
+        Feature (featurePath, featureName)

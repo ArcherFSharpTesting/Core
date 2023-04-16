@@ -15,6 +15,7 @@
   <ItemGroup>
     <Compile Include="Types.fs" />
     <Compile Include="Types.Internal.fs" />
+    <Compile Include="Helpers.fs" />
     <Content Include="Directory.Build.props" />
   </ItemGroup>
 
