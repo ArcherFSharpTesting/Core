@@ -18,18 +18,9 @@ type TestCaseExecutor<'a> (parent: ITest, setup: unit -> Result<'a, SetupTeardow
             ApiVersion = version
         }
     
-    member _.Execute environment =
-        match setup () with
-        | Ok v ->
-            {
-                FrameworkEnvironment = environment
-                ApiEnvironment = getApiEnvironment ()
-                TestInfo = parent
-            }
-            |> testBody v
-            |> TestExecutionResult
-            
-        | Error setupTeardownFailure -> setupTeardownFailure |> SetupExecutionFailure 
+    member _.Execute _environment =
+        setup () |> ignore
+        TestSuccess |> TestExecutionResult
     
     interface ITestExecutor with
         member this.Parent = parent

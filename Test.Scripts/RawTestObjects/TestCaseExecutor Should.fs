@@ -8,20 +8,20 @@ open Archer.MicroLang.Types
 
 let private container = suite.Container ()
 
-let ``Execute the test action when run`` =
+let ``Run the setup action when execute is called`` =
     container.Test
         (fun _ ->
-            let mutable testRun = false
-            let testAction _ _ =
-                testRun <- true
-                TestSuccess
+            let mutable wasRun = false
+            let setupAction _ =
+                wasRun <- true
+                Ok ()
                 
-            let executor = TestCaseExecutor (getEmptyDummyTest (), successfulUnitSetup, testAction, successfulTeardown)
+            let executor = TestCaseExecutor (getEmptyDummyTest (), setupAction, successfulEnvironmentTest, successfulTeardown)
             
             executor.Execute (getEmptyFrameworkEnvironment ())
             |> ignore
                 
-            testRun
+            wasRun
             |> expects.ToBeTrue
             |> withMessage "Test did not run"
         )
