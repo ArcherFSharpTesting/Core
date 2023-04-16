@@ -115,5 +115,23 @@ let ``Not throw except if setup fails`` =
             | ex ->
                 ex |> TestExceptionFailure |> TestFailure
     )
+    
+let ``Return the setup error if setup fails`` =
+    container.Test (
+        SetupPart setupBuildExecutorWithSetupAction,
+        
+        fun testBuilder _ ->
+            let expectedFailure = newFailure.With.GeneralSetupTeardownFailure "failed setup"
+            
+            let setup _ =
+                expectedFailure |> Error
+                
+            let executor = testBuilder setup
+            
+            let result = executor.Execute (getFakeEnvironment ())
+            
+            result
+            |> expects.ToBe (expectedFailure |> SetupExecutionFailure)
+    )
 
 let ``Test Cases`` = container.Tests

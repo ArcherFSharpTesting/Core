@@ -9,6 +9,11 @@ open Archer
 open Archer.Arrow
 open Archer.CoreTypes.InternalTypes
 
+type ExecutionResultsAccumulator<'a> = {
+    SetupResult: Result<'a, SetupTeardownFailure> option
+    TestBodyResult: TestExecutionResult option
+}
+
 type TestCaseExecutor<'a> (parent: ITest, setup: unit -> Result<'a, SetupTeardownFailure>, testBody: 'a -> TestEnvironment -> TestResult, tearDown: Result<'a, SetupTeardownFailure> -> TestResult option -> Result<unit, SetupTeardownFailure>) =
     let testLifecycleEvent = Event<TestExecutionDelegate, TestEventLifecycle> ()
     
@@ -20,16 +25,33 @@ type TestCaseExecutor<'a> (parent: ITest, setup: unit -> Result<'a, SetupTeardow
             ApiName = "Archer.Arrow"
             ApiVersion = version
         }
-    
-    member _.Execute environment =
-        let (Ok setupValue) = setup ()
         
-        {
-            ApiEnvironment = getApiEnvironment ()
-            FrameworkEnvironment = environment
-            TestInfo = parent 
+    let runSetup _ acc =
+        { acc with
+            SetupResult = setup () |> Some
         }
-        |> testBody setupValue 
+        
+    let runTestBody environment acc =
+        match acc.SetupResult with
+        | Some (Ok setupValue) ->
+            { acc with
+                TestBodyResult = testBody setupValue environment |> TestExecutionResult |> Some
+            }
+        | Some (Error error) ->
+            acc
+        
+        
+    member _.Execute environment =
+        let env = 
+            {
+                ApiEnvironment = getApiEnvironment ()
+                FrameworkEnvironment = environment
+                TestInfo = parent 
+            }
+        
+        { SetupResult = None; TestBodyResult = None }
+        |> runSetup ()
+        |> runTestBody env
         |> ignore
         
         TestSuccess |> TestExecutionResult
