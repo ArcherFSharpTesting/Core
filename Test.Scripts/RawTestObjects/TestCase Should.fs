@@ -17,9 +17,8 @@ let ``has all the data passed to it`` =
         let expectedFileName = $"FileName%d{random.Next (1, 9999)}.fs"
         let expectedLineNumber = random.Next (1, 9999)
         let expectedTags = [ Category $"Test Category Tag %d{random.Next ()}" ]
-        let parts = { Setup = (fun _ -> Ok ()); TestAction = (fun _ _ -> TestSuccess); TearDown = (fun _ _ -> Ok ()) }
         
-        let test = TestCase (expectedContainerPath, expectedContainerName, expectedTestName, parts, expectedTags, expectedFilePath, expectedFileName, expectedLineNumber)
+        let test = TestCase (expectedContainerPath, expectedContainerName, expectedTestName, successfulUnitSetup, successfulEnvironmentTest, successfulTeardown, expectedTags, expectedFilePath, expectedFileName, expectedLineNumber)
         
         test.ContainerPath |> expects.ToBe expectedContainerPath
         |> andResult (test.ContainerName |> expects.ToBe expectedContainerName)

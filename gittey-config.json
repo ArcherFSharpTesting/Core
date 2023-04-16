@@ -24,7 +24,7 @@
     "aliases": [
         {
             "name": "test",
-            "command": "cls; dotnet test && gittey commit"
+            "command": "cls; dotnet run --project ./Test.Scripts/ && gittey commit"
         },
         {
             "name": "push",

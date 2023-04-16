@@ -6,13 +6,7 @@ open Archer.Arrow
 open Archer.CoreTypes.InternalTypes
 open WhatsYourVersion
 
-type TestParts<'a> = {
-    Setup: unit -> Result<'a, SetupTeardownFailure>
-    TestAction: TestEnvironment -> 'a -> TestResult
-    TearDown: TestResult -> Result<'a, SetupTeardownFailure> -> Result<unit, SetupTeardownFailure>
-}
-
-type TestCaseExecutor<'a> (parent: ITest, parts: TestParts<'a>) =
+type TestCaseExecutor<'a> (parent: ITest, setup: unit -> Result<'a, SetupTeardownFailure>, testBody: 'a -> TestEnvironment -> TestResult, tearDown: Result<'a, SetupTeardownFailure> -> TestResult option -> Result<unit, SetupTeardownFailure>) =
     let testLifecycleEvent = Event<TestExecutionDelegate, TestEventLifecycle> ()
     
     let getApiEnvironment () =
@@ -24,7 +18,18 @@ type TestCaseExecutor<'a> (parent: ITest, parts: TestParts<'a>) =
             ApiVersion = version
         }
     
-    member _.Execute environment =  failwith "Not Implemented"
+    member _.Execute environment =
+        match setup () with
+        | Ok v ->
+            {
+                FrameworkEnvironment = environment
+                ApiEnvironment = getApiEnvironment ()
+                TestInfo = parent
+            }
+            |> testBody v
+            |> TestExecutionResult
+            
+        | Error setupTeardownFailure -> setupTeardownFailure |> SetupExecutionFailure 
     
     interface ITestExecutor with
         member this.Parent = parent
@@ -35,7 +40,7 @@ type TestCaseExecutor<'a> (parent: ITest, parts: TestParts<'a>) =
         member this.TestLifecycleEvent = testLifecycleEvent.Publish
 
 
-type TestCase<'a> (containerPath: string, containerName: string, testName: string, parts: TestParts<'a>, tags: TestTag seq, filePath: string, fileName: string,  lineNumber: int) =
+type TestCase<'a> (containerPath: string, containerName: string, testName: string, setup: unit -> Result<'a, SetupTeardownFailure>, testBody: 'a -> TestEnvironment -> TestResult, tearDown: Result<'a, SetupTeardownFailure> -> TestResult option -> Result<unit, SetupTeardownFailure>, tags: TestTag seq, filePath: string, fileName: string,  lineNumber: int) =
     let location = {
         FilePath = filePath
         FileName = fileName
@@ -51,7 +56,7 @@ type TestCase<'a> (containerPath: string, containerName: string, testName: strin
     interface ITest with
         member this.ContainerName = this.ContainerName
         member this.ContainerPath = this.ContainerPath
-        member this.GetExecutor() = TestCaseExecutor (this :> ITest, parts) :> ITestExecutor
+        member this.GetExecutor() = TestCaseExecutor (this :> ITest, setup, testBody, tearDown) :> ITestExecutor
         member this.Location = this.Location
         member this.Tags = this.Tags
         member this.TestName = this.TestName
