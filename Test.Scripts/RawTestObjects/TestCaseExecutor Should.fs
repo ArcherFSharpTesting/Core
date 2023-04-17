@@ -102,7 +102,7 @@ let ``Not throw except if setup fails`` =
         
         fun testBuilder _ ->
             let setup _ =
-                newFailure.With.GeneralSetupTeardownFailure "failed setup" |> Error
+                newFailure.With.SetupTeardownGeneralFailure "failed setup" |> Error
                 
             let executor = testBuilder setup
             
@@ -121,7 +121,7 @@ let ``Return the setup error if setup fails`` =
         SetupPart setupBuildExecutorWithSetupAction,
         
         fun testBuilder _ ->
-            let expectedFailure = newFailure.With.GeneralSetupTeardownFailure "failed setup"
+            let expectedFailure = newFailure.With.SetupTeardownGeneralFailure "failed setup"
             
             let setup _ =
                 expectedFailure |> Error
@@ -141,8 +141,7 @@ let ``Return the result of a failing test body when executed`` =
         fun testBuilder _ ->
             let expectedFailure = 
                 "A failing test"
-                |> newFailure.With.OtherTestExecutionFailure
-                |> TestFailure
+                |> newFailure.As.TestExecutionResultOf.OtherFailure
                 
             let testAction _ _ = expectedFailure
             
@@ -155,6 +154,24 @@ let ``Return the result of a failing test body when executed`` =
                 expectedFailure
                 |> TestExecutionResult
             )
+    )
+    
+let ``Not throw when setup throws`` =
+    container.Test (
+        SetupPart setupBuildExecutorWithSetupAction,
+        
+        fun buildTest _ ->
+            let setupAction _ =
+                failwith "A really bad setup"
+                
+            let executor = buildTest setupAction
+            
+            try
+                executor.Execute (getFakeEnvironment ()) |> ignore
+                "Should not be here" |> newFailure.As.TestExecutionResultOf.OtherFailure
+            with
+            | ex ->
+                ex |> newFailure.As.TestExecutionResultOf.ExceptionFailure
     )
 
 let ``Test Cases`` = container.Tests

@@ -54,7 +54,8 @@ type TestCaseExecutor<'a> (parent: ITest, setup: unit -> Result<'a, SetupTeardow
         match result with
         | SetupRun (RanState (Error error)) ->
             error |> SetupExecutionFailure
-        | _ -> TestSuccess |> TestExecutionResult
+        | TestRun (RanState result) ->
+            result |> TestExecutionResult
     
     interface ITestExecutor with
         member this.Parent = parent
