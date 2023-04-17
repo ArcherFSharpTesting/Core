@@ -2,6 +2,7 @@
 
 open Archer
 open Archer.Arrow.Tests
+open Archer.CoreTypes.InternalTypes
 open Archer.MicroLang
 
 let private container = suite.Container ()
@@ -221,6 +222,28 @@ let ``Calls the teardown action with the successful setup result`` =
                 Ok ()
                 
             let executor = testBuilder setupAction teardownAction
+            
+            executor.Execute (getFakeEnvironment ())
+            |> ignore
+            
+            result
+    )
+
+let ``Calls the teardown with the TestSuccess if test is successful`` =
+    container.Test (
+        SetupPart setupBuildExecutorWithTeardownAction,
+        
+        let mutable result = newFailure.With.TestExecutionNotRunFailure () |> TestFailure
+        
+        fun testBuilder _ ->
+            let teardownAction _ testResult =
+                result <-
+                    testResult
+                    |> expects.ToBe (Some TestSuccess)
+                    
+                Ok ()
+                
+            let executor : ITestExecutor = testBuilder teardownAction
             
             executor.Execute (getFakeEnvironment ())
             |> ignore

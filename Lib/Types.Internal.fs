@@ -9,13 +9,9 @@ open Archer
 open Archer.Arrow
 open Archer.CoreTypes.InternalTypes
 
-type ExecutionStates<'a> =
-    | IgnoredState
-    | RanState of 'a
-
 type ExecutionResultsAccumulator<'a> =
-    | SetupRun of ExecutionStates<Result<'a, SetupTeardownFailure>>
-    | TestRun of ExecutionStates<TestResult>
+    | SetupRun of Result<'a, SetupTeardownFailure>
+    | TestRun of Result<'a, SetupTeardownFailure> * TestResult
 
 type TestCaseExecutor<'a> (parent: ITest, setup: unit -> Result<'a, SetupTeardownFailure>, testBody: 'a -> TestEnvironment -> TestResult, tearDown: Result<'a, SetupTeardownFailure> -> TestResult option -> Result<unit, SetupTeardownFailure>) =
     let testLifecycleEvent = Event<TestExecutionDelegate, TestEventLifecycle> ()
@@ -31,23 +27,28 @@ type TestCaseExecutor<'a> (parent: ITest, setup: unit -> Result<'a, SetupTeardow
         
     let runSetup _ =
         try
-            () |> setup |> RanState |> SetupRun
+            () |> setup |> SetupRun
         with
         | ex ->
-            ex |> SetupTeardownExceptionFailure |> Error |> RanState |> SetupRun
+            ex |> SetupTeardownExceptionFailure |> Error |> SetupRun
         
     let runTestBody environment acc =
         match acc with
-        | SetupRun (RanState (Ok value)) ->
+        | SetupRun (Ok value as setupState) ->
             try
-                environment |> testBody value |> RanState |> TestRun
+                (setupState, environment |> testBody value) |> TestRun
             with
-            | ex -> ex |> TestExceptionFailure |> TestFailure |> RanState |> TestRun
+            | ex -> (setupState, ex |> TestExceptionFailure |> TestFailure) |> TestRun
         | _ -> acc
         
-    let runTeardown _ =
-        let setupResult = Unchecked.defaultof<'a> |> Ok
-        tearDown setupResult (TestSuccess |> Some)
+    let runTeardown acc =
+        let setupResult = 
+            match acc with
+            | SetupRun setupResult
+            | TestRun(setupResult, _) ->
+                setupResult
+            
+        tearDown setupResult None
         |> ignore
         
     member _.Execute environment =
@@ -62,12 +63,12 @@ type TestCaseExecutor<'a> (parent: ITest, setup: unit -> Result<'a, SetupTeardow
             runSetup ()
             |> runTestBody env
             
-        runTeardown ()
+        runTeardown result
         
         match result with
-        | SetupRun (RanState (Error error)) ->
+        | SetupRun (Error error) ->
             error |> SetupExecutionFailure
-        | TestRun (RanState result) ->
+        | TestRun (_, result) ->
             result |> TestExecutionResult
     
     interface ITestExecutor with

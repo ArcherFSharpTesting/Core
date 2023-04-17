@@ -1,7 +1,9 @@
 ﻿[<AutoOpen>]
 module Archer.Arrow.Tests.TestBuilders
 
+open Archer
 open Archer.Arrow
+open Archer.CoreTypes.InternalTypes
 open Archer.MicroLang
 
 let buildFeatureUnderTest _ = arrow.NewFeature (ignoreString (), ignoreString ()) 
@@ -24,13 +26,13 @@ let setupBuildExecutorWithTestBody _ =
     
 let setupBuildExecutorWithTestBodyAndSetupAction _ =
     let buildExecutor setup testBody =
-        let featuer = buildFeatureUnderTest ()
-        let test = featuer.Test (Setup setup, TestBody testBody, ignoreString (), $"%s{ignoreString ()}.fs", ignoreInt ())
+        let feature = buildFeatureUnderTest ()
+        let test = feature.Test (Setup setup, TestBody testBody, ignoreString (), $"%s{ignoreString ()}.fs", ignoreInt ())
         test.GetExecutor ()
         
     buildExecutor |> Ok
     
-let setupBuildExecutorWithTeardownAction _ =
+let setupBuildExecutorWithTeardownAction () =
     let buildExecutor teardownAction =
         let feature = buildFeatureUnderTest ()
         let test = feature.Test (Setup successfulUnitSetup, TestBody successfulEnvironmentTest, Teardown teardownAction)
