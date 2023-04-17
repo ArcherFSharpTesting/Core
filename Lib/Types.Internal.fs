@@ -1,6 +1,7 @@
 ﻿namespace Archer.Arrow.Internal
 
 open System
+open System.ComponentModel
 open System.Diagnostics
 open System.IO
 open System.Runtime.CompilerServices
@@ -26,9 +27,18 @@ type TestCaseExecutor<'a> (parent: ITest, setup: unit -> Result<'a, SetupTeardow
             ApiVersion = version
         }
         
+    let executionStarted _ =
+        testLifecycleEvent.Trigger (parent, TestStartExecution (CancelEventArgs ()))
+        
     let runSetup _ =
         try
-            () |> setup |> SetupRun
+            testLifecycleEvent.Trigger (parent, TestStartSetup (CancelEventArgs ()))
+            
+            let result = () |> setup |> SetupRun
+            
+            testLifecycleEvent.Trigger (parent, TestEndSetup (SetupSuccess, CancelEventArgs ()))
+            
+            result
         with
         | ex ->
             ex |> SetupTeardownExceptionFailure |> Error |> SetupRun
@@ -37,7 +47,12 @@ type TestCaseExecutor<'a> (parent: ITest, setup: unit -> Result<'a, SetupTeardow
         match acc with
         | SetupRun (Ok value as setupState) ->
             try
-                (setupState, environment |> testBody value) |> TestRun
+                testLifecycleEvent.Trigger (parent, TestStart (CancelEventArgs ()))
+                
+                let result = (setupState, environment |> testBody value) |> TestRun
+                
+                testLifecycleEvent.Trigger (parent, TestEnd TestSuccess)
+                result
             with
             | ex -> (setupState, ex |> TestExceptionFailure |> TestFailure) |> TestRun
         | _ -> acc
@@ -50,8 +65,12 @@ type TestCaseExecutor<'a> (parent: ITest, setup: unit -> Result<'a, SetupTeardow
                 setupResult, (Some testResult)
             
         try
+            testLifecycleEvent.Trigger (parent, TestStartTeardown)
+            
             let result = tearDown setupResult testResult
-            TeardownRun (setupResult, testResult, result)
+            let r = TeardownRun (setupResult, testResult, result)
+            
+            r
         with
         | ex ->
             TeardownRun (setupResult, testResult, ex |> SetupTeardownExceptionFailure |> Error)
@@ -63,26 +82,35 @@ type TestCaseExecutor<'a> (parent: ITest, setup: unit -> Result<'a, SetupTeardow
                 FrameworkEnvironment = environment
                 TestInfo = parent 
             }
+            
+        executionStarted ()
         
         let result =
             runSetup ()
             |> runTestBody env
             |> runTeardown
         
-        match result with
-        | SetupRun (Error error) ->
-            error |> SetupExecutionFailure
-        | TestRun (_, result) ->
-            result |> TestExecutionResult
-        | TeardownRun (_setupResult, _testResultOption, Error errorValue) ->
-            errorValue
-            |> TeardownExecutionFailure
-        | TeardownRun (Error errorValue, _testResultOption, _teardownResult) ->
-            errorValue
-            |> SetupExecutionFailure
-        | TeardownRun (Ok _, Some testResult, Ok _) ->
-            testResult
-            |> TestExecutionResult
+        let finalValue =
+            match result with
+            | SetupRun (Error error) ->
+                error |> SetupExecutionFailure
+            | TestRun (_, result) ->
+                result |> TestExecutionResult
+            | TeardownRun (_setupResult, _testResultOption, Error errorValue) ->
+                errorValue
+                |> TeardownExecutionFailure
+            | TeardownRun (Error errorValue, _testResultOption, _teardownResult) ->
+                errorValue
+                |> SetupExecutionFailure
+            | TeardownRun (Ok _, Some testResult, Ok _) ->
+                testResult
+                |> TestExecutionResult
+                
+        testLifecycleEvent.Trigger (parent, TestEndExecution (TestSuccess |> TestExecutionResult))
+        finalValue
+        
+    override _.ToString () =
+        $"%s{parent.ToString ()}.IExecutor"
     
     interface ITestExecutor with
         member this.Parent = parent
@@ -105,6 +133,15 @@ type TestCase<'a> (containerPath: string, containerName: string, testName: strin
     member _.TestName with get () = testName
     member _.Location with get () = location
     member _.Tags with get () = tags
+        
+    override _.ToString () =
+        [
+            containerPath
+            containerName
+            testName
+        ]
+        |> List.filter (String.IsNullOrWhiteSpace >> not)
+        |> fun items -> String.Join (".", items)
     
     interface ITest with
         member this.ContainerName = this.ContainerName
@@ -126,6 +163,9 @@ type Feature (featurePath, featureName) =
             
     member this.Test (setup: SetupIndicator<'a>, testBody: TestBodyIndicator<'a>, [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>]lineNumber: int) =
         this.Test (TestTags [], setup, testBody, Teardown (fun _ _ -> Ok ()), testName, fileFullName, lineNumber)
+        
+    member this.Test (testBody: TestEnvironment -> TestResult, [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>]lineNumber: int) =
+        this.Test (TestTags [], Setup (fun _ -> Ok ()), TestBody (fun () -> testBody), Teardown (fun _ _ -> Ok ()), testName, fileFullName, lineNumber)
         
     member this.Test (setup: SetupIndicator<'a>, testBody: TestBodyIndicator<'a>, teardown: TeardownIndicator<'a>, [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>]lineNumber: int) =
         this.Test (TestTags [], setup, testBody, teardown, testName, fileFullName, lineNumber)

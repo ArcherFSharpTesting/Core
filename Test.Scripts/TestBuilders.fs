@@ -1,12 +1,15 @@
 ﻿[<AutoOpen>]
 module Archer.Arrow.Tests.TestBuilders
 
-open Archer
 open Archer.Arrow
-open Archer.CoreTypes.InternalTypes
 open Archer.MicroLang
 
-let buildFeatureUnderTest _ = arrow.NewFeature (ignoreString (), ignoreString ()) 
+let buildFeatureUnderTest _ = arrow.NewFeature (ignoreString (), ignoreString ())
+
+let setupExecutor _ =
+    let feature = buildFeatureUnderTest ()
+    let test = feature.Test successfulTest
+    test.GetExecutor () |> Ok
 
 let setupBuildExecutorWithSetupAction _ =
     let buildExecutor setupAction =

@@ -2,8 +2,9 @@
 
 open System
 open Archer
-open Archer.MicroLang
+open Archer.Arrow
 open Archer.Arrow.Internal
+open Archer.MicroLang
 
 let private container = suite.Container()
 let private random = Random ()
@@ -27,6 +28,16 @@ let ``has all the data passed to it`` =
         |> andResult (test.Location.FileName |> expects.ToBe expectedFileName)
         |> andResult (test.Location.LineNumber |> expects.ToBe expectedLineNumber)
         |> andResult (test.Tags |> expects.ToBe expectedTags)
+    )
+    
+let ``have a decent ToString`` =
+    container.Test (
+        fun _ ->
+            let feature = arrow.NewFeature ("TestCase", "ToStringTests")
+            let test = feature.Test (successfulTest, "ToString should")
+            
+            test.ToString ()
+            |> expects.ToBe "TestCase.ToStringTests.ToString should"
     )
     
 let ``Test Cases`` = container.Tests
