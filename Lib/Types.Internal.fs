@@ -39,7 +39,10 @@ type TestCaseExecutor<'a> (parent: ITest, setup: unit -> Result<'a, SetupTeardow
     let runTestBody environment acc =
         match acc with
         | SetupRun (RanState (Ok value)) ->
-            environment |> testBody value |> RanState |> TestRun
+            try
+                environment |> testBody value |> RanState |> TestRun
+            with
+            | ex -> ex |> TestExceptionFailure |> TestFailure |> RanState |> TestRun
         | _ -> acc
         
         
@@ -103,6 +106,9 @@ type Feature (featurePath, featureName) =
             
     member this.Test (setup: SetupIndicator<'a>, testBody: TestBodyIndicator<'a>, [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>]lineNumber: int) =
         this.Test (TestTags [], setup, testBody, Teardown (fun _ _ -> Ok ()), testName, fileFullName, lineNumber)
+        
+    member this.Test (setup: SetupIndicator<'a>, testBody: TestBodyIndicator<'a>, teardown: TeardownIndicator<'a>, [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>]lineNumber: int) =
+        this.Test (TestTags [], setup, testBody, teardown, testName, fileFullName, lineNumber)
 
 type ArrowBuilder () =
     member _.NewFeature () =

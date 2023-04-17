@@ -32,6 +32,14 @@ let setupBuildExecutorWithTestBodyAndSetupAction _ =
         test.GetExecutor ()
         
     buildExecutor |> Ok
+    
+let setupBuildExecutorWithTeardownAction _ =
+    let buildExecutor teardownAction =
+        let feature = buildFeatureUnderTest ()
+        let test = feature.Test (Setup successfulUnitSetup, TestBody successfulEnvironmentTest, Teardown teardownAction)
+        test.GetExecutor ()
+        
+    buildExecutor |> Ok
 
 let ``Run the setup action when execute is called`` =
     container.Test (
@@ -181,7 +189,7 @@ let ``Not throw when setup throws`` =
                 ex |> newFailure.As.TestExecutionResultOf.ExceptionFailure
     )
     
-let ``Should not throw when test action throws`` =
+let ``Not throw when test action throws`` =
     container.Test (
         SetupPart setupBuildExecutorWithTestBody,
         
@@ -201,6 +209,27 @@ let ``Should not throw when test action throws`` =
                 | _ -> "Should not get here" |> newFailure.As.TestExecutionResultOf.OtherFailure
             with
                 ex -> ex |> newFailure.As.TestExecutionResultOf.ExceptionFailure
+    )
+    
+let ``Run the teardown action when execute is called`` =
+    container.Test (
+        SetupPart setupBuildExecutorWithTeardownAction,
+        
+        fun testBuilder _ ->
+            let mutable called = false
+            
+            let teardownAction _ _ =
+                called <- true
+                Ok ()
+                
+            let executor = testBuilder teardownAction
+            
+            executor.Execute (getFakeEnvironment ())
+            |> ignore
+            
+            called
+            |> expects.ToBeTrue
+            |> withMessage "Teardown was not called"
     )
 
 let ``Test Cases`` = container.Tests
