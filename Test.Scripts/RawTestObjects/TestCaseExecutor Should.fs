@@ -161,17 +161,46 @@ let ``Not throw when setup throws`` =
         SetupPart setupBuildExecutorWithSetupAction,
         
         fun buildTest _ ->
+            let expectedErrorMessage = "A really bad setup"
             let setupAction _ =
-                failwith "A really bad setup"
+                failwith expectedErrorMessage
                 
             let executor = buildTest setupAction
             
             try
-                executor.Execute (getFakeEnvironment ()) |> ignore
-                "Should not be here" |> newFailure.As.TestExecutionResultOf.OtherFailure
+                let result = executor.Execute (getFakeEnvironment ())
+                
+                match result with
+                | SetupExecutionFailure (SetupTeardownExceptionFailure ex) ->
+                    ex.Message
+                    |> expects.ToBe expectedErrorMessage
+                | _ -> "Should not get here" |> newFailure.As.TestExecutionResultOf.OtherFailure
+                 
             with
             | ex ->
                 ex |> newFailure.As.TestExecutionResultOf.ExceptionFailure
+    )
+    
+let ``Should not throw when test action throws`` =
+    container.Test (
+        SetupPart setupBuildExecutorWithTestBody,
+        
+        fun testBuilder _ ->
+            let expectedErrorMessage = "Really bad test body"
+            let testBody _ _ =
+                failwith expectedErrorMessage
+                
+            let executor = testBuilder testBody
+            
+            try
+                let result = executor.Execute (getFakeEnvironment ())
+                match result with
+                | TestExecutionResult (TestFailure (TestExceptionFailure ex)) ->
+                    ex.Message
+                    |> expects.ToBe expectedErrorMessage
+                | _ -> "Should not get here" |> newFailure.As.TestExecutionResultOf.OtherFailure
+            with
+                ex -> ex |> newFailure.As.TestExecutionResultOf.ExceptionFailure
     )
 
 let ``Test Cases`` = container.Tests

@@ -30,7 +30,11 @@ type TestCaseExecutor<'a> (parent: ITest, setup: unit -> Result<'a, SetupTeardow
         }
         
     let runSetup _ =
-        () |> setup |> RanState |> SetupRun
+        try
+            () |> setup |> RanState |> SetupRun
+        with
+        | ex ->
+            ex |> SetupTeardownExceptionFailure |> Error |> RanState |> SetupRun
         
     let runTestBody environment acc =
         match acc with
@@ -99,8 +103,6 @@ type Feature (featurePath, featureName) =
             
     member this.Test (setup: SetupIndicator<'a>, testBody: TestBodyIndicator<'a>, [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>]lineNumber: int) =
         this.Test (TestTags [], setup, testBody, Teardown (fun _ _ -> Ok ()), testName, fileFullName, lineNumber)
-        
-
 
 type ArrowBuilder () =
     member _.NewFeature () =
