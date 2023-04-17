@@ -5,6 +5,7 @@ open Archer.Arrow
 open Archer.Arrow.Tests
 open Archer.CoreTypes.InternalTypes
 open Archer.MicroLang
+open Microsoft.FSharp.Control
 
 let private container = suite.Container ()
 
@@ -101,6 +102,32 @@ let ``Trigger events with parent`` =
             |> expects.ToBeTrue
             |> withMessage "Events did not trigger"
             |> andResult result
+    )
+    
+let ``Not throw if exception is thrown from execution started`` =
+    container.Test (
+        SetupPart setupExecutor,
+        
+        fun executor _ ->
+            let expectedExceptionMessage = "Boom goes the start execution event"
+            
+            executor.TestLifecycleEvent
+            |> Event.add (fun args ->
+                match args with
+                | TestStartExecution _ ->
+                    failwith expectedExceptionMessage
+                | _ -> ()
+            )
+            
+            try
+                match executor.Execute (getFakeEnvironment ()) with
+                | TestExecutionResult (TestFailure (TestExceptionFailure ex)) ->
+                    ex.Message
+                    |> expects.ToBe expectedExceptionMessage
+                | _ ->
+                    "Should not get here" |> newFailure.With.TestExecutionOtherFailure |> TestFailure
+            with
+            | ex -> ex |> TestExceptionFailure |> TestFailure
     )
 
 let ``Test Cases`` = container.Tests
