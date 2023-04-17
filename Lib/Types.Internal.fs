@@ -49,9 +49,12 @@ type TestCaseExecutor<'a> (parent: ITest, setup: unit -> Result<'a, SetupTeardow
             | TestRun (setupResult, testResult) ->
                 setupResult, (Some testResult)
             
-        let result = tearDown setupResult testResult
-        
-        TeardownRun (setupResult, testResult, result)
+        try
+            let result = tearDown setupResult testResult
+            TeardownRun (setupResult, testResult, result)
+        with
+        | ex ->
+            TeardownRun (setupResult, testResult, ex |> SetupTeardownExceptionFailure |> Error)
         
     member _.Execute environment =
         let env = 

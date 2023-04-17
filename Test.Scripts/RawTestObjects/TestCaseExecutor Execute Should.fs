@@ -1,4 +1,4 @@
-﻿module Archer.Arrow.Tests.RawTestObjects.``TestCaseExecutor Should``
+﻿module Archer.Arrow.Tests.RawTestObjects.``TestCaseExecutor Execute Should``
 
 open Archer
 open Archer.Arrow.Tests
@@ -7,7 +7,7 @@ open Archer.MicroLang
 
 let private container = suite.Container ()
 
-let ``Run the setup action when execute is called`` =
+let ``Run the setup action when called`` =
     container.Test (
         SetupPart setupBuildExecutorWithSetupAction,
         
@@ -27,7 +27,7 @@ let ``Run the setup action when execute is called`` =
             |> withMessage "Setup did not run"
     )
     
-let ``Run the test body when execute is called`` =
+let ``Run the test body when called`` =
     container.Test (
         SetupPart setupBuildExecutorWithTestBody,
         
@@ -177,7 +177,7 @@ let ``Not throw when test action throws`` =
                 ex -> ex |> newFailure.As.TestExecutionResultOf.ExceptionFailure
     )
     
-let ``Run the teardown action when execute is called`` =
+let ``Run the teardown action when called`` =
     container.Test (
         SetupPart setupBuildExecutorWithTeardownAction,
         
