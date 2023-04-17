@@ -45,6 +45,10 @@ type TestCaseExecutor<'a> (parent: ITest, setup: unit -> Result<'a, SetupTeardow
             | ex -> ex |> TestExceptionFailure |> TestFailure |> RanState |> TestRun
         | _ -> acc
         
+    let runTeardown _ =
+        let setupResult = Unchecked.defaultof<'a> |> Ok
+        tearDown setupResult (TestSuccess |> Some)
+        |> ignore
         
     member _.Execute environment =
         let env = 
@@ -57,6 +61,8 @@ type TestCaseExecutor<'a> (parent: ITest, setup: unit -> Result<'a, SetupTeardow
         let result =
             runSetup ()
             |> runTestBody env
+            
+        runTeardown ()
         
         match result with
         | SetupRun (RanState (Error error)) ->

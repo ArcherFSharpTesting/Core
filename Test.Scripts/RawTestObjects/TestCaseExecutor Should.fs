@@ -1,45 +1,10 @@
 ﻿module Archer.Arrow.Tests.RawTestObjects.``TestCaseExecutor Should``
 
 open Archer
-open Archer.Arrow
 open Archer.Arrow.Tests
 open Archer.MicroLang
 
 let private container = suite.Container ()
-
-let buildFeatureUnderTest _ = arrow.NewFeature (ignoreString (), ignoreString ()) 
-
-let setupBuildExecutorWithSetupAction _ =
-    let buildExecutor setupAction =
-        let feature = buildFeatureUnderTest ()
-        let test = feature.Test (Setup setupAction, TestBody successfulEnvironmentTest, ignoreString (), $"%s{ignoreString ()}.fs", ignoreInt ())
-        test.GetExecutor ()
-        
-    buildExecutor |> Ok
-    
-let setupBuildExecutorWithTestBody _ =
-    let buildExecutor testBody =
-        let feature = buildFeatureUnderTest ()
-        let test = feature.Test (Setup successfulUnitSetup, TestBody testBody, ignoreString (), $"%s{ignoreString ()}.fs", ignoreInt ())
-        test.GetExecutor ()
-        
-    buildExecutor |> Ok
-    
-let setupBuildExecutorWithTestBodyAndSetupAction _ =
-    let buildExecutor setup testBody =
-        let featuer = buildFeatureUnderTest ()
-        let test = featuer.Test (Setup setup, TestBody testBody, ignoreString (), $"%s{ignoreString ()}.fs", ignoreInt ())
-        test.GetExecutor ()
-        
-    buildExecutor |> Ok
-    
-let setupBuildExecutorWithTeardownAction _ =
-    let buildExecutor teardownAction =
-        let feature = buildFeatureUnderTest ()
-        let test = feature.Test (Setup successfulUnitSetup, TestBody successfulEnvironmentTest, Teardown teardownAction)
-        test.GetExecutor ()
-        
-    buildExecutor |> Ok
 
 let ``Run the setup action when execute is called`` =
     container.Test (
@@ -230,6 +195,37 @@ let ``Run the teardown action when execute is called`` =
             called
             |> expects.ToBeTrue
             |> withMessage "Teardown was not called"
+    )
+    
+let ``Calls the teardown action with the successful setup result`` =
+    container.Test (
+        SetupPart setupBuildExecutorWithSetupAndTeardownActions,
+        
+        fun testBuilder _ ->
+            let expectedSetupValue = "Hello from setup"
+            let setupAction _ =
+                expectedSetupValue |> Ok
+                
+            let mutable result = newFailure.With.TestExecutionNotRunFailure () |> TestFailure
+            
+            let teardownAction setupValue _ =
+                match setupValue with
+                | Ok value ->
+                    result <-
+                        value
+                        |> expects.ToBe expectedSetupValue
+                | _ ->
+                    result <-
+                        "Should not be here" |> newFailure.As.TestExecutionResultOf.OtherFailure
+                        
+                Ok ()
+                
+            let executor = testBuilder setupAction teardownAction
+            
+            executor.Execute (getFakeEnvironment ())
+            |> ignore
+            
+            result
     )
 
 let ``Test Cases`` = container.Tests
