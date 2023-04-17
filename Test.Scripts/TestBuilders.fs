@@ -47,3 +47,11 @@ let setupBuildExecutorWithSetupAndTeardownActions _ =
         test.GetExecutor ()
         
     buildExecutor |> Ok
+    
+let setupBuiltExecutorWithTestBodyAndTeardownAction _ =
+    let builtExecutor testBody teardownAction =
+        let feature = buildFeatureUnderTest ()
+        let test = feature.Test (Setup successfulUnitSetup, TestBody testBody, Teardown teardownAction)
+        test.GetExecutor ()
+        
+    builtExecutor |> Ok

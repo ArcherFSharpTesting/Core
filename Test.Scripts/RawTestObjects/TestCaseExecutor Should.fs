@@ -228,14 +228,49 @@ let ``Calls the teardown action with the successful setup result`` =
             
             result
     )
+    
+let ``Calls the teardown action with the unsuccessful setup result`` =
+    container.Test (
+        SetupPart setupBuildExecutorWithSetupAndTeardownActions,
+        
+        fun testBuilder _ ->
+            let expectedSetupValue =
+                "Bad setup, bad"
+                |> newFailure.With.SetupTeardownGeneralFailure
+                
+            let setupAction _ =
+                expectedSetupValue
+                |> Error
+                
+            let mutable result = newFailure.With.TestExecutionNotRunFailure () |> TestFailure
+            
+            let teardownAction setupValue _ =
+                match setupValue with
+                | Error value ->
+                    result <-
+                        value
+                        |> expects.ToBe expectedSetupValue
+                | _ ->
+                    result <-
+                        "Should not be here" |> newFailure.As.TestExecutionResultOf.OtherFailure
+                        
+                Ok ()
+                
+            let executor = testBuilder setupAction teardownAction
+            
+            executor.Execute (getFakeEnvironment ())
+            |> ignore
+            
+            result
+    )
 
 let ``Calls the teardown with the TestSuccess if test is successful`` =
     container.Test (
         SetupPart setupBuildExecutorWithTeardownAction,
         
-        let mutable result = newFailure.With.TestExecutionNotRunFailure () |> TestFailure
-        
         fun testBuilder _ ->
+            let mutable result = newFailure.With.TestExecutionNotRunFailure () |> TestFailure
+            
             let teardownAction _ testResult =
                 result <-
                     testResult
@@ -249,6 +284,80 @@ let ``Calls the teardown with the TestSuccess if test is successful`` =
             |> ignore
             
             result
+    )
+
+let ``Calls the teardown with the TestFailure if test fails`` =
+    container.Test (
+        SetupPart setupBuiltExecutorWithTestBodyAndTeardownAction,
+        
+        fun testBuilder _ ->
+            let mutable result = newFailure.With.TestExecutionNotRunFailure () |> TestFailure
+            
+            let expectedFailure =
+                newFailure.With.TestExecutionOtherFailure "a failed test"
+                |> TestFailure
+            
+            let testAction _ _ =
+                expectedFailure
+            
+            let teardownAction _ testResult =
+                result <-
+                    testResult
+                    |> expects.ToBe (Some expectedFailure)
+                    
+                Ok ()
+                
+            let executor : ITestExecutor = testBuilder testAction teardownAction
+            
+            executor.Execute (getFakeEnvironment ())
+            |> ignore
+            
+            result
+    )
+
+let ``Return the failure if the teardown action fails`` =
+    container.Test (
+        SetupPart setupBuildExecutorWithTeardownAction,
+        
+        fun testBuilder _ ->
+            let teardownFailure = 
+                "failed teardown"
+                |> newFailure.With.SetupTeardownGeneralFailure
+            
+            let teardownAction _ _ =
+                teardownFailure
+                |> Error
+                
+            let executor = testBuilder teardownAction
+            
+            executor.Execute (getFakeEnvironment ())
+            |> expects.ToBe (
+                teardownFailure
+                |> TeardownExecutionFailure
+            )
+    )
+
+let ``Return failure if teardown throws exception`` =
+    container.Test (
+        SetupPart setupBuildExecutorWithTeardownAction,
+        
+        fun testBuilder _ ->
+            let expectedErrorMessage = "Boom goes the teardown"
+            let teardownAction _ _ =
+                failwith expectedErrorMessage
+                
+            let executor = testBuilder teardownAction
+            
+            try
+                let result = executor.Execute (getFakeEnvironment ())
+                match result with
+                | TeardownExecutionFailure (SetupTeardownExceptionFailure ex) ->
+                    ex.Message
+                    |> expects.ToBe expectedErrorMessage
+                    
+                | _ -> "Should not be here" |> newFailure.With.TestExecutionOtherFailure |> TestFailure
+            with
+            | ex -> ex |> newFailure.With.TestExecutionExceptionFailure |> TestFailure
     )
 
 let ``Test Cases`` = container.Tests

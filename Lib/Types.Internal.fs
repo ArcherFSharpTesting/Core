@@ -10,8 +10,9 @@ open Archer.Arrow
 open Archer.CoreTypes.InternalTypes
 
 type ExecutionResultsAccumulator<'a> =
-    | SetupRun of Result<'a, SetupTeardownFailure>
-    | TestRun of Result<'a, SetupTeardownFailure> * TestResult
+    | SetupRun of result: Result<'a, SetupTeardownFailure>
+    | TestRun of setupResult: Result<'a, SetupTeardownFailure> * testResult: TestResult
+    | TeardownRun of setupResult: Result<'a, SetupTeardownFailure> * testResult: TestResult option * teardownResult: Result<unit, SetupTeardownFailure> 
 
 type TestCaseExecutor<'a> (parent: ITest, setup: unit -> Result<'a, SetupTeardownFailure>, testBody: 'a -> TestEnvironment -> TestResult, tearDown: Result<'a, SetupTeardownFailure> -> TestResult option -> Result<unit, SetupTeardownFailure>) =
     let testLifecycleEvent = Event<TestExecutionDelegate, TestEventLifecycle> ()
@@ -42,14 +43,15 @@ type TestCaseExecutor<'a> (parent: ITest, setup: unit -> Result<'a, SetupTeardow
         | _ -> acc
         
     let runTeardown acc =
-        let setupResult = 
+        let setupResult, testResult = 
             match acc with
-            | SetupRun setupResult
-            | TestRun(setupResult, _) ->
-                setupResult
+            | SetupRun setupResult -> setupResult, None
+            | TestRun (setupResult, testResult) ->
+                setupResult, (Some testResult)
             
-        tearDown setupResult None
-        |> ignore
+        let result = tearDown setupResult testResult
+        
+        TeardownRun (setupResult, testResult, result)
         
     member _.Execute environment =
         let env = 
@@ -62,14 +64,22 @@ type TestCaseExecutor<'a> (parent: ITest, setup: unit -> Result<'a, SetupTeardow
         let result =
             runSetup ()
             |> runTestBody env
-            
-        runTeardown result
+            |> runTeardown
         
         match result with
         | SetupRun (Error error) ->
             error |> SetupExecutionFailure
         | TestRun (_, result) ->
             result |> TestExecutionResult
+        | TeardownRun (_setupResult, _testResultOption, Error errorValue) ->
+            errorValue
+            |> TeardownExecutionFailure
+        | TeardownRun (Error errorValue, _testResultOption, _teardownResult) ->
+            errorValue
+            |> SetupExecutionFailure
+        | TeardownRun (Ok _, Some testResult, Ok _) ->
+            testResult
+            |> TestExecutionResult
     
     interface ITestExecutor with
         member this.Parent = parent
