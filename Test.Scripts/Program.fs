@@ -7,6 +7,8 @@ let framework = bow.Framework ()
 
 framework
 |> addManyTests [
+    ``Arrow Should``.``Test Cases``
+    ``Feature Should``.``Test Cases``
     ``TestCase Should``.``Test Cases``
     ``TestCaseExecutor Should``.``Test Cases``
     ``TestCaseExecutor Execute Should``.``Test Cases``

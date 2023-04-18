@@ -125,7 +125,7 @@ let ``Not throw if exception is thrown from TestStartExecution`` =
                     ex.Message
                     |> expects.ToBe expectedExceptionMessage
                 | _ ->
-                    "Should not get here" |> newFailure.With.TestExecutionOtherFailure |> TestFailure
+                    "Should not get here" |> newFailure.With.TestOtherExpectationFailure |> TestFailure
             with
             | ex -> ex |> TestExceptionFailure |> TestFailure
     )
@@ -151,7 +151,7 @@ let ``Not throw if exception is thrown from TestStartSetup`` =
                     ex.Message
                     |> expects.ToBe exceptionMessage
                 | _ ->
-                    "Should not get here" |> newFailure.With.TestExecutionOtherFailure |> TestFailure
+                    "Should not get here" |> newFailure.With.TestOtherExpectationFailure |> TestFailure
             with
             | ex -> ex |> TestExceptionFailure |> TestFailure
     )
@@ -177,7 +177,7 @@ let ``Not throw when TestEndSetup throws`` =
                     ex.Message
                     |> expects.ToBe exceptionMessage
                 | _ ->
-                    "Should not get here" |> newFailure.With.TestExecutionOtherFailure |> TestFailure
+                    "Should not get here" |> newFailure.With.TestOtherExpectationFailure |> TestFailure
             with
             | ex -> ex |> TestExceptionFailure |> TestFailure
     )

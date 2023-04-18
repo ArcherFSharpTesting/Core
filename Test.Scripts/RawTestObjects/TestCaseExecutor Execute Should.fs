@@ -115,7 +115,7 @@ let ``Return the result of a failing test body when executed`` =
         fun testBuilder _ ->
             let expectedFailure = 
                 "A failing test"
-                |> newFailure.As.TestExecutionResultOf.OtherFailure
+                |> newFailure.As.TestExecutionResultOf.OtherExpectationFailure
                 
             let testAction _ _ = expectedFailure
             
@@ -148,11 +148,11 @@ let ``Not throw when setup throws`` =
                 | SetupExecutionFailure (SetupTeardownExceptionFailure ex) ->
                     ex.Message
                     |> expects.ToBe expectedErrorMessage
-                | _ -> "Should not get here" |> newFailure.As.TestExecutionResultOf.OtherFailure
+                | _ -> expects.NotToBeCalled ()
                  
             with
             | ex ->
-                ex |> newFailure.As.TestExecutionResultOf.ExceptionFailure
+                ex |> newFailure.As.TestExecutionResultOf.TestExceptionFailure
     )
     
 let ``Not throw when test action throws`` =
@@ -172,9 +172,9 @@ let ``Not throw when test action throws`` =
                 | TestExecutionResult (TestFailure (TestExceptionFailure ex)) ->
                     ex.Message
                     |> expects.ToBe expectedErrorMessage
-                | _ -> "Should not get here" |> newFailure.As.TestExecutionResultOf.OtherFailure
+                | _ -> expects.NotToBeCalled ()
             with
-                ex -> ex |> newFailure.As.TestExecutionResultOf.ExceptionFailure
+                ex -> ex |> newFailure.As.TestExecutionResultOf.TestExceptionFailure
     )
     
 let ``Run the teardown action when called`` =
@@ -217,7 +217,7 @@ let ``Calls the teardown action with the successful setup result`` =
                         |> expects.ToBe expectedSetupValue
                 | _ ->
                     result <-
-                        "Should not be here" |> newFailure.As.TestExecutionResultOf.OtherFailure
+                        "Should not be here" |> newFailure.As.TestExecutionResultOf.OtherExpectationFailure
                         
                 Ok ()
                 
@@ -252,7 +252,7 @@ let ``Calls the teardown action with the unsuccessful setup result`` =
                         |> expects.ToBe expectedSetupValue
                 | _ ->
                     result <-
-                        "Should not be here" |> newFailure.As.TestExecutionResultOf.OtherFailure
+                        "Should not be here" |> newFailure.As.TestExecutionResultOf.OtherExpectationFailure
                         
                 Ok ()
                 
@@ -294,7 +294,7 @@ let ``Calls the teardown with the TestFailure if test fails`` =
             let mutable result = newFailure.With.TestExecutionNotRunFailure () |> TestFailure
             
             let expectedFailure =
-                newFailure.With.TestExecutionOtherFailure "a failed test"
+                newFailure.With.TestOtherExpectationFailure "a failed test"
                 |> TestFailure
             
             let testAction _ _ =
@@ -355,7 +355,7 @@ let ``Return failure if teardown throws exception`` =
                     ex.Message
                     |> expects.ToBe expectedErrorMessage
                     
-                | _ -> "Should not be here" |> newFailure.With.TestExecutionOtherFailure |> TestFailure
+                | _ -> "Should not be here" |> newFailure.With.TestOtherExpectationFailure |> TestFailure
             with
             | ex -> ex |> newFailure.With.TestExecutionExceptionFailure |> TestFailure
     )

@@ -185,3 +185,17 @@ type Feature (featurePath, featureName) =
         
     member this.Test (setup: SetupIndicator<'a>, testBody: TestBodyIndicator<'a>, teardown: TeardownIndicator<'a>, [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>]lineNumber: int) =
         this.Test (TestTags [], setup, testBody, teardown, testName, fileFullName, lineNumber)
+        
+    member this.SubFeature (name: string) =
+        if String.IsNullOrWhiteSpace name then
+            failwith "Must have a name"
+        else
+            Feature (this.ToString (), name)
+        
+    override _.ToString () =
+        [
+            featurePath
+            featureName
+        ]
+        |> List.filter (String.IsNullOrWhiteSpace >> not)
+        |> fun items -> String.Join (".", items)
