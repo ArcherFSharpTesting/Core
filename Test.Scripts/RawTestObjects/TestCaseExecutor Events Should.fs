@@ -181,5 +181,55 @@ let ``Not throw when TestEndSetup throws`` =
             with
             | ex -> ex |> TestExceptionFailure |> TestFailure
     )
+    
+let ``Not throw when TestStartTeardown throws`` =
+    container.Test (
+        SetupPart setupExecutor,
+        
+        fun executor _ ->
+            let exceptionMessage = "Test teardown go down the hole"
+            
+            executor.TestLifecycleEvent
+            |> Event.add (fun args ->
+                match args with
+                | TestStartTeardown ->
+                    failwith exceptionMessage
+                | _ -> ()
+            )
+            
+            try
+                match executor.Execute (getFakeEnvironment ()) with
+                | TeardownExecutionFailure (SetupTeardownExceptionFailure ex) ->
+                    ex.Message
+                    |> expects.ToBe exceptionMessage
+                | _ -> expects.NotToBeCalled ()
+            with
+            | ex -> ex |> newFailure.With.TestExecutionExceptionFailure |> TestFailure
+    )
+    
+let ``Not throw when TestEndExecution throws`` =
+    container.Test (
+        SetupPart setupExecutor,
+        
+        fun executor _ ->
+            let exceptionMessage = "Test execution did not end well"
+            
+            executor.TestLifecycleEvent
+            |> Event.add (fun args ->
+                match args with
+                | TestEndExecution _ ->
+                    failwith exceptionMessage
+                | _ -> ()
+            )
+            
+            try
+                match executor.Execute (getFakeEnvironment ()) with
+                | GeneralExecutionFailure (GeneralExceptionFailure ex) ->
+                    ex.Message
+                    |> expects.ToBe exceptionMessage
+                |_ -> expects.NotToBeCalled ()
+            with
+            | ex -> ex |> newFailure.With.TestExecutionExceptionFailure |> TestFailure
+    )
 
 let ``Test Cases`` = container.Tests

@@ -121,9 +121,12 @@ type TestCaseExecutor<'a> (parent: ITest, setup: unit -> Result<'a, SetupTeardow
                 testResult
                 |> TestExecutionResult
             | _ -> failwith "Should never get here"
-                
-        testLifecycleEvent.Trigger (parent, TestEndExecution (TestSuccess |> TestExecutionResult))
-        finalValue
+
+        try                
+            testLifecycleEvent.Trigger (parent, TestEndExecution (TestSuccess |> TestExecutionResult))
+            finalValue
+        with
+        | ex -> ex |> GeneralExceptionFailure |> GeneralExecutionFailure
         
     override _.ToString () =
         $"%s{parent.ToString ()}.IExecutor"
