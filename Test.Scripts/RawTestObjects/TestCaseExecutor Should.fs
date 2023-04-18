@@ -1,6 +1,6 @@
-﻿module Archer.Arrow.Tests.RawTestObjects.``TestCaseExecutor Should``
+﻿module Archer.Arrows.Tests.RawTestObjects.``TestCaseExecutor Should``
 
-open Archer.Arrow
+open Archer.Arrows
 open Archer.MicroLang
 
 let private container = suite.Container ()
@@ -8,7 +8,7 @@ let private container = suite.Container ()
 let ``Have a decent toString`` =
     container.Test (
         fun _ ->
-            let feature = arrow.NewFeature ("TestCase", "Executor")
+            let feature = Arrow.NewFeature ("TestCase", "Executor")
             let test = feature.Test (successfulTest, "ToString should return a string")
             let executor = test.GetExecutor ()
             

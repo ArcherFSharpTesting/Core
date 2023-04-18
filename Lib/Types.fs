@@ -1,4 +1,4 @@
-﻿namespace Archer.Arrow
+﻿namespace Archer.Arrows
 
 open System
 open Archer

@@ -1,8 +1,8 @@
-﻿module Archer.Arrow.Tests.RawTestObjects.``TestCaseExecutor Events Should``
+﻿module Archer.Arrows.Tests.RawTestObjects.``TestCaseExecutor Events Should``
 
 open Archer
-open Archer.Arrow
-open Archer.Arrow.Tests
+open Archer.Arrows
+open Archer.Arrows.Tests
 open Archer.CoreTypes.InternalTypes
 open Archer.MicroLang
 open Microsoft.FSharp.Control
@@ -73,7 +73,7 @@ let ``Trigger all the events in order`` =
 let ``Trigger events with parent`` =
     container.Test (
         fun _ ->
-            let feature = arrow.NewFeature ("Events", "ThatTrigger")
+            let feature = Arrow.NewFeature ("Events", "ThatTrigger")
             let test = feature.Test (successfulTest, "From a test")
             let executor = test.GetExecutor ()
             
@@ -104,7 +104,7 @@ let ``Trigger events with parent`` =
             |> andResult result
     )
     
-let ``Not throw if exception is thrown from execution started`` =
+let ``Not throw if exception is thrown from TestStartExecution`` =
     container.Test (
         SetupPart setupExecutor,
         
@@ -121,9 +121,61 @@ let ``Not throw if exception is thrown from execution started`` =
             
             try
                 match executor.Execute (getFakeEnvironment ()) with
-                | TestExecutionResult (TestFailure (TestExceptionFailure ex)) ->
+                | GeneralExecutionFailure (GeneralExceptionFailure ex) ->
                     ex.Message
                     |> expects.ToBe expectedExceptionMessage
+                | _ ->
+                    "Should not get here" |> newFailure.With.TestExecutionOtherFailure |> TestFailure
+            with
+            | ex -> ex |> TestExceptionFailure |> TestFailure
+    )
+    
+let ``Not throw if exception is thrown from TestStartSetup`` =
+    container.Test (
+        SetupPart setupExecutor,
+        
+        fun executor _ ->
+            let exceptionMessage = "Boom boom test start setup"
+            
+            executor.TestLifecycleEvent
+            |> Event.add (fun args ->
+                match args with
+                | TestStartSetup _ ->
+                    failwith exceptionMessage
+                | _ -> ()
+            )
+           
+            try
+                match executor.Execute (getFakeEnvironment ()) with
+                | SetupExecutionFailure (SetupTeardownExceptionFailure ex) ->
+                    ex.Message
+                    |> expects.ToBe exceptionMessage
+                | _ ->
+                    "Should not get here" |> newFailure.With.TestExecutionOtherFailure |> TestFailure
+            with
+            | ex -> ex |> TestExceptionFailure |> TestFailure
+    )
+    
+let ``Not throw when TestEndSetup throws`` =
+    container.Test (
+        SetupPart setupExecutor,
+        
+        fun executor _ ->
+            let exceptionMessage = "End Setup goes BOOM!"
+            
+            executor.TestLifecycleEvent
+            |> Event.add (fun args ->
+                match args with
+                | TestEndSetup _ ->
+                    failwith exceptionMessage
+                | _ -> ()
+            )
+            
+            try
+                match executor.Execute (getFakeEnvironment ()) with
+                | SetupExecutionFailure (SetupTeardownExceptionFailure ex) ->
+                    ex.Message
+                    |> expects.ToBe exceptionMessage
                 | _ ->
                     "Should not get here" |> newFailure.With.TestExecutionOtherFailure |> TestFailure
             with

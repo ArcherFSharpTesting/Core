@@ -1,4 +1,4 @@
-﻿open Archer.Arrow.Tests.RawTestObjects
+﻿open Archer.Arrows.Tests.RawTestObjects
 open Archer.Bow
 open Archer
 open MicroLang.Lang

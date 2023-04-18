@@ -1,10 +1,10 @@
 ﻿[<AutoOpen>]
-module Archer.Arrow.Tests.TestBuilders
+module Archer.Arrows.Tests.TestBuilders
 
-open Archer.Arrow
+open Archer.Arrows
 open Archer.MicroLang
 
-let buildFeatureUnderTest _ = arrow.NewFeature (ignoreString (), ignoreString ())
+let buildFeatureUnderTest _ = Arrow.NewFeature (ignoreString (), ignoreString ())
 
 let setupExecutor _ =
     let feature = buildFeatureUnderTest ()

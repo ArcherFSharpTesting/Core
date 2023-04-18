@@ -1,7 +1,7 @@
-﻿module Archer.Arrow.Tests.RawTestObjects.``TestCaseExecutor Execute Should``
+﻿module Archer.Arrows.Tests.RawTestObjects.``TestCaseExecutor Execute Should``
 
 open Archer
-open Archer.Arrow.Tests
+open Archer.Arrows.Tests
 open Archer.CoreTypes.InternalTypes
 open Archer.MicroLang
 

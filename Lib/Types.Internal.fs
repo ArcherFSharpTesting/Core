@@ -1,4 +1,4 @@
-﻿namespace Archer.Arrow.Internal
+﻿namespace Archer.Arrows.Internal
 
 open System
 open System.ComponentModel
@@ -7,13 +7,15 @@ open System.IO
 open System.Runtime.CompilerServices
 open System.Runtime.InteropServices
 open Archer
-open Archer.Arrow
+open Archer.Arrows
 open Archer.CoreTypes.InternalTypes
 
 type ExecutionResultsAccumulator<'a> =
+    | Empty
     | SetupRun of result: Result<'a, SetupTeardownFailure>
     | TestRun of setupResult: Result<'a, SetupTeardownFailure> * testResult: TestResult
-    | TeardownRun of setupResult: Result<'a, SetupTeardownFailure> * testResult: TestResult option * teardownResult: Result<unit, SetupTeardownFailure> 
+    | TeardownRun of setupResult: Result<'a, SetupTeardownFailure> * testResult: TestResult option * teardownResult: Result<unit, SetupTeardownFailure>
+    | FailureAccumulated of GeneralTestingFailure 
 
 type TestCaseExecutor<'a> (parent: ITest, setup: unit -> Result<'a, SetupTeardownFailure>, testBody: 'a -> TestEnvironment -> TestResult, tearDown: Result<'a, SetupTeardownFailure> -> TestResult option -> Result<unit, SetupTeardownFailure>) =
     let testLifecycleEvent = Event<TestExecutionDelegate, TestEventLifecycle> ()
@@ -23,25 +25,32 @@ type TestCaseExecutor<'a> (parent: ITest, setup: unit -> Result<'a, SetupTeardow
         let version = assembly.GetName().Version
         
         {
-            ApiName = "Archer.Arrow"
+            ApiName = "Archer.Arrows"
             ApiVersion = version
         }
         
     let executionStarted _ =
-        testLifecycleEvent.Trigger (parent, TestStartExecution (CancelEventArgs ()))
-        
-    let runSetup _ =
         try
-            testLifecycleEvent.Trigger (parent, TestStartSetup (CancelEventArgs ()))
-            
-            let result = () |> setup |> SetupRun
-            
-            testLifecycleEvent.Trigger (parent, TestEndSetup (SetupSuccess, CancelEventArgs ()))
-            
-            result
+            testLifecycleEvent.Trigger (parent, TestStartExecution (CancelEventArgs ()))
+            Empty
         with
-        | ex ->
-            ex |> SetupTeardownExceptionFailure |> Error |> SetupRun
+        | ex -> ex |> GeneralExceptionFailure |> FailureAccumulated
+        
+    let runSetup acc =
+        match acc with
+        | Empty ->
+            try
+                testLifecycleEvent.Trigger (parent, TestStartSetup (CancelEventArgs ()))
+                
+                let result = () |> setup |> SetupRun
+                
+                testLifecycleEvent.Trigger (parent, TestEndSetup (SetupSuccess, CancelEventArgs ()))
+                
+                result
+            with
+            | ex ->
+                ex |> SetupTeardownExceptionFailure |> Error |> SetupRun
+        | _ -> acc
         
     let runTestBody environment acc =
         match acc with
@@ -57,13 +66,7 @@ type TestCaseExecutor<'a> (parent: ITest, setup: unit -> Result<'a, SetupTeardow
             | ex -> (setupState, ex |> TestExceptionFailure |> TestFailure) |> TestRun
         | _ -> acc
         
-    let runTeardown acc =
-        let setupResult, testResult = 
-            match acc with
-            | SetupRun setupResult -> setupResult, None
-            | TestRun (setupResult, testResult) ->
-                setupResult, (Some testResult)
-            
+    let runTeardown setupResult testResult =
         try
             testLifecycleEvent.Trigger (parent, TestStartTeardown)
             
@@ -75,6 +78,15 @@ type TestCaseExecutor<'a> (parent: ITest, setup: unit -> Result<'a, SetupTeardow
         | ex ->
             TeardownRun (setupResult, testResult, ex |> SetupTeardownExceptionFailure |> Error)
         
+    let maybeRunTeardown acc =
+        match acc with
+        | SetupRun setupResult ->
+            runTeardown setupResult None
+        | TestRun (setupResult, testResult) ->
+            runTeardown setupResult (Some testResult)
+        | FailureAccumulated _ ->
+            acc
+        
     member _.Execute environment =
         let env = 
             {
@@ -83,15 +95,18 @@ type TestCaseExecutor<'a> (parent: ITest, setup: unit -> Result<'a, SetupTeardow
                 TestInfo = parent 
             }
             
-        executionStarted ()
+        
         
         let result =
-            runSetup ()
+            executionStarted ()
+            |> runSetup
             |> runTestBody env
-            |> runTeardown
+            |> maybeRunTeardown
         
         let finalValue =
             match result with
+            | FailureAccumulated generalTestingFailure ->
+                generalTestingFailure |> GeneralExecutionFailure
             | SetupRun (Error error) ->
                 error |> SetupExecutionFailure
             | TestRun (_, result) ->
@@ -105,6 +120,7 @@ type TestCaseExecutor<'a> (parent: ITest, setup: unit -> Result<'a, SetupTeardow
             | TeardownRun (Ok _, Some testResult, Ok _) ->
                 testResult
                 |> TestExecutionResult
+            | _ -> failwith "Should never get here"
                 
         testLifecycleEvent.Trigger (parent, TestEndExecution (TestSuccess |> TestExecutionResult))
         finalValue
@@ -169,18 +185,3 @@ type Feature (featurePath, featureName) =
         
     member this.Test (setup: SetupIndicator<'a>, testBody: TestBodyIndicator<'a>, teardown: TeardownIndicator<'a>, [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>]lineNumber: int) =
         this.Test (TestTags [], setup, testBody, teardown, testName, fileFullName, lineNumber)
-
-type ArrowBuilder () =
-    member _.NewFeature () =
-        let featureName, featurePath =
-            let trace = StackTrace ()
-            let method = trace.GetFrame(1).GetMethod ()
-            let containerName = method.ReflectedType.Name
-            let containerPath = method.ReflectedType.Namespace |> fun s -> s.Split ([|"$"|], StringSplitOptions.RemoveEmptyEntries) |> Array.last
-                
-            containerName, containerPath
-            
-        Feature (featurePath, featureName)
-        
-    member _.NewFeature (featurePath, featureName) =
-        Feature (featurePath, featureName)
