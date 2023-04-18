@@ -15,6 +15,7 @@
     <Compile Include="RawTestObjects\TestCaseExecutor Should.fs" />
     <Compile Include="RawTestObjects\TestCaseExecutor Execute Should.fs" />
     <Compile Include="RawTestObjects\TestCaseExecutor Events Should.fs" />
+    <Compile Include="RawTestObjects\TestCaseExecutor Event Cancellation Should.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 

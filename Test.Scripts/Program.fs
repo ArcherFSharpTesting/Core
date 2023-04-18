@@ -13,5 +13,6 @@ framework
     ``TestCaseExecutor Should``.``Test Cases``
     ``TestCaseExecutor Execute Should``.``Test Cases``
     ``TestCaseExecutor Events Should``.``Test Cases``
+    ``TestCaseExecutor Event Cancellation Should``.``Test Cases``
 ]
 |> runAndReport
