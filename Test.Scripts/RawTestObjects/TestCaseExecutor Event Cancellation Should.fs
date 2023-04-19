@@ -158,4 +158,50 @@ let ``Should trigger ending events if canceled at TestEndSetup`` =
             |> by (executor |> executeFunction)
     )
     
+let ``Call Teardown if canceled on TestStart`` =
+    container.Test (
+        SetupPart setupBuildExecutorWithMonitor,
+        
+        fun (monitor, executor) _ ->
+            executor.TestLifecycleEvent
+            |> Event.add (fun args ->
+                match args with
+                | TestStart cancelEventArgs ->
+                    cancelEventArgs.Cancel <- true
+                | _ -> ()
+            )
+            
+            executor
+            |> executeFunction
+            |> runIt
+            |> ignore
+            
+            monitor.TeardownWasCalled
+            |> expects.ToBeTrue
+            |> withMessage "Teardown was not called"
+    )
+    
+let ``Should trigger ending events if canceled at TestStart`` =
+    container.Test (
+        SetupPart setupExecutor,
+        
+        fun executor _ ->
+            executor.TestLifecycleEvent
+            |> Event.add (fun args ->
+                match args with
+                | TestStart cancelEventArgs ->
+                    cancelEventArgs.Cancel <- true
+                | _ -> ()
+            )
+            
+            executor.TestLifecycleEvent
+            |> expects.ToBeTriggeredAndIdentifiedBy (fun args ->
+                match args with
+                | TestStartTeardown
+                | TestEndExecution _ -> true
+                | _ -> false
+            )
+            |> by (executor |> executeFunction)
+    )
+    
 let ``Test Cases`` = container.Tests
