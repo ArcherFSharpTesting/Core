@@ -87,16 +87,12 @@ type TestCaseExecutor<'a> (parent: ITest, setup: unit -> Result<'a, SetupTeardow
             TeardownRun (setupResult, testResult, ex |> SetupTeardownExceptionFailure |> Error)
         
     let maybeRunTeardown (cancelEventArgs: CancelEventArgs, acc) =
-        if cancelEventArgs.Cancel then
-            cancelEventArgs, acc
-        else
-            match acc with
-            | SetupRun setupResult ->
-                cancelEventArgs, runTeardown setupResult None
-            | TestRun (setupResult, testResult) ->
-                cancelEventArgs, runTeardown setupResult (Some testResult)
-            | FailureAccumulated _ ->
-                cancelEventArgs, acc
+        match acc with
+        | SetupRun setupResult ->
+            cancelEventArgs, runTeardown setupResult None
+        | TestRun (setupResult, testResult) ->
+            cancelEventArgs, runTeardown setupResult (Some testResult)
+        | _ -> cancelEventArgs, acc
         
     member _.Execute environment =
         let env = 
@@ -132,9 +128,14 @@ type TestCaseExecutor<'a> (parent: ITest, setup: unit -> Result<'a, SetupTeardow
                 testResult
                 |> TestExecutionResult
             | _ -> failwith "Should never get here"
+            
+        let isEmpty value =
+            match value with
+            | Empty -> true
+            | _ -> false
 
         try
-            if cancelEventArgs.Cancel then
+            if cancelEventArgs.Cancel && result |> isEmpty then
                 finalValue
             else
                 testLifecycleEvent.Trigger (parent, TestEndExecution (TestSuccess |> TestExecutionResult))

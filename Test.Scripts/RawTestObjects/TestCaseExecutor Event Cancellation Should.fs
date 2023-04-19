@@ -14,6 +14,8 @@ let private executeFunction (executor: ITestExecutor) =
         executor.Execute (getFakeEnvironment ())
         
     run
+    
+let private runIt f = f ()
 
 type private Monitor () =
     let mutable setupCalled = false
@@ -106,6 +108,52 @@ let ``Stop all event when canceled at TestStartSetup`` =
                 | TestStartExecution _
                 | TestStartSetup _ -> false
                 | _ -> true
+            )
+            |> by (executor |> executeFunction)
+    )
+    
+let ``Call Teardown if canceled on TestEndSetup`` =
+    container.Test (
+        SetupPart setupBuildExecutorWithMonitor,
+        
+        fun (monitor, executor) _ ->
+            executor.TestLifecycleEvent
+            |> Event.add (fun args ->
+                match args with
+                | TestEndSetup (_, cancelEventArgs) ->
+                    cancelEventArgs.Cancel <- true
+                | _ -> ()
+            )
+            
+            executor
+            |> executeFunction
+            |> runIt
+            |> ignore
+            
+            monitor.TeardownWasCalled
+            |> expects.ToBeTrue
+            |> withMessage "Teardown was not called"
+    )
+    
+let ``Should trigger ending events if canceled at TestEndSetup`` =
+    container.Test (
+        SetupPart setupExecutor,
+        
+        fun executor _ ->
+            executor.TestLifecycleEvent
+            |> Event.add (fun args ->
+                match args with
+                | TestEndSetup (_, cancelEventArgs) ->
+                    cancelEventArgs.Cancel <- true
+                | _ -> ()
+            )
+            
+            executor.TestLifecycleEvent
+            |> expects.ToBeTriggeredAndIdentifiedBy (fun args ->
+                match args with
+                | TestStartTeardown
+                | TestEndExecution _ -> true
+                | _ -> false
             )
             |> by (executor |> executeFunction)
     )
