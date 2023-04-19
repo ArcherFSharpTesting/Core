@@ -2,7 +2,6 @@
 
 open System
 open System.ComponentModel
-open System.Diagnostics
 open System.IO
 open System.Runtime.CompilerServices
 open System.Runtime.InteropServices
@@ -31,7 +30,7 @@ type TestCaseExecutor<'a> (parent: ITest, setup: unit -> Result<'a, SetupTeardow
         
     let executionStarted (cancelEventArgs: CancelEventArgs) =
         try
-            testLifecycleEvent.Trigger (parent, TestStartExecution (cancelEventArgs))
+            testLifecycleEvent.Trigger (parent, TestStartExecution cancelEventArgs)
             cancelEventArgs, Empty
         with
         | ex -> cancelEventArgs, ex |> GeneralExceptionFailure |> FailureAccumulated
