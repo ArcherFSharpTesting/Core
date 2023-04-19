@@ -9,6 +9,12 @@ open Microsoft.FSharp.Control
 
 let private container = suite.Container ()
 
+let executorFunction (executor: ITestExecutor) =
+    let run () =
+        executor.Execute (getFakeEnvironment ())
+        
+    run
+
 let ``Trigger all the events in order`` =
     container.Test (
         SetupPart setupExecutor,

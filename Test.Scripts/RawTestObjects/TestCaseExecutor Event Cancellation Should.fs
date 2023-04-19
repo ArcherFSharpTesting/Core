@@ -9,6 +9,12 @@ open Microsoft.FSharp.Control
 
 let private container = suite.Container ()
 
+let private executeFunction (executor: ITestExecutor) =
+    let run () =
+        executor.Execute (getFakeEnvironment ())
+        
+    run
+
 type private Monitor () =
     let mutable setupCalled = false
     let mutable testActionCalled = false
@@ -43,22 +49,21 @@ let ``Stop all events if done at TestExecutionStart`` =
         SetupPart setupExecutor,
         
         fun executor _ ->
-            let mutable called = false
-            
             executor.TestLifecycleEvent
             |> Event.add (fun args ->
                 match args with
                 | TestStartExecution cancelEventArgs ->
                     cancelEventArgs.Cancel <- true
-                | _ -> called <- true
+                | _ -> ()
             )
             
-            executor.Execute (getFakeEnvironment ())
-            |> ignore
-            
-            called
-            |> expects.ToBeFalse
-            |> withMessage "Other events raised"
+            executor.TestLifecycleEvent
+            |> expects.ToNotBeTriggeredAndIdentifiedBy (fun args ->
+                match args with
+                | TestStartExecution _ -> false
+                | _ -> true
+            )
+            |> by (executor |> executeFunction)
     )
     
 let ``Not call any methods when canceled in TestExecutionStart`` =
@@ -66,7 +71,6 @@ let ``Not call any methods when canceled in TestExecutionStart`` =
         SetupPart setupBuildExecutorWithMonitor,
         
         fun (monitor, executor) _ ->
-            
             executor.TestLifecycleEvent
             |> Event.add (fun args ->
                 match args with
@@ -82,5 +86,28 @@ let ``Not call any methods when canceled in TestExecutionStart`` =
             |> expects.ToBeFalse
             |> withMessage "Setup method was called"
     )
-
+    
+let ``Stop all event when canceled at TestStartSetup`` =
+    container.Test (
+        SetupPart setupExecutor,
+        
+        fun executor _ ->
+            executor.TestLifecycleEvent
+            |> Event.add (fun args ->
+                match args with
+                | TestStartSetup cancelEventArgs ->
+                    cancelEventArgs.Cancel <- true
+                | _ -> ()
+            )
+            
+            executor.TestLifecycleEvent
+            |> expects.ToNotBeTriggeredAndIdentifiedBy (fun args ->
+                match args with
+                | TestStartExecution _
+                | TestStartSetup _ -> false
+                | _ -> true
+            )
+            |> by (executor |> executeFunction)
+    )
+    
 let ``Test Cases`` = container.Tests

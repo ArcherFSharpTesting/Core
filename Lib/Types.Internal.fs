@@ -29,42 +29,51 @@ type TestCaseExecutor<'a> (parent: ITest, setup: unit -> Result<'a, SetupTeardow
             ApiVersion = version
         }
         
-    let executionStarted _ =
+    let executionStarted (cancelEventArgs: CancelEventArgs) =
         try
-            testLifecycleEvent.Trigger (parent, TestStartExecution (CancelEventArgs ()))
-            Empty
+            testLifecycleEvent.Trigger (parent, TestStartExecution (cancelEventArgs))
+            cancelEventArgs, Empty
         with
-        | ex -> ex |> GeneralExceptionFailure |> FailureAccumulated
+        | ex -> cancelEventArgs, ex |> GeneralExceptionFailure |> FailureAccumulated
         
-    let runSetup acc =
-        match acc with
-        | Empty ->
-            try
-                testLifecycleEvent.Trigger (parent, TestStartSetup (CancelEventArgs ()))
-                
-                let result = () |> setup |> SetupRun
-                
-                testLifecycleEvent.Trigger (parent, TestEndSetup (SetupSuccess, CancelEventArgs ()))
-                
-                result
-            with
-            | ex ->
-                ex |> SetupTeardownExceptionFailure |> Error |> SetupRun
-        | _ -> acc
+    let runSetup (cancelEventArgs: CancelEventArgs, acc) =
+        if cancelEventArgs.Cancel then
+            cancelEventArgs, acc
+        else
+            match acc with
+            | Empty ->
+                try
+                    testLifecycleEvent.Trigger (parent, TestStartSetup cancelEventArgs)
+                    
+                    if cancelEventArgs.Cancel then
+                        cancelEventArgs, acc
+                    else
+                        let result = () |> setup |> SetupRun
+                        
+                        testLifecycleEvent.Trigger (parent, TestEndSetup (SetupSuccess, cancelEventArgs))
+                        
+                        cancelEventArgs, result
+                with
+                | ex ->
+                    cancelEventArgs, ex |> SetupTeardownExceptionFailure |> Error |> SetupRun
+            | _ -> cancelEventArgs, acc
         
-    let runTestBody environment acc =
-        match acc with
-        | SetupRun (Ok value as setupState) ->
-            try
-                testLifecycleEvent.Trigger (parent, TestStart (CancelEventArgs ()))
-                
-                let result = (setupState, environment |> testBody value) |> TestRun
-                
-                testLifecycleEvent.Trigger (parent, TestEnd TestSuccess)
-                result
-            with
-            | ex -> (setupState, ex |> TestExceptionFailure |> TestFailure) |> TestRun
-        | _ -> acc
+    let runTestBody environment (cancelEventArgs: CancelEventArgs, acc) =
+        if cancelEventArgs.Cancel then
+            cancelEventArgs, acc
+        else
+            match acc with
+            | SetupRun (Ok value as setupState) ->
+                try
+                    testLifecycleEvent.Trigger (parent, TestStart (CancelEventArgs ()))
+                    
+                    let result = (setupState, environment |> testBody value) |> TestRun
+                    
+                    testLifecycleEvent.Trigger (parent, TestEnd TestSuccess)
+                    cancelEventArgs, result
+                with
+                | ex -> cancelEventArgs, (setupState, ex |> TestExceptionFailure |> TestFailure) |> TestRun
+            | _ -> cancelEventArgs, acc
         
     let runTeardown setupResult testResult =
         try
@@ -78,14 +87,17 @@ type TestCaseExecutor<'a> (parent: ITest, setup: unit -> Result<'a, SetupTeardow
         | ex ->
             TeardownRun (setupResult, testResult, ex |> SetupTeardownExceptionFailure |> Error)
         
-    let maybeRunTeardown acc =
-        match acc with
-        | SetupRun setupResult ->
-            runTeardown setupResult None
-        | TestRun (setupResult, testResult) ->
-            runTeardown setupResult (Some testResult)
-        | FailureAccumulated _ ->
-            acc
+    let maybeRunTeardown (cancelEventArgs: CancelEventArgs, acc) =
+        if cancelEventArgs.Cancel then
+            cancelEventArgs, acc
+        else
+            match acc with
+            | SetupRun setupResult ->
+                cancelEventArgs, runTeardown setupResult None
+            | TestRun (setupResult, testResult) ->
+                cancelEventArgs, runTeardown setupResult (Some testResult)
+            | FailureAccumulated _ ->
+                cancelEventArgs, acc
         
     member _.Execute environment =
         let env = 
@@ -95,36 +107,39 @@ type TestCaseExecutor<'a> (parent: ITest, setup: unit -> Result<'a, SetupTeardow
                 TestInfo = parent 
             }
             
-        
-        
-        let result =
-            executionStarted ()
+        let cancelEventArgs, result =
+            CancelEventArgs ()
+            |> executionStarted
             |> runSetup
             |> runTestBody env
             |> maybeRunTeardown
         
         let finalValue =
-            match result with
-            | FailureAccumulated generalTestingFailure ->
+            match cancelEventArgs.Cancel, result with
+            | true, _ -> GeneralCancelFailure |> GeneralExecutionFailure
+            | _, FailureAccumulated generalTestingFailure ->
                 generalTestingFailure |> GeneralExecutionFailure
-            | SetupRun (Error error) ->
+            | _, SetupRun (Error error) ->
                 error |> SetupExecutionFailure
-            | TestRun (_, result) ->
+            | _, TestRun (_, result) ->
                 result |> TestExecutionResult
-            | TeardownRun (_setupResult, _testResultOption, Error errorValue) ->
+            | _, TeardownRun (_setupResult, _testResultOption, Error errorValue) ->
                 errorValue
                 |> TeardownExecutionFailure
-            | TeardownRun (Error errorValue, _testResultOption, _teardownResult) ->
+            | _, TeardownRun (Error errorValue, _testResultOption, _teardownResult) ->
                 errorValue
                 |> SetupExecutionFailure
-            | TeardownRun (Ok _, Some testResult, Ok _) ->
+            | _, TeardownRun (Ok _, Some testResult, Ok _) ->
                 testResult
                 |> TestExecutionResult
             | _ -> failwith "Should never get here"
 
-        try                
-            testLifecycleEvent.Trigger (parent, TestEndExecution (TestSuccess |> TestExecutionResult))
-            finalValue
+        try
+            if cancelEventArgs.Cancel then
+                finalValue
+            else
+                testLifecycleEvent.Trigger (parent, TestEndExecution (TestSuccess |> TestExecutionResult))
+                finalValue
         with
         | ex -> ex |> GeneralExceptionFailure |> GeneralExecutionFailure
         
