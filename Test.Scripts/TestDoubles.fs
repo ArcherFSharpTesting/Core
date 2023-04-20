@@ -6,6 +6,35 @@ open Archer
 open Archer.CoreTypes.InternalTypes
 open Archer.MicroLang.Types.TypeSupport
 open Archer.MicroLang.Lang
+    
+let getFakeCodeLocation () =
+    let getRandomLetter () =
+        let letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+        let i = random0To letters.Length
+        letters[i].ToString ()
+        
+    let getRandomDriveLetter () =
+        getRandomLetter().ToUpperInvariant ()
+        
+    let getRandomWord () =
+        let count = random0To 9 |> (+) 1
+        let letters = [ for _ in 1..count -> getRandomLetter() ]
+        String.Join ("", letters)
+        
+    let getRandomPath () =
+        let count = random0To 4 |> (+) 1
+        let words = [ for _ in 1..count -> getRandomWord () ]
+        let b = String.Join ("\\", words)
+        $"%s{getRandomDriveLetter ()}:\\\\FakePath\\%s{b}"
+        
+    let getRandomFileName () =
+        $"%s{getRandomWord ()}.fs"
+        
+    {
+        FilePath = getRandomPath ()
+        FileName = getRandomFileName ()
+        LineNumber = randomInt () 
+    }
 
 let getDummyTest containerPath containerName testName fileName lineNumber =
     let info =
@@ -30,11 +59,12 @@ let getDummyTest containerPath containerName testName fileName lineNumber =
     test
     
 let getEmptyDummyTest () =
-    getDummyTest (ignoreString ()) (ignoreString ()) (ignoreString ()) (ignoreString ()) (ignoreInt ())
+    let location = getFakeCodeLocation ()
+    getDummyTest (ignoreString ()) (ignoreString ()) (ignoreString ()) $"%s{location.FilePath}\\%s{location.FileName}" location.LineNumber
     
 let getFakeEnvironment () =
     {
         FrameworkName = ignoreString ()
-        FrameworkVersion = Version ("0.0.0.0")
+        FrameworkVersion = Version "0.0.0.0"
         TestInfo = getEmptyDummyTest ()
     }
