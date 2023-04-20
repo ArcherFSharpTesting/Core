@@ -119,15 +119,20 @@ let ``Not throw if exception is thrown from TestStartExecution`` =
                 | _ -> ()
             )
             
-            try
-                match executor.Execute (getFakeEnvironment ()) with
+            let result =
+                executor
+                |> executeFunction
+                |> expects.ToNotThrowWithResult
+                
+            match result with
+            | Error errorValue -> errorValue
+            | Ok testExecutionResult ->
+                match testExecutionResult with
                 | GeneralExecutionFailure (GeneralExceptionFailure ex) ->
                     ex.Message
                     |> expects.ToBe expectedExceptionMessage
                 | _ ->
                     "Should not get here" |> newFailure.With.TestOtherExpectationFailure |> TestFailure
-            with
-            | ex -> ex |> TestExceptionFailure |> TestFailure
     )
     
 let ``Not throw if exception is thrown from TestStartSetup`` =
@@ -144,16 +149,21 @@ let ``Not throw if exception is thrown from TestStartSetup`` =
                     failwith exceptionMessage
                 | _ -> ()
             )
-           
-            try
-                match executor.Execute (getFakeEnvironment ()) with
+    
+            let result =
+                executor
+                |> executeFunction
+                |> expects.ToNotThrowWithResult
+                
+            match result with
+            | Error errorValue -> errorValue
+            | Ok testExecutionResult ->
+                match testExecutionResult with
                 | SetupExecutionFailure (SetupTeardownExceptionFailure ex) ->
                     ex.Message
                     |> expects.ToBe exceptionMessage
                 | _ ->
                     "Should not get here" |> newFailure.With.TestOtherExpectationFailure |> TestFailure
-            with
-            | ex -> ex |> TestExceptionFailure |> TestFailure
     )
     
 let ``Not throw when TestEndSetup throws`` =
@@ -170,16 +180,21 @@ let ``Not throw when TestEndSetup throws`` =
                     failwith exceptionMessage
                 | _ -> ()
             )
-            
-            try
-                match executor.Execute (getFakeEnvironment ()) with
+    
+            let result =
+                executor
+                |> executeFunction
+                |> expects.ToNotThrowWithResult
+                
+            match result with
+            | Error errorValue -> errorValue
+            | Ok testExecutionResult ->
+                match testExecutionResult with
                 | SetupExecutionFailure (SetupTeardownExceptionFailure ex) ->
                     ex.Message
                     |> expects.ToBe exceptionMessage
                 | _ ->
                     "Should not get here" |> newFailure.With.TestOtherExpectationFailure |> TestFailure
-            with
-            | ex -> ex |> TestExceptionFailure |> TestFailure
     )
     
 let ``Trigger TestEndSetup with a successful result if setup function returns Ok`` =
@@ -244,6 +259,67 @@ let ``Trigger TestEndSetup with a failure if setup returns Error`` =
             result
     )
     
+let ``Not throw when TestStart throws`` =
+    container.Test (
+        SetupPart setupExecutor,
+        
+        fun executor _ ->
+            let exceptionMessage = "bad test start"
+            
+            executor.TestLifecycleEvent
+            |> Event.add (fun args ->
+                match args with
+                | TestStart _ ->
+                    failwith exceptionMessage
+                | _ -> ()
+            )
+            
+            let result = 
+                executor
+                |> executeFunction
+                |> expects.ToNotThrowWithResult
+                
+            match result with
+            | Error errorValue -> errorValue
+            | Ok testExecutionResult ->
+                match testExecutionResult with
+                | GeneralExecutionFailure (GeneralExceptionFailure ex) ->
+                    ex.Message
+                    |> expects.ToBe exceptionMessage
+                | _ ->
+                    "Should not get here" |> newFailure.With.TestOtherExpectationFailure |> TestFailure
+    )
+    
+let ``Not throw when TestEnd throws`` =
+    container.Test (
+        SetupPart setupExecutor,
+        
+        fun executor _ ->
+            let exceptionMessage = "bad TestEnd event"
+            
+            executor.TestLifecycleEvent
+            |> Event.add (fun args ->
+                match args with
+                | TestEnd _ -> failwith exceptionMessage
+                | _ -> ()
+            )
+            
+            let result =
+                executor
+                |> executeFunction
+                |> expects.ToNotThrowWithResult
+                
+            match result with
+            | Error errorValue -> errorValue
+            | Ok testExecutionResult ->
+                match testExecutionResult with
+                | GeneralExecutionFailure (GeneralExceptionFailure ex) ->
+                    ex.Message
+                    |> expects.ToBe exceptionMessage
+                | _ ->
+                    expects.NotToBeCalled ()
+    )
+    
 let ``Not throw when TestStartTeardown throws`` =
     container.Test (
         SetupPart setupExecutor,
@@ -259,14 +335,20 @@ let ``Not throw when TestStartTeardown throws`` =
                 | _ -> ()
             )
             
-            try
-                match executor.Execute (getFakeEnvironment ()) with
+            let result =
+                executor
+                |> executeFunction
+                |> expects.ToNotThrowWithResult
+                
+            match result with
+            | Error errorValue -> errorValue
+            | Ok testExecutionResult ->
+                match testExecutionResult with
                 | TeardownExecutionFailure (SetupTeardownExceptionFailure ex) ->
                     ex.Message
                     |> expects.ToBe exceptionMessage
-                | _ -> expects.NotToBeCalled ()
-            with
-            | ex -> ex |> newFailure.With.TestExecutionExceptionFailure |> TestFailure
+                | _ ->
+                    expects.NotToBeCalled ()
     )
     
 let ``Not throw when TestEndExecution throws`` =
@@ -284,14 +366,20 @@ let ``Not throw when TestEndExecution throws`` =
                 | _ -> ()
             )
             
-            try
-                match executor.Execute (getFakeEnvironment ()) with
+            let result =
+                executor
+                |> executeFunction
+                |> expects.ToNotThrowWithResult
+                
+            match result with
+            | Error errorValue -> errorValue
+            | Ok testExecutionResult ->
+                match testExecutionResult with
                 | GeneralExecutionFailure (GeneralExceptionFailure ex) ->
                     ex.Message
                     |> expects.ToBe exceptionMessage
-                |_ -> expects.NotToBeCalled ()
-            with
-            | ex -> ex |> newFailure.With.TestExecutionExceptionFailure |> TestFailure
+                | _ ->
+                    expects.NotToBeCalled ()
     )
 
 let ``Test Cases`` = container.Tests

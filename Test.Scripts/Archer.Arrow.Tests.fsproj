@@ -26,7 +26,7 @@
 
   <ItemGroup>
     <PackageReference Include="Archer.Bow.Lib" Version="0.0.9.17" />
-    <PackageReference Include="MicroLang.Lib" Version="0.0.12.33" />
+    <PackageReference Include="MicroLang.Lib" Version="0.0.12.35" />
     <PackageReference Update="FSharp.Core" Version="7.0.300-beta.23176.1" />
   </ItemGroup>
 

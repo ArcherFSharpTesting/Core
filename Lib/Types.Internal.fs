@@ -14,7 +14,7 @@ type ExecutionResultsAccumulator<'a> =
     | SetupRun of result: Result<'a, SetupTeardownFailure>
     | TestRun of setupResult: Result<'a, SetupTeardownFailure> * testResult: TestResult
     | TeardownRun of setupResult: Result<'a, SetupTeardownFailure> * testResult: TestResult option * teardownResult: Result<unit, SetupTeardownFailure>
-    | FailureAccumulated of GeneralTestingFailure 
+    | FailureAccumulated of setupResult: Result<'a, SetupTeardownFailure> option * GeneralTestingFailure 
 
 type TestCaseExecutor<'a> (parent: ITest, setup: unit -> Result<'a, SetupTeardownFailure>, testBody: 'a -> TestEnvironment -> TestResult, tearDown: Result<'a, SetupTeardownFailure> -> TestResult option -> Result<unit, SetupTeardownFailure>) =
     let testLifecycleEvent = Event<TestExecutionDelegate, TestEventLifecycle> ()
@@ -33,7 +33,7 @@ type TestCaseExecutor<'a> (parent: ITest, setup: unit -> Result<'a, SetupTeardow
             testLifecycleEvent.Trigger (parent, TestStartExecution cancelEventArgs)
             cancelEventArgs, Empty
         with
-        | ex -> cancelEventArgs, ex |> GeneralExceptionFailure |> FailureAccumulated
+        | ex -> cancelEventArgs, (None, ex |> GeneralExceptionFailure) |> FailureAccumulated
         
     let runSetup (cancelEventArgs: CancelEventArgs, acc) =
         if cancelEventArgs.Cancel then
@@ -72,16 +72,21 @@ type TestCaseExecutor<'a> (parent: ITest, setup: unit -> Result<'a, SetupTeardow
             | SetupRun (Ok value as setupState) ->
                 try
                     testLifecycleEvent.Trigger (parent, TestStart cancelEventArgs)
-                    
-                    if cancelEventArgs.Cancel then
-                        cancelEventArgs, acc
-                    else
-                        let result = (setupState, environment |> testBody value) |> TestRun
-                        
-                        testLifecycleEvent.Trigger (parent, TestEnd TestSuccess)
-                        cancelEventArgs, result
+                    try
+                        if cancelEventArgs.Cancel then
+                            cancelEventArgs, acc
+                        else
+                            let result = (setupState, environment |> testBody value) |> TestRun
+                            
+                            try
+                                testLifecycleEvent.Trigger (parent, TestEnd TestSuccess)
+                                cancelEventArgs, result
+                            with
+                            | ex -> cancelEventArgs, (setupState |> Some, ex |> GeneralExceptionFailure) |> FailureAccumulated
+                    with
+                    | ex -> cancelEventArgs, (setupState, ex |> TestExceptionFailure |> TestFailure) |> TestRun
                 with
-                | ex -> cancelEventArgs, (setupState, ex |> TestExceptionFailure |> TestFailure) |> TestRun
+                | ex -> cancelEventArgs, (setupState |> Some, ex |> GeneralExceptionFailure) |> FailureAccumulated
             | _ -> cancelEventArgs, acc
         
     let runTeardown setupResult testResult =
@@ -102,6 +107,16 @@ type TestCaseExecutor<'a> (parent: ITest, setup: unit -> Result<'a, SetupTeardow
             cancelEventArgs, runTeardown setupResult None
         | TestRun (setupResult, testResult) ->
             cancelEventArgs, runTeardown setupResult (Some testResult)
+        | FailureAccumulated (Some setupResult, _) ->
+            let r = runTeardown setupResult None
+            match r with
+            | TeardownRun (_, _, Ok ()) ->
+                cancelEventArgs, acc
+            | TeardownRun (_, _, Error _) ->
+                cancelEventArgs, r
+            | _ -> failwith "should not get here"
+        | FailureAccumulated (None, _) ->
+            cancelEventArgs, acc
         | _ -> cancelEventArgs, acc
         
     member _.Execute environment =
@@ -122,7 +137,7 @@ type TestCaseExecutor<'a> (parent: ITest, setup: unit -> Result<'a, SetupTeardow
         let finalValue =
             match cancelEventArgs.Cancel, result with
             | true, _ -> GeneralCancelFailure |> GeneralExecutionFailure
-            | _, FailureAccumulated generalTestingFailure ->
+            | _, FailureAccumulated (_, generalTestingFailure) ->
                 generalTestingFailure |> GeneralExecutionFailure
             | _, SetupRun (Error error) ->
                 error |> SetupExecutionFailure
