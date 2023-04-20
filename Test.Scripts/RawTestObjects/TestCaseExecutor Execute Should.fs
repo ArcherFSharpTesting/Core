@@ -207,7 +207,7 @@ let ``Calls the teardown action with the successful setup result`` =
             let setupAction _ =
                 expectedSetupValue |> Ok
                 
-            let mutable result = newFailure.With.TestExecutionNotRunFailure () |> TestFailure
+            let mutable result = newFailure.With.TestExecutionWasNotRunValidationFailure () |> TestFailure
             
             let teardownAction setupValue _ =
                 match setupValue with
@@ -242,7 +242,7 @@ let ``Calls the teardown action with the unsuccessful setup result`` =
                 expectedSetupValue
                 |> Error
                 
-            let mutable result = newFailure.With.TestExecutionNotRunFailure () |> TestFailure
+            let mutable result = newFailure.With.TestExecutionWasNotRunValidationFailure () |> TestFailure
             
             let teardownAction setupValue _ =
                 match setupValue with
@@ -269,7 +269,7 @@ let ``Calls the teardown with the TestSuccess if test is successful`` =
         SetupPart setupBuildExecutorWithTeardownAction,
         
         fun testBuilder _ ->
-            let mutable result = newFailure.With.TestExecutionNotRunFailure () |> TestFailure
+            let mutable result = newFailure.With.TestExecutionWasNotRunValidationFailure () |> TestFailure
             
             let teardownAction _ testResult =
                 result <-
@@ -291,7 +291,7 @@ let ``Calls the teardown with the TestFailure if test fails`` =
         SetupPart setupBuiltExecutorWithTestBodyAndTeardownAction,
         
         fun testBuilder _ ->
-            let mutable result = newFailure.With.TestExecutionNotRunFailure () |> TestFailure
+            let mutable result = newFailure.With.TestExecutionWasNotRunValidationFailure () |> TestFailure
             
             let expectedFailure =
                 newFailure.With.TestOtherExpectationFailure "a failed test"

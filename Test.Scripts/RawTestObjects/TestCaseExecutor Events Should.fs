@@ -9,12 +9,6 @@ open Microsoft.FSharp.Control
 
 let private container = suite.Container ()
 
-let executorFunction (executor: ITestExecutor) =
-    let run () =
-        executor.Execute (getFakeEnvironment ())
-        
-    run
-
 let ``Trigger all the events in order`` =
     container.Test (
         SetupPart setupExecutor,
@@ -186,6 +180,68 @@ let ``Not throw when TestEndSetup throws`` =
                     "Should not get here" |> newFailure.With.TestOtherExpectationFailure |> TestFailure
             with
             | ex -> ex |> TestExceptionFailure |> TestFailure
+    )
+    
+let ``Trigger TestEndSetup with a successful result if setup function returns Ok`` =
+    container.Test (
+        SetupPart setupBuildExecutorWithSetupAction,
+        
+        fun testBuilder _ ->
+            let thing = obj ()
+            let setup _ =
+                thing |> Ok
+                
+            let executor = testBuilder setup
+            let mutable result = newFailure.With.TestExecutionShouldNotRunValidationFailure () |> TestFailure
+            
+            executor.TestLifecycleEvent
+            |> Event.add (fun args ->
+                match args with
+                | TestEndSetup (SetupSuccess, _) ->
+                    result <- TestSuccess
+                | _ -> ()
+            )
+            
+            executor
+            |> executeFunction
+            |> runIt
+            |> ignore
+                
+            result
+    )
+    
+let ``Trigger TestEndSetup with a failure if setup returns Error`` =
+    container.Test (
+        SetupPart setupBuildExecutorWithSetupAction,
+        
+        fun testBuilder _ ->
+            let expectedMessage = "this is a bad setup" 
+            let setup _ =
+                 expectedMessage |> newFailure.With.SetupTeardownGeneralFailure |> Error
+                
+            let executor = testBuilder setup
+            
+
+            let mutable result = newFailure.With.TestExecutionWasNotRunValidationFailure () |> TestFailure
+            
+            executor.TestLifecycleEvent
+            |> Event.add (fun args ->
+                match args with
+                | TestEndSetup (SetupFailure (GeneralSetupTeardownFailure (message, _)), _) ->
+                    result <-
+                        message
+                        |> expects.ToBe expectedMessage
+                | TestEndSetup (setupResult, _) ->
+                    result <- $"%A{setupResult}" |> newFailure.With.TestOtherExpectationFailure |> TestFailure
+                | _ -> ()
+            )
+            
+            executor
+            |> executeFunction
+            |> runIt
+            |> ignore
+            
+            result
     )
     
 let ``Not throw when TestStartTeardown throws`` =

@@ -9,6 +9,7 @@
   <ItemGroup>
     <Compile Include="TestDoubles.fs" />
     <Compile Include="TestBuilders.fs" />
+    <Compile Include="ExecuteHelper.fs" />
     <Compile Include="RawTestObjects\Arrow Should.fs" />
     <Compile Include="RawTestObjects\FeatureShould.fs" />
     <Compile Include="RawTestObjects\TestCase Should.fs" />
@@ -25,7 +26,7 @@
 
   <ItemGroup>
     <PackageReference Include="Archer.Bow.Lib" Version="0.0.9.17" />
-    <PackageReference Include="MicroLang.Lib" Version="0.0.12.32" />
+    <PackageReference Include="MicroLang.Lib" Version="0.0.12.33" />
     <PackageReference Update="FSharp.Core" Version="7.0.300-beta.23176.1" />
   </ItemGroup>
 

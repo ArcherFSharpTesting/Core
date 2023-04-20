@@ -49,7 +49,14 @@ type TestCaseExecutor<'a> (parent: ITest, setup: unit -> Result<'a, SetupTeardow
                     else
                         let result = () |> setup |> SetupRun
                         
-                        testLifecycleEvent.Trigger (parent, TestEndSetup (SetupSuccess, cancelEventArgs))
+                        let setupResult =
+                            match result with
+                            | SetupRun (Ok _) -> SetupSuccess
+                            | SetupRun (Error errorValue) ->
+                                errorValue |> SetupFailure
+                            | _ -> failwith "Should not get here"
+                        
+                        testLifecycleEvent.Trigger (parent, TestEndSetup (setupResult, cancelEventArgs))
                         
                         cancelEventArgs, result
                 with
@@ -64,12 +71,15 @@ type TestCaseExecutor<'a> (parent: ITest, setup: unit -> Result<'a, SetupTeardow
             match acc with
             | SetupRun (Ok value as setupState) ->
                 try
-                    testLifecycleEvent.Trigger (parent, TestStart (CancelEventArgs ()))
+                    testLifecycleEvent.Trigger (parent, TestStart cancelEventArgs)
                     
-                    let result = (setupState, environment |> testBody value) |> TestRun
-                    
-                    testLifecycleEvent.Trigger (parent, TestEnd TestSuccess)
-                    cancelEventArgs, result
+                    if cancelEventArgs.Cancel then
+                        cancelEventArgs, acc
+                    else
+                        let result = (setupState, environment |> testBody value) |> TestRun
+                        
+                        testLifecycleEvent.Trigger (parent, TestEnd TestSuccess)
+                        cancelEventArgs, result
                 with
                 | ex -> cancelEventArgs, (setupState, ex |> TestExceptionFailure |> TestFailure) |> TestRun
             | _ -> cancelEventArgs, acc
