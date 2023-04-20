@@ -164,7 +164,7 @@ type TestCaseExecutor<'a> (parent: ITest, setup: unit -> Result<'a, SetupTeardow
             if cancelEventArgs.Cancel && result |> isEmpty then
                 finalValue
             else
-                testLifecycleEvent.Trigger (parent, TestEndExecution (TestSuccess |> TestExecutionResult))
+                testLifecycleEvent.Trigger (parent, TestEndExecution finalValue)
                 finalValue
         with
         | ex -> ex |> GeneralExceptionFailure |> GeneralExecutionFailure

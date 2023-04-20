@@ -439,5 +439,98 @@ let ``Not throw when TestEndExecution throws`` =
                 | _ ->
                     expects.NotToBeCalled ()
     )
+    
+let ``Passing results are passed to the TestEndExecution event`` =
+    container.Test (
+        SetupPart setupExecutor,
+        
+        fun executor _ ->
+            let mutable result = newFailure.With.TestExecutionWasNotRunFailure () |> TestFailure
+            
+            executor.TestLifecycleEvent
+            |> Event.add (fun args ->
+                match args with
+                | TestEndExecution (TestExecutionResult TestSuccess) ->
+                    result <- TestSuccess
+                | _ -> ()
+            )
+            
+            executor
+            |> executeFunction
+            |> runIt
+            |> ignore
+            
+            result
+    )
+    
+let ``Passes setup failure to TestEndExecution event`` =
+    container.Test (
+        SetupPart setupBuildExecutorWithSetupAction,
+        
+        fun testBuilder _ ->
+            let expectedFailure =
+                "A failed setup"
+                |> newFailure.With.SetupTeardownGeneralFailure
+                
+            let setup _ =
+                expectedFailure
+                |> Error
+            
+            let executor = testBuilder setup
+                
+            let mutable result = newFailure.With.TestExecutionShouldNotRunFailure () |> TestFailure
+            
+            executor.TestLifecycleEvent
+            |> Event.add (fun args ->
+                match args with
+                | TestEndExecution (SetupExecutionFailure setupTeardownFailure) ->
+                    result <-
+                        setupTeardownFailure
+                        |> expects.ToBe expectedFailure
+                | _ -> ()
+            )
+            
+            executor
+            |> executeFunction
+            |> runIt
+            |> ignore
+            
+            result
+    )
+
+let ``Passes Test failure to TestEndExecution event`` =
+    container.Test (
+        SetupPart setupBuildExecutorWithTestBody,
+        
+        fun testBuilder _ ->
+            let expectedFailure =
+                "A failing test"
+                |> newFailure.With.TestOtherExpectationFailure
+                |> TestFailure
+                
+            let testBody _ _ =
+                expectedFailure
+                
+            let executor = testBuilder testBody
+                
+            let mutable result = newFailure.With.TestExecutionWasNotRunValidationFailure () |> TestFailure
+            
+            executor.TestLifecycleEvent
+            |> Event.add (fun args ->
+                match args with
+                | TestEndExecution (TestExecutionResult testResult) ->
+                    result <-
+                        testResult
+                        |> expects.ToBe expectedFailure
+                | _ -> ()
+            )
+            
+            executor
+            |> executeFunction
+            |> runIt
+            |> ignore
+            
+            result
+    )
 
 let ``Test Cases`` = container.Tests
