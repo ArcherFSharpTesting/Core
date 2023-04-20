@@ -60,11 +60,12 @@ let ``Stop all events if done at TestExecutionStart`` =
             )
             
             executor.TestLifecycleEvent
-            |> expects.ToNotBeTriggeredAndIdentifiedBy (fun args ->
+            |> Event.filter (fun args ->
                 match args with
                 | TestStartExecution _ -> false
                 | _ -> true
             )
+            |> expects.ToNotBeTriggered
             |> by (executor |> executeFunction)
     )
     
@@ -103,12 +104,13 @@ let ``Stop all event when canceled at TestStartSetup`` =
             )
             
             executor.TestLifecycleEvent
-            |> expects.ToNotBeTriggeredAndIdentifiedBy (fun args ->
+            |> Event.filter (fun args ->
                 match args with
                 | TestStartExecution _
                 | TestStartSetup _ -> false
                 | _ -> true
             )
+            |> expects.ToNotBeTriggered
             |> by (executor |> executeFunction)
     )
     
@@ -149,12 +151,13 @@ let ``Should trigger ending events if canceled at TestEndSetup`` =
             )
             
             executor.TestLifecycleEvent
-            |> expects.ToBeTriggeredAndIdentifiedBy (fun args ->
+            |> Event.filter (fun args ->
                 match args with
                 | TestStartTeardown
                 | TestEndExecution _ -> true
                 | _ -> false
             )
+            |> expects.ToBeTriggered
             |> by (executor |> executeFunction)
     )
     
@@ -195,12 +198,13 @@ let ``Should trigger ending events if canceled at TestStart`` =
             )
             
             executor.TestLifecycleEvent
-            |> expects.ToBeTriggeredAndIdentifiedBy (fun args ->
+            |> Event.filter (fun args ->
                 match args with
                 | TestStartTeardown
                 | TestEndExecution _ -> true
                 | _ -> false
             )
+            |> expects.ToBeTriggered 
             |> by (executor |> executeFunction)
     )
     
