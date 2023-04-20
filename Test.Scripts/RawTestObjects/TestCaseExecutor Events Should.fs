@@ -320,6 +320,64 @@ let ``Not throw when TestEnd throws`` =
                     expects.NotToBeCalled ()
     )
     
+let ``Pass a successful result to TestEnd`` =
+    container.Test (
+        SetupPart setupExecutor,
+        
+        fun executor _ ->
+            let mutable result = newFailure.With.TestExecutionWasNotRunValidationFailure () |> TestFailure
+            
+            executor.TestLifecycleEvent
+            |> Event.add (fun args ->
+                match args with
+                | TestEnd testResult ->
+                    result <- testResult
+                | _ -> ()
+            )
+            
+            executor
+            |> executeFunction
+            |> runIt
+            |> ignore
+            
+            result
+    )
+    
+let ``Pass a failure result to TestEnd`` =
+    container.Test (
+        SetupPart setupBuildExecutorWithTestBody,
+        
+        fun testBuilder _ ->
+            let mutable result = newFailure.With.TestExecutionWasNotRunValidationFailure ()  |> TestFailure
+            
+            let expectedFailure =
+                "this was a failing test"
+                |> newFailure.With.TestOtherExpectationFailure
+                |> TestFailure
+                
+            let testBody _ _ =
+                expectedFailure
+                
+            let executor = testBuilder testBody
+            
+            executor.TestLifecycleEvent
+            |> Event.add (fun args ->
+                match args with
+                | TestEnd testResult ->
+                    result <-
+                        testResult
+                        |> expects.ToBe expectedFailure
+                | _ -> ()
+            )
+            
+            executor
+            |> executeFunction
+            |> runIt
+            |> ignore
+            
+            result
+    )
+    
 let ``Not throw when TestStartTeardown throws`` =
     container.Test (
         SetupPart setupExecutor,

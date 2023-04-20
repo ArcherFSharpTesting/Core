@@ -76,10 +76,11 @@ type TestCaseExecutor<'a> (parent: ITest, setup: unit -> Result<'a, SetupTeardow
                         if cancelEventArgs.Cancel then
                             cancelEventArgs, acc
                         else
-                            let result = (setupState, environment |> testBody value) |> TestRun
+                            let testResult = environment |> testBody value
+                            let result = (setupState, testResult) |> TestRun
                             
                             try
-                                testLifecycleEvent.Trigger (parent, TestEnd TestSuccess)
+                                testLifecycleEvent.Trigger (parent, TestEnd testResult)
                                 cancelEventArgs, result
                             with
                             | ex -> cancelEventArgs, (setupState |> Some, ex |> GeneralExceptionFailure) |> FailureAccumulated
