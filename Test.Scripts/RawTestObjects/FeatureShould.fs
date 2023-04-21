@@ -34,10 +34,10 @@ let ``create sub feature`` =
     container.Test (
         fun _ ->
             let feature = Feature ("My Really Cool", "Feature")
-            let feature = feature.SubFeature ("Sub Feature")
+            let feature = feature |> Sub.Feature "Sub Feature"
             
             feature.ToString ()
-            |> expects.ToBe ("My Really Cool.Feature.Sub Feature")
+            |> expects.ToBe "My Really Cool.Feature.Sub Feature"
     )
 
 let ``Test Cases`` = container.Tests
