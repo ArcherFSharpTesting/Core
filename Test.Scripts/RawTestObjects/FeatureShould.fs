@@ -9,7 +9,7 @@ let private container = suite.Container ()
 let ``have each part of its name dot seperated in the ToString`` =
     container.Test (
         fun _ ->
-            let feature = Feature ("Path", "Name")
+            let feature = Feature ("Path", "Name", Setup (fun _ -> Ok ()), Teardown (fun _ _ -> Ok ()))
             feature.ToString ()
             |> expects.ToBe "Path.Name"
     )
@@ -17,7 +17,7 @@ let ``have each part of its name dot seperated in the ToString`` =
 let ``ignore empty path of the name in the ToString`` =
     container.Test (
         fun _ ->
-            let feature = Feature ("", "My Name")
+            let feature = Feature ("", "My Name", Setup (fun _ -> Ok ()), Teardown (fun _ _ -> Ok ()))
             feature.ToString ()
             |> expects.ToBe "My Name"
     )
@@ -25,19 +25,9 @@ let ``ignore empty path of the name in the ToString`` =
 let ``ignore empty name part of name in the ToString`` =
     container.Test (
         fun _ ->
-            let feature = Feature ("A path", "")
+            let feature = Feature ("A path", "", Setup (fun _ -> Ok ()), Teardown (fun _ _ -> Ok ()))
             feature.ToString ()
             |> expects.ToBe "A path"
-    )
-    
-let ``create sub feature`` =
-    container.Test (
-        fun _ ->
-            let feature = Feature ("My Really Cool", "Feature")
-            let feature = feature |> Sub.Feature "Sub Feature"
-            
-            feature.ToString ()
-            |> expects.ToBe "My Really Cool.Feature.Sub Feature"
     )
 
 let ``Test Cases`` = container.Tests

@@ -15,6 +15,7 @@ type TestEnvironment = {
 }
 
 type SetupIndicator<'a> = | Setup of (unit -> Result<'a, SetupTeardownFailure>)
-type TestBodyIndicator<'a> = | TestBody of ('a -> TestEnvironment -> TestResult)
+type TestBodyWithEnvironmentIndicator<'a> = | TestWithEnvironmentBody of ('a -> TestEnvironment -> TestResult)
+type TestBodyIndicator<'a> = | TestBody of ('a -> TestResult)
 type TeardownIndicator<'a> = | Teardown of (Result<'a, SetupTeardownFailure> -> TestResult option -> Result<unit, SetupTeardownFailure>)
 type TagsIndicator = | TestTags of TestTag list
