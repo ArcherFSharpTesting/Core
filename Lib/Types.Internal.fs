@@ -32,22 +32,57 @@ type SetupTeardownExecutorLifecycleEventArgs =
     | ExecuteSetupEnd of result: SetupResult * cancelEventArgs: CancelEventArgs
     | ExecuteStartTeardown 
     
-type SetupTeardownExecutor<'inputType, 'outputType>(parent: ITest, setup: 'inputType -> Result<'outputType, SetupTeardownFailure>, teardown: Result<'outputType, SetupTeardownFailure> -> TestResult option -> Result<unit, SetupTeardownFailure>) =
-    member _.Execute (runner: 'outputType -> TestExecutionResult option) (value: 'inputType) =
-        let setupResult = setup value
-        let runnerResult = 
-            match setupResult with
-            | Ok r -> runner r
-            | Error _ -> None
-        
-        let teardownResult =     
-            match runnerResult with
-            | Some (TestExecutionResult testResult) -> teardown setupResult (Some testResult)
-            | _ -> teardown setupResult None
+type SetupTeardownExecutionDelegate = delegate of obj * SetupTeardownExecutorLifecycleEventArgs -> unit
+    
+type SetupTeardownExecutor<'inputType, 'outputType>(setup: 'inputType -> Result<'outputType, SetupTeardownFailure>, teardown: Result<'outputType, SetupTeardownFailure> -> TestResult option -> Result<unit, SetupTeardownFailure>) =
+    let lifecycleEvent = Event<SetupTeardownExecutionDelegate, SetupTeardownExecutorLifecycleEventArgs> ()
+    
+    [<CLIEvent>]
+    member this.LifecycleEvent = lifecycleEvent.Publish
+    
+    member this.Execute (runner: 'outputType -> TestExecutionResult) (value: 'inputType) =
+        try
+            let cancelEventArgs = CancelEventArgs ()
+            lifecycleEvent.Trigger (this, ExecuteSetupStart cancelEventArgs)
             
-        match teardownResult with
-        | Ok _ -> runnerResult
-        | Error setupTeardownFailure -> setupTeardownFailure |> TeardownExecutionFailure |> Some
+            if cancelEventArgs.Cancel then
+                SetupTeardownCanceledFailure |> SetupExecutionFailure
+            else
+                let setupResult = setup value
+                
+                let setupReport =
+                    match setupResult with
+                    | Ok _ -> SetupSuccess
+                    | Error errorValue -> errorValue |> SetupFailure
+                    
+                lifecycleEvent.Trigger (this, ExecuteSetupEnd (setupReport, cancelEventArgs))
+                
+                if cancelEventArgs.Cancel then
+                    SetupTeardownCanceledFailure |> SetupExecutionFailure
+                else
+                    try
+                        let runnerResult = 
+                            match setupResult with
+                            | Ok r -> runner r
+                            | Error setupError -> setupError |> SetupExecutionFailure
+                        
+                        try
+                            lifecycleEvent.Trigger (this, ExecuteStartTeardown)
+                            
+                            let teardownResult =     
+                                match runnerResult with
+                                | TestExecutionResult testResult -> teardown setupResult (Some testResult)
+                                | _ -> teardown setupResult None
+                            
+                            match teardownResult with
+                            | Ok _ -> runnerResult
+                            | Error setupTeardownFailure -> setupTeardownFailure |> TeardownExecutionFailure
+                        with
+                        | ex -> ex |> SetupTeardownExceptionFailure |> TeardownExecutionFailure
+                    with
+                    | ex -> ex |> TestExceptionFailure |> TestFailure |> TestExecutionResult
+        with
+        | ex -> ex |> SetupTeardownExceptionFailure |> SetupExecutionFailure 
         
 
 type TestCaseExecutor<'featureType, 'setupType> (parent: ITest, internals: TestInternals<'featureType, 'setupType>) =
