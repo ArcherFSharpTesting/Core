@@ -335,8 +335,8 @@ type Feature<'featureType> (featurePath, featureName, featureSetup: SetupIndicat
     let (Setup featureSetup) = featureSetup
     let (Teardown featureTeardown) = featureTeardown
     
-    member _.Setup with get () = featureSetup
-    member _.Teardown with get () = featureTeardown
+    member _.FeatureSetup with get () = featureSetup
+    member _.FeatureTeardown with get () = featureTeardown
     
     // --------- TEST TAGS ---------
     member _.Test (tags: TagsIndicator, setup: SetupIndicator<_, 'setupType>, testBody: TestBodyWithEnvironmentIndicator<'setupType>, teardown: TeardownIndicator<'setupType>, [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>]lineNumber: int) =
