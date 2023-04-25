@@ -17,6 +17,7 @@ type TestInternals<'a, 'b> = {
     FeatureTeardown: Result<'a, SetupTeardownFailure> -> TestResult option -> Result<unit, SetupTeardownFailure>
 }
 
+
 type ExecutionResultsAccumulator<'featureSetupResult, 'setupResult> =
     | Empty
     | FeatureSetupRun of result: Result<'featureSetupResult, SetupTeardownFailure>
@@ -25,6 +26,29 @@ type ExecutionResultsAccumulator<'featureSetupResult, 'setupResult> =
     | TeardownRun of setupResult: Result<'featureSetupResult, SetupTeardownFailure> * Result<'setupResult, SetupTeardownFailure> * testResult: TestResult option * teardownResult: Result<unit, SetupTeardownFailure>
     | FeatureTeardownRun of setupResult: Result<'featureSetupResult, SetupTeardownFailure> * Result<'setupResult, SetupTeardownFailure> option * testResult: TestResult option * teardownResult: Result<unit, SetupTeardownFailure>
     | FailureAccumulated of setupResult: Result<'featureSetupResult, SetupTeardownFailure> option * Result<'setupResult, SetupTeardownFailure> option * GeneralTestingFailure 
+
+type SetupTeardownExecutorLifecycleEventArgs =
+    | ExecuteSetupStart of CancelEventArgs
+    | ExecuteSetupEnd of result: SetupResult * cancelEventArgs: CancelEventArgs
+    | ExecuteStartTeardown 
+    
+type SetupTeardownExecutor<'inputType, 'outputType>(parent: ITest, setup: 'inputType -> Result<'outputType, SetupTeardownFailure>, teardown: Result<'outputType, SetupTeardownFailure> -> TestResult option -> Result<unit, SetupTeardownFailure>) =
+    member _.Execute (runner: 'outputType -> TestExecutionResult option) (value: 'inputType) =
+        let setupResult = setup value
+        let runnerResult = 
+            match setupResult with
+            | Ok r -> runner r
+            | Error _ -> None
+        
+        let teardownResult =     
+            match runnerResult with
+            | Some (TestExecutionResult testResult) -> teardown setupResult (Some testResult)
+            | _ -> teardown setupResult None
+            
+        match teardownResult with
+        | Ok _ -> runnerResult
+        | Error setupTeardownFailure -> setupTeardownFailure |> TeardownExecutionFailure |> Some
+        
 
 type TestCaseExecutor<'featureType, 'setupType> (parent: ITest, internals: TestInternals<'featureType, 'setupType>) =
     let testLifecycleEvent = Event<TestExecutionDelegate, TestEventLifecycle> ()
