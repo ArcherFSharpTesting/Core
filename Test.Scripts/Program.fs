@@ -5,6 +5,7 @@ open MicroLang.Lang
 
 let framework = bow.Framework ()
 
+//(*
 framework
 |> addManyTests [
     ``Arrow Should``.``Test Cases``
@@ -16,3 +17,11 @@ framework
     ``TestCaseExecutor Event Cancellation Should``.``Test Cases``
 ]
 |> runAndReport
+//*)
+(*
+framework
+|> addTests [
+    ``TestCaseExecutor Events Should``.``Not throw when TestStartTeardown throws``
+]
+|> runAndReport
+//*)

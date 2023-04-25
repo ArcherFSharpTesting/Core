@@ -17,7 +17,6 @@ type TestInternals<'a, 'b> = {
     FeatureTeardown: Result<'a, SetupTeardownFailure> -> TestResult option -> Result<unit, SetupTeardownFailure>
 }
 
-
 type ExecutionResultsAccumulator<'featureSetupResult, 'setupResult> =
     | Empty
     | FeatureSetupRun of result: Result<'featureSetupResult, SetupTeardownFailure>
@@ -30,63 +29,138 @@ type ExecutionResultsAccumulator<'featureSetupResult, 'setupResult> =
 type SetupTeardownExecutorLifecycleEventArgs =
     | ExecuteSetupStart of CancelEventArgs
     | ExecuteSetupEnd of result: SetupResult * cancelEventArgs: CancelEventArgs
+    | ExecuteRunner of CancelEventArgs
+    | ExecuteRunnerEnd of TestExecutionResult
     | ExecuteStartTeardown 
     
 type SetupTeardownExecutionDelegate = delegate of obj * SetupTeardownExecutorLifecycleEventArgs -> unit
+
+type ISetupTeardownExecutor<'inputType> =
+    [<CLIEvent>]
+    abstract member LifecycleEvent: IEvent<SetupTeardownExecutionDelegate, SetupTeardownExecutorLifecycleEventArgs> with get
+    abstract member Execute: value: 'inputType -> TestEnvironment -> TestExecutionResult
     
-type SetupTeardownExecutor<'inputType, 'outputType>(setup: 'inputType -> Result<'outputType, SetupTeardownFailure>, teardown: Result<'outputType, SetupTeardownFailure> -> TestResult option -> Result<unit, SetupTeardownFailure>) =
+type SetupTeardownExecutor<'inputType, 'outputType>(setup: 'inputType -> Result<'outputType, SetupTeardownFailure>, teardown: Result<'outputType, SetupTeardownFailure> -> TestResult option -> Result<unit, SetupTeardownFailure>, runner: 'outputType -> TestEnvironment -> TestExecutionResult) =
     let lifecycleEvent = Event<SetupTeardownExecutionDelegate, SetupTeardownExecutorLifecycleEventArgs> ()
     
-    [<CLIEvent>]
-    member this.LifecycleEvent = lifecycleEvent.Publish
+    abstract member Trigger: sender:obj * args:SetupTeardownExecutorLifecycleEventArgs -> unit
+    default _.Trigger (sender: obj, args: SetupTeardownExecutorLifecycleEventArgs) =
+        lifecycleEvent.Trigger (sender, args)
     
-    member this.Execute (runner: 'outputType -> TestExecutionResult) (value: 'inputType) =
-        try
-            let cancelEventArgs = CancelEventArgs ()
-            lifecycleEvent.Trigger (this, ExecuteSetupStart cancelEventArgs)
-            
-            if cancelEventArgs.Cancel then
-                SetupTeardownCanceledFailure |> SetupExecutionFailure
-            else
-                let setupResult = setup value
-                
-                let setupReport =
-                    match setupResult with
-                    | Ok _ -> SetupSuccess
-                    | Error errorValue -> errorValue |> SetupFailure
-                    
-                lifecycleEvent.Trigger (this, ExecuteSetupEnd (setupReport, cancelEventArgs))
+    interface ISetupTeardownExecutor<'inputType> with
+        [<CLIEvent>]
+        member this.LifecycleEvent = lifecycleEvent.Publish
+        
+        member this.Execute (value: 'inputType) (env: TestEnvironment) =
+            try
+                let cancelEventArgs = CancelEventArgs ()
+                this.Trigger (this, ExecuteSetupStart cancelEventArgs)
                 
                 if cancelEventArgs.Cancel then
                     SetupTeardownCanceledFailure |> SetupExecutionFailure
                 else
-                    try
-                        let runnerResult = 
-                            match setupResult with
-                            | Ok r -> runner r
-                            | Error setupError -> setupError |> SetupExecutionFailure
+                    let setupResult = setup value
+                    
+                    let setupReport =
+                        match setupResult with
+                        | Ok _ -> SetupSuccess
+                        | Error errorValue -> errorValue |> SetupFailure
                         
+                    this.Trigger (this, ExecuteSetupEnd (setupReport, cancelEventArgs))
+                    
+                    if cancelEventArgs.Cancel then
+                        SetupTeardownCanceledFailure |> SetupExecutionFailure
+                    else
                         try
-                            lifecycleEvent.Trigger (this, ExecuteStartTeardown)
+                            let runnerResult = 
+                                match setupResult with
+                                | Ok r ->
+                                    this.Trigger (this, ExecuteRunner cancelEventArgs)
+                                    if cancelEventArgs.Cancel then
+                                        GeneralCancelFailure |> GeneralExecutionFailure
+                                    else
+                                        try
+                                            let runResult = runner r env
+                                            try
+                                                this.Trigger (this, ExecuteRunnerEnd runResult)
+                                                runResult
+                                            with
+                                            | ex -> ex |> GeneralExceptionFailure |> GeneralExecutionFailure
+                                        with
+                                        | ex -> ex |> TestExceptionFailure |> TestFailure |> TestExecutionResult
+                                | Error setupError -> setupError |> SetupExecutionFailure
                             
-                            let teardownResult =     
-                                match runnerResult with
-                                | TestExecutionResult testResult -> teardown setupResult (Some testResult)
-                                | _ -> teardown setupResult None
-                            
-                            match teardownResult with
-                            | Ok _ -> runnerResult
-                            | Error setupTeardownFailure -> setupTeardownFailure |> TeardownExecutionFailure
+                            try
+                                this.Trigger (this, ExecuteStartTeardown)
+                                try
+                                    
+                                    let teardownResult =     
+                                        match runnerResult with
+                                        | TestExecutionResult testResult -> teardown setupResult (Some testResult)
+                                        | _ -> teardown setupResult None
+                                    
+                                    match teardownResult with
+                                    | Ok _ -> runnerResult
+                                    | Error setupTeardownFailure -> setupTeardownFailure |> TeardownExecutionFailure
+                                with
+                                | ex -> ex |> SetupTeardownExceptionFailure |> TeardownExecutionFailure
+                            with
+                            | ex -> ex |> GeneralExceptionFailure |> GeneralExecutionFailure
                         with
-                        | ex -> ex |> SetupTeardownExceptionFailure |> TeardownExecutionFailure
-                    with
-                    | ex -> ex |> TestExceptionFailure |> TestFailure |> TestExecutionResult
-        with
-        | ex -> ex |> SetupTeardownExceptionFailure |> SetupExecutionFailure 
+                        | ex -> ex |> GeneralExceptionFailure |> GeneralExecutionFailure
+            with
+            | ex -> ex |> SetupTeardownExceptionFailure |> SetupExecutionFailure
         
+type WrappedTeardownExecutor<'outerInputType, 'outerOutputType, 'innerOutputType> (outerSetup: 'outerInputType -> Result<'outerOutputType, SetupTeardownFailure>, outerTeardown: Result<'outerOutputType, SetupTeardownFailure> -> TestResult option -> Result<unit, SetupTeardownFailure>, inner: SetupTeardownExecutor<'outerOutputType, 'innerOutputType>) as this =
+    inherit SetupTeardownExecutor<'outerInputType, 'outerOutputType> (outerSetup, outerTeardown, (inner :> ISetupTeardownExecutor<'outerOutputType>).Execute)
+    
+    do
+        let executor = inner :> ISetupTeardownExecutor<'outerOutputType>
+        executor.LifecycleEvent.AddHandler (fun sender args ->
+            this.Trigger (sender, args)
+        )
+    
+    override this.Trigger (sender: obj, args: SetupTeardownExecutorLifecycleEventArgs) =
+        match args with
+        | ExecuteSetupStart _ ->
+            if sender = this then
+                base.Trigger (this, args)
+        | ExecuteSetupEnd _ ->
+            if sender <> this then
+                base.Trigger (this, args)
+        | ExecuteStartTeardown ->
+            if sender = this then
+                base.Trigger (this, args)
+        | ExecuteRunner _ ->
+            if sender <> this then
+                base.Trigger (this, args)
+        | ExecuteRunnerEnd _ ->
+            if sender = this then
+                base.Trigger (this, args)
 
-type TestCaseExecutor<'featureType, 'setupType> (parent: ITest, internals: TestInternals<'featureType, 'setupType>) =
+type TestCaseExecutor(parent: ITest, internals: ISetupTeardownExecutor<unit>) =
     let testLifecycleEvent = Event<TestExecutionDelegate, TestEventLifecycle> ()
+    
+    let handleEvents (cancelEventArgs: CancelEventArgs) (sender: obj) args =
+        match args with
+        | ExecuteSetupStart eventArgs ->
+            cancelEventArgs.Cancel <- eventArgs.Cancel
+            testLifecycleEvent.Trigger (parent, TestStartSetup cancelEventArgs)
+            eventArgs.Cancel <- cancelEventArgs.Cancel
+        | ExecuteSetupEnd (result, eventArgs) ->
+            cancelEventArgs.Cancel <- eventArgs.Cancel
+            testLifecycleEvent.Trigger (parent, TestEndSetup (result, cancelEventArgs))
+            eventArgs.Cancel <- cancelEventArgs.Cancel
+        | ExecuteStartTeardown ->
+            testLifecycleEvent.Trigger (parent, TestStartTeardown)
+        | ExecuteRunner eventArgs ->
+            cancelEventArgs.Cancel <- eventArgs.Cancel
+            testLifecycleEvent.Trigger (parent, TestStart cancelEventArgs)
+            eventArgs.Cancel <- cancelEventArgs.Cancel
+        | ExecuteRunnerEnd testExecutionResult ->
+            match testExecutionResult with
+            | TestExecutionResult testResult -> testLifecycleEvent.Trigger (parent, TestEnd testResult)
+            | _ -> ()
     
     let getApiEnvironment () =
         let assembly = System.Reflection.Assembly.GetExecutingAssembly ()
@@ -97,193 +171,6 @@ type TestCaseExecutor<'featureType, 'setupType> (parent: ITest, internals: TestI
             ApiVersion = version
         }
         
-    let executionStarted (cancelEventArgs: CancelEventArgs) =
-        try
-            testLifecycleEvent.Trigger (parent, TestStartExecution cancelEventArgs)
-            cancelEventArgs, Empty
-        with
-        | ex -> cancelEventArgs, (None, None, ex |> GeneralExceptionFailure) |> FailureAccumulated
-        
-    let runFeatureSetup (cancelEventArgs: CancelEventArgs, acc) =
-        if cancelEventArgs.Cancel then
-            cancelEventArgs, acc
-        else
-            match acc with
-            | Empty ->
-                try
-                    testLifecycleEvent.Trigger (parent, TestStartSetup cancelEventArgs)
-                    
-                    if cancelEventArgs.Cancel then
-                        cancelEventArgs, acc
-                    else
-                        let result = () |> internals.FeatureSetup
-                        
-                        cancelEventArgs, (result |> FeatureSetupRun)
-                with
-                | ex ->
-                    cancelEventArgs, ex |> SetupTeardownExceptionFailure |> Error |> FeatureSetupRun
-            | _ -> cancelEventArgs, acc
-            
-    let runSetup (cancelEventArgs: CancelEventArgs, acc) =
-        if cancelEventArgs.Cancel then
-            cancelEventArgs, acc
-        else
-            match acc with
-            | FeatureSetupRun (Ok result) ->
-                try
-                    let sResult = internals.TestSetup result
-                    
-                    let setupResult =
-                        match sResult with
-                        | Ok _ -> SetupSuccess
-                        | Error errorValue ->
-                            errorValue |> SetupFailure
-                        
-                    testLifecycleEvent.Trigger (parent, TestEndSetup (setupResult, cancelEventArgs))
-                    cancelEventArgs, SetupRun (Ok result, sResult)
-                with
-                | ex -> cancelEventArgs, ((Ok result, ex |> SetupTeardownExceptionFailure |> Error) |> SetupRun)
-            | _ -> cancelEventArgs, acc
-        
-    let runTestBody environment (cancelEventArgs: CancelEventArgs, acc) =
-        if cancelEventArgs.Cancel then
-            cancelEventArgs, acc
-        else
-            match acc with
-            | SetupRun(featureResult, Ok value) ->
-                try
-                    testLifecycleEvent.Trigger (parent, TestStart cancelEventArgs)
-                    try
-                        if cancelEventArgs.Cancel then
-                            cancelEventArgs, acc
-                        else
-                            let testResult = environment |> internals.TestBody value
-                            let result = (featureResult, Ok value, testResult) |> TestRun
-                            
-                            try
-                                testLifecycleEvent.Trigger (parent, TestEnd testResult)
-                                cancelEventArgs, result
-                            with
-                            | ex -> cancelEventArgs, (featureResult |> Some ,value |> Ok |> Some, ex |> GeneralExceptionFailure) |> FailureAccumulated
-                    with
-                    | ex -> cancelEventArgs, (featureResult ,value |> Ok, ex |> TestExceptionFailure |> TestFailure) |> TestRun
-                with
-                | ex -> cancelEventArgs, (featureResult |> Some ,value |> Ok |> Some, ex |> GeneralExceptionFailure) |> FailureAccumulated
-            | _ -> cancelEventArgs, acc
-    
-    let mutable teardownTriggered = false    
-    let triggerTearTeardown () =
-        try
-            if teardownTriggered |> not then
-                testLifecycleEvent.Trigger (parent, TestStartTeardown)
-                teardownTriggered <- true
-            
-            Ok ()
-        with
-            | ex -> ex |> SetupTeardownExceptionFailure |> Error
-            
-    let runTeardown featureResult setupResult testResult =
-        try
-            let result = internals.TestTeardown setupResult testResult
-            
-            TeardownRun (featureResult, setupResult, testResult, result)
-        with
-        | ex ->
-            TeardownRun (featureResult, setupResult, testResult, ex |> SetupTeardownExceptionFailure |> Error)
-            
-    let runFeatureTeardown featureResult setupResult testResult =
-        try
-            let result = internals.FeatureTeardown featureResult testResult
-            
-            FeatureTeardownRun (featureResult, setupResult, testResult, result)
-        with
-        | ex -> FeatureTeardownRun (featureResult, setupResult, testResult, ex |> SetupTeardownExceptionFailure |> Error)
-        
-        
-    let maybeRunTeardown (cancelEventArgs: CancelEventArgs, acc) =
-        match acc with
-        | FeatureSetupRun result ->
-            let triggered = triggerTearTeardown ()
-            match triggered with
-            | Ok _ ->
-                cancelEventArgs, runFeatureTeardown result None None
-            | Error err ->
-                cancelEventArgs, FeatureTeardownRun (result, None, None, Error err)  
-        | SetupRun (featureResult, setupResult) ->
-            let triggered = triggerTearTeardown ()
-            match triggered with
-            | Ok _ ->
-                cancelEventArgs, runTeardown featureResult setupResult None
-            | Error err ->
-                cancelEventArgs, TeardownRun (featureResult, setupResult, None, Error err)
-        | TestRun (featureResult, setupResult, testResult) ->
-            let triggered = triggerTearTeardown ()
-            match triggered with
-            | Ok _ ->
-                cancelEventArgs, runTeardown featureResult setupResult (Some testResult)
-            | Error err ->
-                cancelEventArgs, TeardownRun (featureResult, setupResult, Some testResult, Error err)
-        | FailureAccumulated (Some featureResult, Some setupResult, _) ->
-            let triggered = triggerTearTeardown ()
-           
-            match triggered with
-            | Ok _ ->
-                let r = runTeardown featureResult setupResult None
-                match r with
-                | TeardownRun (_, _, _, Ok ()) ->
-                    let r = runFeatureTeardown featureResult (Some setupResult) None
-                    match r with
-                    | FeatureTeardownRun (_, _, _, Ok ()) ->
-                        cancelEventArgs, acc
-                    | FeatureTeardownRun (_, _, _, Error _) ->
-                        cancelEventArgs, r    
-                | TeardownRun (_, _, _, Error _) ->
-                    cancelEventArgs, r
-                | _ -> failwith "should not get here"
-            | Error err ->
-                cancelEventArgs, FeatureTeardownRun (featureResult, Some setupResult, None, Error err)
-        | FailureAccumulated (None, _, _) -> cancelEventArgs, acc
-        | FailureAccumulated (Some featureResult, None, _) ->
-            let triggered = triggerTearTeardown ()
-            match triggered with
-            | Ok _ ->
-                cancelEventArgs, acc
-            | Error errorValue ->
-                cancelEventArgs, FeatureTeardownRun (featureResult, None, None, Error errorValue)
-        | _ -> cancelEventArgs, acc
-        
-    let maybeRunFeatureTeardown (cancelEventArgs: CancelEventArgs, acc) = 
-        match acc with
-        | FeatureSetupRun setupResult ->
-            cancelEventArgs, runFeatureTeardown setupResult None None
-        | SetupRun (featureResult, setupResult) ->
-            let r = runFeatureTeardown featureResult (Some setupResult) None 
-            cancelEventArgs, r
-        | TestRun (featureResult, setupResult, testResult) ->
-            cancelEventArgs, runFeatureTeardown featureResult (Some setupResult) (Some testResult)
-        | TeardownRun (featureTypeResult, setupResult, testResult, Ok _) ->
-            let r = runFeatureTeardown featureTypeResult (Some setupResult) testResult
-            cancelEventArgs, r
-        | TeardownRun (setupFeatureResult, setupResult, testResult, Error _) ->
-            let r = runFeatureTeardown setupFeatureResult (Some setupResult) testResult
-            match r with
-            | FeatureTeardownRun (_, _, _, Ok _) ->
-                cancelEventArgs, acc
-            | FeatureTeardownRun (_, _, _, Error _) ->
-                cancelEventArgs, r
-            | _ -> failwith "should not get here"
-        | FailureAccumulated (Some setupFeatureResult, setupResult, _) ->
-            let r = runFeatureTeardown setupFeatureResult setupResult None
-            match r with
-            | FeatureTeardownRun (_, _, _, Ok _) ->
-                cancelEventArgs, acc
-            | FeatureTeardownRun (_, _, _, Error _) ->
-                cancelEventArgs, r
-            | _ -> failwith "should not get here"
-        | FailureAccumulated (None, _, _) ->
-            cancelEventArgs, acc
-        | _ -> cancelEventArgs, acc
-        
     member _.Execute environment =
         let env = 
             {
@@ -292,49 +179,26 @@ type TestCaseExecutor<'featureType, 'setupType> (parent: ITest, internals: TestI
                 TestInfo = parent 
             }
             
-        let cancelEventArgs, result =
-            CancelEventArgs ()
-            |> executionStarted
-            |> runFeatureSetup
-            |> runSetup
-            |> runTestBody env
-            |> maybeRunTeardown
-            |> maybeRunFeatureTeardown
-        
-        let finalValue =
-            match cancelEventArgs.Cancel, result with
-            | true, _ -> GeneralCancelFailure |> GeneralExecutionFailure
-            | _, FailureAccumulated (_, _, generalTestingFailure) ->
-                generalTestingFailure |> GeneralExecutionFailure
-            | _, SetupRun (Error error, _) ->
-                error |> SetupExecutionFailure
-            | _, SetupRun (_, Error error) ->
-                error |> SetupExecutionFailure
-            | _, TestRun (_, _, result) ->
-                result |> TestExecutionResult
-            | _, TeardownRun (_, _, _, Error errorValue) ->
-                errorValue |> TeardownExecutionFailure
-            | _, FeatureTeardownRun (_featureResult, _setupResult, _testResultOption, Error errorValue) ->
-                errorValue |> TeardownExecutionFailure
-            | _, FeatureTeardownRun (_featureResult, Some (Error errorValue), _testResultOption, _teardownResult) ->
-                errorValue |> SetupExecutionFailure
-            | _, FeatureTeardownRun (Error errorValue, _setupResult, _testResultOption, _teardownResult) ->
-                errorValue |> SetupExecutionFailure
-            | _, FeatureTeardownRun (Ok _, Some (Ok _), Some testResult, Ok _) ->
-                testResult |> TestExecutionResult
-            | _ -> failwith "Should never get here"
-            
-        let isEmpty value =
-            match value with
-            | Empty -> true
-            | _ -> false
-
+        let cancelEventArgs = CancelEventArgs ()
+        let handler = handleEvents cancelEventArgs
         try
-            if cancelEventArgs.Cancel && result |> isEmpty then
-                finalValue
+            testLifecycleEvent.Trigger (parent, TestStartExecution cancelEventArgs)
+            if cancelEventArgs.Cancel then
+                GeneralCancelFailure |> GeneralExecutionFailure
             else
-                testLifecycleEvent.Trigger (parent, TestEndExecution finalValue)
-                finalValue
+                try
+                    internals.LifecycleEvent.AddHandler handler
+                        
+                    try
+                        let result = internals.Execute () env
+                        
+                        testLifecycleEvent.Trigger (parent, TestEndExecution result)
+                        
+                        result
+                    with
+                    | ex -> ex |> GeneralExceptionFailure |> GeneralExecutionFailure
+                finally
+                    internals.LifecycleEvent.RemoveHandler handler
         with
         | ex -> ex |> GeneralExceptionFailure |> GeneralExecutionFailure
         
@@ -349,7 +213,7 @@ type TestCaseExecutor<'featureType, 'setupType> (parent: ITest, internals: TestI
         [<CLIEvent>]
         member this.TestLifecycleEvent = testLifecycleEvent.Publish
 
-type TestCase<'featureType, 'setupType> (containerPath: string, containerName: string, testName: string, workings: TestInternals<'featureType, 'setupType>, tags: TestTag seq, filePath: string, fileName: string,  lineNumber: int) =
+type TestCase (containerPath: string, containerName: string, testName: string, workings: ISetupTeardownExecutor<unit>, tags: TestTag seq, filePath: string, fileName: string,  lineNumber: int) =
     let location = {
         FilePath = filePath
         FileName = fileName
@@ -394,9 +258,6 @@ type Feature<'featureType> (featurePath, featureName, featureSetup: SetupIndicat
     let (Setup featureSetup) = featureSetup
     let (Teardown featureTeardown) = featureTeardown
     
-    member _.FeatureSetup with get () = featureSetup
-    member _.FeatureTeardown with get () = featureTeardown
-    
     // --------- TEST TAGS ---------
     member _.Test (tags: TagsIndicator, setup: SetupIndicator<_, 'setupType>, testBody: TestBodyWithEnvironmentIndicator<'setupType>, teardown: TeardownIndicator<'setupType>, [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>]lineNumber: int) =
         let fileInfo = FileInfo fileFullName
@@ -405,8 +266,9 @@ type Feature<'featureType> (featurePath, featureName, featureSetup: SetupIndicat
         
         let test =
             match tags, setup, testBody, teardown with
-            | TestTags tags, Setup setup, TestWithEnvironmentBody testBody, Teardown teardown -> 
-                let internals: TestInternals<'featureType, 'setupType> = { FeatureSetup = featureSetup; TestSetup = setup; TestBody = testBody; TestTeardown = teardown; FeatureTeardown = featureTeardown }
+            | TestTags tags, Setup setup, TestWithEnvironmentBody testBody, Teardown teardown ->
+                let inner = SetupTeardownExecutor (setup, teardown, fun value env -> env |> testBody value |> TestExecutionResult)
+                let internals = WrappedTeardownExecutor (featureSetup, featureTeardown, inner)
                 TestCase (featurePath, featureName, testName, internals, tags, filePath, fileName, lineNumber) :> ITest
         
         tests <- test::tests

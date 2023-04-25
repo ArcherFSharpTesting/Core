@@ -402,7 +402,7 @@ let ``Not throw when TestStartTeardown throws`` =
             | Error errorValue -> errorValue
             | Ok testExecutionResult ->
                 match testExecutionResult with
-                | TeardownExecutionFailure (SetupTeardownExceptionFailure ex) ->
+                | GeneralExecutionFailure (GeneralExceptionFailure ex) ->
                     ex.Message
                     |> expects.ToBe exceptionMessage
                 | _ ->

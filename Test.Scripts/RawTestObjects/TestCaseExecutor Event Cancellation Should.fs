@@ -68,7 +68,8 @@ let ``Stop all event when canceled at TestStartSetup`` =
             |> Event.filter (fun args ->
                 match args with
                 | TestStartExecution _
-                | TestStartSetup _ -> false
+                | TestStartSetup _
+                | TestEndExecution _ -> false
                 | _ -> true
             )
             |> expects.ToNotBeTriggered
@@ -190,6 +191,7 @@ let ``Should not trigger TestEnd if canceled at TestStart`` =
             )
             |> expects.ToNotBeTriggered
             |> by (executor |> executeFunction)
+            |> withMessage "TestEnd"
     )
     
 let ``Should not call the test action if canceled at TestStart`` =
