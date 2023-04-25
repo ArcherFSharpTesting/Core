@@ -14,7 +14,7 @@ type TestEnvironment = {
     TestInfo: ITestInfo
 }
 
-type SetupIndicator<'a> = | Setup of (unit -> Result<'a, SetupTeardownFailure>)
+type SetupIndicator<'a, 'b> = | Setup of ('a -> Result<'b, SetupTeardownFailure>)
 type TestBodyWithEnvironmentIndicator<'a> = | TestWithEnvironmentBody of ('a -> TestEnvironment -> TestResult)
 type TestBodyIndicator<'a> = | TestBody of ('a -> TestResult)
 type TeardownIndicator<'a> = | Teardown of (Result<'a, SetupTeardownFailure> -> TestResult option -> Result<unit, SetupTeardownFailure>)

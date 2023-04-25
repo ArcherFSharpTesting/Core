@@ -65,7 +65,7 @@ type Monitor () =
     let mutable testActionCalled = false
     let mutable teardownCalled = false
     
-    member _.CallSetup _ =
+    member _.CallSetup () =
         setupCalled <- true
         Ok ()
         
@@ -83,8 +83,11 @@ type Monitor () =
     member _.WasCalled with get () = setupCalled || teardownCalled || testActionCalled
 
 let setupBuildExecutorWithMonitor _ =
-    let feature = Arrow.NewFeature ()
     let monitor = Monitor ()
+    let feature = Arrow.NewFeature (
+        Setup monitor.CallSetup,
+        Teardown monitor.CallTeardown
+    )
     
-    let test = feature.Test (Setup monitor.CallSetup, TestWithEnvironmentBody monitor.CallTestAction, Teardown monitor.CallTeardown)
+    let test = feature.Test monitor.CallTestAction
     Ok (monitor, test.GetExecutor ())

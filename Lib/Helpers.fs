@@ -21,10 +21,10 @@ type Arrow =
     static member NewFeature (featurePath, featureName) =
         Feature (featurePath, featureName, Setup (fun () -> Ok ()), Teardown (fun _ _ -> Ok ()))
 
-    static member NewFeature<'a> (setup: SetupIndicator<'a>) =
+    static member NewFeature<'a> (setup: SetupIndicator<unit, 'a>) =
         let featureName, featurePath = getNames ()
         Feature<'a> (featurePath, featureName, setup, Teardown (fun _ _ -> Ok ()))
         
-    static member NewFeature<'a> (setup: SetupIndicator<'a>, teardown: TeardownIndicator<'a>) =
+    static member NewFeature<'a> (setup: SetupIndicator<unit, 'a>, teardown: TeardownIndicator<'a>) =
         let featureName, featurePath = getNames ()
         Feature<'a> (featurePath, featureName, setup, teardown)

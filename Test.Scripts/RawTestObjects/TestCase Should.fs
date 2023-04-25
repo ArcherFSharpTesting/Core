@@ -19,7 +19,15 @@ let ``has all the data passed to it`` =
         let expectedLineNumber = random.Next (1, 9999)
         let expectedTags = [ Category $"Test Category Tag %d{random.Next ()}" ]
         
-        let test = TestCase (expectedContainerPath, expectedContainerName, expectedTestName, successfulUnitSetup, successfulEnvironmentTest, successfulTeardown, expectedTags, expectedFilePath, expectedFileName, expectedLineNumber)
+        let workings = {
+            FeatureSetup = fun _ -> Ok ()
+            TestSetup = successfulUnitSetup
+            TestBody = successfulEnvironmentTest
+            TestTeardown = successfulTeardown
+            FeatureTeardown = fun _ _ -> Ok () 
+        }
+        
+        let test = TestCase (expectedContainerPath, expectedContainerName, expectedTestName, workings, expectedTags, expectedFilePath, expectedFileName, expectedLineNumber)
         
         test.ContainerPath |> expects.ToBe expectedContainerPath
         |> andResult (test.ContainerName |> expects.ToBe expectedContainerName)
