@@ -1,17 +1,18 @@
 ﻿module Archer.Arrows.Tests.RawTestObjects.``TestCaseExecutor Event Cancellation Should``
 
+open Archer.Arrows
 open Archer.Arrows.Tests
 open Archer.CoreTypes.InternalTypes
 open Archer.MicroLang
 open Microsoft.FSharp.Control
 
-let private container = suite.Container ()
+let private container = Arrow.NewFeature ()
 
 let ``Stop all events if done at TestExecutionStart`` =
     container.Test (
-        SetupPart setupExecutor,
+        Setup setupExecutor,
         
-        fun executor _ ->
+        TestBody (fun (executor: ITestExecutor) ->
             executor.TestLifecycleEvent
             |> Event.add (fun args ->
                 match args with
@@ -28,13 +29,14 @@ let ``Stop all events if done at TestExecutionStart`` =
             )
             |> expects.ToNotBeTriggered
             |> by (executor |> executeFunction)
+        )
     )
     
 let ``Not call any methods when canceled in TestExecutionStart`` =
     container.Test (
-        SetupPart setupBuildExecutorWithMonitor,
+        Setup setupBuildExecutorWithMonitor,
         
-        fun (monitor, executor) _ ->
+        TestBody (fun (monitor: Monitor, executor: ITestExecutor) ->
             executor.TestLifecycleEvent
             |> Event.add (fun args ->
                 match args with
@@ -49,13 +51,14 @@ let ``Not call any methods when canceled in TestExecutionStart`` =
             monitor.SetupWasCalled
             |> expects.ToBeFalse
             |> withMessage "Setup method was called"
+        )
     )
     
 let ``Stop all event when canceled at TestStartSetup`` =
     container.Test (
-        SetupPart setupExecutor,
+        Setup setupExecutor,
         
-        fun executor _ ->
+        TestBody (fun (executor: ITestExecutor) ->
             executor.TestLifecycleEvent
             |> Event.add (fun args ->
                 match args with
@@ -74,13 +77,14 @@ let ``Stop all event when canceled at TestStartSetup`` =
             )
             |> expects.ToNotBeTriggered
             |> by (executor |> executeFunction)
+        )
     )
     
 let ``Call Teardown if canceled on TestEndSetup`` =
     container.Test (
-        SetupPart setupBuildExecutorWithMonitor,
+        Setup setupBuildExecutorWithMonitor,
         
-        fun (monitor, executor) _ ->
+        TestBody (fun (monitor: Monitor, executor: ITestExecutor) ->
             executor.TestLifecycleEvent
             |> Event.add (fun args ->
                 match args with
@@ -97,13 +101,14 @@ let ``Call Teardown if canceled on TestEndSetup`` =
             monitor.TeardownWasCalled
             |> expects.ToBeTrue
             |> withMessage "Teardown was not called"
+        )
     )
     
 let ``Should trigger ending events if canceled at TestEndSetup`` =
     container.Test (
-        SetupPart setupExecutor,
+        Setup setupExecutor,
         
-        fun executor _ ->
+        TestBody (fun (executor: ITestExecutor) ->
             executor.TestLifecycleEvent
             |> Event.add (fun args ->
                 match args with
@@ -121,13 +126,14 @@ let ``Should trigger ending events if canceled at TestEndSetup`` =
             )
             |> expects.ToBeTriggered
             |> by (executor |> executeFunction)
+        )
     )
     
 let ``Call Teardown if canceled on TestStart`` =
     container.Test (
-        SetupPart setupBuildExecutorWithMonitor,
+        Setup setupBuildExecutorWithMonitor,
         
-        fun (monitor, executor) _ ->
+        TestBody (fun (monitor: Monitor, executor: ITestExecutor) ->
             executor.TestLifecycleEvent
             |> Event.add (fun args ->
                 match args with
@@ -144,13 +150,14 @@ let ``Call Teardown if canceled on TestStart`` =
             monitor.TeardownWasCalled
             |> expects.ToBeTrue
             |> withMessage "Teardown was not called"
+        )
     )
     
 let ``Should trigger ending events if canceled at TestStart`` =
     container.Test (
-        SetupPart setupExecutor,
+        Setup setupExecutor,
         
-        fun executor _ ->
+        TestBody (fun (executor: ITestExecutor) ->
             executor.TestLifecycleEvent
             |> Event.add (fun args ->
                 match args with
@@ -168,13 +175,14 @@ let ``Should trigger ending events if canceled at TestStart`` =
             )
             |> expects.ToBeTriggered 
             |> by (executor |> executeFunction)
+        )
     )
     
 let ``Should not trigger TestEnd if canceled at TestStart`` =
     container.Test (
-        SetupPart setupExecutor,
+        Setup setupExecutor,
         
-        fun executor _ ->
+        TestBody (fun (executor: ITestExecutor) ->
             executor.TestLifecycleEvent
             |> Event.add (fun args ->
                 match args with
@@ -192,13 +200,14 @@ let ``Should not trigger TestEnd if canceled at TestStart`` =
             |> expects.ToNotBeTriggered
             |> by (executor |> executeFunction)
             |> withMessage "TestEnd"
+        )
     )
     
 let ``Should not call the test action if canceled at TestStart`` =
     container.Test (
-        SetupPart setupBuildExecutorWithMonitor,
+        Setup setupBuildExecutorWithMonitor,
         
-        fun (monitor, executor) _ ->
+        TestBody (fun (monitor: Monitor, executor: ITestExecutor) ->
             executor.TestLifecycleEvent
             |> Event.add (fun args ->
                 match args with
@@ -215,6 +224,7 @@ let ``Should not call the test action if canceled at TestStart`` =
             monitor.TestWasCalled
             |> expects.ToBeFalse
             |> withMessage "The test action was run"
+        )
     )
     
-let ``Test Cases`` = container.Tests
+let ``Test Cases`` = container.GetTests ()
