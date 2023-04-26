@@ -6,10 +6,10 @@ open Archer.CoreTypes.InternalTypes
 open Archer.MicroLang
 open Microsoft.FSharp.Control
 
-let private container = Arrow.NewFeature ()
+let private feature = Arrow.NewFeature ()
 
 let ``Stop all events if done at TestExecutionStart`` =
-    container.Test (
+    feature.Test (
         Setup setupExecutor,
         
         TestBody (fun (executor: ITestExecutor) ->
@@ -33,7 +33,7 @@ let ``Stop all events if done at TestExecutionStart`` =
     )
     
 let ``Not call any methods when canceled in TestExecutionStart`` =
-    container.Test (
+    feature.Test (
         Setup setupBuildExecutorWithMonitor,
         
         TestBody (fun (monitor: Monitor, executor: ITestExecutor) ->
@@ -55,7 +55,7 @@ let ``Not call any methods when canceled in TestExecutionStart`` =
     )
     
 let ``Stop all event when canceled at TestStartSetup`` =
-    container.Test (
+    feature.Test (
         Setup setupExecutor,
         
         TestBody (fun (executor: ITestExecutor) ->
@@ -81,7 +81,7 @@ let ``Stop all event when canceled at TestStartSetup`` =
     )
     
 let ``Call Teardown if canceled on TestEndSetup`` =
-    container.Test (
+    feature.Test (
         Setup setupBuildExecutorWithMonitor,
         
         TestBody (fun (monitor: Monitor, executor: ITestExecutor) ->
@@ -105,7 +105,7 @@ let ``Call Teardown if canceled on TestEndSetup`` =
     )
     
 let ``Should trigger ending events if canceled at TestEndSetup`` =
-    container.Test (
+    feature.Test (
         Setup setupExecutor,
         
         TestBody (fun (executor: ITestExecutor) ->
@@ -130,7 +130,7 @@ let ``Should trigger ending events if canceled at TestEndSetup`` =
     )
     
 let ``Call Teardown if canceled on TestStart`` =
-    container.Test (
+    feature.Test (
         Setup setupBuildExecutorWithMonitor,
         
         TestBody (fun (monitor: Monitor, executor: ITestExecutor) ->
@@ -154,7 +154,7 @@ let ``Call Teardown if canceled on TestStart`` =
     )
     
 let ``Should trigger ending events if canceled at TestStart`` =
-    container.Test (
+    feature.Test (
         Setup setupExecutor,
         
         TestBody (fun (executor: ITestExecutor) ->
@@ -179,7 +179,7 @@ let ``Should trigger ending events if canceled at TestStart`` =
     )
     
 let ``Should not trigger TestEnd if canceled at TestStart`` =
-    container.Test (
+    feature.Test (
         Setup setupExecutor,
         
         TestBody (fun (executor: ITestExecutor) ->
@@ -204,7 +204,7 @@ let ``Should not trigger TestEnd if canceled at TestStart`` =
     )
     
 let ``Should not call the test action if canceled at TestStart`` =
-    container.Test (
+    feature.Test (
         Setup setupBuildExecutorWithMonitor,
         
         TestBody (fun (monitor: Monitor, executor: ITestExecutor) ->
@@ -227,4 +227,4 @@ let ``Should not call the test action if canceled at TestStart`` =
         )
     )
     
-let ``Test Cases`` = container.GetTests ()
+let ``Test Cases`` = feature.GetTests ()
