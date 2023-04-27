@@ -14,12 +14,12 @@ let private getNamesAt frame =
     containerName, containerPath
 
 let private getNames () =
-    getNamesAt 2
+    getNamesAt 3
 
 type Arrow =
     // ------- featurePath -------
     static member NewFeature (featurePath, featureName, setup: SetupIndicator<unit, 'a>, teardown: TeardownIndicator<'a>) =
-        let t = baseTransformer featurePath featureName setup teardown
+        let t = baseTransformer setup teardown
         Feature (featurePath, featureName, t)
         
     static member NewFeature (featurePath, featureName, setup: SetupIndicator<unit, 'a>) =

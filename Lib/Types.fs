@@ -14,8 +14,10 @@ type TestEnvironment = {
     TestInfo: ITestInfo
 }
 
+type TestBodyWithEnvironment<'a> = 'a -> TestEnvironment -> TestResult
+type TestFunction<'a> = 'a -> TestResult
 type SetupIndicator<'a, 'b> = | Setup of ('a -> Result<'b, SetupTeardownFailure>)
-type TestBodyWithEnvironmentIndicator<'a> = | TestWithEnvironmentBody of ('a -> TestEnvironment -> TestResult)
-type TestBodyIndicator<'a> = | TestBody of ('a -> TestResult)
+type TestBodyWithEnvironmentIndicator<'a> = | TestWithEnvironmentBody of TestBodyWithEnvironment<'a> 
+type TestBodyIndicator<'a> = | TestBody of TestFunction<'a> 
 type TeardownIndicator<'a> = | Teardown of (Result<'a, SetupTeardownFailure> -> TestResult option -> Result<unit, SetupTeardownFailure>)
 type TagsIndicator = | TestTags of TestTag list

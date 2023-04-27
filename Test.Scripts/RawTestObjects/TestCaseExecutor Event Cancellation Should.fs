@@ -1,6 +1,7 @@
 ﻿module Archer.Arrows.Tests.RawTestObjects.``TestCaseExecutor Event Cancellation Should``
 
 open Archer.Arrows
+open Archer.Arrows.Internal
 open Archer.Arrows.Tests
 open Archer.CoreTypes.InternalTypes
 open Archer.MicroLang
