@@ -424,108 +424,64 @@ type Feature<'featureType> (featurePath, featureName, transformer: TestInternals
         
     member this.Script with get () = this :> IScriptFeature<'featureType>
 
-    member this.AsTest (tags: TagsIndicator, setup: SetupIndicator<'featureType, 'setupType>, testBody: TestBodyWithEnvironmentIndicator<'setupType>, teardown: TeardownIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int): (string -> unit) =
-        let buildTest (testName: string) =
-            this.Test (tags, setup, testBody, teardown, testName, fileFullName, lineNumber)
-            |> ignore
-            
-        buildTest
-
-    member this.AsTest (tags: TagsIndicator, setup: SetupIndicator<_, 'setupType>, testBody: TestBodyWithEnvironmentIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
-        this.AsTest (tags, setup, testBody, Teardown (fun _ _ -> Ok ()), fileFullName, lineNumber)
-    
-    member this.AsTest (tags: TagsIndicator, testBody: TestBodyWithEnvironmentIndicator<unit>, teardown: TeardownIndicator<unit>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
-        this.AsTest (tags, Setup(fun _ -> Ok ()), testBody, teardown, fileFullName, lineNumber)
-    
-    member this.AsTest (tags: TagsIndicator, testBody: TestBodyWithEnvironmentIndicator<unit>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
-        this.AsTest (tags, Setup(fun _ -> Ok ()), testBody, Teardown (fun _ _ -> Ok ()), fileFullName, lineNumber)
-        
-    // --------- AsTest - Test Tags (without environment) ---------
-    member this.AsTest (tags: TagsIndicator, setup: SetupIndicator<_, 'setupType>, testBody: TestBodyIndicator<'setupType>, teardown: TeardownIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
-        let testBody =
-           match testBody with
-           | TestBody f -> f
-           
-        this.AsTest (tags, setup, wrapTestBody testBody, teardown, fileFullName, lineNumber)
-        
-    member this.AsTest (tags: TagsIndicator, setup: SetupIndicator<_, 'setupType>, testBody: TestBodyIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
-        this.AsTest (tags, setup, testBody, Teardown (fun _ _ -> Ok ()), fileFullName, lineNumber)
-    
-    member this.AsTest (tags: TagsIndicator, testBody: TestBodyIndicator<unit>, teardown: TeardownIndicator<unit>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
-        this.AsTest (tags, Setup (fun _ -> Ok ()), testBody, teardown, fileFullName, lineNumber)
-    
-    member this.AsTest (tags: TagsIndicator, testBody: TestBodyIndicator<unit>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
-        this.AsTest (tags, Setup (fun _ -> Ok ()), testBody, Teardown (fun _ _ -> Ok ()), fileFullName, lineNumber)
-        
-    // --------- AsTest - Setup (with environment) ---------
-    member this.AsTest (setup: SetupIndicator<_, 'setupType>, testBody: TestBodyWithEnvironmentIndicator<'setupType>, teardown: TeardownIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
-        this.AsTest (TestTags [], setup, testBody, teardown, fileFullName, lineNumber)
-        
-    member this.AsTest (setup: SetupIndicator<_, 'setupType>, testBody: TestBodyWithEnvironmentIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
-        this.AsTest (setup, testBody, Teardown (fun _ _ -> Ok ()), fileFullName, lineNumber)
-    
-    // --------- AsTest - Setup (without environment) ---------
-    member this.AsTest (setup: SetupIndicator<_, 'setupType>, testBody: TestBodyIndicator<'setupType>, teardown: TeardownIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
-        let testBody =
-            match testBody with
-            | TestBody f -> f
-            
-        this.AsTest (setup, wrapTestBody testBody, teardown, fileFullName, lineNumber)
-    
-    member this.AsTest (setup: SetupIndicator<_, 'setupType>, testBody: TestBodyIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
-        this.AsTest (setup, testBody, Teardown (fun _ _ -> Ok ()), fileFullName, lineNumber)
-    
-    // --------- AsTest - TEST BODY (with environment) ---------
-    member this.AsTest (testBody: TestBodyWithEnvironmentIndicator<'featureType>, teardown: TeardownIndicator<unit>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
-        this.AsTest ((Setup Ok), testBody, wrapTeardown teardown, fileFullName, lineNumber)
-        
-    member this.AsTest (testBody: TestBodyWithEnvironmentIndicator<'featureType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
-        this.AsTest (testBody, Teardown (fun _ _ -> Ok ()), fileFullName, lineNumber) 
-            
     interface IScriptFeature<'featureType> with
-        member this.AsTest (tags: TagsIndicator, setup: SetupIndicator<'featureType,'setupType>, testBody: TestBodyWithEnvironmentIndicator<'setupType>, teardown: TeardownIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int): string -> unit =
-            this.AsTest (tags, setup, testBody, teardown, fileFullName, lineNumber)
-            
-        member this.AsTest (tags: TagsIndicator, setup: SetupIndicator<'featureType,'setupType>, testBody: TestBodyWithEnvironmentIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int): string -> unit =
-            this.AsTest (tags, setup, testBody, fileFullName, lineNumber)
-            
-        member this.AsTest (tags: TagsIndicator, testBody: TestBodyWithEnvironmentIndicator<unit>, teardown: TeardownIndicator<unit>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int): string -> unit =
-            this.AsTest (tags, testBody, teardown, fileFullName, lineNumber)
-            
-        member this.AsTest (tags: TagsIndicator, testBody: TestBodyWithEnvironmentIndicator<unit>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int): string -> unit =
-            this.AsTest (tags, testBody, fileFullName, lineNumber)
-            
-        member this.AsTest (tags: TagsIndicator, setup: SetupIndicator<'featureType,'setupType>, testBody: TestBodyIndicator<'setupType>, teardown: TeardownIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int): string -> unit =
-            this.AsTest (tags, setup, testBody, teardown, fileFullName, lineNumber)
-            
-        member this.AsTest (tags: TagsIndicator, setup: SetupIndicator<'featureType,'setupType>, testBody: TestBodyIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int): string -> unit =
-            this.AsTest (tags, setup, testBody, fileFullName, lineNumber)
-            
-        member this.AsTest (tags: TagsIndicator, testBody: TestBodyIndicator<unit>, teardown: TeardownIndicator<unit>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int): string -> unit =
-            this.AsTest (tags, testBody, teardown, fileFullName, lineNumber)
-            
-        member this.AsTest (tags: TagsIndicator, testBody: TestBodyIndicator<unit>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int): string -> unit =
-            this.AsTest (tags, testBody, fileFullName, lineNumber)
-            
-        member this.AsTest (setup: SetupIndicator<'featureType,'setupType>, testBody: TestBodyWithEnvironmentIndicator<'setupType>, teardown: TeardownIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int): string -> unit =
-            this.AsTest (setup, testBody, teardown, fileFullName, lineNumber)
-            
-        member this.AsTest (setup: SetupIndicator<'featureType,'setupType>, testBody: TestBodyWithEnvironmentIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int): string -> unit =
-            this.AsTest (setup, testBody, fileFullName, lineNumber)
-            
-        member this.AsTest (setup: SetupIndicator<'featureType,'setupType>, testBody: TestBodyIndicator<'setupType>, teardown: TeardownIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int): string -> unit =
-            this.AsTest (setup, testBody, teardown, fileFullName, lineNumber)
-            
-        member this.AsTest (setup: SetupIndicator<'featureType,'setupType>, testBody: TestBodyIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int): string -> unit =
-            this.AsTest (setup, testBody, fileFullName, lineNumber)
-            
-        member this.AsTest (testBody: TestBodyWithEnvironmentIndicator<'featureType>, teardown: TeardownIndicator<unit>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int): string -> unit =
-            this.AsTest (testBody, teardown, fileFullName, lineNumber)
-            
-        member this.AsTest (testBody, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
-            this.AsTest (testBody, fileFullName, lineNumber)
+        member this.AsTest (tags: TagsIndicator, setup: SetupIndicator<'featureType, 'setupType>, testBody: TestBodyWithEnvironmentIndicator<'setupType>, teardown: TeardownIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int): (string -> unit) =
+            let buildTest (testName: string) =
+                this.Test (tags, setup, testBody, teardown, testName, fileFullName, lineNumber)
+                |> ignore
+                
+            buildTest
+
+        member this.AsTest (tags: TagsIndicator, setup: SetupIndicator<_, 'setupType>, testBody: TestBodyWithEnvironmentIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+            this.Script.AsTest (tags, setup, testBody, Teardown (fun _ _ -> Ok ()), fileFullName, lineNumber)
         
+        member this.AsTest (tags: TagsIndicator, testBody: TestBodyWithEnvironmentIndicator<unit>, teardown: TeardownIndicator<unit>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+            this.Script.AsTest (tags, Setup(fun _ -> Ok ()), testBody, teardown, fileFullName, lineNumber)
         
+        member this.AsTest (tags: TagsIndicator, testBody: TestBodyWithEnvironmentIndicator<unit>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+            this.Script.AsTest (tags, Setup(fun _ -> Ok ()), testBody, Teardown (fun _ _ -> Ok ()), fileFullName, lineNumber)
+            
+        // --------- AsTest - Test Tags (without environment) ---------
+        member this.AsTest (tags: TagsIndicator, setup: SetupIndicator<_, 'setupType>, testBody: TestBodyIndicator<'setupType>, teardown: TeardownIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+            let testBody =
+               match testBody with
+               | TestBody f -> f
+               
+            this.Script.AsTest (tags, setup, wrapTestBody testBody, teardown, fileFullName, lineNumber)
+            
+        member this.AsTest (tags: TagsIndicator, setup: SetupIndicator<_, 'setupType>, testBody: TestBodyIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+            this.Script.AsTest (tags, setup, testBody, Teardown (fun _ _ -> Ok ()), fileFullName, lineNumber)
+        
+        member this.AsTest (tags: TagsIndicator, testBody: TestBodyIndicator<unit>, teardown: TeardownIndicator<unit>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+            this.Script.AsTest (tags, Setup (fun _ -> Ok ()), testBody, teardown, fileFullName, lineNumber)
+        
+        member this.AsTest (tags: TagsIndicator, testBody: TestBodyIndicator<unit>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+            this.Script.AsTest (tags, Setup (fun _ -> Ok ()), testBody, Teardown (fun _ _ -> Ok ()), fileFullName, lineNumber)
+            
+        // --------- AsTest - Setup (with environment) ---------
+        member this.AsTest (setup: SetupIndicator<_, 'setupType>, testBody: TestBodyWithEnvironmentIndicator<'setupType>, teardown: TeardownIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+            this.Script.AsTest (TestTags [], setup, testBody, teardown, fileFullName, lineNumber)
+            
+        member this.AsTest (setup: SetupIndicator<_, 'setupType>, testBody: TestBodyWithEnvironmentIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+            this.Script.AsTest (setup, testBody, Teardown (fun _ _ -> Ok ()), fileFullName, lineNumber)
+        
+        // --------- AsTest - Setup (without environment) ---------
+        member this.AsTest (setup: SetupIndicator<_, 'setupType>, testBody: TestBodyIndicator<'setupType>, teardown: TeardownIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+            let testBody =
+                match testBody with
+                | TestBody f -> f
+                
+            this.Script.AsTest (setup, wrapTestBody testBody, teardown, fileFullName, lineNumber)
+        
+        member this.AsTest (setup: SetupIndicator<_, 'setupType>, testBody: TestBodyIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+            this.Script.AsTest (setup, testBody, Teardown (fun _ _ -> Ok ()), fileFullName, lineNumber)
+        
+        // --------- AsTest - TEST BODY (with environment) ---------
+        member this.AsTest (testBody: TestBodyWithEnvironmentIndicator<'featureType>, teardown: TeardownIndicator<unit>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+            this.Script.AsTest ((Setup Ok), testBody, wrapTeardown teardown, fileFullName, lineNumber)
+            
+        member this.AsTest (testBody: TestBodyWithEnvironmentIndicator<'featureType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+            this.Script.AsTest (testBody, Teardown (fun _ _ -> Ok ()), fileFullName, lineNumber)         
         
     member this.GetTests () = tests
     

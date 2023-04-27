@@ -83,30 +83,36 @@ type Arrow =
         
     // ------- featureName -------
     static member Tests (featureName, setup: SetupIndicator<unit, 'a>, teardown: TeardownIndicator<'a>, testBuilder: IScriptFeature<'a> -> unit) =
-        let _, featurePath = getNames ()
+        let _, featurePath = getNamesAt 3
         Arrow.Tests (featurePath, featureName, setup, teardown, testBuilder)
         
     static member Tests (featureName, setup: SetupIndicator<unit, 'a>, testBuilder: IScriptFeature<'a> -> unit) =
-        Arrow.Tests (featureName, setup, Teardown (fun _ _ -> Ok ()), testBuilder)
+        let _, featurePath = getNamesAt 3
+        Arrow.Tests (featurePath, featureName, setup, Teardown (fun _ _ -> Ok ()), testBuilder)
         
     static member Tests (featureName, teardown: TeardownIndicator<unit>, testBuilder: IScriptFeature<unit> -> unit) =
-        Arrow.Tests (featureName, Setup (fun () -> Ok ()), teardown, testBuilder)
+        let _, featurePath = getNamesAt 3
+        Arrow.Tests (featurePath, featureName, Setup (fun () -> Ok ()), teardown, testBuilder)
         
     static member Tests (featureName, testBuilder: IScriptFeature<unit> -> unit) =
-        Arrow.Tests (featureName, Setup (fun () -> Ok ()), Teardown (fun _ _ -> Ok ()), testBuilder)
+        let _, featurePath = getNamesAt 3
+        Arrow.Tests (featurePath, featureName, Setup (fun () -> Ok ()), Teardown (fun _ _ -> Ok ()), testBuilder)
         
     // ------- setup -------
     static member Tests (setup: SetupIndicator<unit, 'a>, teardown: TeardownIndicator<'a>, testBuilder: IScriptFeature<'a> -> unit) =
-        let featureName, featurePath = getNames ()
+        let featureName, featurePath = getNamesAt 3
         Arrow.Tests (featurePath, featureName, setup, teardown, testBuilder)
         
     static member Tests (setup: SetupIndicator<unit, 'a>, testBuilder: IScriptFeature<'a> -> unit) =
-        Arrow.Tests (setup, Teardown (fun _ _ -> Ok ()), testBuilder)
+        let featureName, featurePath = getNamesAt 3
+        Arrow.Tests (featurePath, featureName, setup, Teardown (fun _ _ -> Ok ()), testBuilder)
         
     // ------- teardown -------
     static member Tests (teardown: TeardownIndicator<unit>, testBuilder: IScriptFeature<unit> -> unit) =
-        Arrow.Tests (Setup (fun () -> Ok ()), teardown, testBuilder)
+        let featureName, featurePath = getNamesAt 3
+        Arrow.Tests (featurePath, featureName, Setup (fun () -> Ok ()), teardown, testBuilder)
         
     // ------- testBuilder -------
     static member Tests (testBuilder: IScriptFeature<unit> -> unit) =
-        Arrow.Tests (Teardown (fun _ _ -> Ok ()), testBuilder)
+        let featureName, featurePath = getNamesAt 3
+        Arrow.Tests (featurePath, featureName, Setup (fun () -> Ok ()), Teardown (fun _ _ -> Ok ()), testBuilder)
