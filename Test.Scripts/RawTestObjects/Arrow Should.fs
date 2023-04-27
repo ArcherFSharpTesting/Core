@@ -2,6 +2,7 @@
 
 open Archer.Arrows
 open Archer.Arrows.Internal
+open Archer.CoreTypes.InternalTypes
 open Archer.MicroLang
 
 let private container = suite.Container()
@@ -10,7 +11,7 @@ let ``Create a Feature`` =
     container.Test (
         fun _ ->
             Arrow.NewFeature ()
-            |> expects.ToBeOfType<Feature<unit>>
+            |> expects.ToBeOfType<Feature<unit, ITest>>
     )
     
 let ``Create a feature with the correct names`` =

@@ -280,8 +280,6 @@ type IScriptFeature<'featureType> =
     abstract member AsTest: testBody: TestBodyWithEnvironmentIndicator<'featureType> * teardown: TeardownIndicator<unit> * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> (string -> unit)
     abstract member AsTest: testBody: TestBodyWithEnvironmentIndicator<'featureType> * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> (string -> unit)
 
-
-
 let baseTransformer<'featureType, 'a> featurePath featureName (featureSetup: SetupIndicator<unit, 'featureType>) (featureTeardown: TeardownIndicator<'featureType>) (internals: TestInternals, inner: ISetupTeardownExecutor<'featureType>) =
     let (Setup setup) = featureSetup 
     let (Teardown teardown) = featureTeardown
@@ -289,8 +287,8 @@ let baseTransformer<'featureType, 'a> featurePath featureName (featureSetup: Set
     let executor = WrappedTeardownExecutor<unit,'featureType,'a> (setup, teardown, inner)
     TestCase (featurePath, featureName, internals.TestName, executor, internals.Tags, internals.FilePath, internals.FileName, internals.LineNumber) :> ITest
 
-type Feature<'featureType> (featurePath, featureName, transformer: TestInternals * ISetupTeardownExecutor<'featureType> -> ITest) =
-    let mutable tests: ITest list = []
+type Feature<'featureType, 'xformType> (featurePath, featureName, transformer: TestInternals * ISetupTeardownExecutor<'featureType> -> 'xformType) =
+    let mutable tests: 'xformType list = []
     
     let wrapTestBody (testBody: 'a -> TestResult) =
         TestWithEnvironmentBody (fun setupResult _env -> testBody setupResult)
@@ -298,10 +296,6 @@ type Feature<'featureType> (featurePath, featureName, transformer: TestInternals
     let wrapTeardown teardown =
         let (Teardown teardown) = teardown
         Teardown (fun _ -> teardown (Ok ()))
-
-    new (featurePath, featureName, featureSetup: SetupIndicator<unit, 'featureType>, featureTeardown: TeardownIndicator<'featureType>) =
-        let t = baseTransformer featurePath featureName featureSetup featureTeardown
-        Feature<'featureType> (featurePath, featureName, t)
     
     // --------- TEST TAGS (with environment) ---------
     member _.Test (tags: TagsIndicator, setup: SetupIndicator<_, 'setupType>, testBody: TestBodyWithEnvironmentIndicator<'setupType>, teardown: TeardownIndicator<'setupType>, [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
@@ -423,6 +417,10 @@ type Feature<'featureType> (featurePath, featureName, transformer: TestInternals
         this.Test (TestTags [], Setup Ok, wrapTestBody testBody, Teardown (fun _ _ -> Ok ()), testName, fileFullName, lineNumber)
         
     member this.Script with get () = this :> IScriptFeature<'featureType>
+    
+    // member this.SubFeature<'subFeatureType> (subFeatureName: string, featureSetup: SetupIndicator<unit, 'subFeatureType>, featureTeardown: TeardownIndicator<'subFeatureType>, testBuilder: IScriptFeature<'subFeature> -> unit) =
+    //     let subFeature = Feature<'subFeatureType> (this.ToString (), subFeatureName, featureSetup, featureTeardown)
+    //     // subFeature
 
     interface IScriptFeature<'featureType> with
         member this.AsTest (tags: TagsIndicator, setup: SetupIndicator<'featureType, 'setupType>, testBody: TestBodyWithEnvironmentIndicator<'setupType>, teardown: TeardownIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int): (string -> unit) =

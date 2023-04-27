@@ -19,7 +19,8 @@ let private getNames () =
 type Arrow =
     // ------- featurePath -------
     static member NewFeature (featurePath, featureName, setup: SetupIndicator<unit, 'a>, teardown: TeardownIndicator<'a>) =
-        Feature (featurePath, featureName, setup, teardown)
+        let t = baseTransformer featurePath featureName setup teardown
+        Feature (featurePath, featureName, t)
         
     static member NewFeature (featurePath, featureName, setup: SetupIndicator<unit, 'a>) =
         Arrow.NewFeature (featurePath, featureName, setup, Teardown (fun _ _ -> Ok ()))
