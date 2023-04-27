@@ -9,12 +9,14 @@ open Archer
 open Archer.Arrows
 open Archer.CoreTypes.InternalTypes
 
-type TestInternals<'a, 'b> = {
-    FeatureSetup: unit -> Result<'a, SetupTeardownFailure>
-    TestSetup: 'a -> Result<'b, SetupTeardownFailure>
-    TestBody: 'b -> TestEnvironment -> TestResult
-    TestTeardown: Result<'b, SetupTeardownFailure> -> TestResult option -> Result<unit, SetupTeardownFailure>
-    FeatureTeardown: Result<'a, SetupTeardownFailure> -> TestResult option -> Result<unit, SetupTeardownFailure>
+type TestInternals = {
+    ContainerPath: string
+    ContainerName: string
+    TestName: string
+    Tags: TestTag seq
+    FilePath: string
+    FileName: string
+    LineNumber: int
 }
 
 type ExecutionResultsAccumulator<'featureSetupResult, 'setupResult> =
@@ -111,11 +113,11 @@ type SetupTeardownExecutor<'inputType, 'outputType>(setup: 'inputType -> Result<
             with
             | ex -> ex |> SetupTeardownExceptionFailure |> SetupExecutionFailure
         
-type WrappedTeardownExecutor<'outerInputType, 'outerOutputType, 'innerOutputType> (outerSetup: 'outerInputType -> Result<'outerOutputType, SetupTeardownFailure>, outerTeardown: Result<'outerOutputType, SetupTeardownFailure> -> TestResult option -> Result<unit, SetupTeardownFailure>, inner: SetupTeardownExecutor<'outerOutputType, 'innerOutputType>) as this =
-    inherit SetupTeardownExecutor<'outerInputType, 'outerOutputType> (outerSetup, outerTeardown, (inner :> ISetupTeardownExecutor<'outerOutputType>).Execute)
+type WrappedTeardownExecutor<'outerInputType, 'outerOutputType, 'innerOutputType> (outerSetup: 'outerInputType -> Result<'outerOutputType, SetupTeardownFailure>, outerTeardown: Result<'outerOutputType, SetupTeardownFailure> -> TestResult option -> Result<unit, SetupTeardownFailure>, inner: ISetupTeardownExecutor<'outerOutputType>) as this =
+    inherit SetupTeardownExecutor<'outerInputType, 'outerOutputType> (outerSetup, outerTeardown, inner.Execute)
     
     do
-        let executor = inner :> ISetupTeardownExecutor<'outerOutputType>
+        let executor = inner
         executor.LifecycleEvent.AddHandler (fun sender args ->
             this.Trigger (sender, args)
         )
@@ -138,10 +140,12 @@ type WrappedTeardownExecutor<'outerInputType, 'outerOutputType, 'innerOutputType
             if sender = this then
                 base.Trigger (this, args)
 
+    member this.AsSetupTeardownExecutor with get () = this :> ISetupTeardownExecutor<'outerInputType>
+
 type TestCaseExecutor(parent: ITest, internals: ISetupTeardownExecutor<unit>) =
     let testLifecycleEvent = Event<TestExecutionDelegate, TestEventLifecycle> ()
     
-    let handleEvents (cancelEventArgs: CancelEventArgs) (sender: obj) args =
+    let handleEvents (cancelEventArgs: CancelEventArgs) (_sender: obj) args =
         match args with
         | ExecuteSetupStart eventArgs ->
             cancelEventArgs.Cancel <- eventArgs.Cancel
@@ -276,7 +280,16 @@ type IScriptFeature<'featureType> =
     abstract member AsTest: testBody: TestBodyWithEnvironmentIndicator<'featureType> * teardown: TeardownIndicator<unit> * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int-> (string -> ITest)
     abstract member AsTest: testBody: TestBodyWithEnvironmentIndicator<'featureType> * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int-> (string -> ITest)
 
-type Feature<'featureType> (featurePath, featureName, featureSetup: SetupIndicator<unit, 'featureType>, featureTeardown: TeardownIndicator<'featureType>) =
+
+
+let baseTransformer<'featureType, 'a> featurePath featureName (featureSetup: SetupIndicator<unit, 'featureType>) (featureTeardown: TeardownIndicator<'featureType>) (internals: TestInternals, inner: ISetupTeardownExecutor<'featureType>) =
+    let (Setup setup) = featureSetup 
+    let (Teardown teardown) = featureTeardown
+        
+    let executor = WrappedTeardownExecutor<unit,'featureType,'a> (setup, teardown, inner)
+    TestCase (featurePath, featureName, internals.TestName, executor, internals.Tags, internals.FilePath, internals.FileName, internals.LineNumber) :> ITest
+
+type Feature<'featureType> (featurePath, featureName, transformer: TestInternals * ISetupTeardownExecutor<'featureType> -> ITest) =
     let mutable tests: ITest list = []
     
     let wrapTestBody (testBody: 'a -> TestResult) =
@@ -285,9 +298,10 @@ type Feature<'featureType> (featurePath, featureName, featureSetup: SetupIndicat
     let wrapTeardown teardown =
         let (Teardown teardown) = teardown
         Teardown (fun _ -> teardown (Ok ()))
-    
-    let (Setup featureSetup) = featureSetup
-    let (Teardown featureTeardown) = featureTeardown
+
+    new (featurePath, featureName, featureSetup: SetupIndicator<unit, 'featureType>, featureTeardown: TeardownIndicator<'featureType>) =
+        let t = baseTransformer featurePath featureName featureSetup featureTeardown
+        Feature<'featureType> (featurePath, featureName, t)
     
     // --------- TEST TAGS (with environment) ---------
     member _.Test (tags: TagsIndicator, setup: SetupIndicator<_, 'setupType>, testBody: TestBodyWithEnvironmentIndicator<'setupType>, teardown: TeardownIndicator<'setupType>, [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
@@ -299,8 +313,7 @@ type Feature<'featureType> (featurePath, featureName, featureSetup: SetupIndicat
             match tags, setup, testBody, teardown with
             | TestTags tags, Setup setup, TestWithEnvironmentBody testBody, Teardown teardown ->
                 let inner = SetupTeardownExecutor (setup, teardown, fun value env -> env |> testBody value |> TestExecutionResult)
-                let internals = WrappedTeardownExecutor (featureSetup, featureTeardown, inner)
-                TestCase (featurePath, featureName, testName, internals, tags, filePath, fileName, lineNumber) :> ITest
+                transformer ({ ContainerPath = featurePath; ContainerName = featureName; TestName = testName; Tags = tags; FilePath = filePath; FileName = fileName; LineNumber = lineNumber }, inner)
         
         tests <- test::tests
         test
