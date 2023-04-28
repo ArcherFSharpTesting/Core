@@ -1,7 +1,6 @@
 ﻿module Archer.Arrows.Tests.RawTestObjects.``TestCaseExecutor Event Cancellation Should``
 
 open Archer.Arrows
-open Archer.Arrows.Internal
 open Archer.Arrows.Tests
 open Archer.CoreTypes.InternalTypes
 open Archer.MicroLang
@@ -37,7 +36,7 @@ let ``Not call any methods when canceled in TestExecutionStart`` =
     feature.Test (
         Setup setupBuildExecutorWithMonitor,
         
-        TestBody (fun (monitor: Monitor, executor: ITestExecutor) ->
+        TestBody (fun (monitor: Monitor<unit, unit>, executor: ITestExecutor) ->
             executor.TestLifecycleEvent
             |> Event.add (fun args ->
                 match args with
@@ -85,7 +84,7 @@ let ``Call Teardown if canceled on TestEndSetup`` =
     feature.Test (
         Setup setupBuildExecutorWithMonitor,
         
-        TestBody (fun (monitor: Monitor, executor: ITestExecutor) ->
+        TestBody (fun (monitor: Monitor<unit, unit>, executor: ITestExecutor) ->
             executor.TestLifecycleEvent
             |> Event.add (fun args ->
                 match args with
@@ -134,7 +133,7 @@ let ``Call Teardown if canceled on TestStart`` =
     feature.Test (
         Setup setupBuildExecutorWithMonitor,
         
-        TestBody (fun (monitor: Monitor, executor: ITestExecutor) ->
+        TestBody (fun (monitor: Monitor<unit, unit>, executor: ITestExecutor) ->
             executor.TestLifecycleEvent
             |> Event.add (fun args ->
                 match args with
@@ -208,7 +207,7 @@ let ``Should not call the test action if canceled at TestStart`` =
     feature.Test (
         Setup setupBuildExecutorWithMonitor,
         
-        TestBody (fun (monitor: Monitor, executor: ITestExecutor) ->
+        TestBody (fun (monitor: Monitor<unit, unit>, executor: ITestExecutor) ->
             executor.TestLifecycleEvent
             |> Event.add (fun args ->
                 match args with

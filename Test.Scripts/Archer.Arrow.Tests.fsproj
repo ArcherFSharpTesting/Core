@@ -10,13 +10,14 @@
     <Compile Include="TestDoubles.fs" />
     <Compile Include="TestBuilders.fs" />
     <Compile Include="ExecuteHelper.fs" />
-    <Compile Include="RawTestObjects\Arrow Should.fs" />
     <Compile Include="RawTestObjects\FeatureShould.fs" />
     <Compile Include="RawTestObjects\TestCase Should.fs" />
     <Compile Include="RawTestObjects\TestCaseExecutor Should.fs" />
     <Compile Include="RawTestObjects\TestCaseExecutor Execute Should.fs" />
     <Compile Include="RawTestObjects\TestCaseExecutor Events Should.fs" />
     <Compile Include="RawTestObjects\TestCaseExecutor Event Cancellation Should.fs" />
+    <Compile Include="Arrow NewFeature.fs" />
+    <Compile Include="Arrow NewFeature With Setup.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
@@ -26,6 +27,7 @@
 
   <ItemGroup>
     <PackageReference Include="Archer.Bow.Lib" Version="0.0.9.20" />
+    <PackageReference Include="Archer.Fletching.Lib" Version="0.0.0.2" />
     <PackageReference Include="MicroLang.Lib" Version="0.0.12.39" />
     <PackageReference Update="FSharp.Core" Version="7.0.200" />
   </ItemGroup>

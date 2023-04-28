@@ -60,22 +60,31 @@ let setupBuiltExecutorWithTestBodyAndTeardownAction _ =
         
     builtExecutor |> Ok
 
-type Monitor () =
+type Monitor<'setupInputType, 'setupOutputType> (setupOutput: Result<'setupOutputType, SetupTeardownFailure>, teardownResult: Result<unit, SetupTeardownFailure>) =
     let mutable setupCalled = false
     let mutable testActionCalled = false
     let mutable teardownCalled = false
+    let mutable setupInput: 'setupInputType option = None
+    let mutable setupResult: Result<'setupOutputType, SetupTeardownFailure> option = None
+    let mutable testResultResult: TestResult option = None
     
-    member _.CallSetup () =
+    new (setupOutput: Result<'setupOutputType, SetupTeardownFailure>) =
+        Monitor (setupOutput, Ok ())
+    
+    member _.CallSetup input =
         setupCalled <- true
-        Ok ()
+        setupInput <- (Some input)
+        setupOutput
         
     member _.CallTestAction _ _ =
         testActionCalled <- true
         TestSuccess
         
-    member _.CallTeardown _ _ =
+    member _.CallTeardown setupValue testValue =
         teardownCalled <- true
-        Ok ()
+        setupResult <- (Some setupValue)
+        testResultResult <- testValue
+        teardownResult
         
     member _.SetupWasCalled with get () = setupCalled
     member _.TeardownWasCalled with get () = teardownCalled
@@ -83,7 +92,7 @@ type Monitor () =
     member _.WasCalled with get () = setupCalled || teardownCalled || testActionCalled
 
 let setupBuildExecutorWithMonitor _ =
-    let monitor = Monitor ()
+    let monitor = Monitor<unit, unit> (Ok ())
     let feature = Arrow.NewFeature (
         Setup monitor.CallSetup,
         Teardown monitor.CallTeardown
