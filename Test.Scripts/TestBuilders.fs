@@ -61,35 +61,38 @@ let setupBuiltExecutorWithTestBodyAndTeardownAction _ =
     builtExecutor |> Ok
 
 type Monitor<'setupInputType, 'setupOutputType> (setupOutput: Result<'setupOutputType, SetupTeardownFailure>, teardownResult: Result<unit, SetupTeardownFailure>) =
-    let mutable setupCalled = false
-    let mutable testActionCalled = false
-    let mutable teardownCalled = false
     let mutable setupInput: 'setupInputType option = None
     let mutable setupResult: Result<'setupOutputType, SetupTeardownFailure> option = None
     let mutable testResultResult: TestResult option = None
+    let mutable setupCount = 0
+    let mutable teardownCount = 0
+    let mutable testCount = 0
     
     new (setupOutput: Result<'setupOutputType, SetupTeardownFailure>) =
         Monitor (setupOutput, Ok ())
     
     member _.CallSetup input =
-        setupCalled <- true
+        setupCount <- setupCount + 1
         setupInput <- (Some input)
         setupOutput
         
     member _.CallTestAction _ _ =
-        testActionCalled <- true
+        testCount <- testCount + 1
         TestSuccess
         
     member _.CallTeardown setupValue testValue =
-        teardownCalled <- true
+        teardownCount <- teardownCount + 1
         setupResult <- (Some setupValue)
         testResultResult <- testValue
         teardownResult
         
-    member _.SetupWasCalled with get () = setupCalled
-    member _.TeardownWasCalled with get () = teardownCalled
-    member _.TestWasCalled with get () = testActionCalled
-    member _.WasCalled with get () = setupCalled || teardownCalled || testActionCalled
+    member _.SetupWasCalled with get () = 0 < setupCount
+    member _.TeardownWasCalled with get () = 0 < teardownCount
+    member _.TestWasCalled with get () = 0 < testCount
+    member this.WasCalled with get () = this.SetupWasCalled || this.TeardownWasCalled || this.TestWasCalled
+    member _.NumberOfTimesSetupWasCalled with get () = setupCount
+    member _.NumberOfTimesTeardownWasCalled with get () = teardownCount
+    member _.NumberOfTimesTestWasCalled with get () = testCount
 
 let setupBuildExecutorWithMonitor _ =
     let monitor = Monitor<unit, unit> (Ok ())

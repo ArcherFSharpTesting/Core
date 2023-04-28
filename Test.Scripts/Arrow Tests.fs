@@ -1,7 +1,8 @@
 module Archer.Arrows.Tests.``Arrow Tests``
 
+open Archer
 open Archer.Arrows
-open Archer.ShouldTypes
+open Archer.MicroLang.Verification
 
 type private Thing = {
     UnitProp: unit
@@ -20,6 +21,25 @@ let ``Test Cases`` =
             |> feature.AsTest (fun _ ->
                 feature.ToString ()
                 |> Should.BeEqualTo $"%s{path}.%s{name}"
+            )
+            
+            "Should run every test specified in the builder"
+            |> feature.AsTest (fun _ ->
+                let monitor = Monitor<unit, unit> (Ok ())
+                let tests =
+                    Arrow.Tests (
+                        fun f ->
+                            "A" |> f.AsTest monitor.CallTestAction
+                            "B" |> f.AsTest monitor.CallTestAction
+                            "3" |> f.AsTest monitor.CallTestAction
+                            "30" |> f.AsTest monitor.CallTestAction
+                    )
+                    |> List.map ((fun tst -> tst.GetExecutor ()) >> executeFunction >> runIt)
+                
+                
+                monitor.NumberOfTimesTestWasCalled
+                |> Should.BeEqualTo tests.Length
+                |> withMessage "Incorrect number of tests were run."
             )
         )
         
