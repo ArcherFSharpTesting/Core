@@ -25,7 +25,7 @@ let ``Should call teardown when it is the only thing specified`` =
             |> ignore
             
             monitor.TeardownWasCalled
-            |> Should.BeEqualTo true
+            |> Should.BeTrue
             |> withMessage "Setup didn't run"
     )
 
@@ -47,7 +47,7 @@ let ``Should call name, and teardown when are specified`` =
             |> ignore
             
             monitor.TeardownWasCalled
-            |> Should.BeEqualTo true
+            |> Should.BeTrue
             |> withMessage "Setup didn't run"
     )
 
@@ -70,7 +70,7 @@ let ``Should call path, name, and teardown when are specified`` =
             |> ignore
             
             monitor.TeardownWasCalled
-            |> Should.BeEqualTo true
+            |> Should.BeTrue
             |> withMessage "Setup didn't run"
     )
 
@@ -92,7 +92,7 @@ let ``Should call teardown when setup, and teardown are specified`` =
             |> ignore
             
             monitor.TeardownWasCalled
-            |> Should.BeEqualTo true
+            |> Should.BeTrue
             |> withMessage "Setup didn't run"
     )
 
@@ -115,7 +115,7 @@ let ``Should call teardown when name, setup, and teardown are specified`` =
             |> ignore
             
             monitor.TeardownWasCalled
-            |> Should.BeEqualTo true
+            |> Should.BeTrue
             |> withMessage "Setup didn't run"
     )
 
@@ -139,6 +139,6 @@ let ``Should call teardown when path, name, setup, and teardown are specified`` 
             |> ignore
             
             monitor.TeardownWasCalled
-            |> Should.BeEqualTo true
+            |> Should.BeTrue
             |> withMessage "Setup didn't run"
     )

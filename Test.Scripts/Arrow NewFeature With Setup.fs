@@ -24,7 +24,7 @@ let ``Should call setup when it is the only thing passed to it`` =
             |> ignore
             
             monitor.SetupWasCalled
-            |> Should.BeEqualTo true
+            |> Should.BeTrue
             |> withMessage "Setup didn't run"
     )
 
@@ -46,7 +46,7 @@ let ``Should call setup when name and setup are specified`` =
             |> ignore
             
             monitor.SetupWasCalled
-            |> Should.BeEqualTo true
+            |> Should.BeTrue
             |> withMessage "Setup didn't run"
     )
 
@@ -69,7 +69,7 @@ let ``Should call setup when path, name, and setup are specified`` =
             |> ignore
             
             monitor.SetupWasCalled
-            |> Should.BeEqualTo true
+            |> Should.BeTrue
             |> withMessage "Setup didn't run"
     )
     
@@ -91,7 +91,7 @@ let ``Should call setup when it is passed with a teardown`` =
             |> ignore
             
             monitor.SetupWasCalled
-            |> Should.BeEqualTo true
+            |> Should.BeTrue
             |> withMessage "Setup didn't run"
     )
     
@@ -114,7 +114,7 @@ let ``Should call setup when name, setup, and teardown are specified`` =
             |> ignore
             
             monitor.SetupWasCalled
-            |> Should.BeEqualTo true
+            |> Should.BeTrue
             |> withMessage "Setup didn't run"
     )
     
@@ -138,7 +138,7 @@ let ``Should call setup when path, name, setup, and teardown are specified`` =
             |> ignore
             
             monitor.SetupWasCalled
-            |> Should.BeEqualTo true
+            |> Should.BeTrue
             |> withMessage "Setup didn't run"
     )
 
