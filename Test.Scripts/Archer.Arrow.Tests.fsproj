@@ -18,6 +18,7 @@
     <Compile Include="RawTestObjects\TestCaseExecutor Event Cancellation Should.fs" />
     <Compile Include="Arrow NewFeature.fs" />
     <Compile Include="Arrow NewFeature With Setup.fs" />
+    <Compile Include="Arrow NewFeature With Teardown.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 

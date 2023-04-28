@@ -1,4 +1,5 @@
-﻿open Archer.Arrows.Tests.RawTestObjects
+﻿open Archer.Arrows.Tests
+open Archer.Arrows.Tests.RawTestObjects
 open Archer.Bow
 open Archer
 open Archer.CoreTypes.InternalTypes
@@ -32,12 +33,14 @@ framework.FrameworkLifecycleEvent
 
 framework
 |> addManyTests [
-    ``Arrow NewFeature``.``Test Cases``
     ``Feature Should``.``Test Cases``
     ``TestCase Should``.``Test Cases``
     ``TestCaseExecutor Should``.``Test Cases``
     ``TestCaseExecutor Execute Should``.``Test Cases``
     ``TestCaseExecutor Events Should``.``Test Cases``
     ``TestCaseExecutor Event Cancellation Should``.``Test Cases``
+    ``Arrow NewFeature``.``Test Cases``
+    ``Arrow NewFeature With Setup``.``Test Cases``
+    ``Arrow NewFeature With Teardown``.``Test Cases``
 ]
 |> filterRunAndReport testFilter
