@@ -42,5 +42,6 @@ framework
     ``Arrow NewFeature``.``Test Cases``
     ``Arrow NewFeature With Setup``.``Test Cases``
     ``Arrow NewFeature With Teardown``.``Test Cases``
+    ``Arrow Tests``.``Test Cases``
 ]
 |> filterRunAndReport testFilter
