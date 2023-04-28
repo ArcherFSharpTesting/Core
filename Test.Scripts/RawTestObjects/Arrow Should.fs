@@ -11,7 +11,7 @@ let ``Create a Feature`` =
     container.Test (
         fun _ ->
             Arrow.NewFeature ()
-            |> expects.ToBeOfType<Feature<unit, ITest>>
+            |> expects.ToBeOfType<Feature<unit>>
     )
     
 let ``Create a feature with the correct names`` =

@@ -297,8 +297,8 @@ let baseTransformer<'featureType, 'a> (featureSetup: SetupIndicator<unit, 'featu
     let executor = WrappedTeardownExecutor<unit,'featureType> (setup, teardown, inner)
     TestCase (internals.ContainerPath, internals.ContainerName, internals.TestName, executor, internals.Tags, internals.FilePath, internals.FileName, internals.LineNumber) :> ITest
 
-type Feature<'featureType, 'xformType> (featurePath, featureName, transformer: TestInternals * ISetupTeardownExecutor<'featureType> -> 'xformType) =
-    let mutable tests: 'xformType list = []
+type Feature<'featureType> (featurePath, featureName, transformer: TestInternals * ISetupTeardownExecutor<'featureType> -> ITest) =
+    let mutable tests: ITest list = []
     
     let wrapTestBody (testBody: 'a -> TestResult) =
         TestWithEnvironmentBody (fun setupResult _env -> testBody setupResult)
@@ -307,7 +307,7 @@ type Feature<'featureType, 'xformType> (featurePath, featureName, transformer: T
         let (Teardown teardown) = teardown
         Teardown (fun _ -> teardown (Ok ()))
         
-    interface IBuilder<'featureType, 'xformType> with
+    interface IBuilder<'featureType, ITest> with
         member _.Add (internals: TestInternals, executor: ISetupTeardownExecutor<'featureType>) =
             let test = transformer (internals, executor)
             tests <- test::tests
@@ -515,31 +515,3 @@ type Feature<'featureType, 'xformType> (featurePath, featureName, transformer: T
         |> List.filter (String.IsNullOrWhiteSpace >> not)
         |> fun items -> String.Join (".", items)
         
-type Sub =
-    static member Feature (subFeatureName, setup: SetupIndicator<'featureType, 'subFeatureType>, teardown: TeardownIndicator<'subFeatureType>, testBuilder: IScriptFeature<'subFeatureType> -> unit) =
-        let buildIt (feature: Feature<'featureType, 'featureResultType>) =
-            let builder = feature :> IBuilder<'featureType, 'featureResultType>
-            
-            let transformer (internals: TestInternals, executor: ISetupTeardownExecutor<'subFeatureType>) =
-                let (Setup setup) = setup
-                let (Teardown teardown) = teardown
-                internals, (WrappedTeardownExecutor (setup, teardown, executor) :> ISetupTeardownExecutor<'featureType>)
-            
-            let subFeature = Feature<'subFeatureType, TestInternals * ISetupTeardownExecutor<'featureType>> (feature.ToString (), subFeatureName, transformer)
-            
-            subFeature :> IScriptFeature<'subFeatureType> |> testBuilder
-            
-            subFeature.GetTests ()
-            |> List.map builder.Add
-            |> ignore
-            
-        buildIt
-        
-    static member Feature (subFeatureName, setup: SetupIndicator<'featureType, 'subFeatureType>, testBuilder: IScriptFeature<'subFeatureType> -> unit) =
-        Sub.Feature (subFeatureName, setup, Teardown (fun _ _ -> Ok ()), testBuilder)
-        
-    static member Feature (subFeatureName, teardown: TeardownIndicator<unit>, testBuilder: IScriptFeature<unit> -> unit) =
-        Sub.Feature (subFeatureName, Setup (fun _ -> Ok ()), teardown, testBuilder)
-        
-    static member Feature (subFeatureName, testBuilder: IScriptFeature<unit> -> unit) =
-        Sub.Feature (subFeatureName, Setup (fun _ -> Ok ()), Teardown (fun _ _ -> Ok ()), testBuilder)
