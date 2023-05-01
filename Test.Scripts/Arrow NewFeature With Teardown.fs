@@ -6,8 +6,6 @@ open Archer.MicroLang.Verification
 
 let private feature = Arrow.NewFeature ()
 
-let ``Test Cases`` = feature.GetTests ()
-
 let ``Should call teardown when it is the only thing specified`` =
     feature.Test (
         fun _ ->
@@ -142,3 +140,6 @@ let ``Should call teardown when path, name, setup, and teardown are specified`` 
             |> Should.BeTrue
             |> withMessage "Setup didn't run"
     )
+
+let ``Test Cases`` = feature.GetTests ()
+
