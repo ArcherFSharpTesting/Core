@@ -452,6 +452,10 @@ type Feature<'featureType> (featurePath, featureName, transformer: TestInternals
         let tb = TestWithEnvironmentBody (fun _ _ -> failure)
         this.Test (tags, Setup (fun _ -> Ok ()), tb, Teardown (fun _ _ -> Ok ()), testName, fileFullName, lineNumber)
 
+    member this.Ignore (tags: TagsIndicator, testBody: TestBodyWithEnvironmentIndicator<unit>, teardown: TeardownIndicator<unit>, [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+        this.Ignore (tags, Setup (fun _ -> Ok ()), testBody, teardown, testName, fileFullName, lineNumber)
+
+    
     // ----------------------------------------------------------------
     // -                          isTestedBy                          - 
     // ----------------------------------------------------------------
