@@ -15,9 +15,9 @@ let ``Should execute the setup by every test specified in the test builder when 
                 Arrow.Tests (
                     Setup monitor.CallSetup,
                     fun f ->
-                        "Test A" |> f.AsTest (fun _ -> TestSuccess)
-                        "Test B" |> f.AsTest (fun _ -> TestSuccess)
-                        "Test C" |> f.AsTest (fun _ -> TestSuccess)
+                        "Test A" |> f.isTestedBy (fun _ -> TestSuccess)
+                        "Test B" |> f.isTestedBy (fun _ -> TestSuccess)
+                        "Test C" |> f.isTestedBy (fun _ -> TestSuccess)
                 )
                 |> List.map ((fun tst -> tst.GetExecutor ()) >> executeFunction >> runIt)
             
@@ -35,9 +35,9 @@ let ``Should execute every test specified in the test builder when only setup an
                 Arrow.Tests (
                     Setup monitor.CallSetup,
                     fun f ->
-                        "Test A" |> f.AsTest monitor.CallTestAction
-                        "Test B" |> f.AsTest monitor.CallTestAction
-                        "Test C" |> f.AsTest monitor.CallTestAction
+                        "Test A" |> f.isTestedBy monitor.CallTestAction
+                        "Test B" |> f.isTestedBy monitor.CallTestAction
+                        "Test C" |> f.isTestedBy monitor.CallTestAction
                 )
                 |> List.map ((fun tst -> tst.GetExecutor ()) >> executeFunction >> runIt)
             
@@ -56,9 +56,9 @@ let ``Should execute the setup by every test specified in the test builder when 
                     "My Feature Name",
                     Setup monitor.CallSetup,
                     fun f ->
-                        "Test A" |> f.AsTest (fun _ -> TestSuccess)
-                        "Test B" |> f.AsTest (fun _ -> TestSuccess)
-                        "Test C" |> f.AsTest (fun _ -> TestSuccess)
+                        "Test A" |> f.isTestedBy (fun _ -> TestSuccess)
+                        "Test B" |> f.isTestedBy (fun _ -> TestSuccess)
+                        "Test C" |> f.isTestedBy (fun _ -> TestSuccess)
                 )
                 |> List.map ((fun tst -> tst.GetExecutor ()) >> executeFunction >> runIt)
             
@@ -77,9 +77,9 @@ let ``Should execute every test specified in the test builder when name, setup, 
                     "My Feature Name",
                     Setup monitor.CallSetup,
                     fun f ->
-                        "Test A" |> f.AsTest monitor.CallTestAction
-                        "Test B" |> f.AsTest monitor.CallTestAction
-                        "Test C" |> f.AsTest monitor.CallTestAction
+                        "Test A" |> f.isTestedBy monitor.CallTestAction
+                        "Test B" |> f.isTestedBy monitor.CallTestAction
+                        "Test C" |> f.isTestedBy monitor.CallTestAction
                 )
                 |> List.map ((fun tst -> tst.GetExecutor ()) >> executeFunction >> runIt)
             
@@ -99,9 +99,9 @@ let ``Should execute the setup by every test specified in the test builder when 
                     "My Feature",
                     Setup monitor.CallSetup,
                     fun f ->
-                        "Test A" |> f.AsTest (fun _ -> TestSuccess)
-                        "Test B" |> f.AsTest (fun _ -> TestSuccess)
-                        "Test C" |> f.AsTest (fun _ -> TestSuccess)
+                        "Test A" |> f.isTestedBy (fun _ -> TestSuccess)
+                        "Test B" |> f.isTestedBy (fun _ -> TestSuccess)
+                        "Test C" |> f.isTestedBy (fun _ -> TestSuccess)
                 )
                 |> List.map ((fun tst -> tst.GetExecutor ()) >> executeFunction >> runIt)
             
@@ -121,9 +121,9 @@ let ``Should execute every test specified in the test builder when path, name, s
                     "My Feature",
                     Setup monitor.CallSetup,
                     fun f ->
-                        "Test A" |> f.AsTest monitor.CallTestAction
-                        "Test B" |> f.AsTest monitor.CallTestAction
-                        "Test C" |> f.AsTest monitor.CallTestAction
+                        "Test A" |> f.isTestedBy monitor.CallTestAction
+                        "Test B" |> f.isTestedBy monitor.CallTestAction
+                        "Test C" |> f.isTestedBy monitor.CallTestAction
                 )
                 |> List.map ((fun tst -> tst.GetExecutor ()) >> executeFunction >> runIt)
             
