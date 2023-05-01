@@ -10,7 +10,7 @@
     <Compile Include="TestDoubles.fs" />
     <Compile Include="TestBuilders.fs" />
     <Compile Include="ExecuteHelper.fs" />
-    <Compile Include="RawTestObjects\FeatureShould.fs" />
+    <Compile Include="RawTestObjects\Feature Should.fs" />
     <Compile Include="RawTestObjects\TestCase Should.fs" />
     <Compile Include="RawTestObjects\TestCaseExecutor Should.fs" />
     <Compile Include="RawTestObjects\TestCaseExecutor Execute Should.fs" />
