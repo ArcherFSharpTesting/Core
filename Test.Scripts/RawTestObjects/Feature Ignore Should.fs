@@ -2221,7 +2221,7 @@ let ``return a test with correct test name when given test body with environment
         let fut = Arrow.NewFeature ()
         
         let test = fut.Ignore (
-            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
+            (fun _ _ -> TestSuccess),
             "The ignored test",
             "S:\\path\\file.f",
             3
@@ -2236,7 +2236,7 @@ let ``return a test with correct file path when given test body with environment
         let fut = Arrow.NewFeature ()
         
         let test = fut.Ignore (
-            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
+            (fun _ _ -> TestSuccess),
             "The ignored test",
             "S:\\path\\file.f",
             3
@@ -2251,7 +2251,7 @@ let ``return a test with correct file name when given test body with environment
         let fut = Arrow.NewFeature ()
         
         let test = fut.Ignore (
-            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
+            (fun _ _ -> TestSuccess),
             "The ignored test",
             "S:\\path\\file.f",
             3
@@ -2266,7 +2266,7 @@ let ``return a test with correct line number when given test body with environme
         let fut = Arrow.NewFeature ()
         
         let test = fut.Ignore (
-            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
+            (fun _ _ -> TestSuccess),
             "The ignored test",
             "S:\\path\\file.f",
             32
@@ -2282,7 +2282,7 @@ let ``return a test that returns an "Ignored" result when given test body with e
         let fut = Arrow.NewFeature ()
         
         let test = fut.Ignore (
-            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
+            (fun _ _ -> TestSuccess),
             "My ignored test",
             "S:\\path\\file.f",
             3
@@ -2303,7 +2303,7 @@ let ``return a test that does not call the test action when run when given test 
         let fut = Arrow.NewFeature ()
         
         let test = fut.Ignore (
-            TestWithEnvironmentBody monitor.CallTestActionWithEnvironment,
+            monitor.CallTestActionWithEnvironment,
             "My ignored test",
             "S:\\path\\file.f",
             3
@@ -2327,7 +2327,7 @@ let ``return a test with correct test name when given test body, test name, path
         let fut = Arrow.NewFeature ()
         
         let test = fut.Ignore (
-            TestBody (fun _ -> TestSuccess),
+            (fun _ -> TestSuccess),
             "The ignored test",
             "S:\\path\\file.f",
             3
@@ -2342,7 +2342,7 @@ let ``return a test with correct file path when given test body, test name, path
         let fut = Arrow.NewFeature ()
         
         let test = fut.Ignore (
-            TestBody (fun _ -> TestSuccess),
+            (fun _ -> TestSuccess),
             "The ignored test",
             "S:\\path\\file.f",
             3
@@ -2357,7 +2357,7 @@ let ``return a test with correct file name when given test body, test name, path
         let fut = Arrow.NewFeature ()
         
         let test = fut.Ignore (
-            TestBody (fun _ -> TestSuccess),
+            (fun _ -> TestSuccess),
             "The ignored test",
             "S:\\path\\file.f",
             3
@@ -2372,7 +2372,7 @@ let ``return a test with correct line number when given test body, test name, pa
         let fut = Arrow.NewFeature ()
         
         let test = fut.Ignore (
-            TestBody (fun _ -> TestSuccess),
+            (fun _ -> TestSuccess),
             "The ignored test",
             "S:\\path\\file.f",
             32
@@ -2388,7 +2388,7 @@ let ``return a test that returns an "Ignored" result when given test body, test 
         let fut = Arrow.NewFeature ()
         
         let test = fut.Ignore (
-            TestBody (fun _ -> TestSuccess),
+            (fun _ -> TestSuccess),
             "My ignored test",
             "S:\\path\\file.f",
             3
@@ -2409,7 +2409,7 @@ let ``return a test that does not call the test action when run when given test 
         let fut = Arrow.NewFeature ()
         
         let test = fut.Ignore (
-            TestBody monitor.CallTestActionWithoutEnvironment,
+            monitor.CallTestActionWithoutEnvironment,
             "My ignored test",
             "S:\\path\\file.f",
             3

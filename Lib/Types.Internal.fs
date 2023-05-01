@@ -497,12 +497,11 @@ type Feature<'featureType> (featurePath, featureName, transformer: TestInternals
         this.Ignore (TestWithEnvironmentBody (fun value _ -> tb value), teardown, testName, fileFullName, lineNumber)
         
     // Test body
-    member this.Ignore (testBody: TestBodyWithEnvironmentIndicator<unit>, [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
-        this.Ignore (TestTags [], Setup (fun _ -> Ok ()), testBody, Teardown (fun _ _ -> Ok ()), testName, fileFullName, lineNumber)
+    member this.Ignore (testBody: TestBodyWithEnvironment<unit>, [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+        this.Ignore (TestTags [], Setup (fun _ -> Ok ()), TestWithEnvironmentBody testBody, Teardown (fun _ _ -> Ok ()), testName, fileFullName, lineNumber)
         
-    member this.Ignore (testBody: TestBodyIndicator<unit>, [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
-        let (TestBody tb) = testBody
-        this.Ignore (TestWithEnvironmentBody (fun value _ -> tb value), testName, fileFullName, lineNumber)
+    member this.Ignore (testBody: TestFunction<unit>, [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+        this.Ignore ((fun value _ -> testBody value), testName, fileFullName, lineNumber)
     
     // ----------------------------------------------------------------
     // -                          isTestedBy                          - 
