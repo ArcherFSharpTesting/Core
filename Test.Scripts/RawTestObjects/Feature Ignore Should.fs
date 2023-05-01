@@ -1943,4 +1943,274 @@ let ``return a test that does not call the test action when run when given setup
         |> withMessage "Test action was run when it should not have been"
     )
     
+// --------------------------------------------------------------
+// -       No setup, test body with environment, teardown       -
+// --------------------------------------------------------------
+let ``return a test with correct test name when given test body with environment, teardown, test name, path, and line number`` =
+    feature.Test (fun _ ->
+        let fut = Arrow.NewFeature ()
+        
+        let test = fut.Ignore (
+            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
+            Teardown (fun _ _ -> Ok ()),
+            "The ignored test",
+            "S:\\path\\file.f",
+            3
+        )
+        
+        test.TestName
+        |> Should.BeEqualTo "The ignored test"
+    )
+
+let ``return a test with correct file path when given test body with environment, teardown, test name, path, and line number`` =
+    feature.Test (fun _ ->
+        let fut = Arrow.NewFeature ()
+        
+        let test = fut.Ignore (
+            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
+            Teardown (fun _ _ -> Ok ()),
+            "The ignored test",
+            "S:\\path\\file.f",
+            3
+        )
+        
+        test.Location.FilePath
+        |> Should.BeEqualTo "S:\\path"
+    )
+
+let ``return a test with correct file name when given test body with environment, teardown, test name, path, and line number`` =
+    feature.Test (fun _ ->
+        let fut = Arrow.NewFeature ()
+        
+        let test = fut.Ignore (
+            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
+            Teardown (fun _ _ -> Ok ()),
+            "The ignored test",
+            "S:\\path\\file.f",
+            3
+        )
+        
+        test.Location.FileName
+        |> Should.BeEqualTo "file.f"
+    )
+
+let ``return a test with correct line number when given test body with environment, teardown, test name, path, and line number`` =
+    feature.Test (fun _ ->
+        let fut = Arrow.NewFeature ()
+        
+        let test = fut.Ignore (
+            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
+            Teardown (fun _ _ -> Ok ()),
+            "The ignored test",
+            "S:\\path\\file.f",
+            32
+        )
+        
+        test.Location.LineNumber
+        |> Should.BeEqualTo 32
+    )
+
+let ``return a test that returns an "Ignored" result when given test body with environment, teardown, test name, path, and line number`` =
+    feature.Test (fun _ ->
+        let expected = failureBuilder.IgnoreFailure ("S:\\path\\file.f", 3)
+        let fut = Arrow.NewFeature ()
+        
+        let test = fut.Ignore (
+            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
+            Teardown (fun _ _ -> Ok ()),
+            "My ignored test",
+            "S:\\path\\file.f",
+            3
+        )
+        
+        let result =
+            test.GetExecutor ()
+            |> executeFunction
+            |> runIt
+        
+        result
+        |> Should.BeEqualTo expected
+    )
+
+let ``return a test that does not call the test action when run when given test body with environment, teardown, test name, path, and line number`` =
+    feature.Test (fun _ ->
+        let monitor = Monitor (Ok ())
+        let fut = Arrow.NewFeature ()
+        
+        let test = fut.Ignore (
+            TestWithEnvironmentBody monitor.CallTestActionWithEnvironment,
+            Teardown (fun _ _ -> Ok ()),
+            "My ignored test",
+            "S:\\path\\file.f",
+            3
+        )
+        
+        test.GetExecutor ()
+        |> executeFunction
+        |> runIt
+        |> ignore
+        
+        monitor.TestWasCalled
+        |> Should.BeFalse
+        |> withMessage "Test action was run when it should not have been"
+    )
+
+let ``return a test that does not call the teardown when run when given test body with environment, teardown, test name, path, and line number`` =
+    feature.Test (fun _ ->
+        let monitor = Monitor (Ok ())
+        let fut = Arrow.NewFeature ()
+        
+        let test = fut.Ignore (
+            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
+            Teardown monitor.CallTeardown,
+            "My ignored test",
+            "S:\\path\\file.f",
+            3
+        )
+        
+        test.GetExecutor ()
+        |> executeFunction
+        |> runIt
+        |> ignore
+        
+        monitor.TeardownWasCalled
+        |> Should.BeFalse
+        |> withMessage "Teardown was run when it should not have been"
+    )
+    
+// ----------------------------------------------------------------
+// -            No tags, no setup, test body, teardown            -
+// ----------------------------------------------------------------
+let ``return a test with correct test name when given test body, teardown, test name, path, and line number`` =
+    feature.Test (fun _ ->
+        let fut = Arrow.NewFeature ()
+        
+        let test = fut.Ignore (
+            TestBody (fun _ -> TestSuccess),
+            Teardown (fun _ _ -> Ok ()),
+            "The ignored test",
+            "S:\\path\\file.f",
+            3
+        )
+        
+        test.TestName
+        |> Should.BeEqualTo "The ignored test"
+    )
+
+let ``return a test with correct file path when given test body, teardown, test name, path, and line number`` =
+    feature.Test (fun _ ->
+        let fut = Arrow.NewFeature ()
+        
+        let test = fut.Ignore (
+            TestBody (fun _ -> TestSuccess),
+            Teardown (fun _ _ -> Ok ()),
+            "The ignored test",
+            "S:\\path\\file.f",
+            3
+        )
+        
+        test.Location.FilePath
+        |> Should.BeEqualTo "S:\\path"
+    )
+
+let ``return a test with correct file name when given test body, teardown, test name, path, and line number`` =
+    feature.Test (fun _ ->
+        let fut = Arrow.NewFeature ()
+        
+        let test = fut.Ignore (
+            TestBody (fun _ -> TestSuccess),
+            Teardown (fun _ _ -> Ok ()),
+            "The ignored test",
+            "S:\\path\\file.f",
+            3
+        )
+        
+        test.Location.FileName
+        |> Should.BeEqualTo "file.f"
+    )
+
+let ``return a test with correct line number when given test body, teardown, test name, path, and line number`` =
+    feature.Test (fun _ ->
+        let fut = Arrow.NewFeature ()
+        
+        let test = fut.Ignore (
+            TestBody (fun _ -> TestSuccess),
+            Teardown (fun _ _ -> Ok ()),
+            "The ignored test",
+            "S:\\path\\file.f",
+            32
+        )
+        
+        test.Location.LineNumber
+        |> Should.BeEqualTo 32
+    )
+
+let ``return a test that returns an "Ignored" result when given test body, teardown, test name, path, and line number`` =
+    feature.Test (fun _ ->
+        let expected = failureBuilder.IgnoreFailure ("S:\\path\\file.f", 3)
+        let fut = Arrow.NewFeature ()
+        
+        let test = fut.Ignore (
+            TestBody (fun _ -> TestSuccess),
+            Teardown (fun _ _ -> Ok ()),
+            "My ignored test",
+            "S:\\path\\file.f",
+            3
+        )
+        
+        let result =
+            test.GetExecutor ()
+            |> executeFunction
+            |> runIt
+        
+        result
+        |> Should.BeEqualTo expected
+    )
+
+let ``return a test that does not call the test action when run when given test body, teardown, test name, path, and line number`` =
+    feature.Test (fun _ ->
+        let monitor = Monitor (Ok ())
+        let fut = Arrow.NewFeature ()
+        
+        let test = fut.Ignore (
+            TestBody monitor.CallTestActionWithoutEnvironment,
+            Teardown (fun _ _ -> Ok ()),
+            "My ignored test",
+            "S:\\path\\file.f",
+            3
+        )
+        
+        test.GetExecutor ()
+        |> executeFunction
+        |> runIt
+        |> ignore
+        
+        monitor.TestWasCalled
+        |> Should.BeFalse
+        |> withMessage "Test action was run when it should not have been"
+    )
+
+let ``return a test that does not call the teardown when run when given test body, teardown, test name, path, and line number`` =
+    feature.Test (fun _ ->
+        let monitor = Monitor (Ok ())
+        let fut = Arrow.NewFeature ()
+        
+        let test = fut.Ignore (
+            TestBody (fun _ -> TestSuccess),
+            Teardown monitor.CallTeardown,
+            "My ignored test",
+            "S:\\path\\file.f",
+            3
+        )
+        
+        test.GetExecutor ()
+        |> executeFunction
+        |> runIt
+        |> ignore
+        
+        monitor.TeardownWasCalled
+        |> Should.BeFalse
+        |> withMessage "Teardown was run when it should not have been"
+    )
+    
 let ``Test Cases`` = feature.GetTests ()

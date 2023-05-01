@@ -487,6 +487,14 @@ type Feature<'featureType> (featurePath, featureName, transformer: TestInternals
         
     member this.Ignore (setup: SetupIndicator<_, 'setupType>, testBody: TestBodyIndicator<'setupType>, [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
         this.Ignore (setup, testBody, Teardown (fun _ _ -> Ok ()), testName, fileFullName, lineNumber)
+    // Teardown
+    
+    member this.Ignore (testBody: TestBodyWithEnvironmentIndicator<unit>, teardown: TeardownIndicator<unit>, [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+        this.Ignore (TestTags [], Setup (fun _ -> Ok ()), testBody, teardown, testName, fileFullName, lineNumber)
+        
+    member this.Ignore (testBody: TestBodyIndicator<unit>, teardown: TeardownIndicator<unit>, [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+        let (TestBody tb) = testBody
+        this.Ignore (TestWithEnvironmentBody (fun value _ -> tb value), teardown, testName, fileFullName, lineNumber)
     
     // ----------------------------------------------------------------
     // -                          isTestedBy                          - 
