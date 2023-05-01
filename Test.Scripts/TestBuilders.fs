@@ -76,7 +76,7 @@ type Monitor<'setupInputType, 'setupOutputType> (setupOutput: Result<'setupOutpu
         setupInput <- (Some input)
         setupOutput
         
-    member _.CallTestAction _ _ =
+    member _.CallTestActionWithEnvironment _ _ =
         testCount <- testCount + 1
         TestSuccess
         
@@ -101,5 +101,5 @@ let setupBuildExecutorWithMonitor _ =
         Teardown monitor.CallTeardown
     )
     
-    let test = feature.Test monitor.CallTestAction
+    let test = feature.Test monitor.CallTestActionWithEnvironment
     Ok (monitor, test.GetExecutor ())

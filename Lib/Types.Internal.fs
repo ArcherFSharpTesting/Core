@@ -289,13 +289,23 @@ type IScriptFeature<'featureType> =
     abstract member isTestedBy: testBody: TestBodyIndicator<'featureType> * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> (string -> unit)
     abstract member isTestedBy: testBody: TestFunction<'featureType> * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> (string -> unit)
     
-
 let baseTransformer<'featureType, 'a> (featureSetup: SetupIndicator<unit, 'featureType>) (featureTeardown: TeardownIndicator<'featureType>) (internals: TestInternals, inner: ISetupTeardownExecutor<'featureType>) =
     let (Setup setup) = featureSetup 
     let (Teardown teardown) = featureTeardown
         
     let executor = WrappedTeardownExecutor<unit,'featureType> (setup, teardown, inner)
     TestCase (internals.ContainerPath, internals.ContainerName, internals.TestName, executor, internals.Tags, internals.FilePath, internals.FileName, internals.LineNumber) :> ITest
+    
+let private getLocation (fileFullName: string) (lineNumber: int) =
+    let fileInfo = FileInfo fileFullName
+    let filePath = fileInfo.Directory.FullName
+    let fileName = fileInfo.Name
+    
+    {
+        FilePath = filePath
+        FileName = fileName
+        LineNumber = lineNumber 
+    }
 
 type Feature<'featureType> (featurePath, featureName, transformer: TestInternals * ISetupTeardownExecutor<'featureType> -> ITest) =
     let mutable tests: ITest list = []
@@ -313,16 +323,18 @@ type Feature<'featureType> (featurePath, featureName, transformer: TestInternals
             tests <- test::tests
             test
     
+    // ----------------------------------------------------------------
+    // -                             Test                             -
+    // ----------------------------------------------------------------
+    
     // --------- TEST TAGS (with environment) ---------
     member _.Test (tags: TagsIndicator, setup: SetupIndicator<_, 'setupType>, testBody: TestBodyWithEnvironmentIndicator<'setupType>, teardown: TeardownIndicator<'setupType>, [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
-        let fileInfo = FileInfo fileFullName
-        let filePath = fileInfo.Directory.FullName
-        let fileName = fileInfo.Name
+        let location = getLocation fileFullName lineNumber
         
         let test =
             let TestTags tags, Setup setup, TestWithEnvironmentBody testBody, Teardown teardown = (tags, setup, testBody, teardown)
             let inner = SetupTeardownExecutor (setup, teardown, fun value env -> env |> testBody value |> TestExecutionResult) :> ISetupTeardownExecutor<'featureType>
-            transformer ({ ContainerPath = featurePath; ContainerName = featureName; TestName = testName; Tags = tags; FilePath = filePath; FileName = fileName; LineNumber = lineNumber }, inner)
+            transformer ({ ContainerPath = featurePath; ContainerName = featureName; TestName = testName; Tags = tags; FilePath = location.FilePath; FileName = location.FileName; LineNumber = lineNumber }, inner)
         
         tests <- test::tests
         test
@@ -431,8 +443,20 @@ type Feature<'featureType> (featurePath, featureName, transformer: TestInternals
     member this.Test (testName: string, testBody: 'featureType -> TestResult, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
         this.Test (TestTags [], Setup Ok, wrapTestBody testBody, Teardown (fun _ _ -> Ok ()), testName, fileFullName, lineNumber)
         
-    member this.Script with get () = this :> IScriptFeature<'featureType>
+    // ----------------------------------------------------------------
+    // -                            Ignore                            -
+    // ----------------------------------------------------------------
+    member this.Ignore (tags: TagsIndicator, _setup: SetupIndicator<_, 'setupType>, _testBody: TestBodyWithEnvironmentIndicator<'setupType>, _teardown: TeardownIndicator<'setupType>, [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+        let location = getLocation fileFullName lineNumber
+        let failure = TestIgnored (None, location) |> TestFailure
+        let tb = TestWithEnvironmentBody (fun _ _ -> failure)
+        this.Test (tags, Setup (fun _ -> Ok ()), tb, Teardown (fun _ _ -> Ok ()), testName, fileFullName, lineNumber)
 
+    // ----------------------------------------------------------------
+    // -                          isTestedBy                          - 
+    // ----------------------------------------------------------------
+    member this.Script with get () = this :> IScriptFeature<'featureType>
+    
     interface IScriptFeature<'featureType> with
         member this.isTestedBy (tags: TagsIndicator, setup: SetupIndicator<'featureType, 'setupType>, testBody: TestBodyWithEnvironmentIndicator<'setupType>, teardown: TeardownIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int): (string -> unit) =
             let buildTest (testName: string) =

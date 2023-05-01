@@ -35,9 +35,9 @@ let ``Should execute every test specified in the test builder when only setup an
                 Arrow.Tests (
                     Setup monitor.CallSetup,
                     fun f ->
-                        "Test A" |> f.isTestedBy monitor.CallTestAction
-                        "Test B" |> f.isTestedBy monitor.CallTestAction
-                        "Test C" |> f.isTestedBy monitor.CallTestAction
+                        "Test A" |> f.isTestedBy monitor.CallTestActionWithEnvironment
+                        "Test B" |> f.isTestedBy monitor.CallTestActionWithEnvironment
+                        "Test C" |> f.isTestedBy monitor.CallTestActionWithEnvironment
                 )
                 |> List.map ((fun tst -> tst.GetExecutor ()) >> executeFunction >> runIt)
             
@@ -77,9 +77,9 @@ let ``Should execute every test specified in the test builder when name, setup, 
                     "My Feature Name",
                     Setup monitor.CallSetup,
                     fun f ->
-                        "Test A" |> f.isTestedBy monitor.CallTestAction
-                        "Test B" |> f.isTestedBy monitor.CallTestAction
-                        "Test C" |> f.isTestedBy monitor.CallTestAction
+                        "Test A" |> f.isTestedBy monitor.CallTestActionWithEnvironment
+                        "Test B" |> f.isTestedBy monitor.CallTestActionWithEnvironment
+                        "Test C" |> f.isTestedBy monitor.CallTestActionWithEnvironment
                 )
                 |> List.map ((fun tst -> tst.GetExecutor ()) >> executeFunction >> runIt)
             
@@ -121,9 +121,9 @@ let ``Should execute every test specified in the test builder when path, name, s
                     "My Feature",
                     Setup monitor.CallSetup,
                     fun f ->
-                        "Test A" |> f.isTestedBy monitor.CallTestAction
-                        "Test B" |> f.isTestedBy monitor.CallTestAction
-                        "Test C" |> f.isTestedBy monitor.CallTestAction
+                        "Test A" |> f.isTestedBy monitor.CallTestActionWithEnvironment
+                        "Test B" |> f.isTestedBy monitor.CallTestActionWithEnvironment
+                        "Test C" |> f.isTestedBy monitor.CallTestActionWithEnvironment
                 )
                 |> List.map ((fun tst -> tst.GetExecutor ()) >> executeFunction >> runIt)
             

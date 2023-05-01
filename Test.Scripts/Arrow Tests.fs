@@ -29,10 +29,10 @@ let ``Test Cases`` =
                 let tests =
                     Arrow.Tests (
                         fun f ->
-                            "A" |> f.isTestedBy monitor.CallTestAction
-                            "B" |> f.isTestedBy monitor.CallTestAction
-                            "3" |> f.isTestedBy monitor.CallTestAction
-                            "30" |> f.isTestedBy monitor.CallTestAction
+                            "A" |> f.isTestedBy monitor.CallTestActionWithEnvironment
+                            "B" |> f.isTestedBy monitor.CallTestActionWithEnvironment
+                            "3" |> f.isTestedBy monitor.CallTestActionWithEnvironment
+                            "30" |> f.isTestedBy monitor.CallTestActionWithEnvironment
                     )
                     |> List.map ((fun tst -> tst.GetExecutor ()) >> executeFunction >> runIt)
                 
