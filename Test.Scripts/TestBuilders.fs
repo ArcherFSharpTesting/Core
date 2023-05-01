@@ -80,6 +80,10 @@ type Monitor<'setupInputType, 'setupOutputType> (setupOutput: Result<'setupOutpu
         testCount <- testCount + 1
         TestSuccess
         
+    member this.CallTestActionWithoutEnvironment _ =
+        testCount <- testCount + 1
+        TestSuccess
+        
     member _.CallTeardown setupValue testValue =
         teardownCount <- teardownCount + 1
         setupResult <- (Some setupValue)
