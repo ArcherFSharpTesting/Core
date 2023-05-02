@@ -16,6 +16,10 @@ let buildFeatureUnderTestWithTeardown teardown =
 
 let buildFeatureUnderTest _ =
     buildFeatureUnderTestWithSetupAndTeardown (Setup Ok) (Teardown (fun _ _ -> Ok ()))
+    
+let setupFeatureUnderTest _ =
+    buildFeatureUnderTestWithSetupAndTeardown (Setup Ok) (Teardown (fun _ _ -> Ok ()))
+    |> Ok
 
 let setupExecutor _ =
     let feature = buildFeatureUnderTest ()

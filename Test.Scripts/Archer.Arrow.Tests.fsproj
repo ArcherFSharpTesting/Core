@@ -21,6 +21,8 @@
     <Compile Include="Arrow NewFeature.fs" />
     <Compile Include="Arrow NewFeature With Setup.fs" />
     <Compile Include="Arrow NewFeature With Teardown.fs" />
+    <Compile Include="Feature.Test Method without environment should.fs" />
+    <Compile Include="Feature.Test Method with environment should.fs" />
     <Compile Include="Arrow Tests.fs" />
     <Compile Include="Arrow Tests With Setup.fs" />
     <Compile Include="Program.fs" />

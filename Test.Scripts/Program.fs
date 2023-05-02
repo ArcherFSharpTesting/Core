@@ -1,4 +1,5 @@
 ﻿open Archer.Arrows.Tests
+open Archer.Arrows.Tests.Feature
 open Archer.Arrows.Tests.RawTestObjects
 open Archer.Bow
 open Archer
@@ -45,5 +46,7 @@ framework
     ``Arrow Tests``.``Test Cases``
     ``Arrow Tests With Setup``.``Test Cases``
     ``Feature Ignore Should``.``Test Cases``
+    ``Test Method without environment should``.``Test Cases``
+    ``Test Method with environment should``.``Test Cases``
 ]
 |> filterRunAndReport testFilter
