@@ -18,10 +18,14 @@ let private getNames () =
     getNamesAt 3
 
 type Arrow =
-    // ------- featurePath -------
-    static member NewFeature (featurePath, featureName, setup: SetupIndicator<unit, 'a>, teardown: TeardownIndicator<'a>) =
+    static member private Feature (featurePath, featureName, setup: SetupIndicator<unit, 'a>, teardown: TeardownIndicator<'a>) =
         let t = baseTransformer setup teardown
         Feature (featurePath, featureName, t)
+        
+    // ------- featurePath -------
+    static member NewFeature (featurePath, featureName, setup: SetupIndicator<unit, 'a>, teardown: TeardownIndicator<'a>) =
+        Arrow.Feature (featurePath, featureName, setup, teardown)
+        :> IFeature<'a>
         
     static member NewFeature (featurePath, featureName, setup: SetupIndicator<unit, 'a>) =
         Arrow.NewFeature (featurePath, featureName, setup, Teardown (fun _ _ -> Ok ()))
@@ -68,12 +72,9 @@ type Arrow =
         let featureName, featurePath = getNames ()
         Arrow.NewFeature (featurePath, featureName)
         
-        
-        
-        
     // ------- featurePath -------
     static member Tests (featurePath, featureName, setup: SetupIndicator<unit, 'a>, teardown: TeardownIndicator<'a>, testBuilder: IScriptFeature<'a> -> unit) =
-        let feature = Arrow.NewFeature (featurePath, featureName, setup, teardown)
+        let feature = Arrow.Feature (featurePath, featureName, setup, teardown)
         feature :> IScriptFeature<'a> |> testBuilder 
         feature.GetTests ()
         
