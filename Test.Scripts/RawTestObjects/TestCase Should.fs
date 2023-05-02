@@ -3,7 +3,7 @@
 open System
 open Archer
 open Archer.Arrows
-open Archer.Arrows.Internal
+open Archer.Arrows.Internals
 open Archer.MicroLang
 
 let private container = suite.Container()

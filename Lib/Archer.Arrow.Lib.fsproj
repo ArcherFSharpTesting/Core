@@ -14,8 +14,11 @@
 
   <ItemGroup>
     <Compile Include="Types.fs" />
-    <Compile Include="Types.Internal.fs" />
+    <Compile Include="Internals.fs" />
+    <Compile Include="Internal.Types.FeatureInterfaces.fs" />
+    <Compile Include="Internal.Types.Feature.fs" />
     <Compile Include="Helpers.fs" />
+    <Compile Include="Builders.fs" />
     <Content Include="Directory.Build.props" />
   </ItemGroup>
 

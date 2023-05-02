@@ -2,9 +2,8 @@
 
 open Archer
 open Archer.Arrows
-open Archer.Arrows.Internal
+open Archer.Arrows.Internal.Types
 open Archer.MicroLang
-open Archer.Arrows.Tests
 
 let private feature = Arrow.NewFeature ()
 

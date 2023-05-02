@@ -1,12 +1,48 @@
-﻿[<AutoOpen>]
-module Archer.Arrows.Helpers
+﻿module Archer.Arrows.Helpers
 
 open System
 open System.Diagnostics
-open Archer.Arrows.Internal
+open Archer
+open Archer.Arrows.Internals
 open Archer.CoreTypes.InternalTypes
 
-let private getNamesAt frame = 
+type WrappedTeardownExecutor<'outerInputType, 'outerOutputType> (outerSetup: 'outerInputType -> Result<'outerOutputType, SetupTeardownFailure>, outerTeardown: Result<'outerOutputType, SetupTeardownFailure> -> TestResult option -> Result<unit, SetupTeardownFailure>, inner: ISetupTeardownExecutor<'outerOutputType>) as this =
+    inherit SetupTeardownExecutor<'outerInputType, 'outerOutputType> (outerSetup, outerTeardown, inner.Execute)
+    
+    do
+        let executor = inner
+        executor.LifecycleEvent.AddHandler (fun sender args ->
+            this.Trigger (sender, args)
+        )
+    
+    override this.Trigger (sender: obj, args: SetupTeardownExecutorLifecycleEventArgs) =
+        match args with
+        | ExecuteSetupStart _ ->
+            if sender = this then
+                base.Trigger (this, args)
+        | ExecuteSetupEnd _ ->
+            if sender <> this then
+                base.Trigger (this, args)
+        | ExecuteStartTeardown ->
+            if sender = this then
+                base.Trigger (this, args)
+        | ExecuteRunner _ ->
+            if sender <> this then
+                base.Trigger (this, args)
+        | ExecuteRunnerEnd _ ->
+            if sender = this then
+                base.Trigger (this, args)
+
+    member this.AsSetupTeardownExecutor with get () = this :> ISetupTeardownExecutor<'outerInputType>
+
+let baseTransformer<'featureType, 'a> (featureSetup: SetupIndicator<unit, 'featureType>) (featureTeardown: TeardownIndicator<'featureType>) (internals: TestInternals, inner: ISetupTeardownExecutor<'featureType>) =
+    let (Setup setup) = featureSetup 
+    let (Teardown teardown) = featureTeardown
+        
+    let executor = WrappedTeardownExecutor<unit,'featureType> (setup, teardown, inner)
+    TestCase (internals.ContainerPath, internals.ContainerName, internals.TestName, executor, internals.Tags, internals.FilePath, internals.FileName, internals.LineNumber) :> ITest
+
+let getNamesAt frame = 
     let trace = StackTrace ()
     let method = trace.GetFrame(frame).GetMethod ()
     let containerName = method.ReflectedType.Name
@@ -14,178 +50,5 @@ let private getNamesAt frame =
             
     containerName, containerPath
 
-let private getNames () =
+let getNames () =
     getNamesAt 3
-
-type Arrow =
-    static member private Feature (featurePath, featureName, setup: SetupIndicator<unit, 'a>, teardown: TeardownIndicator<'a>) =
-        let t = baseTransformer setup teardown
-        Feature (featurePath, featureName, t)
-        
-    // ------- featurePath -------
-    static member NewFeature (featurePath, featureName, setup: SetupIndicator<unit, 'a>, teardown: TeardownIndicator<'a>) =
-        Arrow.Feature (featurePath, featureName, setup, teardown)
-        :> IFeature<'a>
-        
-    static member NewFeature (featurePath, featureName, setup: SetupIndicator<unit, 'a>) =
-        Arrow.NewFeature (featurePath, featureName, setup, Teardown (fun _ _ -> Ok ()))
-        
-    static member NewFeature (featurePath, featureName, teardown: TeardownIndicator<unit>) =
-        Arrow.NewFeature (featurePath, featureName, Setup (fun () -> Ok ()) , teardown)
-        
-    static member NewFeature (featurePath, featureName) =
-        Arrow.NewFeature (featurePath, featureName, Setup (fun () -> Ok ()), Teardown (fun _ _ -> Ok ()))
-
-    // ------- featureName -------
-    static member NewFeature (featureName, setup: SetupIndicator<unit, 'a>, teardown: TeardownIndicator<'a>) =
-        let _, featurePath = getNames ()
-        Arrow.NewFeature (featurePath, featureName, setup, teardown)
-        
-    static member NewFeature (featureName, setup: SetupIndicator<unit, 'a>) =
-        let _, featurePath = getNames ()
-        Arrow.NewFeature (featurePath, featureName, setup, Teardown (fun _ _ -> Ok ()))
-        
-    static member NewFeature (featureName, teardown: TeardownIndicator<unit>) =
-        let _, featurePath = getNames ()
-        Arrow.NewFeature (featurePath, featureName, Setup (fun () -> Ok ()), teardown)
-        
-    static member NewFeature featureName =
-        let _, featurePath = getNames ()
-        Arrow.NewFeature (featurePath, featureName, Setup (fun () -> Ok ()), Teardown (fun _ _ -> Ok ()))
-
-    // ------- setup -------
-    static member NewFeature (setup: SetupIndicator<unit, 'a>, teardown: TeardownIndicator<'a>) =
-        let featureName, featurePath = getNames ()
-        Arrow.NewFeature (featurePath, featureName, setup, teardown)
-        
-    static member NewFeature (setup: SetupIndicator<unit, 'a>) =
-        let featureName, featurePath = getNames ()
-        Arrow.NewFeature (featurePath, featureName, setup)
-        
-    // ------- teardown -------
-    static member NewFeature (teardown: TeardownIndicator<unit>) =
-        let featureName, featurePath = getNames ()
-        Arrow.NewFeature (featurePath, featureName, teardown)
-        
-    // ------- () -------
-    static member NewFeature () =
-        let featureName, featurePath = getNames ()
-        Arrow.NewFeature (featurePath, featureName)
-        
-    // ------- featurePath -------
-    static member Tests (featurePath, featureName, setup: SetupIndicator<unit, 'a>, teardown: TeardownIndicator<'a>, testBuilder: IScriptFeature<'a> -> unit) =
-        let feature = Arrow.Feature (featurePath, featureName, setup, teardown)
-        feature :> IScriptFeature<'a> |> testBuilder 
-        feature.GetTests ()
-        
-    static member Tests (featurePath, featureName, setup: SetupIndicator<unit, 'a>, testBuilder: IScriptFeature<'a> -> unit) =
-        Arrow.Tests (featurePath, featureName, setup, Teardown (fun _ _ -> Ok ()), testBuilder)
-        
-    static member Tests (featurePath, featureName, teardown: TeardownIndicator<unit>, testBuilder: IScriptFeature<unit> -> unit) =
-        Arrow.Tests (featurePath, featureName, Setup (fun () -> Ok ()), teardown, testBuilder)
-        
-    static member Tests (featurePath, featureName, testBuilder: IScriptFeature<unit> -> unit) =
-        Arrow.Tests (featurePath, featureName, Setup (fun () -> Ok ()), Teardown (fun _ _ -> Ok ()), testBuilder)
-        
-    // ------- featureName -------
-    static member Tests (featureName, setup: SetupIndicator<unit, 'a>, teardown: TeardownIndicator<'a>, testBuilder: IScriptFeature<'a> -> unit) =
-        let _, featurePath = getNamesAt 3
-        Arrow.Tests (featurePath, featureName, setup, teardown, testBuilder)
-        
-    static member Tests (featureName, setup: SetupIndicator<unit, 'a>, testBuilder: IScriptFeature<'a> -> unit) =
-        let _, featurePath = getNamesAt 3
-        Arrow.Tests (featurePath, featureName, setup, Teardown (fun _ _ -> Ok ()), testBuilder)
-        
-    static member Tests (featureName, teardown: TeardownIndicator<unit>, testBuilder: IScriptFeature<unit> -> unit) =
-        let _, featurePath = getNamesAt 3
-        Arrow.Tests (featurePath, featureName, Setup (fun () -> Ok ()), teardown, testBuilder)
-        
-    static member Tests (featureName, testBuilder: IScriptFeature<unit> -> unit) =
-        let _, featurePath = getNamesAt 3
-        Arrow.Tests (featurePath, featureName, Setup (fun () -> Ok ()), Teardown (fun _ _ -> Ok ()), testBuilder)
-        
-    // ------- setup -------
-    static member Tests (setup: SetupIndicator<unit, 'a>, teardown: TeardownIndicator<'a>, testBuilder: IScriptFeature<'a> -> unit) =
-        let featureName, featurePath = getNamesAt 3
-        Arrow.Tests (featurePath, featureName, setup, teardown, testBuilder)
-        
-    static member Tests (setup: SetupIndicator<unit, 'a>, testBuilder: IScriptFeature<'a> -> unit) =
-        let featureName, featurePath = getNamesAt 3
-        Arrow.Tests (featurePath, featureName, setup, Teardown (fun _ _ -> Ok ()), testBuilder)
-        
-    // ------- teardown -------
-    static member Tests (teardown: TeardownIndicator<unit>, testBuilder: IScriptFeature<unit> -> unit) =
-        let featureName, featurePath = getNamesAt 3
-        Arrow.Tests (featurePath, featureName, Setup (fun () -> Ok ()), teardown, testBuilder)
-        
-    // ------- testBuilder -------
-    static member Tests (testBuilder: IScriptFeature<unit> -> unit) =
-        let featureName, featurePath = getNamesAt 3
-        Arrow.Tests (featurePath, featureName, Setup (fun () -> Ok ()), Teardown (fun _ _ -> Ok ()), testBuilder)
-        
-type Sub =
-    static member Feature (subFeatureName, setup: SetupIndicator<'featureType, 'subFeatureType>, teardown: TeardownIndicator<'subFeatureType>) =
-        let buildIt (feature: Feature<'featureType>) =
-            let builder = feature :> IBuilder<'featureType, ITest>
-            
-            let transformer (internals: TestInternals, executor: ISetupTeardownExecutor<'subFeatureType>) =
-                let (Setup setup) = setup
-                let (Teardown teardown) = teardown
-                (internals, (WrappedTeardownExecutor (setup, teardown, executor) :> ISetupTeardownExecutor<'featureType>))
-                |> builder.Add
-            
-            let subFeature = Feature<'subFeatureType> (feature.ToString (), subFeatureName, transformer)
-            
-            subFeature
-            
-        buildIt
-        
-    static member Feature (subFeatureName, setup: SetupIndicator<'featureType, 'subFeatureType>) =
-        Sub.Feature (subFeatureName, setup, Teardown (fun _ _ -> Ok ()))
-        
-    static member Feature (subFeatureName, teardown: TeardownIndicator<unit>) =
-        Sub.Feature (subFeatureName, Setup (fun _ -> Ok ()), teardown)
-        
-    static member Feature subFeatureName =
-        Sub.Feature (subFeatureName, Setup (fun _ -> Ok ()), Teardown (fun _ _ -> Ok ()))
-        
-    static member Feature (setup: SetupIndicator<'featureType, 'subFeatureType>, teardown: TeardownIndicator<'subFeatureType>) =
-        let featureName, _ = getNames ()
-        Sub.Feature (featureName, setup, teardown)
-        
-    static member Feature (setup: SetupIndicator<'featureType, 'subFeatureType>) =
-        let featureName, _ = getNames ()
-        Sub.Feature (featureName, setup, Teardown (fun _ _ -> Ok ()))
-        
-    static member Feature (teardown: TeardownIndicator<unit>) =
-        let featureName, _ = getNames ()
-        Sub.Feature (featureName, Setup (fun _ -> Ok ()), teardown)
-        
-    static member Feature () =
-        let featureName, _ = getNames ()
-        Sub.Feature (featureName, Setup (fun _ -> Ok ()), Teardown (fun _ _ -> Ok ()))
-        
-    static member Feature (subFeatureName, setup: SetupIndicator<'featureType, 'subFeatureType>, teardown: TeardownIndicator<'subFeatureType>, testBuilder: IScriptFeature<'subFeatureType> -> unit) =
-        let buildIt (feature: Feature<'featureType>) =
-            let builder = feature :> IBuilder<'featureType, ITest>
-            
-            let transformer (internals: TestInternals, executor: ISetupTeardownExecutor<'subFeatureType>) =
-                let (Setup setup) = setup
-                let (Teardown teardown) = teardown
-                (internals, (WrappedTeardownExecutor (setup, teardown, executor) :> ISetupTeardownExecutor<'featureType>))
-                |> builder.Add
-            
-            let subFeature = Feature<'subFeatureType> (feature.ToString (), subFeatureName, transformer)
-            
-            subFeature :> IScriptFeature<'subFeatureType> |> testBuilder
-            
-        buildIt
-        
-    static member Feature (subFeatureName, setup: SetupIndicator<'featureType, 'subFeatureType>, testBuilder: IScriptFeature<'subFeatureType> -> unit) =
-        Sub.Feature (subFeatureName, setup, Teardown (fun _ _ -> Ok ()), testBuilder)
-        
-    static member Feature (subFeatureName, teardown: TeardownIndicator<unit>, testBuilder: IScriptFeature<unit> -> unit) =
-        Sub.Feature (subFeatureName, Setup (fun _ -> Ok ()), teardown, testBuilder)
-        
-    static member Feature (subFeatureName, testBuilder: IScriptFeature<unit> -> unit) =
-        Sub.Feature (subFeatureName, Setup (fun _ -> Ok ()), Teardown (fun _ _ -> Ok ()), testBuilder)
