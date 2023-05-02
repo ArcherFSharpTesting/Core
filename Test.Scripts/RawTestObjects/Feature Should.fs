@@ -33,5 +33,5 @@ let ``ignore empty name part of name in the ToString`` =
             feature.ToString ()
             |> expects.ToBe "A path"
     )
-
+    
 let ``Test Cases`` = container.Tests

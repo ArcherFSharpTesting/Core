@@ -34,7 +34,7 @@ let ``Stop all events if done at TestExecutionStart`` =
     
 let ``Not call any methods when canceled in TestExecutionStart`` =
     feature.Test (
-        Setup setupBuildExecutorWithMonitor,
+        Setup setupBuildExecutorWithMonitorAtTheFeature,
         
         TestBody (fun (monitor: Monitor<unit, unit>, executor: ITestExecutor) ->
             executor.TestLifecycleEvent
@@ -82,7 +82,7 @@ let ``Stop all event when canceled at TestStartSetup`` =
     
 let ``Call Teardown if canceled on TestEndSetup`` =
     feature.Test (
-        Setup setupBuildExecutorWithMonitor,
+        Setup setupBuildExecutorWithMonitorAtTheFeature,
         
         TestBody (fun (monitor: Monitor<unit, unit>, executor: ITestExecutor) ->
             executor.TestLifecycleEvent
@@ -131,7 +131,7 @@ let ``Should trigger ending events if canceled at TestEndSetup`` =
     
 let ``Call Teardown if canceled on TestStart`` =
     feature.Test (
-        Setup setupBuildExecutorWithMonitor,
+        Setup setupBuildExecutorWithMonitorAtTheFeature,
         
         TestBody (fun (monitor: Monitor<unit, unit>, executor: ITestExecutor) ->
             executor.TestLifecycleEvent
@@ -205,7 +205,7 @@ let ``Should not trigger TestEnd if canceled at TestStart`` =
     
 let ``Should not call the test action if canceled at TestStart`` =
     feature.Test (
-        Setup setupBuildExecutorWithMonitor,
+        Setup setupBuildExecutorWithMonitorAtTheFeature,
         
         TestBody (fun (monitor: Monitor<unit, unit>, executor: ITestExecutor) ->
             executor.TestLifecycleEvent

@@ -1,363 +1,618 @@
 ﻿module Archer.Arrows.Tests.RawTestObjects.``TestCaseExecutor Execute Should``
 
 open Archer
+open Archer.Arrows
 open Archer.Arrows.Tests
 open Archer.CoreTypes.InternalTypes
 open Archer.MicroLang
 
-let private container = suite.Container ()
+let private feature = Arrow.NewFeature ()
 
-let ``Run the setup action when called`` =
-    container.Test (
-        SetupPart setupBuildExecutorWithSetupAction,
+let ``Run the setup action supplied to feature.Test when called`` =
+    feature.Test (
+        Setup setupBuildExecutorWithSetupAction,
         
-        fun testBuilder _ ->
-            let mutable wasRun = false
-            let setupAction _ =
-                wasRun <- true
-                Ok ()
+        TestBody (fun testBuilder ->
+            let monitor = Monitor (Ok ())
                 
-            let executor = testBuilder setupAction
+            let executor: ITestExecutor = testBuilder monitor.CallSetup
             
-            executor.Execute (getFakeEnvironment ())
+            executor
+            |> executeFunction
+            |> runIt
             |> ignore
                 
-            wasRun
-            |> expects.ToBeTrue
+            monitor.SetupWasCalled
+            |> Should.BeTrue
             |> withMessage "Setup did not run"
+        )
+    )
+
+let ``Run the setup action supplied to feature with called`` =
+    feature.Test (
+        fun _ ->
+            let monitor = Monitor<unit, unit> (Ok ())
+            let testFeature = Arrow.NewFeature (
+                ignoreString (),
+                ignoreString (),
+                Setup monitor.CallSetup
+            )
+            
+            testFeature.Test(fun _ -> TestSuccess).GetExecutor ()
+            |> executeFunction
+            |> runIt
+            |> ignore
+            
+            monitor.SetupWasCalled
+            |> Should.BeTrue
+            |> withMessage "Setup was not called"
     )
     
 let ``Run the test body when called`` =
-    container.Test (
-        SetupPart setupBuildExecutorWithTestBody,
+    feature.Test (
+        Setup setupBuildExecutorWithTestBody,
         
-        fun testBuilder _ ->
-            let mutable wasRun = false
-            let testBody _ _ =
-                wasRun <- true
-                TestSuccess
-                
-            let executor = testBuilder testBody
+        TestBody (fun testBuilder ->
+            let monitor = Monitor (Ok ())
             
-            executor.Execute (getFakeEnvironment ())
+            let executor: ITestExecutor = testBuilder monitor.CallTestActionWithEnvironment
+            
+            executor
+            |> executeFunction
+            |> runIt
             |> ignore
             
-            wasRun
-            |> expects.ToBeTrue
+            monitor.TestWasCalled
+            |> Should.BeTrue
             |> withMessage "Test did not run"
+        )
     )
     
-let ``Pass the result of setup to the test`` =
-    container.Test (
-        SetupPart setupBuildExecutorWithTestBodyAndSetupAction,
+let ``Pass the result of the setup supplied to feature.Test to the test action`` =
+    feature.Test (
+        Setup setupBuildExecutorWithMonitor,
         
-        fun testBuilder _ ->
+        TestBody (fun testBuilder ->
             let expected = "a value to pass to the test"
-            let mutable actual = System.String.Empty
-            let setup _ =
-                expected |> Ok
+            let monitor = Monitor<unit, string> (Ok expected)
                 
-            let testAction setupValue _ =
-                actual <- setupValue
-                TestSuccess
-                
-            let executor = testBuilder setup testAction
+            let executor: ITestExecutor = testBuilder monitor
             
-            executor.Execute (getFakeEnvironment ())
+            executor
+            |> executeFunction
+            |> runIt
             |> ignore
             
-            actual
-            |> expects.ToBe expected
+            monitor.TestWasCalledWith
+            |> Should.BeEqualTo expected
+        )
     )
     
-let ``Not throw except if setup fails`` =
-    container.Test (
-        SetupPart setupBuildExecutorWithSetupAction,
+let ``Pass the result of the setup supplied to the feature to the setup supplied to feature.Test`` =
+    feature.Test (fun _ ->
+        let expectedValue = "Hello from feature setup"
+        let testFeature = Arrow.NewFeature (Setup (fun () -> Ok expectedValue))
         
-        fun testBuilder _ ->
-            let setup _ =
-                newFailure.With.SetupTeardownGeneralFailure "failed setup" |> Error
+        let monitor = Monitor<string, unit> (Ok ())
+        
+        testFeature.Test(Setup monitor.CallSetup, TestBody monitor.CallTestActionWithoutEnvironment).GetExecutor ()
+        |> executeFunction
+        |> runIt
+        |> ignore
+        
+        monitor.SetupWasCalledWith
+        |> Should.BeEqualTo expectedValue
+    )
+    
+let ``Not throw an exception if the setup supplied to feature.Test fails`` =
+    feature.Test (
+        Setup setupBuildExecutorWithSetupAction,
+        
+        TestBody (fun testBuilder ->
+            let monitor = Monitor<unit, unit> ("failed setup" |> newFailure.With.SetupTeardownGeneralFailure |> Error)
                 
-            let executor = testBuilder setup
+            let executor: ITestExecutor = testBuilder monitor.CallSetup
             
             try
-                executor.Execute (getFakeEnvironment ())
+                executor
+                |> executeFunction
+                |> runIt
                 |> ignore
                 
                 TestSuccess
             with
             | ex ->
                 ex |> TestExceptionFailure |> TestFailure
+        )
     )
     
-let ``Return the setup error if setup fails`` =
-    container.Test (
-        SetupPart setupBuildExecutorWithSetupAction,
+let ``Not throw an exception if the setup supplied to the feature fails`` =
+    feature.Test (fun _ ->
+        let monitor = Monitor<unit, unit> ("failed feature setup" |> newFailure.With.SetupTeardownGeneralFailure |> Error)
         
-        fun testBuilder _ ->
+        let testFeature = Arrow.NewFeature (Setup monitor.CallSetup)
+
+        try        
+            testFeature.Test(fun _ -> TestSuccess).GetExecutor ()
+            |> executeFunction
+            |> runIt
+            |> ignore
+            
+            TestSuccess
+        with
+        | ex ->
+            ex |> TestExceptionFailure |> TestFailure
+    )
+    
+let ``Return the setup error if the setup passed to feature.Test fails`` =
+    feature.Test (
+        Setup setupBuildExecutorWithSetupAction,
+        
+        TestBody (fun testBuilder ->
             let expectedFailure = newFailure.With.SetupTeardownGeneralFailure "failed setup"
+            let monitor = Monitor<unit, string> (Error expectedFailure)
             
-            let setup _ =
-                expectedFailure |> Error
-                
-            let executor = testBuilder setup
+            let executor: ITestExecutor = testBuilder monitor.CallSetup
             
-            let result = executor.Execute (getFakeEnvironment ())
+            let result =
+                executor
+                |> executeFunction
+                |> runIt
             
             result
-            |> expects.ToBe (expectedFailure |> SetupExecutionFailure)
+            |> Should.BeEqualTo (expectedFailure |> SetupExecutionFailure)
+        )
+    )
+    
+let ``Should not run the setup provided to feature.Test if the setup provided to the feature fails`` =
+    feature.Test (fun _ ->
+        let monitor = Monitor<unit, unit> (Ok ())
+        
+        let testFeature = Arrow.NewFeature (Setup (fun () -> "failed setup" |> newFailure.With.SetupTeardownGeneralFailure |> Error))
+        
+        testFeature.Test(Setup monitor.CallSetup, TestBody (fun _ -> TestSuccess)).GetExecutor ()
+        |> executeFunction
+        |> runIt
+        |> ignore
+        
+        monitor.SetupWasCalled
+        |> Should.BeFalse
+        |> withMessage "Setup should not have be called"
     )
     
 let ``Return the result of a failing test body when executed`` =
-    container.Test (
-        SetupPart setupBuildExecutorWithTestBody,
+    feature.Test (
+        Setup setupBuildExecutorWithTestBody,
         
-        fun testBuilder _ ->
+        TestBody (fun testBuilder ->
             let expectedFailure = 
                 "A failing test"
                 |> newFailure.As.TestExecutionResultOf.OtherExpectationFailure
                 
-            let testAction _ _ = expectedFailure
+            let monitor = newMonitorWithTestResult expectedFailure
+                
+            let executor: ITestExecutor = testBuilder monitor.CallTestActionWithEnvironment
             
-            let executor = testBuilder testAction
-            
-            let result = executor.Execute (getFakeEnvironment ())
+            let result =
+                executor
+                |> executeFunction
+                |> runIt
             
             result
-            |> expects.ToBe (
+            |> Should.BeEqualTo (
                 expectedFailure
                 |> TestExecutionResult
             )
+        )
     )
     
-let ``Not throw when setup throws`` =
-    container.Test (
-        SetupPart setupBuildExecutorWithSetupAction,
+let ``Not throw when the setup passed to feature.Test throws`` =
+    feature.Test (
+        Setup setupBuildExecutorWithSetupAction,
         
-        fun buildTest _ ->
+        TestBody (fun buildTest ->
             let expectedErrorMessage = "A really bad setup"
-            let setupAction _ =
-                failwith expectedErrorMessage
+            let monitor = Monitor<unit, unit> (fun _ -> failwith expectedErrorMessage)
                 
-            let executor = buildTest setupAction
+            let executor: ITestExecutor = buildTest monitor.CallSetup
             
             try
-                let result = executor.Execute (getFakeEnvironment ())
+                let result =
+                    executor
+                    |> executeFunction
+                    |> runIt
                 
                 match result with
                 | SetupExecutionFailure (SetupTeardownExceptionFailure ex) ->
                     ex.Message
-                    |> expects.ToBe expectedErrorMessage
+                    |> Should.BeEqualTo expectedErrorMessage
                 | _ -> expects.NotToBeCalled ()
                  
             with
             | ex ->
                 ex |> newFailure.As.TestExecutionResultOf.TestExceptionFailure
+        )
     )
-    
-let ``Not throw when test action throws`` =
-    container.Test (
-        SetupPart setupBuildExecutorWithTestBody,
+
+let ``Not throw when the setup passed to the feature throws`` =
+    feature.Test (fun _ ->
+        let expectedErrorMessage = "Boom goes the feature"
+        let monitor = Monitor<unit, unit> (fun _ -> failwith expectedErrorMessage)
         
-        fun testBuilder _ ->
+        let testFeature = Arrow.NewFeature (Setup monitor.CallSetup)
+        
+        try
+            testFeature.Test(fun _ -> TestSuccess).GetExecutor ()
+            |> executeFunction
+            |> runIt
+            |> ignore
+            
+            TestSuccess
+        with
+        | ex -> ex |> TestExceptionFailure |> TestFailure
+    )
+
+let ``Not throw when test action throws`` =
+    feature.Test (
+        Setup setupBuildExecutorWithTestBody,
+        
+        TestBody (fun testBuilder ->
             let expectedErrorMessage = "Really bad test body"
-            let testBody _ _ =
-                failwith expectedErrorMessage
+            let monitor = newMonitorWithTestAction (fun _ -> failwith expectedErrorMessage)
                 
-            let executor = testBuilder testBody
+            let executor: ITestExecutor = testBuilder monitor.CallTestActionWithEnvironment
             
             try
-                let result = executor.Execute (getFakeEnvironment ())
+                let result =
+                    executor
+                    |> executeFunction
+                    |> runIt
+                
                 match result with
                 | TestExecutionResult (TestFailure (TestExceptionFailure ex)) ->
                     ex.Message
-                    |> expects.ToBe expectedErrorMessage
+                    |> Should.BeEqualTo expectedErrorMessage
                 | _ -> expects.NotToBeCalled ()
             with
                 ex -> ex |> newFailure.As.TestExecutionResultOf.TestExceptionFailure
+        )
     )
     
-let ``Run the teardown action when called`` =
-    container.Test (
-        SetupPart setupBuildExecutorWithTeardownAction,
+let ``Run the teardown passed to feature.Test`` =
+    feature.Test (
+        Setup setupBuildExecutorWithTeardownAction,
         
-        fun testBuilder _ ->
-            let mutable called = false
-            
-            let teardownAction _ _ =
-                called <- true
-                Ok ()
+        TestBody (fun testBuilder ->
+            let monitor = Monitor<unit, unit> (Ok ())
                 
-            let executor = testBuilder teardownAction
+            let executor: ITestExecutor = testBuilder monitor.CallTeardown
             
             executor.Execute (getFakeEnvironment ())
             |> ignore
             
-            called
-            |> expects.ToBeTrue
-            |> withMessage "Teardown was not called"
+            monitor.TeardownWasCalled
+            |> Should.BeTrue
+            |> withMessage "Teardown was not called")
+    )
+   
+let ``Run the teardown passed to the feature`` =
+    feature.Test (fun _ ->
+        let monitor = Monitor<uint, unit> (Ok ())
+        
+        let testFeature = Arrow.NewFeature (Teardown monitor.CallTeardown)
+        
+        testFeature.Test(fun _ -> TestSuccess).GetExecutor ()
+        |> executeFunction
+        |> runIt
+        |> ignore
+        
+        monitor.TeardownWasCalled
+        |> Should.BeTrue
+        |> withMessage "Teardown was not called"
     )
     
-let ``Calls the teardown action with the successful setup result`` =
-    container.Test (
-        SetupPart setupBuildExecutorWithSetupAndTeardownActions,
+let ``Calls the teardown that was passed to feature.Test with the successful result of the setup passed to feature.Test`` =
+    feature.Test (
+        Setup setupBuildExecutorWithSetupAndTeardownActions,
         
-        fun testBuilder _ ->
-            let expectedSetupValue = "Hello from setup"
-            let setupAction _ =
-                expectedSetupValue |> Ok
-                
-            let mutable result = newFailure.With.TestExecutionWasNotRunValidationFailure () |> TestFailure
+        TestBody (fun testBuilder ->
+            let expectedSetupValue = Ok "Hello from setup"
+            let monitor = Monitor<unit, string> expectedSetupValue
             
-            let teardownAction setupValue _ =
-                match setupValue with
-                | Ok value ->
-                    result <-
-                        value
-                        |> expects.ToBe expectedSetupValue
-                | _ ->
-                    result <-
-                        "Should not be here" |> newFailure.As.TestExecutionResultOf.OtherExpectationFailure
-                        
-                Ok ()
-                
-            let executor = testBuilder setupAction teardownAction
+            let executor: ITestExecutor = testBuilder monitor.CallSetup monitor.CallTeardown
             
-            executor.Execute (getFakeEnvironment ())
+            executor
+            |> executeFunction
+            |> runIt
             |> ignore
             
-            result
+            monitor.TeardownWasCalledWith
+            |> fst
+            |> Should.BeEqualTo expectedSetupValue
+        )
+    )
+   
+let ``Calls the teardown that was passed to the feature with the successful result of the setup passed to the feature `` =
+    feature.Test (fun _ ->
+        let setupResult = Ok 1099
+        let monitor = Monitor<unit, int> setupResult
+        
+        let testFeature = Arrow.NewFeature (Setup monitor.CallSetup, Teardown monitor.CallTeardown)
+        
+        testFeature.Test(fun _ -> TestSuccess).GetExecutor ()
+        |> executeFunction
+        |> runIt
+        |> ignore
+        
+        monitor.TeardownWasCalledWith
+        |> fst
+        |> Should.BeEqualTo setupResult
     )
     
-let ``Calls the teardown action with the unsuccessful setup result`` =
-    container.Test (
-        SetupPart setupBuildExecutorWithSetupAndTeardownActions,
+let ``Each teardown should be called with the corresponding successful setup`` =
+    feature.Test (fun _ ->
+        let featureResult = Ok "feature setup result"
+        let testResult = Ok 3355
         
-        fun testBuilder _ ->
+        let featureMonitor = Monitor<unit, string> featureResult
+        let testMonitor = Monitor<string, int> testResult
+        
+        let testFeature = Arrow.NewFeature (Setup featureMonitor.CallSetup, Teardown featureMonitor.CallTeardown)
+        
+        testFeature.Test(Setup testMonitor.CallSetup, TestBody (fun _ -> TestSuccess), Teardown testMonitor.CallTeardown).GetExecutor ()
+        |> executeFunction
+        |> runIt
+        |> ignore
+        
+        let featureResult =
+            featureMonitor.TeardownWasCalledWith
+            |> fst
+            |> Should.BeEqualTo featureResult
+            
+        featureResult
+        |> andResult (
+            testMonitor.TeardownWasCalledWith
+            |> fst
+            |> Should.BeEqualTo testResult
+        )
+    )
+    
+let ``Calls the teardown that was passed to feature.Test with the unsuccessful result of the setup passed to feature.Test`` =
+    feature.Test (
+        Setup setupBuildExecutorWithSetupAndTeardownActions,
+        
+        TestBody (fun testBuilder ->
             let expectedSetupValue =
                 "Bad setup, bad"
                 |> newFailure.With.SetupTeardownGeneralFailure
-                
-            let setupAction _ =
-                expectedSetupValue
                 |> Error
                 
-            let mutable result = newFailure.With.TestExecutionWasNotRunValidationFailure () |> TestFailure
-            
-            let teardownAction setupValue _ =
-                match setupValue with
-                | Error value ->
-                    result <-
-                        value
-                        |> expects.ToBe expectedSetupValue
-                | _ ->
-                    result <-
-                        "Should not be here" |> newFailure.As.TestExecutionResultOf.OtherExpectationFailure
-                        
-                Ok ()
+            let monitor = Monitor<unit, unit> expectedSetupValue
                 
-            let executor = testBuilder setupAction teardownAction
+            let executor: ITestExecutor = testBuilder monitor.CallSetup monitor.CallTeardown
             
-            executor.Execute (getFakeEnvironment ())
+            executor
+            |> executeFunction
+            |> runIt
             |> ignore
             
-            result
+            monitor.TeardownWasCalledWith
+            |> fst
+            |> Should.BeEqualTo expectedSetupValue
+        )
+    )
+    
+let ``Calls the teardown that was passed to the feature with the unsuccessful result of the setup passed to the feature`` =
+    feature.Test (fun _ ->
+        let expectedResult =
+            "Bad feature setup"
+            |> newFailure.With.SetupTeardownGeneralFailure
+            |> Error
+            
+        let monitor = Monitor<unit, unit> expectedResult
+        
+        let testFeature = Arrow.NewFeature(Setup monitor.CallSetup, Teardown monitor.CallTeardown)
+            
+        testFeature.Test(fun _ -> TestSuccess).GetExecutor ()
+        |> executeFunction
+        |> runIt
+        |> ignore
+        
+        monitor.TeardownWasCalledWith
+        |> fst
+        |> Should.BeEqualTo expectedResult
     )
 
-let ``Calls the teardown with the TestSuccess if test is successful`` =
-    container.Test (
-        SetupPart setupBuildExecutorWithTeardownAction,
+let ``Calls the teardown that was passed to feature.Test with the TestSuccess if test is successful`` =
+    feature.Test (
+        Setup setupBuildExecutorWithMonitor,
         
-        fun testBuilder _ ->
-            let mutable result = newFailure.With.TestExecutionWasNotRunValidationFailure () |> TestFailure
+        TestBody (fun testBuilder ->
+            let monitor = newMonitorWithTestResult TestSuccess
             
-            let teardownAction _ testResult =
-                result <-
-                    testResult
-                    |> expects.ToBe (Some TestSuccess)
-                    
-                Ok ()
-                
-            let executor : ITestExecutor = testBuilder teardownAction
+            let executor : ITestExecutor = testBuilder monitor
             
-            executor.Execute (getFakeEnvironment ())
+            executor
+            |> executeFunction
+            |> runIt
             |> ignore
             
-            result
+            monitor.TeardownWasCalledWith
+            |> snd
+            |> Should.BeEqualTo (Some TestSuccess)
+        )
     )
 
-let ``Calls the teardown with the TestFailure if test fails`` =
-    container.Test (
-        SetupPart setupBuiltExecutorWithTestBodyAndTeardownAction,
+let ``Calls the teardown that was passed to the feature with the TestSuccess if test is successful`` =
+    feature.Test (fun _ ->
+        let monitor = newMonitorWithTestResult TestSuccess
         
-        fun testBuilder _ ->
-            let mutable result = newFailure.With.TestExecutionWasNotRunValidationFailure () |> TestFailure
-            
+        let testFeature = Arrow.NewFeature (Teardown monitor.CallTeardown)
+        
+        testFeature.Test(fun _ -> TestSuccess).GetExecutor ()
+        |> executeFunction
+        |> runIt
+        |> ignore
+        
+        monitor.TeardownWasCalledWith
+        |> snd
+        |> Should.BeEqualTo (Some TestSuccess)
+    )
+
+let ``Calls the teardown that was passed to feature.Test with the TestFailure if test fails`` =
+    feature.Test (
+        Setup setupBuildExecutorWithMonitor,
+        
+        TestBody (fun testBuilder ->
             let expectedFailure =
                 newFailure.With.TestOtherExpectationFailure "a failed test"
                 |> TestFailure
             
-            let testAction _ _ =
-                expectedFailure
+            let monitor = newMonitorWithTestResult expectedFailure 
             
-            let teardownAction _ testResult =
-                result <-
-                    testResult
-                    |> expects.ToBe (Some expectedFailure)
-                    
-                Ok ()
-                
-            let executor : ITestExecutor = testBuilder testAction teardownAction
+            let executor : ITestExecutor = testBuilder monitor
             
-            executor.Execute (getFakeEnvironment ())
+            executor
+            |> executeFunction
+            |> runIt
             |> ignore
             
-            result
+            monitor.TeardownWasCalledWith
+            |> snd
+            |> Should.BeEqualTo (Some expectedFailure)
+        )
+    )
+    
+let ``Calls the teardown that was passed to the feature with the TestFailure if test fails`` =
+    feature.Test (fun _ ->
+        let expectedFailure =
+            newFailure.With.TestOtherExpectationFailure "a failed test"
+            |> TestFailure
+        
+        let monitor = newMonitorWithTestResult expectedFailure
+        
+        let testFeature = Arrow.NewFeature (Teardown monitor.CallTeardown)
+        
+        testFeature.Test(monitor.CallTestActionWithoutEnvironment).GetExecutor ()
+        |> executeFunction
+        |> runIt
+        |> ignore
+        
+        monitor.TeardownWasCalledWith
+        |> snd
+        |> Should.BeEqualTo (Some expectedFailure)
     )
 
-let ``Return the failure if the teardown action fails`` =
-    container.Test (
-        SetupPart setupBuildExecutorWithTeardownAction,
+let ``Return the failure if the teardown that was passed to feature.Test fails`` =
+    feature.Test (
+        Setup setupBuildExecutorWithTeardownAction,
         
-        fun testBuilder _ ->
+        TestBody (fun testBuilder ->
             let teardownFailure = 
                 "failed teardown"
                 |> newFailure.With.SetupTeardownGeneralFailure
-            
-            let teardownAction _ _ =
-                teardownFailure
-                |> Error
                 
-            let executor = testBuilder teardownAction
+            let monitor = newMonitorWithTeardownResult (Error teardownFailure)
             
-            executor.Execute (getFakeEnvironment ())
-            |> expects.ToBe (
+            let executor: ITestExecutor = testBuilder monitor.CallTeardown
+            
+            executor
+            |> executeFunction
+            |> runIt
+            |> Should.BeEqualTo (
                 teardownFailure
                 |> TeardownExecutionFailure
             )
+        )
+    )
+    
+let ``Returns the failure if the teardown given to the feature fails`` =
+    feature.Test (fun _ ->
+        let expectedError =
+            "failed feature teardown"
+            |> newFailure.With.SetupTeardownGeneralFailure
+            
+        let monitor = newMonitorWithTeardownAction (fun _ _ -> Error expectedError)
+        
+        let testFeature = Arrow.NewFeature(Teardown monitor.CallTeardown)
+        
+        let result =
+            testFeature.Test(fun _ -> TestSuccess).GetExecutor ()
+            |> executeFunction
+            |> runIt
+        
+        result
+        |> Should.BeEqualTo (TeardownExecutionFailure expectedError)
     )
 
-let ``Return failure if teardown throws exception`` =
-    container.Test (
-        SetupPart setupBuildExecutorWithTeardownAction,
+let ``Return failure if teardown that was passed to feature.Test throws exception`` =
+    feature.Test (
+        Setup setupBuildExecutorWithTeardownAction,
         
-        fun testBuilder _ ->
+        TestBody (fun testBuilder ->
             let expectedErrorMessage = "Boom goes the teardown"
-            let teardownAction _ _ =
-                failwith expectedErrorMessage
-                
-            let executor = testBuilder teardownAction
+            let monitor = newMonitorWithTeardownAction (fun _ _ -> failwith expectedErrorMessage)
+            
+            let executor: ITestExecutor = testBuilder monitor.CallTeardown
             
             try
-                let result = executor.Execute (getFakeEnvironment ())
+                let result =
+                    executor
+                    |> executeFunction
+                    |> runIt
+                
                 match result with
                 | TeardownExecutionFailure (SetupTeardownExceptionFailure ex) ->
                     ex.Message
-                    |> expects.ToBe expectedErrorMessage
+                    |> Should.BeEqualTo expectedErrorMessage
                     
                 | _ -> "Should not be here" |> newFailure.With.TestOtherExpectationFailure |> TestFailure
             with
             | ex -> ex |> newFailure.With.TestExecutionExceptionFailure |> TestFailure
+        )
+    )
+    
+let ``Return failure if teardown that was passed to the feature throws exception`` =
+    feature.Test (fun _ ->
+        let expectedErrorMessage = "Boom goes the feature teardown"
+        let monitor = newMonitorWithTeardownAction (fun _ _ -> failwith expectedErrorMessage)
+        
+        let testFeature = Arrow.NewFeature (Teardown monitor.CallTeardown)
+        
+        try
+            let result =
+                testFeature.Test(fun _ -> TestSuccess).GetExecutor ()
+                |> executeFunction
+                |> runIt
+            
+            match result with
+            | TeardownExecutionFailure (SetupTeardownExceptionFailure ex) ->
+                ex.Message
+                |> Should.BeEqualTo expectedErrorMessage
+                
+            | _ -> "Should not be here" |> newFailure.With.TestOtherExpectationFailure |> TestFailure
+        with
+        | ex -> ex |> newFailure.With.TestExecutionExceptionFailure |> TestFailure
+    )
+    
+let ``Not have a test result passed to the teardown given to the feature if the teardown given to feature.Test fails`` =
+    feature.Test (fun _ ->
+        let monitor = Monitor<unit, unit> (Ok ())
+        
+        let expectedFailure =
+            "Bad test teardown"
+            |> newFailure.With.SetupTeardownGeneralFailure
+        
+        let testFeature = Arrow.NewFeature(Teardown monitor.CallTeardown)
+        
+        testFeature.Test(TestBody (fun _ -> TestSuccess), Teardown (fun _ _ -> Error expectedFailure)).GetExecutor ()
+        |> executeFunction
+        |> runIt
+        |> ignore
+        
+        monitor.TeardownWasCalledWith
+        |> snd
+        |> Should.BeEqualTo None
     )
 
-let ``Test Cases`` = container.Tests
+let ``Test Cases`` = feature.GetTests ()
