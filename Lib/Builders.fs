@@ -45,6 +45,10 @@ type Arrow =
     static member Ignore (featurePath, featureName, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
         Arrow.Ignore (featurePath, featureName, Setup (fun () -> Ok ()), Teardown (fun _ _ -> Ok ()), fileFullName, lineNumber)
 
+    static member Ignore (featureInfo: string * string, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+        let featurePath, featureName = featureInfo
+        Arrow.Ignore (featurePath, featureName, Setup (fun () -> Ok ()), Teardown (fun _ _ -> Ok ()), fileFullName, lineNumber)
+
     // ------- featureName -------
     static member NewFeature (featureName, setup: SetupIndicator<unit, 'a>, teardown: TeardownIndicator<'a>) =
         let _, featurePath = getNames ()
