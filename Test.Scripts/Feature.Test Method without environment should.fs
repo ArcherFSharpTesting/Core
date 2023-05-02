@@ -123,7 +123,7 @@ let ``run the test method passed to it when everything is passed`` =
             
             monitor.TestWasCalled
             |> Should.BeTrue
-            |> withMessage "Setup was not called"
+            |> withMessage "test was not called"
         )
     )
     
@@ -153,7 +153,7 @@ let ``run the teardown method passed to it when everything is passed`` =
             
             monitor.TeardownWasCalled
             |> Should.BeTrue
-            |> withMessage "Setup was not called"
+            |> withMessage "teardown was not called"
         )
     )
 
@@ -269,7 +269,7 @@ let ``run the test method passed to it when given no teardown`` =
             
             monitor.TestWasCalled
             |> Should.BeTrue
-            |> withMessage "Setup was not called"
+            |> withMessage "test was not called"
         )
     )
 
@@ -356,7 +356,7 @@ let ``run the test method passed to it when given no setup`` =
             
             monitor.TestWasCalled
             |> Should.BeTrue
-            |> withMessage "Setup was not called"
+            |> withMessage "test was not called"
         )
     )
     
@@ -385,7 +385,7 @@ let ``run the teardown method passed to it when given no setup`` =
             
             monitor.TeardownWasCalled
             |> Should.BeTrue
-            |> withMessage "Setup was not called"
+            |> withMessage "teardown was not called"
         )
     )
 
@@ -470,7 +470,7 @@ let ``run the test method passed to it when given no setup or teardown`` =
             
             monitor.TestWasCalled
             |> Should.BeTrue
-            |> withMessage "Setup was not called"
+            |> withMessage "test fas not called"
         )
     )
 
@@ -575,7 +575,7 @@ let ``run the test method passed to it when given no tags`` =
             
             monitor.TestWasCalled
             |> Should.BeTrue
-            |> withMessage "Setup was not called"
+            |> withMessage "test was not called"
         )
     )
     
@@ -601,7 +601,7 @@ let ``run the teardown method passed to it when given no tags`` =
             
             monitor.TeardownWasCalled
             |> Should.BeTrue
-            |> withMessage "Setup was not called"
+            |> withMessage "teardown was not called"
         )
     )
 
@@ -703,7 +703,7 @@ let ``run the test method passed to it when given no tags, no teardown`` =
             
             monitor.TestWasCalled
             |> Should.BeTrue
-            |> withMessage "Setup was not called"
+            |> withMessage "test was not called"
         )
     )
 
@@ -780,7 +780,7 @@ let ``run the test method passed to it when given no tags, no setup`` =
             
             monitor.TestWasCalled
             |> Should.BeTrue
-            |> withMessage "Setup was not called"
+            |> withMessage "test was not called"
         )
     )
     
@@ -805,7 +805,7 @@ let ``run the teardown method passed to it when given no tags, no setup`` =
             
             monitor.TeardownWasCalled
             |> Should.BeTrue
-            |> withMessage "Setup was not called"
+            |> withMessage "teardown was not called"
         )
     )
 
@@ -880,7 +880,7 @@ let ``run the test method passed to it when given no tags, no setup, no teardown
             
             monitor.TestWasCalled
             |> Should.BeTrue
-            |> withMessage "Setup was not called"
+            |> withMessage "test was not called"
         )
     )
 

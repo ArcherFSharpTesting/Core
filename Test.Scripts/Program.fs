@@ -48,5 +48,7 @@ framework
     ``Feature Ignore Should``.``Test Cases``
     ``Test Method without environment should``.``Test Cases``
     ``Test Method with environment should``.``Test Cases``
+    ``Ignore Method without environment should``.``Test Cases``
+    ``Ignore Method with environment should``.``Test Cases``
 ]
 |> filterRunAndReport testFilter
