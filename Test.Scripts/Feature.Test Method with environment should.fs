@@ -4,6 +4,7 @@ open Archer
 open Archer.Arrows
 open Archer.Arrows.Internal.Types
 open Archer.Arrows.Tests
+open Archer.CoreTypes.InternalTypes
 open Archer.MicroLang.Verification
 
 let private feature = Arrow.NewFeature ()
@@ -36,34 +37,18 @@ let ``return an ITest with everything when everything is passed`` =
                     lineNumber
                 )
         
-            test.Tags
-            |> Should.BeEqualTo testTags
-            |> withMessage "Tags"
-            |> andResult (
-                test.TestName
-                |> Should.BeEqualTo testName
-                |> withMessage "TestName"
-            )
-            |> andResult (
+            let getContainerName (test: ITest) =
                 $"%s{test.ContainerPath}.%s{test.ContainerName}"
-                |> Should.BeEqualTo (testFeature.ToString ())
-                |> withMessage "Container Information"
-            )
-            |> andResult (
-                test.Location.FilePath
-                |> Should.BeEqualTo path
-                |> withMessage "file path"
-            )
-            |> andResult (
-                test.Location.FileName
-                |> Should.BeEqualTo fileName
-                |> withMessage "File Name"
-            )
-            |> andResult (
-                test.Location.LineNumber
-                |> Should.BeEqualTo lineNumber
-                |> withMessage "Line Number"
-            )
+                
+            test
+            |> Should.PassAllOf [
+                getTags >> Should.BeEqualTo testTags >> withMessage "Tags"
+                getTestName >> Should.BeEqualTo testName >> withMessage "TestName"
+                getContainerName >> Should.BeEqualTo (testFeature.ToString ()) >> withMessage "Container Information"
+                getFilePath >> Should.BeEqualTo path >> withMessage "file path"
+                getFileName >> Should.BeEqualTo fileName >> withMessage "File Name"
+                getLineNumber >> Should.BeEqualTo lineNumber >> withMessage "Line Number"
+            ]
         )
     )
     
@@ -184,34 +169,18 @@ let ``return an ITest with everything when given no teardown`` =
                     lineNumber
                 )
         
-            test.Tags
-            |> Should.BeEqualTo testTags
-            |> withMessage "Tags"
-            |> andResult (
-                test.TestName
-                |> Should.BeEqualTo testName
-                |> withMessage "TestName"
-            )
-            |> andResult (
+            let getContainerName (test: ITest) =
                 $"%s{test.ContainerPath}.%s{test.ContainerName}"
-                |> Should.BeEqualTo (testFeature.ToString ())
-                |> withMessage "Container Information"
-            )
-            |> andResult (
-                test.Location.FilePath
-                |> Should.BeEqualTo path
-                |> withMessage "file path"
-            )
-            |> andResult (
-                test.Location.FileName
-                |> Should.BeEqualTo fileName
-                |> withMessage "File Name"
-            )
-            |> andResult (
-                test.Location.LineNumber
-                |> Should.BeEqualTo lineNumber
-                |> withMessage "Line Number"
-            )
+                
+            test
+            |> Should.PassAllOf [
+                getTags >> Should.BeEqualTo testTags >> withMessage "Tags"
+                getTestName >> Should.BeEqualTo testName >> withMessage "TestName"
+                getContainerName >> Should.BeEqualTo (testFeature.ToString ()) >> withMessage "Container Information"
+                getFilePath >> Should.BeEqualTo path >> withMessage "file path"
+                getFileName >> Should.BeEqualTo fileName >> withMessage "File Name"
+                getLineNumber >> Should.BeEqualTo lineNumber >> withMessage "Line Number"
+            ]
         )
     )
     
@@ -300,34 +269,18 @@ let ``return an ITest with everything when given no setup`` =
                     lineNumber
                 )
         
-            test.Tags
-            |> Should.BeEqualTo testTags
-            |> withMessage "Tags"
-            |> andResult (
-                test.TestName
-                |> Should.BeEqualTo testName
-                |> withMessage "TestName"
-            )
-            |> andResult (
+            let getContainerName (test: ITest) =
                 $"%s{test.ContainerPath}.%s{test.ContainerName}"
-                |> Should.BeEqualTo (testFeature.ToString ())
-                |> withMessage "Container Information"
-            )
-            |> andResult (
-                test.Location.FilePath
-                |> Should.BeEqualTo path
-                |> withMessage "file path"
-            )
-            |> andResult (
-                test.Location.FileName
-                |> Should.BeEqualTo fileName
-                |> withMessage "File Name"
-            )
-            |> andResult (
-                test.Location.LineNumber
-                |> Should.BeEqualTo lineNumber
-                |> withMessage "Line Number"
-            )
+                
+            test
+            |> Should.PassAllOf [
+                getTags >> Should.BeEqualTo testTags >> withMessage "Tags"
+                getTestName >> Should.BeEqualTo testName >> withMessage "TestName"
+                getContainerName >> Should.BeEqualTo (testFeature.ToString ()) >> withMessage "Container Information"
+                getFilePath >> Should.BeEqualTo path >> withMessage "file path"
+                getFileName >> Should.BeEqualTo fileName >> withMessage "File Name"
+                getLineNumber >> Should.BeEqualTo lineNumber >> withMessage "Line Number"
+            ]
         )
     )
     
@@ -415,34 +368,18 @@ let ``return an ITest with everything when given no setup or teardown`` =
                     lineNumber
                 )
         
-            test.Tags
-            |> Should.BeEqualTo testTags
-            |> withMessage "Tags"
-            |> andResult (
-                test.TestName
-                |> Should.BeEqualTo testName
-                |> withMessage "TestName"
-            )
-            |> andResult (
+            let getContainerName (test: ITest) =
                 $"%s{test.ContainerPath}.%s{test.ContainerName}"
-                |> Should.BeEqualTo (testFeature.ToString ())
-                |> withMessage "Container Information"
-            )
-            |> andResult (
-                test.Location.FilePath
-                |> Should.BeEqualTo path
-                |> withMessage "file path"
-            )
-            |> andResult (
-                test.Location.FileName
-                |> Should.BeEqualTo fileName
-                |> withMessage "File Name"
-            )
-            |> andResult (
-                test.Location.LineNumber
-                |> Should.BeEqualTo lineNumber
-                |> withMessage "Line Number"
-            )
+                
+            test
+            |> Should.PassAllOf [
+                getTags >> Should.BeEqualTo testTags >> withMessage "Tags"
+                getTestName >> Should.BeEqualTo testName >> withMessage "TestName"
+                getContainerName >> Should.BeEqualTo (testFeature.ToString ()) >> withMessage "Container Information"
+                getFilePath >> Should.BeEqualTo path >> withMessage "file path"
+                getFileName >> Should.BeEqualTo fileName >> withMessage "File Name"
+                getLineNumber >> Should.BeEqualTo lineNumber >> withMessage "Line Number"
+            ]
         )
     )
     
@@ -499,34 +436,18 @@ let ``return an ITest with everything when given no setup, teardown, or test bod
                     lineNumber
                 )
         
-            test.Tags
-            |> Should.BeEqualTo testTags
-            |> withMessage "Tags"
-            |> andResult (
-                test.TestName
-                |> Should.BeEqualTo testName
-                |> withMessage "TestName"
-            )
-            |> andResult (
+            let getContainerName (test: ITest) =
                 $"%s{test.ContainerPath}.%s{test.ContainerName}"
-                |> Should.BeEqualTo (testFeature.ToString ())
-                |> withMessage "Container Information"
-            )
-            |> andResult (
-                test.Location.FilePath
-                |> Should.BeEqualTo path
-                |> withMessage "file path"
-            )
-            |> andResult (
-                test.Location.FileName
-                |> Should.BeEqualTo fileName
-                |> withMessage "File Name"
-            )
-            |> andResult (
-                test.Location.LineNumber
-                |> Should.BeEqualTo lineNumber
-                |> withMessage "Line Number"
-            )
+                
+            test
+            |> Should.PassAllOf [
+                getTags >> Should.BeEqualTo testTags >> withMessage "Tags"
+                getTestName >> Should.BeEqualTo testName >> withMessage "TestName"
+                getContainerName >> Should.BeEqualTo (testFeature.ToString ()) >> withMessage "Container Information"
+                getFilePath >> Should.BeEqualTo path >> withMessage "file path"
+                getFileName >> Should.BeEqualTo fileName >> withMessage "File Name"
+                getLineNumber >> Should.BeEqualTo lineNumber >> withMessage "Line Number"
+            ]
         )
     )
     
@@ -580,34 +501,18 @@ let ``return an ITest with everything when given no tags`` =
                     lineNumber
                 )
         
-            test.Tags
-            |> Should.BeEqualTo []
-            |> withMessage "Tags"
-            |> andResult (
-                test.TestName
-                |> Should.BeEqualTo testName
-                |> withMessage "TestName"
-            )
-            |> andResult (
+            let getContainerName (test: ITest) =
                 $"%s{test.ContainerPath}.%s{test.ContainerName}"
-                |> Should.BeEqualTo (testFeature.ToString ())
-                |> withMessage "Container Information"
-            )
-            |> andResult (
-                test.Location.FilePath
-                |> Should.BeEqualTo path
-                |> withMessage "file path"
-            )
-            |> andResult (
-                test.Location.FileName
-                |> Should.BeEqualTo fileName
-                |> withMessage "File Name"
-            )
-            |> andResult (
-                test.Location.LineNumber
-                |> Should.BeEqualTo lineNumber
-                |> withMessage "Line Number"
-            )
+                
+            test
+            |> Should.PassAllOf [
+                getTags >> Should.BeEqualTo [] >> withMessage "Tags"
+                getTestName >> Should.BeEqualTo testName >> withMessage "TestName"
+                getContainerName >> Should.BeEqualTo (testFeature.ToString ()) >> withMessage "Container Information"
+                getFilePath >> Should.BeEqualTo path >> withMessage "file path"
+                getFileName >> Should.BeEqualTo fileName >> withMessage "File Name"
+                getLineNumber >> Should.BeEqualTo lineNumber >> withMessage "Line Number"
+            ]
         )
     )
     
@@ -710,34 +615,18 @@ let ``return an ITest with everything when given no tags, no teardown`` =
                     lineNumber
                 )
         
-            test.Tags
-            |> Should.BeEqualTo []
-            |> withMessage "Tags"
-            |> andResult (
-                test.TestName
-                |> Should.BeEqualTo testName
-                |> withMessage "TestName"
-            )
-            |> andResult (
+            let getContainerName (test: ITest) =
                 $"%s{test.ContainerPath}.%s{test.ContainerName}"
-                |> Should.BeEqualTo (testFeature.ToString ())
-                |> withMessage "Container Information"
-            )
-            |> andResult (
-                test.Location.FilePath
-                |> Should.BeEqualTo path
-                |> withMessage "file path"
-            )
-            |> andResult (
-                test.Location.FileName
-                |> Should.BeEqualTo fileName
-                |> withMessage "File Name"
-            )
-            |> andResult (
-                test.Location.LineNumber
-                |> Should.BeEqualTo lineNumber
-                |> withMessage "Line Number"
-            )
+                
+            test
+            |> Should.PassAllOf [
+                getTags >> Should.BeEqualTo [] >> withMessage "Tags"
+                getTestName >> Should.BeEqualTo testName >> withMessage "TestName"
+                getContainerName >> Should.BeEqualTo (testFeature.ToString ()) >> withMessage "Container Information"
+                getFilePath >> Should.BeEqualTo path >> withMessage "file path"
+                getFileName >> Should.BeEqualTo fileName >> withMessage "File Name"
+                getLineNumber >> Should.BeEqualTo lineNumber >> withMessage "Line Number"
+            ]
         )
     )
     
@@ -812,34 +701,18 @@ let ``return an ITest with everything when given no tags, no setup`` =
                     lineNumber
                 )
         
-            test.Tags
-            |> Should.BeEqualTo []
-            |> withMessage "Tags"
-            |> andResult (
-                test.TestName
-                |> Should.BeEqualTo testName
-                |> withMessage "TestName"
-            )
-            |> andResult (
+            let getContainerName (test: ITest) =
                 $"%s{test.ContainerPath}.%s{test.ContainerName}"
-                |> Should.BeEqualTo (testFeature.ToString ())
-                |> withMessage "Container Information"
-            )
-            |> andResult (
-                test.Location.FilePath
-                |> Should.BeEqualTo path
-                |> withMessage "file path"
-            )
-            |> andResult (
-                test.Location.FileName
-                |> Should.BeEqualTo fileName
-                |> withMessage "File Name"
-            )
-            |> andResult (
-                test.Location.LineNumber
-                |> Should.BeEqualTo lineNumber
-                |> withMessage "Line Number"
-            )
+                
+            test
+            |> Should.PassAllOf [
+                getTags >> Should.BeEqualTo [] >> withMessage "Tags"
+                getTestName >> Should.BeEqualTo testName >> withMessage "TestName"
+                getContainerName >> Should.BeEqualTo (testFeature.ToString ()) >> withMessage "Container Information"
+                getFilePath >> Should.BeEqualTo path >> withMessage "file path"
+                getFileName >> Should.BeEqualTo fileName >> withMessage "File Name"
+                getLineNumber >> Should.BeEqualTo lineNumber >> withMessage "Line Number"
+            ]
         )
     )
     
@@ -913,34 +786,18 @@ let ``return an ITest with everything when given no tags, no setup, no teardown`
                     lineNumber
                 )
         
-            test.Tags
-            |> Should.BeEqualTo []
-            |> withMessage "Tags"
-            |> andResult (
-                test.TestName
-                |> Should.BeEqualTo testName
-                |> withMessage "TestName"
-            )
-            |> andResult (
+            let getContainerName (test: ITest) =
                 $"%s{test.ContainerPath}.%s{test.ContainerName}"
-                |> Should.BeEqualTo (testFeature.ToString ())
-                |> withMessage "Container Information"
-            )
-            |> andResult (
-                test.Location.FilePath
-                |> Should.BeEqualTo path
-                |> withMessage "file path"
-            )
-            |> andResult (
-                test.Location.FileName
-                |> Should.BeEqualTo fileName
-                |> withMessage "File Name"
-            )
-            |> andResult (
-                test.Location.LineNumber
-                |> Should.BeEqualTo lineNumber
-                |> withMessage "Line Number"
-            )
+                
+            test
+            |> Should.PassAllOf [
+                getTags >> Should.BeEqualTo [] >> withMessage "Tags"
+                getTestName >> Should.BeEqualTo testName >> withMessage "TestName"
+                getContainerName >> Should.BeEqualTo (testFeature.ToString ()) >> withMessage "Container Information"
+                getFilePath >> Should.BeEqualTo path >> withMessage "file path"
+                getFileName >> Should.BeEqualTo fileName >> withMessage "File Name"
+                getLineNumber >> Should.BeEqualTo lineNumber >> withMessage "Line Number"
+            ]
         )
     )
     
@@ -987,34 +844,18 @@ let ``return an ITest with everything when given no tags, no setup, no teardown,
                     lineNumber
                 )
         
-            test.Tags
-            |> Should.BeEqualTo []
-            |> withMessage "Tags"
-            |> andResult (
-                test.TestName
-                |> Should.BeEqualTo testName
-                |> withMessage "TestName"
-            )
-            |> andResult (
+            let getContainerName (test: ITest) =
                 $"%s{test.ContainerPath}.%s{test.ContainerName}"
-                |> Should.BeEqualTo (testFeature.ToString ())
-                |> withMessage "Container Information"
-            )
-            |> andResult (
-                test.Location.FilePath
-                |> Should.BeEqualTo path
-                |> withMessage "file path"
-            )
-            |> andResult (
-                test.Location.FileName
-                |> Should.BeEqualTo fileName
-                |> withMessage "File Name"
-            )
-            |> andResult (
-                test.Location.LineNumber
-                |> Should.BeEqualTo lineNumber
-                |> withMessage "Line Number"
-            )
+                
+            test
+            |> Should.PassAllOf [
+                getTags >> Should.BeEqualTo [] >> withMessage "Tags"
+                getTestName >> Should.BeEqualTo testName >> withMessage "TestName"
+                getContainerName >> Should.BeEqualTo (testFeature.ToString ()) >> withMessage "Container Information"
+                getFilePath >> Should.BeEqualTo path >> withMessage "file path"
+                getFileName >> Should.BeEqualTo fileName >> withMessage "File Name"
+                getLineNumber >> Should.BeEqualTo lineNumber >> withMessage "Line Number"
+            ]
         )
     )
     
