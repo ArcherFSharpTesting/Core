@@ -299,8 +299,11 @@ type Sub =
         Sub.Ignore (featureName, Setup (fun _ -> Ok ()), Teardown (fun _ _ -> Ok ()), fileFullName, lineNumber)
         
     static member Feature (subFeatureName, setup: SetupIndicator<'featureType, 'subFeatureType>, teardown: TeardownIndicator<'subFeatureType>, testBuilder: IScriptFeature<'subFeatureType> -> unit) =
-        let buildIt (feature: Feature<'featureType>) =
-            let builder = feature :> IBuilder<'featureType, ITest>
+        let buildIt (feature: IScriptFeature<'featureType>) =
+            let builder =
+                match feature with
+                | :? IBuilder<'featureType, ITest> as builder -> builder
+                | _ -> failwith "No Builder found"
             
             let transformer (internals: TestInternals, executor: ISetupTeardownExecutor<'subFeatureType>) =
                 let (Setup setup) = setup
@@ -315,9 +318,12 @@ type Sub =
         buildIt
         
     static member Ignore (subFeatureName, setup: SetupIndicator<'featureType, 'subFeatureType>, teardown: TeardownIndicator<'subFeatureType>, testBuilder: IScriptFeature<'subFeatureType> -> unit, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
-        let buildIt (feature: Feature<'featureType>) =
-            let builder = feature :> IBuilder<'featureType, ITest>
-            
+        let buildIt (feature: IScriptFeature<'featureType>) =
+            let builder =
+                match feature with
+                | :? IBuilder<'featureType, ITest> as builder -> builder
+                | _ -> failwith "No Builder found"
+                
             let transformer (internals: TestInternals, executor: ISetupTeardownExecutor<'subFeatureType>) =
                 let (Setup setup) = setup
                 let (Teardown teardown) = teardown
