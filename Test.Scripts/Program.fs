@@ -33,7 +33,7 @@ framework.FrameworkLifecycleEvent
 )
 
 framework
-|> addManyTests [
+|> addMany [
     ``Feature Should``.``Test Cases``
     ``TestCase Should``.``Test Cases``
     ``TestCaseExecutor Should``.``Test Cases``
