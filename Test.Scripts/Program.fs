@@ -51,5 +51,9 @@ framework
     ``Ignore Method without environment should``.``Test Cases``
     ``Ignore Method with environment should``.``Test Cases``
     ``Arrow Ignore``.``Test Cases``
+    ``Test Method name first without environment should``.``Test Cases``
+    ``Test Method name first with environment should``.``Test Cases``
+    ``Ignore Method name first without environment should``.``Test Cases``
+    ``Ignore Method name first with environment should``.``Test Cases``
 ]
 |> filterRunAndReport testFilter
