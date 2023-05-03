@@ -606,6 +606,122 @@ let ``return an ignored failure upon test being executed executed when given no 
         )
     )
 
+let ``return an ITest with everything when given no setup, or teardown, or test body indicator`` =
+    feature.Test (
+        Setup setupFeatureUnderTest,
+        TestBody (fun (testFeature: IFeature<unit>) ->
+            let testTags = 
+                [
+                   Only
+                   Category "My Category"
+               ]
+            let testName = "My test"
+            
+            let fileName = "dog.bark"
+            let path = "D:\\"
+            let fullPath = $"%s{path}%s{fileName}"
+            let lineNumber = 73
+            
+            let test =
+                testFeature.Ignore (
+                    TestTags testTags,
+                    (fun _ _ -> TestSuccess),
+                    testName,
+                    fullPath,
+                    lineNumber
+                )
+        
+            test.Tags
+            |> Should.BeEqualTo testTags
+            |> withMessage "Tags"
+            |> andResult (
+                test.TestName
+                |> Should.BeEqualTo testName
+                |> withMessage "TestName"
+            )
+            |> andResult (
+                $"%s{test.ContainerPath}.%s{test.ContainerName}"
+                |> Should.BeEqualTo (testFeature.ToString ())
+                |> withMessage "Container Information"
+            )
+            |> andResult (
+                test.Location.FilePath
+                |> Should.BeEqualTo path
+                |> withMessage "file path"
+            )
+            |> andResult (
+                test.Location.FileName
+                |> Should.BeEqualTo fileName
+                |> withMessage "File Name"
+            )
+            |> andResult (
+                test.Location.LineNumber
+                |> Should.BeEqualTo lineNumber
+                |> withMessage "Line Number"
+            )
+        )
+    )
+    
+let ``not run the test method passed to it when given no setup, or teardown, or test body indicator`` =
+    feature.Test (
+        Setup setupFeatureUnderTest,
+        TestBody (fun (testFeature: IFeature<unit>) ->
+            let monitor = Monitor<unit, unit> (Ok ())
+            let test =
+                testFeature.Ignore (
+                    TestTags [
+                                Only
+                                Category "My Category"
+                            ],
+                    monitor.CallTestActionWithEnvironment,
+                    "My test",
+                    "D:\\dog.bark",
+                    73
+                )
+                
+            test.GetExecutor ()
+            |> executeFunction
+            |> runIt
+            |> ignore
+            
+            monitor.TestWasCalled
+            |> Should.BeFalse
+            |> withMessage "test was called"
+        )
+    )
+
+let ``return an ignored failure upon test being executed executed when given no setup, or teardown, or test body indicator`` =
+    feature.Test (
+        Setup setupFeatureUnderTest,
+        TestBody (fun (testFeature: IFeature<unit>) ->
+            let monitor = Monitor<unit, unit> (Ok ())
+            let test =
+                testFeature.Ignore (
+                    TestTags [
+                                Only
+                                Category "My Category"
+                            ],
+                    monitor.CallTestActionWithEnvironment,
+                    "My test",
+                    "D:\\dog.bark",
+                    73
+                )
+                
+            let result =     
+                test.GetExecutor ()
+                |> executeFunction
+                |> runIt
+            
+            match result with
+            | TestExecutionResult (TestFailure (TestIgnored _)) ->
+                TestSuccess
+            | _ ->
+                { Expected = "TestExecutionResult (TestFailure (TestIgnored _))"; Actual = result.ToString () }
+                |> newFailure.With.TestValidationFailure
+                |> TestFailure
+        )
+    )
+
 // Setup, TestBody, Teardown
 let ``return an ITest with everything when given no tags`` =
     feature.Test (
@@ -1112,6 +1228,108 @@ let ``return an ignored failure upon test being executed executed when given no 
             let test =
                 testFeature.Ignore (
                     TestWithEnvironmentBody monitor.CallTestActionWithEnvironment,
+                    "My test",
+                    "D:\\dog.bark",
+                    73
+                )
+            
+            let result =    
+                test.GetExecutor ()
+                |> executeFunction
+                |> runIt
+            
+            match result with
+            | TestExecutionResult (TestFailure (TestIgnored _)) ->
+                TestSuccess
+            | _ ->
+                { Expected = "TestExecutionResult (TestFailure (TestIgnored _))"; Actual = result.ToString () }
+                |> newFailure.With.TestValidationFailure
+                |> TestFailure
+        )
+    )
+
+let ``return an ITest with everything when given no tags, no setup, no teardown, no test body indicator`` =
+    feature.Test (
+        Setup setupFeatureUnderTest,
+        TestBody (fun (testFeature: IFeature<unit>) ->
+            let testName = "My test"
+            
+            let fileName = "dog.bark"
+            let path = "D:\\"
+            let fullPath = $"%s{path}%s{fileName}"
+            let lineNumber = 73
+            
+            let test =
+                testFeature.Ignore (
+                    (fun _ _ -> TestSuccess),
+                    testName,
+                    fullPath,
+                    lineNumber
+                )
+        
+            test.Tags
+            |> Should.BeEqualTo []
+            |> withMessage "Tags"
+            |> andResult (
+                test.TestName
+                |> Should.BeEqualTo testName
+                |> withMessage "TestName"
+            )
+            |> andResult (
+                $"%s{test.ContainerPath}.%s{test.ContainerName}"
+                |> Should.BeEqualTo (testFeature.ToString ())
+                |> withMessage "Container Information"
+            )
+            |> andResult (
+                test.Location.FilePath
+                |> Should.BeEqualTo path
+                |> withMessage "file path"
+            )
+            |> andResult (
+                test.Location.FileName
+                |> Should.BeEqualTo fileName
+                |> withMessage "File Name"
+            )
+            |> andResult (
+                test.Location.LineNumber
+                |> Should.BeEqualTo lineNumber
+                |> withMessage "Line Number"
+            )
+        )
+    )
+    
+let ``not run the test method passed to it when given no tags, no setup, no teardown, no test body indicator`` =
+    feature.Test (
+        Setup setupFeatureUnderTest,
+        TestBody (fun (testFeature: IFeature<unit>) ->
+            let monitor = Monitor<unit, unit> (Ok ())
+            let test =
+                testFeature.Ignore (
+                    monitor.CallTestActionWithEnvironment,
+                    "My test",
+                    "D:\\dog.bark",
+                    73
+                )
+                
+            test.GetExecutor ()
+            |> executeFunction
+            |> runIt
+            |> ignore
+            
+            monitor.TestWasCalled
+            |> Should.BeFalse
+            |> withMessage "test was called"
+        )
+    )
+    
+let ``return an ignored failure upon test being executed executed when given no tags, no setup, no teardown, no test body indicator`` =
+    feature.Test (
+        Setup setupFeatureUnderTest,
+        TestBody (fun (testFeature: IFeature<unit>) ->
+            let monitor = Monitor<unit, unit> (Ok ())
+            let test =
+                testFeature.Ignore (
+                    monitor.CallTestActionWithEnvironment,
                     "My test",
                     "D:\\dog.bark",
                     73
