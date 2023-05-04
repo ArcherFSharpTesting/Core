@@ -47,7 +47,7 @@
             "command": "gittey test && gittey up-version && gittey push:unsafe && dotnet pack"
         },
         {
-            "name": "pack-unsafe",
+            "name": "pack:unsafe",
             "command": "gittey up-version && dotnet pack ./Lib/"
         },
         {

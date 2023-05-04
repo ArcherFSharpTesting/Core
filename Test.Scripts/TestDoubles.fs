@@ -64,7 +64,7 @@ let getEmptyDummyTest () =
     
 let getFakeEnvironment () =
     {
-        FrameworkName = ignoreString ()
-        FrameworkVersion = Version "0.0.0.0"
+        RunnerName = ignoreString ()
+        RunnerVersion = Version "0.0.0.0"
         TestInfo = getEmptyDummyTest ()
     }

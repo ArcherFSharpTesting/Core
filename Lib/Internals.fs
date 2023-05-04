@@ -150,7 +150,7 @@ type TestCaseExecutor(parent: ITest, internals: ISetupTeardownExecutor<unit>) =
         let env = 
             {
                 ApiEnvironment = getApiEnvironment ()
-                FrameworkEnvironment = environment
+                RunEnvironment = environment
                 TestInfo = parent 
             }
             

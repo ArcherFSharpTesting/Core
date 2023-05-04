@@ -9,7 +9,7 @@ type ApiEnvironment = {
 }
 
 type TestEnvironment = {
-    FrameworkEnvironment: FrameworkEnvironment
+    RunEnvironment: RunnerEnvironment
     ApiEnvironment: ApiEnvironment
     TestInfo: ITestInfo
 }

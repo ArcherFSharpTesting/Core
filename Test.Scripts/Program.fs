@@ -4,7 +4,7 @@ open Archer.Arrows.Tests.RawTestObjects
 open Archer.Bow
 open Archer
 open Archer.CoreTypes.InternalTypes
-open Archer.CoreTypes.InternalTypes.FrameworkTypes
+open Archer.CoreTypes.InternalTypes.RunnerTypes
 open MicroLang.Lang
 
 let framework = bow.Framework ()
@@ -12,12 +12,12 @@ let framework = bow.Framework ()
 let testFilter (_test: ITest) =
     true
     
-framework.FrameworkLifecycleEvent
+framework.RunnerLifecycleEvent
 |> Event.add (fun args ->
     match args with
-    | FrameworkStartExecution _ ->
+    | RunnerStartExecution _ ->
         printfn ""
-    | FrameworkTestLifeCycle (test, testEventLifecycle, _) ->
+    | RunnerTestLifeCycle (test, testEventLifecycle, _) ->
         match testEventLifecycle with
         | TestEndExecution testExecutionResult ->
             let successMsg =
@@ -28,7 +28,7 @@ framework.FrameworkLifecycleEvent
             let report = $"%A{test} : (%s{successMsg})"
             printfn $"%s{report}"
         | _ -> ()
-    | FrameworkEndExecution ->
+    | RunnerEndExecution ->
         printfn "\n"
 )
 
