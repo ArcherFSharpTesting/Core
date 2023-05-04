@@ -7,12 +7,12 @@ open Archer.CoreTypes.InternalTypes
 open Archer.CoreTypes.InternalTypes.RunnerTypes
 open MicroLang.Lang
 
-let framework = bow.Framework ()
+let runner = bow.Runner ()
 
 let testFilter (_test: ITest) =
     true
     
-framework.RunnerLifecycleEvent
+runner.RunnerLifecycleEvent
 |> Event.add (fun args ->
     match args with
     | RunnerStartExecution _ ->
@@ -32,7 +32,7 @@ framework.RunnerLifecycleEvent
         printfn "\n"
 )
 
-framework
+runner
 |> addMany [
     ``Feature Should``.``Test Cases``
     ``TestCase Should``.``Test Cases``
