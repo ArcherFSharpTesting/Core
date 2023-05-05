@@ -5,7 +5,12 @@ open Archer.Arrows
 open Archer.Arrows.Internal.Types
 open Archer.MicroLang
 
-let private feature = Arrow.NewFeature ()
+let private feature = Arrow.NewFeature (
+    TestTags [
+        Category "Arrow"
+        Category "NewFeature"
+    ]
+)
 
 let private exampleWithSetup = Arrow.NewFeature (
     Setup (fun _ -> Ok ())

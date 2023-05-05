@@ -4,7 +4,12 @@ open Archer
 open Archer.Arrows
 open Archer.MicroLang.Verification
 
-let private feature = Arrow.NewFeature ()
+let private feature = Arrow.NewFeature (
+    TestTags [
+        Category "Arrow"
+        Category "NewFeature"
+    ]
+)
 
 let ``Should call teardown when it is the only thing specified`` =
     feature.Test (

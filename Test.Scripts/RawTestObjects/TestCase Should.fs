@@ -6,7 +6,12 @@ open Archer.Arrows
 open Archer.Arrows.Internals
 open Archer.MicroLang
 
-let private container = suite.Container()
+let private container = Arrow.NewFeature (
+    TestTags [
+        Category "TestCase"
+    ]
+)
+
 let private random = Random ()
 
 let ``has all the data passed to it`` =
@@ -42,4 +47,4 @@ let ``have a decent ToString`` =
             |> expects.ToBe "TestCase.ToStringTests.ToString should"
     )
     
-let ``Test Cases`` = container.Tests
+let ``Test Cases`` = container.GetTests ()

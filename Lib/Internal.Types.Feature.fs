@@ -8,7 +8,7 @@ open Archer.Arrows
 open Archer.Arrows.Internals
 open Archer.CoreTypes.InternalTypes
 
-type Feature<'featureType> (featurePath, featureName, transformer: TestInternals * ISetupTeardownExecutor<'featureType> -> ITest) =
+type Feature<'featureType> (featurePath, featureName, featureTags: TestTag list, transformer: TestInternals * ISetupTeardownExecutor<'featureType> -> ITest) =
     let mutable tests: ITest list = []
     
     let wrapTestBody (testBody: 'a -> TestResult) =
@@ -42,7 +42,7 @@ type Feature<'featureType> (featurePath, featureName, transformer: TestInternals
         let test =
             let TestTags tags, Setup setup, TestWithEnvironmentBody testBody, Teardown teardown = (tags, setup, testBody, teardown)
             let inner = SetupTeardownExecutor (setup, teardown, fun value env -> env |> testBody value |> TestExecutionResult) :> ISetupTeardownExecutor<'featureType>
-            transformer ({ ContainerPath = featurePath; ContainerName = featureName; TestName = testName; Tags = tags; FilePath = location.FilePath; FileName = location.FileName; LineNumber = lineNumber }, inner)
+            transformer ({ ContainerPath = featurePath; ContainerName = featureName; TestName = testName; Tags = [tags; featureTags] |> List.concat; FilePath = location.FilePath; FileName = location.FileName; LineNumber = lineNumber }, inner)
         
         this.AddTest test
 
@@ -309,6 +309,8 @@ type Feature<'featureType> (featurePath, featureName, transformer: TestInternals
         this.Ignore (TestTags [], Setup Ok, wrapTestBody testBody, Teardown (fun _ _ -> Ok ()), testName, fileFullName, lineNumber)
         
     interface IFeature<'featureType> with
+        member _.FeatureTags with get () = featureTags
+        
         member this.Test   (tags: TagsIndicator, testBody: TestBodyIndicator<'featureType>, [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             let (TestBody testBody) = testBody
             this.Test (tags, Setup Ok, wrapTestBody testBody, Teardown (fun _ _ -> Ok ()), testName, fileFullName, lineNumber)

@@ -4,7 +4,14 @@ open Archer
 open Archer.Arrows
 open Archer.MicroLang.Verification
 
-let private feature = Arrow.NewFeature ()
+let private feature = Arrow.NewFeature (
+    TestTags [
+        Category "Arrow"
+        Category "NewFeature"
+        Category "Feature"
+        Category "Test"
+    ]
+)
 
 let ``Should call setup when it is the only thing passed to it`` =
     feature.Test (

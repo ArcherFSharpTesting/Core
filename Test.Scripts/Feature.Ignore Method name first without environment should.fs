@@ -8,7 +8,12 @@ open Archer.CoreTypes.InternalTypes
 open Archer.Fletching.Types.Internal
 open Archer.MicroLang.Verification
 
-let private feature = Arrow.NewFeature ()
+let private feature = Arrow.NewFeature (
+    TestTags [
+        Category "Feature"
+        Category "Ignore"
+    ]
+)
 
 // Tags, Setup, TestBody, Teardown 
 let ``return an ITest with everything when everything is passed`` =

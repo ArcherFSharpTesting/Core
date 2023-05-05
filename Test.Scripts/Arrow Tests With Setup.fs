@@ -4,7 +4,12 @@ open Archer
 open Archer.Arrows
 open Archer.MicroLang.Verification
 
-let private feature = Arrow.NewFeature ()
+let private feature = Arrow.NewFeature (
+    TestTags [
+        Category "Arrow"
+        Category "Tests"
+    ]
+)
     
 let ``Should execute the setup by every test specified in the test builder when only setup and test builder are specified`` =
     feature.Test (

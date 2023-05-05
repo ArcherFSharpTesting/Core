@@ -7,7 +7,12 @@ open Archer.Arrows.Tests
 open Archer.CoreTypes.InternalTypes
 open Archer.MicroLang.Verification
 
-let private feature = Arrow.NewFeature ()
+let private feature = Arrow.NewFeature (
+    TestTags [
+        Category "Feature"
+        Category "Test"
+    ]
+)
 
 // Tags, Setup, TestBody, Teardown 
 let ``return an ITest with everything when everything is passed`` =

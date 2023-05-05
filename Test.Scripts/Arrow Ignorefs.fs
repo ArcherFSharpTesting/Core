@@ -5,7 +5,13 @@ open Archer.Arrows
 open Archer.Arrows.Internal.Types
 open Archer.MicroLang
 
-let private feature = Arrow.NewFeature ()
+let private feature = Arrow.NewFeature (
+    TestTags [
+        Category "Arrow"
+        Category "Ignore"
+    ]
+)
+
 let private ignored = Arrow.Ignore ()
 
 let private exampleWithSetup = Arrow.Ignore (

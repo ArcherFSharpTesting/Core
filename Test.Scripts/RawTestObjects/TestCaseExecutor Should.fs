@@ -1,9 +1,14 @@
 ﻿module Archer.Arrows.Tests.RawTestObjects.``TestCaseExecutor Should``
 
+open Archer
 open Archer.Arrows
 open Archer.MicroLang
 
-let private container = suite.Container ()
+let private container = Arrow.NewFeature (
+    TestTags [
+        Category "TestCaseExecutor"
+    ]
+)
 
 let ``Have a decent toString`` =
     container.Test (
@@ -16,4 +21,4 @@ let ``Have a decent toString`` =
             |> expects.ToBe "TestCase.Executor.ToString should return a string.IExecutor"
     )
 
-let ``Test Cases`` = container.Tests
+let ``Test Cases`` = container.GetTests ()

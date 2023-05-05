@@ -2,6 +2,7 @@
 
 open System.Runtime.CompilerServices
 open System.Runtime.InteropServices
+open Archer
 open Archer.Arrows
 open Archer.Arrows.Internals
 open Archer.CoreTypes.InternalTypes
@@ -20,7 +21,6 @@ type IScriptFeature<'featureType> =
     abstract member isIgnored: tags: TagsIndicator * testBody: TestBodyWithEnvironmentIndicator<'featureType> * teardown: TeardownIndicator<unit> * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> (string -> unit)
     
     abstract member isTestedBy: tags: TagsIndicator * testBody: TestBodyWithEnvironmentIndicator<'featureType> * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> (string -> unit)
-        
     abstract member isIgnored: tags: TagsIndicator * testBody: TestBodyWithEnvironmentIndicator<'featureType> * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> (string -> unit)
         
     abstract member isTestedBy: tags: TagsIndicator * testBody: TestFunctionWithEnvironment<'featureType> * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> (string -> unit)
@@ -77,6 +77,7 @@ type IScriptFeature<'featureType> =
     abstract member isIgnored: testBody: TestFunction<'featureType> * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> (string -> unit)
     
 type IFeature<'featureType> =
+    abstract member FeatureTags: TestTag list with get
     abstract member GetTests: unit -> ITest list
     
     // --------- TEST TAGS (with environment) ---------

@@ -7,13 +7,18 @@ open Archer.CoreTypes.InternalTypes
 open Archer.MicroLang
 open Microsoft.FSharp.Control
 
-let private container = suite.Container ()
+let private feature = Arrow.NewFeature (
+    TestTags [
+        Category "TestCaseExecutor"
+        Category "TestLifecycleEvent"
+    ]
+)
 
 let ``Trigger all the events in order`` =
-    container.Test (
-        SetupPart setupExecutor,
+    feature.Test (
+        Setup setupExecutor,
         
-        fun executor _ ->
+        TestBody (fun (executor: ITestExecutor) ->
             let mutable cnt = 0
             let mutable result = TestSuccess
             
@@ -68,10 +73,11 @@ let ``Trigger all the events in order`` =
             
             result
             |> andResult (cnt |> expects.ToBe 7 |> withMessage "Did not trigger all events")
+        )
     )
     
 let ``Trigger events with parent`` =
-    container.Test (
+    feature.Test (
         fun _ ->
             let feature = Arrow.NewFeature ("Events", "ThatTrigger")
             let test = feature.Test (successfulTest, "From a test")
@@ -105,10 +111,10 @@ let ``Trigger events with parent`` =
     )
     
 let ``Not throw if exception is thrown from TestStartExecution`` =
-    container.Test (
-        SetupPart setupExecutor,
+    feature.Test (
+        Setup setupExecutor,
         
-        fun executor _ ->
+        TestBody (fun (executor: ITestExecutor) ->
             let expectedExceptionMessage = "Boom goes the start execution event"
             
             executor.TestLifecycleEvent
@@ -133,13 +139,14 @@ let ``Not throw if exception is thrown from TestStartExecution`` =
                     |> expects.ToBe expectedExceptionMessage
                 | _ ->
                     "Should not get here" |> newFailure.With.TestOtherExpectationFailure |> TestFailure
+            )
     )
     
 let ``Not throw if exception is thrown from TestStartSetup`` =
-    container.Test (
-        SetupPart setupExecutor,
+    feature.Test (
+        Setup setupExecutor,
         
-        fun executor _ ->
+        TestBody (fun (executor: ITestExecutor) ->
             let exceptionMessage = "Boom boom test start setup"
             
             executor.TestLifecycleEvent
@@ -164,13 +171,14 @@ let ``Not throw if exception is thrown from TestStartSetup`` =
                     |> expects.ToBe exceptionMessage
                 | _ ->
                     "Should not get here" |> newFailure.With.TestOtherExpectationFailure |> TestFailure
+        )
     )
     
 let ``Not throw when TestEndSetup throws`` =
-    container.Test (
-        SetupPart setupExecutor,
+    feature.Test (
+        Setup setupExecutor,
         
-        fun executor _ ->
+        TestBody (fun (executor: ITestExecutor) ->
             let exceptionMessage = "End Setup goes BOOM!"
             
             executor.TestLifecycleEvent
@@ -195,18 +203,19 @@ let ``Not throw when TestEndSetup throws`` =
                     |> expects.ToBe exceptionMessage
                 | _ ->
                     "Should not get here" |> newFailure.With.TestOtherExpectationFailure |> TestFailure
+        )
     )
     
 let ``Trigger TestEndSetup with a successful result if setup function returns Ok`` =
-    container.Test (
-        SetupPart setupBuildExecutorWithSetupAction,
+    feature.Test (
+        Setup setupBuildExecutorWithSetupAction,
         
-        fun testBuilder _ ->
+        TestBody (fun testBuilder ->
             let thing = obj ()
             let setup _ =
                 thing |> Ok
                 
-            let executor = testBuilder setup
+            let executor: ITestExecutor = testBuilder setup
             let mutable result = newFailure.With.TestExecutionShouldNotRunValidationFailure () |> TestFailure
             
             executor.TestLifecycleEvent
@@ -223,20 +232,20 @@ let ``Trigger TestEndSetup with a successful result if setup function returns Ok
             |> ignore
                 
             result
+        )
     )
     
 let ``Trigger TestEndSetup with a failure if setup returns Error`` =
-    container.Test (
-        SetupPart setupBuildExecutorWithSetupAction,
+    feature.Test (
+        Setup setupBuildExecutorWithSetupAction,
         
-        fun testBuilder _ ->
+        TestBody (fun testBuilder ->
             let expectedMessage = "this is a bad setup" 
             let setup _ =
                  expectedMessage |> newFailure.With.SetupTeardownGeneralFailure |> Error
                 
-            let executor = testBuilder setup
+            let executor: ITestExecutor = testBuilder setup
             
-
             let mutable result = newFailure.With.TestExecutionWasNotRunValidationFailure () |> TestFailure
             
             executor.TestLifecycleEvent
@@ -257,13 +266,14 @@ let ``Trigger TestEndSetup with a failure if setup returns Error`` =
             |> ignore
             
             result
+        )
     )
     
 let ``Not throw when TestStart throws`` =
-    container.Test (
-        SetupPart setupExecutor,
+    feature.Test (
+        Setup setupExecutor,
         
-        fun executor _ ->
+        TestBody (fun (executor: ITestExecutor) ->
             let exceptionMessage = "bad test start"
             
             executor.TestLifecycleEvent
@@ -288,13 +298,14 @@ let ``Not throw when TestStart throws`` =
                     |> expects.ToBe exceptionMessage
                 | _ ->
                     "Should not get here" |> newFailure.With.TestOtherExpectationFailure |> TestFailure
+        )
     )
     
 let ``Not throw when TestEnd throws`` =
-    container.Test (
-        SetupPart setupExecutor,
+    feature.Test (
+        Setup setupExecutor,
         
-        fun executor _ ->
+        TestBody (fun (executor: ITestExecutor) ->
             let exceptionMessage = "bad TestEnd event"
             
             executor.TestLifecycleEvent
@@ -318,13 +329,14 @@ let ``Not throw when TestEnd throws`` =
                     |> expects.ToBe exceptionMessage
                 | _ ->
                     expects.NotToBeCalled ()
+        )
     )
     
 let ``Pass a successful result to TestEnd`` =
-    container.Test (
-        SetupPart setupExecutor,
+    feature.Test (
+        Setup setupExecutor,
         
-        fun executor _ ->
+        TestBody (fun (executor: ITestExecutor) ->
             let mutable result = newFailure.With.TestExecutionWasNotRunValidationFailure () |> TestFailure
             
             executor.TestLifecycleEvent
@@ -341,13 +353,14 @@ let ``Pass a successful result to TestEnd`` =
             |> ignore
             
             result
+        )
     )
     
 let ``Pass a failure result to TestEnd`` =
-    container.Test (
-        SetupPart setupBuildExecutorWithTestBody,
+    feature.Test (
+        Setup setupBuildExecutorWithTestBody,
         
-        fun testBuilder _ ->
+        TestBody (fun testBuilder ->
             let mutable result = newFailure.With.TestExecutionWasNotRunValidationFailure ()  |> TestFailure
             
             let expectedFailure =
@@ -358,7 +371,7 @@ let ``Pass a failure result to TestEnd`` =
             let testBody _ _ =
                 expectedFailure
                 
-            let executor = testBuilder testBody
+            let executor: ITestExecutor = testBuilder testBody
             
             executor.TestLifecycleEvent
             |> Event.add (fun args ->
@@ -376,13 +389,14 @@ let ``Pass a failure result to TestEnd`` =
             |> ignore
             
             result
+        )
     )
     
 let ``Not throw when TestStartTeardown throws`` =
-    container.Test (
-        SetupPart setupExecutor,
+    feature.Test (
+        Setup setupExecutor,
         
-        fun executor _ ->
+        TestBody (fun (executor: ITestExecutor) ->
             let exceptionMessage = "Test teardown go down the hole"
             
             executor.TestLifecycleEvent
@@ -407,13 +421,14 @@ let ``Not throw when TestStartTeardown throws`` =
                     |> expects.ToBe exceptionMessage
                 | _ ->
                     expects.NotToBeCalled ()
+        )
     )
     
 let ``Not throw when TestEndExecution throws`` =
-    container.Test (
-        SetupPart setupExecutor,
+    feature.Test (
+        Setup setupExecutor,
         
-        fun executor _ ->
+        TestBody (fun (executor: ITestExecutor) ->
             let exceptionMessage = "Test execution did not end well"
             
             executor.TestLifecycleEvent
@@ -438,13 +453,14 @@ let ``Not throw when TestEndExecution throws`` =
                     |> expects.ToBe exceptionMessage
                 | _ ->
                     expects.NotToBeCalled ()
+        )
     )
     
 let ``Passing results are passed to the TestEndExecution event`` =
-    container.Test (
-        SetupPart setupExecutor,
+    feature.Test (
+        Setup setupExecutor,
         
-        fun executor _ ->
+        TestBody (fun (executor: ITestExecutor) ->
             let mutable result = newFailure.With.TestExecutionWasNotRunFailure () |> TestFailure
             
             executor.TestLifecycleEvent
@@ -461,13 +477,14 @@ let ``Passing results are passed to the TestEndExecution event`` =
             |> ignore
             
             result
+        )
     )
     
 let ``Passes setup failure to TestEndExecution event`` =
-    container.Test (
-        SetupPart setupBuildExecutorWithSetupAction,
+    feature.Test (
+        Setup setupBuildExecutorWithSetupAction,
         
-        fun testBuilder _ ->
+        TestBody (fun testBuilder ->
             let expectedFailure =
                 "A failed setup"
                 |> newFailure.With.SetupTeardownGeneralFailure
@@ -476,7 +493,7 @@ let ``Passes setup failure to TestEndExecution event`` =
                 expectedFailure
                 |> Error
             
-            let executor = testBuilder setup
+            let executor: ITestExecutor = testBuilder setup
                 
             let mutable result = newFailure.With.TestExecutionShouldNotRunFailure () |> TestFailure
             
@@ -496,13 +513,14 @@ let ``Passes setup failure to TestEndExecution event`` =
             |> ignore
             
             result
+        )
     )
 
 let ``Passes Test failure to TestEndExecution event`` =
-    container.Test (
-        SetupPart setupBuildExecutorWithTestBody,
+    feature.Test (
+        Setup setupBuildExecutorWithTestBody,
         
-        fun testBuilder _ ->
+        TestBody (fun testBuilder ->
             let expectedFailure =
                 "A failing test"
                 |> newFailure.With.TestOtherExpectationFailure
@@ -511,7 +529,7 @@ let ``Passes Test failure to TestEndExecution event`` =
             let testBody _ _ =
                 expectedFailure
                 
-            let executor = testBuilder testBody
+            let executor: ITestExecutor = testBuilder testBody
                 
             let mutable result = newFailure.With.TestExecutionWasNotRunValidationFailure () |> TestFailure
             
@@ -531,6 +549,7 @@ let ``Passes Test failure to TestEndExecution event`` =
             |> ignore
             
             result
+        )
     )
 
-let ``Test Cases`` = container.Tests
+let ``Test Cases`` = feature.GetTests ()

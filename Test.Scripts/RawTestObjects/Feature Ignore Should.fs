@@ -6,7 +6,13 @@ open Archer.Arrows.Tests
 open Archer.Fletching.Types.Internal
 open Archer.MicroLang.Verification
 
-let private feature = Arrow.NewFeature ()
+let private feature = Arrow.NewFeature (
+    TestTags [
+        Category "Feature"
+        Category "Ignore"
+    ]
+)
+
 let private failureBuilder = TestResultFailureBuilder TestExecutionResult
 
 // --------------------------------------------------------------

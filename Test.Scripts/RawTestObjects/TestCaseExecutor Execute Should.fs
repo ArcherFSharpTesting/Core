@@ -6,7 +6,12 @@ open Archer.Arrows.Tests
 open Archer.CoreTypes.InternalTypes
 open Archer.MicroLang
 
-let private feature = Arrow.NewFeature ()
+let private feature = Arrow.NewFeature (
+    TestTags [
+        Category "Feature"
+        Category "Test"
+    ]
+)
 
 let ``Run the setup action supplied to feature.Test when called`` =
     feature.Test (

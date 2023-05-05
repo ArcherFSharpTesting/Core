@@ -19,7 +19,9 @@
     <Compile Include="Internal.Types.Feature.fs" />
     <Compile Include="Internal.Types.IgnoreFeature.fs" />
     <Compile Include="Helpers.fs" />
-    <Compile Include="Builders.fs" />
+    <Compile Include="Arrow.fs" />
+    <Compile Include="Arrow.Tags.fs" />
+    <Compile Include="Sub.fs" />
     <Content Include="Directory.Build.props" />
   </ItemGroup>
 

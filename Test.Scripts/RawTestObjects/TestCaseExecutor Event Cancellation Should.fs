@@ -1,12 +1,18 @@
 ﻿module Archer.Arrows.Tests.RawTestObjects.``TestCaseExecutor Event Cancellation Should``
 
+open Archer
 open Archer.Arrows
 open Archer.Arrows.Tests
 open Archer.CoreTypes.InternalTypes
 open Archer.MicroLang
 open Microsoft.FSharp.Control
 
-let private feature = Arrow.NewFeature ()
+let private feature = Arrow.NewFeature (
+    TestTags [
+        Category "TestCaseExecutor"
+        Category "TestLifecycleEvent"
+    ]
+)
 
 let ``Stop all events if done at TestExecutionStart`` =
     feature.Test (
