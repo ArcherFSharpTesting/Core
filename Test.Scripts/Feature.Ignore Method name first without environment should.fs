@@ -5,6 +5,7 @@ open Archer.Arrows
 open Archer.Arrows.Internal.Types
 open Archer.Arrows.Tests
 open Archer.CoreTypes.InternalTypes
+open Archer.Fletching.Types.Internal
 open Archer.MicroLang.Verification
 
 let private feature = Arrow.NewFeature ()
@@ -140,7 +141,7 @@ let ``return an ignored failure upon test being executed executed when everythin
             | TestExecutionResult (TestFailure (TestIgnored _)) ->
                 TestSuccess
             | _ ->
-                { Expected = "TestExecutionResult (TestFailure (TestIgnored _))"; Actual = result.ToString () }
+                { ExpectedValue = "TestExecutionResult (TestFailure (TestIgnored _))"; ActualValue = result.ToString () }
                 |> newFailure.With.TestValidationFailure
                 |> TestFailure
         )
@@ -303,7 +304,7 @@ let ``return an ignored failure upon test being executed executed when given no 
             | TestExecutionResult (TestFailure (TestIgnored _)) ->
                 TestSuccess
             | _ ->
-                { Expected = "TestExecutionResult (TestFailure (TestIgnored _))"; Actual = result.ToString () }
+                { ExpectedValue = "TestExecutionResult (TestFailure (TestIgnored _))"; ActualValue = result.ToString () }
                 |> newFailure.With.TestValidationFailure
                 |> TestFailure
         )
@@ -407,7 +408,7 @@ let ``return an ignored failure upon test being executed executed when given no 
             | TestExecutionResult (TestFailure (TestIgnored _)) ->
                 TestSuccess
             | _ ->
-                { Expected = "TestExecutionResult (TestFailure (TestIgnored _))"; Actual = result.ToString () }
+                { ExpectedValue = "TestExecutionResult (TestFailure (TestIgnored _))"; ActualValue = result.ToString () }
                 |> newFailure.With.TestValidationFailure
                 |> TestFailure
         )
@@ -605,7 +606,7 @@ let ``return an ignored failure upon test being executed executed when given no 
             | TestExecutionResult (TestFailure (TestIgnored _)) ->
                 TestSuccess
             | _ ->
-                { Expected = "TestExecutionResult (TestFailure (TestIgnored _))"; Actual = result.ToString () }
+                { ExpectedValue = "TestExecutionResult (TestFailure (TestIgnored _))"; ActualValue = result.ToString () }
                 |> newFailure.With.TestValidationFailure
                 |> TestFailure
         )
@@ -637,7 +638,7 @@ let ``return an ignored failure upon test being executed executed when given no 
             | TestExecutionResult (TestFailure (TestIgnored _)) ->
                 TestSuccess
             | _ ->
-                { Expected = "TestExecutionResult (TestFailure (TestIgnored _))"; Actual = result.ToString () }
+                { ExpectedValue = "TestExecutionResult (TestFailure (TestIgnored _))"; ActualValue = result.ToString () }
                 |> newFailure.With.TestValidationFailure
                 |> TestFailure
         )
@@ -756,7 +757,7 @@ let ``return an ignored failure upon test being executed executed when given no 
             | TestExecutionResult (TestFailure (TestIgnored _)) ->
                 TestSuccess
             | _ ->
-                { Expected = "TestExecutionResult (TestFailure (TestIgnored _))"; Actual = result.ToString () }
+                { ExpectedValue = "TestExecutionResult (TestFailure (TestIgnored _))"; ActualValue = result.ToString () }
                 |> newFailure.With.TestValidationFailure
                 |> TestFailure
         )
@@ -897,7 +898,7 @@ let ``return an ignored failure upon test being executed executed when no teardo
             | TestExecutionResult (TestFailure (TestIgnored _)) ->
                 TestSuccess
             | _ ->
-                { Expected = "TestExecutionResult (TestFailure (TestIgnored _))"; Actual = result.ToString () }
+                { ExpectedValue = "TestExecutionResult (TestFailure (TestIgnored _))"; ActualValue = result.ToString () }
                 |> newFailure.With.TestValidationFailure
                 |> TestFailure
         )
@@ -987,7 +988,7 @@ let ``return an ignored failure upon test being executed executed when given no 
             | TestExecutionResult (TestFailure (TestIgnored _)) ->
                 TestSuccess
             | _ ->
-                { Expected = "TestExecutionResult (TestFailure (TestIgnored _))"; Actual = result.ToString () }
+                { ExpectedValue = "TestExecutionResult (TestFailure (TestIgnored _))"; ActualValue = result.ToString () }
                 |> newFailure.With.TestValidationFailure
                 |> TestFailure
         )
@@ -1099,7 +1100,7 @@ let ``return an ignored failure upon test being executed executed when given no 
             | TestExecutionResult (TestFailure (TestIgnored _)) ->
                 TestSuccess
             | _ ->
-                { Expected = "TestExecutionResult (TestFailure (TestIgnored _))"; Actual = result.ToString () }
+                { ExpectedValue = "TestExecutionResult (TestFailure (TestIgnored _))"; ActualValue = result.ToString () }
                 |> newFailure.With.TestValidationFailure
                 |> TestFailure
         )
@@ -1185,7 +1186,7 @@ let ``return an ignored failure upon test being executed executed when given no 
             | TestExecutionResult (TestFailure (TestIgnored _)) ->
                 TestSuccess
             | _ ->
-                { Expected = "TestExecutionResult (TestFailure (TestIgnored _))"; Actual = result.ToString () }
+                { ExpectedValue = "TestExecutionResult (TestFailure (TestIgnored _))"; ActualValue = result.ToString () }
                 |> newFailure.With.TestValidationFailure
                 |> TestFailure
         )

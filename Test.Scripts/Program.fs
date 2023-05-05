@@ -9,9 +9,6 @@ open MicroLang.Lang
 
 let runner = bow.Runner ()
 
-let testFilter (_test: ITest) =
-    true
-    
 runner.RunnerLifecycleEvent
 |> Event.add (fun args ->
     match args with
@@ -56,4 +53,4 @@ runner
     ``Ignore Method name first without environment should``.``Test Cases``
     ``Ignore Method name first with environment should``.``Test Cases``
 ]
-|> filterRunAndReport testFilter
+|> runAndReport

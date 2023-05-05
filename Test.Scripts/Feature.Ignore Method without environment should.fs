@@ -140,7 +140,10 @@ let ``return an ignored failure upon test being executed executed when everythin
             | TestExecutionResult (TestFailure (TestIgnored _)) ->
                 TestSuccess
             | _ ->
-                { Expected = "TestExecutionResult (TestFailure (TestIgnored _))"; Actual = result.ToString () }
+                { new IVerificationInfo with
+                    member _.Expected = "TestExecutionResult (TestFailure (TestIgnored _))"
+                    member _.Actual = result.ToString ()
+                }
                 |> newFailure.With.TestValidationFailure
                 |> TestFailure
         )
@@ -303,7 +306,10 @@ let ``return an ignored failure upon test being executed executed when given no 
             | TestExecutionResult (TestFailure (TestIgnored _)) ->
                 TestSuccess
             | _ ->
-                { Expected = "TestExecutionResult (TestFailure (TestIgnored _))"; Actual = result.ToString () }
+                { new IVerificationInfo with
+                    member _.Expected = "TestExecutionResult (TestFailure (TestIgnored _))"
+                    member _.Actual = result.ToString ()
+                }
                 |> newFailure.With.TestValidationFailure
                 |> TestFailure
         )
@@ -407,7 +413,10 @@ let ``return an ignored failure upon test being executed executed when given no 
             | TestExecutionResult (TestFailure (TestIgnored _)) ->
                 TestSuccess
             | _ ->
-                { Expected = "TestExecutionResult (TestFailure (TestIgnored _))"; Actual = result.ToString () }
+                { new IVerificationInfo with
+                    member _.Expected = "TestExecutionResult (TestFailure (TestIgnored _))"
+                    member _.Actual = result.ToString ()
+                }
                 |> newFailure.With.TestValidationFailure
                 |> TestFailure
         )
@@ -605,7 +614,10 @@ let ``return an ignored failure upon test being executed executed when given no 
             | TestExecutionResult (TestFailure (TestIgnored _)) ->
                 TestSuccess
             | _ ->
-                { Expected = "TestExecutionResult (TestFailure (TestIgnored _))"; Actual = result.ToString () }
+                { new IVerificationInfo with
+                    member _.Expected = "TestExecutionResult (TestFailure (TestIgnored _))"
+                    member _.Actual = result.ToString ()
+                }
                 |> newFailure.With.TestValidationFailure
                 |> TestFailure
         )
@@ -637,7 +649,10 @@ let ``return an ignored failure upon test being executed executed when given no 
             | TestExecutionResult (TestFailure (TestIgnored _)) ->
                 TestSuccess
             | _ ->
-                { Expected = "TestExecutionResult (TestFailure (TestIgnored _))"; Actual = result.ToString () }
+                { new IVerificationInfo with
+                    member _.Expected = "TestExecutionResult (TestFailure (TestIgnored _))"
+                    member _.Actual = result.ToString ()
+                }
                 |> newFailure.With.TestValidationFailure
                 |> TestFailure
         )
@@ -756,7 +771,10 @@ let ``return an ignored failure upon test being executed executed when given no 
             | TestExecutionResult (TestFailure (TestIgnored _)) ->
                 TestSuccess
             | _ ->
-                { Expected = "TestExecutionResult (TestFailure (TestIgnored _))"; Actual = result.ToString () }
+                { new IVerificationInfo with
+                    member _.Expected = "TestExecutionResult (TestFailure (TestIgnored _))"
+                    member _.Actual = result.ToString ()
+                }
                 |> newFailure.With.TestValidationFailure
                 |> TestFailure
         )
@@ -897,7 +915,10 @@ let ``return an ignored failure upon test being executed executed when no teardo
             | TestExecutionResult (TestFailure (TestIgnored _)) ->
                 TestSuccess
             | _ ->
-                { Expected = "TestExecutionResult (TestFailure (TestIgnored _))"; Actual = result.ToString () }
+                { new IVerificationInfo with
+                    member _.Expected = "TestExecutionResult (TestFailure (TestIgnored _))"
+                    member _.Actual = result.ToString ()
+                }
                 |> newFailure.With.TestValidationFailure
                 |> TestFailure
         )
@@ -987,7 +1008,10 @@ let ``return an ignored failure upon test being executed executed when given no 
             | TestExecutionResult (TestFailure (TestIgnored _)) ->
                 TestSuccess
             | _ ->
-                { Expected = "TestExecutionResult (TestFailure (TestIgnored _))"; Actual = result.ToString () }
+                { new IVerificationInfo with
+                    member _.Expected = "TestExecutionResult (TestFailure (TestIgnored _))"
+                    member _.Actual = result.ToString ()
+                }
                 |> newFailure.With.TestValidationFailure
                 |> TestFailure
         )
@@ -1099,7 +1123,10 @@ let ``return an ignored failure upon test being executed executed when given no 
             | TestExecutionResult (TestFailure (TestIgnored _)) ->
                 TestSuccess
             | _ ->
-                { Expected = "TestExecutionResult (TestFailure (TestIgnored _))"; Actual = result.ToString () }
+                { new IVerificationInfo with
+                    member _.Expected = "TestExecutionResult (TestFailure (TestIgnored _))"
+                    member _.Actual = result.ToString ()
+                }
                 |> newFailure.With.TestValidationFailure
                 |> TestFailure
         )
@@ -1185,7 +1212,10 @@ let ``return an ignored failure upon test being executed executed when given no 
             | TestExecutionResult (TestFailure (TestIgnored _)) ->
                 TestSuccess
             | _ ->
-                { Expected = "TestExecutionResult (TestFailure (TestIgnored _))"; Actual = result.ToString () }
+                { new IVerificationInfo with
+                    member _.Expected = "TestExecutionResult (TestFailure (TestIgnored _))"
+                    member _.Actual = result.ToString ()
+                }
                 |> newFailure.With.TestValidationFailure
                 |> TestFailure
         )

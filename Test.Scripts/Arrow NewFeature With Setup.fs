@@ -3,7 +3,6 @@ module Archer.Arrows.Tests.``Arrow NewFeature With Setup``
 open Archer
 open Archer.Arrows
 open Archer.MicroLang.Verification
-open Archer.ShouldTypes
 
 let private feature = Arrow.NewFeature ()
 
