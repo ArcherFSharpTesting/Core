@@ -577,17 +577,36 @@ type Feature<'featureType> (featurePath, featureName, transformer: TestInternals
                 
             buildTest
 
+        member this.isIgnored (tags: TagsIndicator, setup: SetupIndicator<'featureType, 'setupType>, testBody: TestBodyWithEnvironmentIndicator<'setupType>, teardown: TeardownIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int): (string -> unit) =
+            let buildTest (testName: string) =
+                this.Ignore (tags, setup, testBody, teardown, testName, fileFullName, lineNumber)
+                |> ignore
+                
+            buildTest
+
         member this.isTestedBy (tags: TagsIndicator, setup: SetupIndicator<_, 'setupType>, testBody: TestBodyWithEnvironmentIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             this.Script.isTestedBy (tags, setup, testBody, Teardown (fun _ _ -> Ok ()), fileFullName, lineNumber)
+        
+        member this.isIgnored (tags: TagsIndicator, setup: SetupIndicator<_, 'setupType>, testBody: TestBodyWithEnvironmentIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+            this.Script.isIgnored (tags, setup, testBody, Teardown (fun _ _ -> Ok ()), fileFullName, lineNumber)
         
         member this.isTestedBy (tags: TagsIndicator, testBody: TestBodyWithEnvironmentIndicator<'featureType>, teardown: TeardownIndicator<unit>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             this.Script.isTestedBy (tags, Setup Ok, testBody, wrapTeardown teardown, fileFullName, lineNumber)
         
+        member this.isIgnored (tags: TagsIndicator, testBody: TestBodyWithEnvironmentIndicator<'featureType>, teardown: TeardownIndicator<unit>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+            this.Script.isIgnored (tags, Setup Ok, testBody, wrapTeardown teardown, fileFullName, lineNumber)
+        
         member this.isTestedBy (tags: TagsIndicator, testBody: TestBodyWithEnvironmentIndicator<'featureType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             this.Script.isTestedBy (tags, Setup Ok, testBody, Teardown (fun _ _ -> Ok ()), fileFullName, lineNumber)
         
+        member this.isIgnored (tags: TagsIndicator, testBody: TestBodyWithEnvironmentIndicator<'featureType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+            this.Script.isIgnored (tags, Setup Ok, testBody, Teardown (fun _ _ -> Ok ()), fileFullName, lineNumber)
+        
         member this.isTestedBy (tags: TagsIndicator, testBody: TestFunctionWithEnvironment<'featureType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             this.Script.isTestedBy (tags, Setup Ok, TestWithEnvironmentBody testBody, Teardown (fun _ _ -> Ok ()), fileFullName, lineNumber)
+            
+        member this.isIgnored (tags: TagsIndicator, testBody: TestFunctionWithEnvironment<'featureType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+            this.Script.isIgnored (tags, Setup Ok, TestWithEnvironmentBody testBody, Teardown (fun _ _ -> Ok ()), fileFullName, lineNumber)
             
         // --------- isTestedBy - Test Tags (without environment) ---------
         member this.isTestedBy (tags: TagsIndicator, setup: SetupIndicator<_, 'setupType>, testBody: TestBodyIndicator<'setupType>, teardown: TeardownIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
@@ -597,24 +616,49 @@ type Feature<'featureType> (featurePath, featureName, transformer: TestInternals
                
             this.Script.isTestedBy (tags, setup, wrapTestBody testBody, teardown, fileFullName, lineNumber)
             
+        member this.isIgnored (tags: TagsIndicator, setup: SetupIndicator<_, 'setupType>, testBody: TestBodyIndicator<'setupType>, teardown: TeardownIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+            let testBody =
+               match testBody with
+               | TestBody f -> f
+               
+            this.Script.isIgnored (tags, setup, wrapTestBody testBody, teardown, fileFullName, lineNumber)
+            
         member this.isTestedBy (tags: TagsIndicator, setup: SetupIndicator<_, 'setupType>, testBody: TestBodyIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             this.Script.isTestedBy (tags, setup, testBody, Teardown (fun _ _ -> Ok ()), fileFullName, lineNumber)
+        
+        member this.isIgnored (tags: TagsIndicator, setup: SetupIndicator<_, 'setupType>, testBody: TestBodyIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+            this.Script.isIgnored (tags, setup, testBody, Teardown (fun _ _ -> Ok ()), fileFullName, lineNumber)
         
         member this.isTestedBy (tags: TagsIndicator, testBody: TestBodyIndicator<'featureType>, teardown: TeardownIndicator<unit>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             this.Script.isTestedBy (tags, Setup Ok, testBody, wrapTeardown teardown, fileFullName, lineNumber)
         
+        member this.isIgnored (tags: TagsIndicator, testBody: TestBodyIndicator<'featureType>, teardown: TeardownIndicator<unit>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+            this.Script.isIgnored (tags, Setup Ok, testBody, wrapTeardown teardown, fileFullName, lineNumber)
+        
         member this.isTestedBy (tags: TagsIndicator, testBody: TestBodyIndicator<'featureType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             this.Script.isTestedBy (tags, Setup Ok, testBody, Teardown (fun _ _ -> Ok ()), fileFullName, lineNumber)
+        
+        member this.isIgnored (tags: TagsIndicator, testBody: TestBodyIndicator<'featureType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+            this.Script.isIgnored (tags, Setup Ok, testBody, Teardown (fun _ _ -> Ok ()), fileFullName, lineNumber)
         
         member this.isTestedBy (tags: TagsIndicator, testBody: TestFunction<'featureType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             this.Script.isTestedBy (tags, Setup Ok, TestBody testBody, Teardown (fun _ _ -> Ok ()), fileFullName, lineNumber)
             
+        member this.isIgnored (tags: TagsIndicator, testBody: TestFunction<'featureType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+            this.Script.isIgnored (tags, Setup Ok, TestBody testBody, Teardown (fun _ _ -> Ok ()), fileFullName, lineNumber)
+            
         // --------- isTestedBy - Setup (with environment) ---------
         member this.isTestedBy (setup: SetupIndicator<_, 'setupType>, testBody: TestBodyWithEnvironmentIndicator<'setupType>, teardown: TeardownIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             this.Script.isTestedBy (TestTags [], setup, testBody, teardown, fileFullName, lineNumber)
-            
+        
+        member this.isIgnored (setup: SetupIndicator<_, 'setupType>, testBody: TestBodyWithEnvironmentIndicator<'setupType>, teardown: TeardownIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+            this.Script.isTestedBy (TestTags [], setup, testBody, teardown, fileFullName, lineNumber)
+        
         member this.isTestedBy (setup: SetupIndicator<_, 'setupType>, testBody: TestBodyWithEnvironmentIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             this.Script.isTestedBy (setup, testBody, Teardown (fun _ _ -> Ok ()), fileFullName, lineNumber)
+        
+        member this.isIgnored (setup: SetupIndicator<_, 'setupType>, testBody: TestBodyWithEnvironmentIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+            this.Script.isIgnored (setup, testBody, Teardown (fun _ _ -> Ok ()), fileFullName, lineNumber)
         
         // --------- isTestedBy - Setup (without environment) ---------
         member this.isTestedBy (setup: SetupIndicator<_, 'setupType>, testBody: TestBodyIndicator<'setupType>, teardown: TeardownIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
@@ -624,30 +668,57 @@ type Feature<'featureType> (featurePath, featureName, transformer: TestInternals
                 
             this.Script.isTestedBy (setup, wrapTestBody testBody, teardown, fileFullName, lineNumber)
         
+        member this.isIgnored (setup: SetupIndicator<_, 'setupType>, testBody: TestBodyIndicator<'setupType>, teardown: TeardownIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+            let testBody =
+                match testBody with
+                | TestBody f -> f
+                
+            this.Script.isIgnored (setup, wrapTestBody testBody, teardown, fileFullName, lineNumber)
+        
         member this.isTestedBy (setup: SetupIndicator<_, 'setupType>, testBody: TestBodyIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+            this.Script.isTestedBy (setup, testBody, Teardown (fun _ _ -> Ok ()), fileFullName, lineNumber)
+        
+        member this.isIgnored (setup: SetupIndicator<_, 'setupType>, testBody: TestBodyIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             this.Script.isTestedBy (setup, testBody, Teardown (fun _ _ -> Ok ()), fileFullName, lineNumber)
         
         // --------- isTestedBy - TEST BODY (with environment) ---------
         member this.isTestedBy (testBody: TestBodyWithEnvironmentIndicator<'featureType>, teardown: TeardownIndicator<unit>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             this.Script.isTestedBy (Setup Ok, testBody, wrapTeardown teardown, fileFullName, lineNumber)
-            
+        
+        member this.isIgnored (testBody: TestBodyWithEnvironmentIndicator<'featureType>, teardown: TeardownIndicator<unit>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+            this.Script.isIgnored (Setup Ok, testBody, wrapTeardown teardown, fileFullName, lineNumber)
+        
         member this.isTestedBy (testBody: TestBodyWithEnvironmentIndicator<'featureType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             this.Script.isTestedBy (testBody, Teardown (fun _ _ -> Ok ()), fileFullName, lineNumber)
-            
+        
+        member this.isIgnored (testBody: TestBodyWithEnvironmentIndicator<'featureType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+            this.Script.isIgnored (testBody, Teardown (fun _ _ -> Ok ()), fileFullName, lineNumber)
+        
         member this.isTestedBy (testBody: TestFunctionWithEnvironment<'featureType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             this.Script.isTestedBy (TestWithEnvironmentBody testBody, fileFullName, lineNumber)
+        
+        member this.isIgnored (testBody: TestFunctionWithEnvironment<'featureType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+            this.Script.isIgnored (TestWithEnvironmentBody testBody, fileFullName, lineNumber)
         
         // --------- isTestedBy - TEST BODY (without environment) ---------
         member this.isTestedBy (testBody: TestBodyIndicator<'featureType>, teardown: TeardownIndicator<unit>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             this.Script.isTestedBy (Setup Ok, testBody, wrapTeardown teardown, fileFullName, lineNumber)
-            
+        
+        member this.isIgnored (testBody: TestBodyIndicator<'featureType>, teardown: TeardownIndicator<unit>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+            this.Script.isIgnored (Setup Ok, testBody, wrapTeardown teardown, fileFullName, lineNumber)
+        
         member this.isTestedBy (testBody: TestBodyIndicator<'featureType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             this.Script.isTestedBy (testBody, Teardown (fun _ _ -> Ok ()), fileFullName, lineNumber)
-            
+        
+        member this.isIgnored (testBody: TestBodyIndicator<'featureType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+            this.Script.isIgnored (testBody, Teardown (fun _ _ -> Ok ()), fileFullName, lineNumber)
+        
         member this.isTestedBy (testBody: TestFunction<'featureType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             this.Script.isTestedBy (TestBody testBody, fileFullName, lineNumber)
 
-        
+        member this.isIgnored (testBody: TestFunction<'featureType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+            this.Script.isIgnored (TestBody testBody, fileFullName, lineNumber)
+
     member this.GetTests () = tests
     
     override _.ToString () =
