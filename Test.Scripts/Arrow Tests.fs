@@ -23,21 +23,21 @@ let ``Test Cases`` =
             ],
             fun feature ->
                 "Should create a feature with the module namespace and name"
-                |> feature.isTestedBy (fun _ ->
+                |> feature.IsTestedBy (fun _ ->
                     feature.ToString ()
                     |> Should.BeEqualTo $"%s{path}.%s{name}"
                 )
                 
                 "Should run every test specified in the builder"
-                |> feature.isTestedBy (fun _ ->
+                |> feature.IsTestedBy (fun _ ->
                     let monitor = Monitor<unit, unit> (Ok ())
                     let tests =
                         Arrow.Tests (
                             fun f ->
-                                "A" |> f.isTestedBy monitor.CallTestActionWithEnvironment
-                                "B" |> f.isTestedBy monitor.CallTestActionWithEnvironment
-                                "3" |> f.isTestedBy monitor.CallTestActionWithEnvironment
-                                "30" |> f.isTestedBy monitor.CallTestActionWithEnvironment
+                                "A" |> f.IsTestedBy monitor.CallTestActionWithEnvironment
+                                "B" |> f.IsTestedBy monitor.CallTestActionWithEnvironment
+                                "3" |> f.IsTestedBy monitor.CallTestActionWithEnvironment
+                                "30" |> f.IsTestedBy monitor.CallTestActionWithEnvironment
                         )
                         |> List.map ((fun tst -> tst.GetExecutor ()) >> executeFunction >> runIt)
                     
@@ -56,7 +56,7 @@ let ``Test Cases`` =
             ],
             fun feature ->
                 "Should have a name passed to it"
-                |> feature.isTestedBy (
+                |> feature.IsTestedBy (
                     fun _ ->
                         feature.ToString ()
                         |> Should.BeEqualTo $"%s{path}.With a given feature name"
@@ -72,7 +72,7 @@ let ``Test Cases`` =
             ],
             fun feature ->
                 "Should have the path and name passed to it"
-                |> feature.isTestedBy (
+                |> feature.IsTestedBy (
                     fun _ ->
                         feature.ToString ()
                         |> Should.BeEqualTo $"%s{path}.{name}.Given Path.With given path and name"
