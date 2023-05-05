@@ -32,11 +32,14 @@ type WrappedTeardownExecutor<'outerInputType, 'outerOutputType> (outerSetup: 'ou
         | ExecuteRunnerEnd _ ->
             if sender = this then
                 base.Trigger (this, args)
+                
+    override _.Clone () =
+        WrappedTeardownExecutor<'outerInputType, 'outerOutputType> (outerSetup, outerTeardown, inner) :> ISetupTeardownExecutor<'outerInputType>
 
     member this.AsSetupTeardownExecutor with get () = this :> ISetupTeardownExecutor<'outerInputType>
 
 let baseTransformer<'featureType, 'a> (featureSetup: SetupIndicator<unit, 'featureType>) (featureTeardown: TeardownIndicator<'featureType>) (internals: TestInternals, inner: ISetupTeardownExecutor<'featureType>) =
-    let (Setup setup) = featureSetup 
+    let (Setup setup) = featureSetup
     let (Teardown teardown) = featureTeardown
         
     let executor = WrappedTeardownExecutor<unit,'featureType> (setup, teardown, inner)

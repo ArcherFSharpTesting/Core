@@ -41,6 +41,7 @@ type ISetupTeardownExecutor<'inputType> =
     [<CLIEvent>]
     abstract member LifecycleEvent: IEvent<SetupTeardownExecutionDelegate, SetupTeardownExecutorLifecycleEventArgs> with get
     abstract member Execute: value: 'inputType -> TestEnvironment -> TestExecutionResult
+    abstract member Clone: unit -> ISetupTeardownExecutor<'inputType>
     
 type SetupTeardownExecutor<'inputType, 'outputType>(setup: 'inputType -> Result<'outputType, SetupTeardownFailure>, teardown: Result<'outputType, SetupTeardownFailure> -> TestResult option -> Result<unit, SetupTeardownFailure>, runner: 'outputType -> TestEnvironment -> TestExecutionResult) =
     let lifecycleEvent = Event<SetupTeardownExecutionDelegate, SetupTeardownExecutorLifecycleEventArgs> ()
@@ -48,6 +49,9 @@ type SetupTeardownExecutor<'inputType, 'outputType>(setup: 'inputType -> Result<
     abstract member Trigger: sender:obj * args:SetupTeardownExecutorLifecycleEventArgs -> unit
     default _.Trigger (sender: obj, args: SetupTeardownExecutorLifecycleEventArgs) =
         lifecycleEvent.Trigger (sender, args)
+        
+    abstract member Clone: unit -> ISetupTeardownExecutor<'inputType>
+    default _.Clone () = SetupTeardownExecutor<'inputType, 'outputType>(setup, teardown, runner) :> ISetupTeardownExecutor<'inputType>
     
     interface ISetupTeardownExecutor<'inputType> with
         [<CLIEvent>]
@@ -112,6 +116,8 @@ type SetupTeardownExecutor<'inputType, 'outputType>(setup: 'inputType -> Result<
                         | ex -> ex |> GeneralExceptionFailure |> GeneralExecutionFailure
             with
             | ex -> ex |> SetupTeardownExceptionFailure |> SetupExecutionFailure
+
+        member this.Clone() = this.Clone ()
         
 type TestCaseExecutor(parent: ITest, internals: ISetupTeardownExecutor<unit>) =
     let testLifecycleEvent = Event<TestExecutionDelegate, TestEventLifecycle> ()
@@ -215,7 +221,7 @@ type TestCase (containerPath: string, containerName: string, testName: string, w
         member this.ContainerPath = this.ContainerPath
         member this.GetExecutor () =
             
-            TestCaseExecutor (this :> ITest, workings) :> ITestExecutor
+            TestCaseExecutor (this :> ITest, workings.Clone ()) :> ITestExecutor
         member this.Location = this.Location
         member this.Tags = this.Tags
         member this.TestName = this.TestName
