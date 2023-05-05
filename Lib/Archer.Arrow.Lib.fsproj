@@ -17,6 +17,7 @@
     <Compile Include="Internals.fs" />
     <Compile Include="Internal.Types.FeatureInterfaces.fs" />
     <Compile Include="Internal.Types.Feature.fs" />
+    <Compile Include="Internal.Types.IgnoreFeature.fs" />
     <Compile Include="Helpers.fs" />
     <Compile Include="Builders.fs" />
     <Content Include="Directory.Build.props" />
