@@ -3,6 +3,7 @@
 open Archer
 open Archer.Arrows
 open Archer.Arrows.Internal.Types
+open Archer.Arrows.Internals
 open Archer.Arrows.Tests
 open Archer.CoreTypes.InternalTypes
 open Archer.MicroLang.Verification
@@ -36,7 +37,7 @@ let ``return an ITest with everything when everything is passed`` =
                     TestTags testTags,
                     Setup (fun _ -> Ok ()),
                     TestBody (fun _ -> TestSuccess),
-                    Teardown (fun _ _ -> Ok ()),
+                    emptyTeardown,
                     testName,
                     fullPath,
                     lineNumber
@@ -70,7 +71,7 @@ let ``run setup method passed to it when everything is passed`` =
                             ],
                     Setup monitor.CallSetup,
                     TestBody (fun _ -> TestSuccess),
-                    Teardown (fun _ _ -> Ok ()),
+                    emptyTeardown,
                     "My test",
                     "D:\\dog.bark",
                     73
@@ -268,7 +269,7 @@ let ``return an ITest with everything when given no setup`` =
                 testFeature.Test (
                     TestTags testTags,
                     TestBody (fun _ -> TestSuccess),
-                    Teardown (fun _ _ -> Ok ()),
+                    emptyTeardown,
                     testName,
                     fullPath,
                     lineNumber
@@ -472,7 +473,7 @@ let ``return an ITest with everything when given no tags`` =
                 testFeature.Test (
                     Setup (fun _ -> Ok ()),
                     TestBody (fun _ -> TestSuccess),
-                    Teardown (fun _ _ -> Ok ()),
+                    emptyTeardown,
                     testName,
                     fullPath,
                     lineNumber
@@ -502,7 +503,7 @@ let ``run setup method passed to it when given no tags`` =
                 testFeature.Test (
                     Setup monitor.CallSetup,
                     TestBody (fun _ -> TestSuccess),
-                    Teardown (fun _ _ -> Ok ()),
+                    emptyTeardown,
                     "My test",
                     "D:\\dog.bark",
                     73
@@ -672,7 +673,7 @@ let ``return an ITest with everything when given no tags, no setup`` =
             let test =
                 testFeature.Test (
                     TestBody (fun _ -> TestSuccess),
-                    Teardown (fun _ _ -> Ok ()),
+                    emptyTeardown,
                     testName,
                     fullPath,
                     lineNumber

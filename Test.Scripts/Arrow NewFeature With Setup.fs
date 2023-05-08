@@ -2,6 +2,7 @@ module Archer.Arrows.Tests.``Arrow NewFeature With Setup``
 
 open Archer
 open Archer.Arrows
+open Archer.Arrows.Internals
 open Archer.MicroLang.Verification
 
 let private feature = Arrow.NewFeature (
@@ -86,7 +87,7 @@ let ``Should call setup when it is passed with a teardown`` =
             
             let testFeature = Arrow.NewFeature (
                 Setup monitor.CallSetup,
-                Teardown (fun _ _ -> Ok ())
+                emptyTeardown
             )
             
             let test = testFeature.Test (fun _ -> TestSuccess)
@@ -109,7 +110,7 @@ let ``Should call setup when name, setup, and teardown are specified`` =
             let testFeature = Arrow.NewFeature (
                 "Hello Feature",
                 Setup monitor.CallSetup,
-                Teardown (fun _ _ -> Ok ())
+                emptyTeardown
             )
             
             let test = testFeature.Test (fun _ -> TestSuccess)
@@ -133,7 +134,7 @@ let ``Should call setup when path, name, setup, and teardown are specified`` =
                 "Hello Path",
                 "Hello Feature",
                 Setup monitor.CallSetup,
-                Teardown (fun _ _ -> Ok ())
+                emptyTeardown
             )
             
             let test = testFeature.Test (fun _ -> TestSuccess)

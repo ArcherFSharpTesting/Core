@@ -3,6 +3,7 @@
 open Archer
 open Archer.Arrows
 open Archer.Arrows.Internal.Types
+open Archer.Arrows.Internals
 open Archer.MicroLang
 
 let private feature = Arrow.NewFeature (
@@ -19,12 +20,12 @@ let private exampleWithSetup = Arrow.Ignore (
 )
 
 let private exampleWithTeardown = Arrow.Ignore (
-    Teardown (fun _ _ -> Ok ())
+    emptyTeardown
 )
 
 let private exampleWithBoth = Arrow.Ignore (
     Setup (fun _ -> Ok ()),
-    Teardown (fun _ _ -> Ok ())
+    emptyTeardown
 )
 
 type private Thing = {
@@ -119,7 +120,7 @@ let ``Should Create a Feature with the name, path, and teardown given to it`` =
             let testFeature = Arrow.Ignore (
                 path,
                 name,
-                Teardown (fun _ _ -> Ok ())
+                emptyTeardown
             )
             
             testFeature.ToString ()
@@ -135,7 +136,7 @@ let ``Should Create a Feature with the name, path, setup and teardown given to i
                 path,
                 name,
                 Setup (fun _ -> Ok ()),
-                Teardown (fun _ _ -> Ok ())
+                emptyTeardown
             )
             
             testFeature.ToString ()
@@ -175,7 +176,7 @@ let ``Should Create a feature with the name and teardown given to it`` =
             let name = "A specified name"
             let testFeature = Arrow.Ignore (
                 name,
-                Teardown (fun _ _ -> Ok ())
+                emptyTeardown
             )
             
             testFeature.ToString ()
@@ -191,7 +192,7 @@ let ``Should Create a feature with the name, setup and teardown given to it`` =
             let testFeature = Arrow.Ignore (
                 name,
                 Setup (fun _ -> Ok ()),
-                Teardown (fun _ _ -> Ok ())
+                emptyTeardown
             )
             
             testFeature.ToString ()

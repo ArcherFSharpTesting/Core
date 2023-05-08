@@ -3,22 +3,23 @@ module Archer.Arrows.Tests.TestBuilders
 
 open Archer
 open Archer.Arrows
+open Archer.Arrows.Internals
 open Archer.MicroLang
 
 let buildFeatureUnderTestWithSetupAndTeardown setup teardown =
     Arrow.NewFeature (ignoreString (), ignoreString (), setup, teardown)
 
 let buildFeatureUnderTestWithSetup setup =
-    Arrow.NewFeature (ignoreString (), ignoreString (), setup, Teardown (fun _ _ -> Ok ()))
+    Arrow.NewFeature (ignoreString (), ignoreString (), setup, emptyTeardown)
 
 let buildFeatureUnderTestWithTeardown teardown =
     Arrow.NewFeature (ignoreString (), ignoreString (), Setup Ok, teardown)
 
 let buildFeatureUnderTest _ =
-    buildFeatureUnderTestWithSetupAndTeardown (Setup Ok) (Teardown (fun _ _ -> Ok ()))
+    buildFeatureUnderTestWithSetupAndTeardown (Setup Ok) (emptyTeardown)
     
 let setupFeatureUnderTest _ =
-    buildFeatureUnderTestWithSetupAndTeardown (Setup Ok) (Teardown (fun _ _ -> Ok ()))
+    buildFeatureUnderTestWithSetupAndTeardown (Setup Ok) (emptyTeardown)
     |> Ok
 
 let setupExecutor _ =
@@ -29,7 +30,7 @@ let setupExecutor _ =
 let setupBuildExecutorWithSetupAction _ =
     let buildExecutor setupAction =
         let feature = buildFeatureUnderTest ()
-        let test = feature.Test (Setup setupAction, TestWithEnvironmentBody successfulEnvironmentTest, ignoreString (), $"%s{ignoreString ()}.fs", ignoreInt ())
+        let test = feature.Test (Setup setupAction, TestBodyTwoParameters successfulEnvironmentTest, ignoreString (), $"%s{ignoreString ()}.fs", ignoreInt ())
         test.GetExecutor ()
         
     buildExecutor |> Ok
@@ -37,7 +38,7 @@ let setupBuildExecutorWithSetupAction _ =
 let setupBuildExecutorWithFeatureSetupAction _ =
     let buildExecutor setupAction =
         let feature = buildFeatureUnderTestWithSetup (Setup setupAction)
-        let test = feature.Test (Setup Ok, TestWithEnvironmentBody successfulEnvironmentTest, ignoreString (), $"%s{ignoreString ()}.fs", ignoreInt ())
+        let test = feature.Test (Setup Ok, TestBodyTwoParameters successfulEnvironmentTest, ignoreString (), $"%s{ignoreString ()}.fs", ignoreInt ())
         test.GetExecutor ()
         
     buildExecutor |> Ok
@@ -45,7 +46,7 @@ let setupBuildExecutorWithFeatureSetupAction _ =
 let setupBuildExecutorWithFeatureTeardownAction _ =
     let buildExecutor teardownAction =
         let feature = buildFeatureUnderTestWithTeardown (Teardown teardownAction)
-        let test = feature.Test (Setup Ok, TestWithEnvironmentBody successfulEnvironmentTest, ignoreString (), $"%s{ignoreString ()}.fs", ignoreInt ())
+        let test = feature.Test (Setup Ok, TestBodyTwoParameters successfulEnvironmentTest, ignoreString (), $"%s{ignoreString ()}.fs", ignoreInt ())
         test.GetExecutor ()
         
     buildExecutor |> Ok
@@ -53,7 +54,7 @@ let setupBuildExecutorWithFeatureTeardownAction _ =
 let setupBuildExecutorWithTestBody _ =
     let buildExecutor testBody =
         let feature = buildFeatureUnderTest ()
-        let test = feature.Test (Setup successfulUnitSetup, TestWithEnvironmentBody testBody, ignoreString (), $"%s{ignoreString ()}.fs", ignoreInt ())
+        let test = feature.Test (Setup successfulUnitSetup, TestBodyTwoParameters testBody, ignoreString (), $"%s{ignoreString ()}.fs", ignoreInt ())
         test.GetExecutor ()
         
     buildExecutor |> Ok
@@ -61,7 +62,7 @@ let setupBuildExecutorWithTestBody _ =
 let setupBuildExecutorWithTestBodyAndSetupAction _ =
     let buildExecutor setup testBody =
         let feature = buildFeatureUnderTest ()
-        let test = feature.Test (Setup setup, TestWithEnvironmentBody testBody, ignoreString (), $"%s{ignoreString ()}.fs", ignoreInt ())
+        let test = feature.Test (Setup setup, TestBodyTwoParameters testBody, ignoreString (), $"%s{ignoreString ()}.fs", ignoreInt ())
         test.GetExecutor ()
         
     buildExecutor |> Ok
@@ -69,7 +70,7 @@ let setupBuildExecutorWithTestBodyAndSetupAction _ =
 let setupBuildExecutorWithTeardownAction () =
     let buildExecutor teardownAction =
         let feature = buildFeatureUnderTest ()
-        let test = feature.Test (Setup successfulUnitSetup, TestWithEnvironmentBody successfulEnvironmentTest, Teardown teardownAction)
+        let test = feature.Test (Setup successfulUnitSetup, TestBodyTwoParameters successfulEnvironmentTest, Teardown teardownAction)
         test.GetExecutor ()
         
     buildExecutor |> Ok
@@ -77,7 +78,7 @@ let setupBuildExecutorWithTeardownAction () =
 let setupBuildExecutorWithSetupAndTeardownActions _ =
     let buildExecutor setupAction teardownAction =
         let feature = buildFeatureUnderTest ()
-        let test = feature.Test (Setup setupAction, TestWithEnvironmentBody successfulEnvironmentTest, Teardown teardownAction)
+        let test = feature.Test (Setup setupAction, TestBodyTwoParameters successfulEnvironmentTest, Teardown teardownAction)
         test.GetExecutor ()
         
     buildExecutor |> Ok
@@ -85,7 +86,7 @@ let setupBuildExecutorWithSetupAndTeardownActions _ =
 let setupBuiltExecutorWithTestBodyAndTeardownAction _ =
     let builtExecutor testBody teardownAction =
         let feature = buildFeatureUnderTest ()
-        let test = feature.Test (Setup successfulUnitSetup, TestWithEnvironmentBody testBody, Teardown teardownAction)
+        let test = feature.Test (Setup successfulUnitSetup, TestBodyTwoParameters testBody, Teardown teardownAction)
         test.GetExecutor ()
         
     builtExecutor |> Ok
@@ -197,7 +198,7 @@ let setupBuildExecutorWithMonitor _ =
             ignoreString ()
         )
         
-        let test = feature.Test (Setup monitor.CallSetup, TestWithEnvironmentBody monitor.CallTestActionWithEnvironment, Teardown monitor.CallTeardown)
+        let test = feature.Test (Setup monitor.CallSetup, TestBodyTwoParameters monitor.CallTestActionWithEnvironment, Teardown monitor.CallTeardown)
         test.GetExecutor ()
         
     Ok buildIt

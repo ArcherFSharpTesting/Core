@@ -225,3 +225,5 @@ type TestCase (containerPath: string, containerName: string, testName: string, w
         member this.Location = this.Location
         member this.Tags = this.Tags
         member this.TestName = this.TestName
+
+let emptyTeardown = Teardown (fun _ _ -> Ok ())

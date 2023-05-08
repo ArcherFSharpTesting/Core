@@ -3,6 +3,7 @@
 open Archer
 open Archer.Arrows
 open Archer.Arrows.Internal.Types
+open Archer.Arrows.Internals
 open Archer.Arrows.Tests
 open Archer.CoreTypes.InternalTypes
 open Archer.Fletching.Types.Internal
@@ -38,7 +39,7 @@ let ``return an ITest with everything when everything is passed`` =
                     TestTags testTags,
                     Setup (fun _ -> Ok ()),
                     TestBody (fun _ -> TestSuccess),
-                    Teardown (fun _ _ -> Ok ()),
+                    emptyTeardown,
                     fullPath,
                     lineNumber
                 )
@@ -72,7 +73,7 @@ let ``not run setup method passed to it when everything is passed`` =
                             ],
                     Setup monitor.CallSetup,
                     TestBody (fun _ -> TestSuccess),
-                    Teardown (fun _ _ -> Ok ()),
+                    emptyTeardown,
                     "D:\\dog.bark",
                     73
                 )
@@ -337,7 +338,7 @@ let ``return an ITest with everything when given no setup`` =
                     testName,
                     TestTags testTags,
                     TestBody (fun _ -> TestSuccess),
-                    Teardown (fun _ _ -> Ok ()),
+                    emptyTeardown,
                     fullPath,
                     lineNumber
                 )
@@ -666,7 +667,7 @@ let ``return an ITest with everything when given no tags`` =
                     testName,
                     Setup (fun _ -> Ok ()),
                     TestBody (fun _ -> TestSuccess),
-                    Teardown (fun _ _ -> Ok ()),
+                    emptyTeardown,
                     fullPath,
                     lineNumber
                 )
@@ -696,7 +697,7 @@ let ``not run setup method passed to it when given no tags`` =
                     "My test",
                     Setup monitor.CallSetup,
                     TestBody (fun _ -> TestSuccess),
-                    Teardown (fun _ _ -> Ok ()),
+                    emptyTeardown,
                     "D:\\dog.bark",
                     73
                 )
@@ -925,7 +926,7 @@ let ``return an ITest with everything when given no tags, no setup`` =
                 testFeature.Ignore (
                     testName,
                     TestBody (fun _ -> TestSuccess),
-                    Teardown (fun _ _ -> Ok ()),
+                    emptyTeardown,
                     fullPath,
                     lineNumber
                 )

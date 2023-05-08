@@ -2,6 +2,7 @@
 
 open Archer
 open Archer.Arrows
+open Archer.Arrows.Internals
 open Archer.Arrows.Tests
 open Archer.Fletching.Types.Internal
 open Archer.MicroLang.Verification
@@ -32,8 +33,8 @@ let ``return a test with correct tags when given tags, setup, test body with env
         let test = fut.Ignore (
             TestTags tags,
             Setup (fun _ -> Ok ()),
-            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
-            Teardown (fun _ _ -> Ok ()),
+            TestBodyTwoParameters (fun _ _ -> TestSuccess),
+            emptyTeardown,
             "My ignored test",
             "S:\\path\\file.f",
             3
@@ -50,8 +51,8 @@ let ``return a test with correct test name when given tags, setup, test body wit
         let test = fut.Ignore (
             TestTags [],
             Setup (fun _ -> Ok ()),
-            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
-            Teardown (fun _ _ -> Ok ()),
+            TestBodyTwoParameters (fun _ _ -> TestSuccess),
+            emptyTeardown,
             "The ignored test",
             "S:\\path\\file.f",
             3
@@ -68,8 +69,8 @@ let ``return a test with correct file path when given tags, setup, test body wit
         let test = fut.Ignore (
             TestTags [],
             Setup (fun _ -> Ok ()),
-            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
-            Teardown (fun _ _ -> Ok ()),
+            TestBodyTwoParameters (fun _ _ -> TestSuccess),
+            emptyTeardown,
             "The ignored test",
             "S:\\path\\file.f",
             3
@@ -86,8 +87,8 @@ let ``return a test with correct file name when given tags, setup, test body wit
         let test = fut.Ignore (
             TestTags [],
             Setup (fun _ -> Ok ()),
-            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
-            Teardown (fun _ _ -> Ok ()),
+            TestBodyTwoParameters (fun _ _ -> TestSuccess),
+            emptyTeardown,
             "The ignored test",
             "S:\\path\\file.f",
             3
@@ -104,8 +105,8 @@ let ``return a test with correct line number when given tags, setup, test body w
         let test = fut.Ignore (
             TestTags [],
             Setup (fun _ -> Ok ()),
-            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
-            Teardown (fun _ _ -> Ok ()),
+            TestBodyTwoParameters (fun _ _ -> TestSuccess),
+            emptyTeardown,
             "The ignored test",
             "S:\\path\\file.f",
             32
@@ -123,8 +124,8 @@ let ``return a test that returns an "Ignored" result when given tags, setup, tes
         let test = fut.Ignore (
             TestTags [],
             Setup (fun _ -> Ok ()),
-            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
-            Teardown (fun _ _ -> Ok ()),
+            TestBodyTwoParameters (fun _ _ -> TestSuccess),
+            emptyTeardown,
             "My ignored test",
             "S:\\path\\file.f",
             3
@@ -147,8 +148,8 @@ let ``return a test that does not call setup when run when given tags, setup, te
         let test = fut.Ignore (
             TestTags [],
             Setup monitor.CallSetup,
-            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
-            Teardown (fun _ _ -> Ok ()),
+            TestBodyTwoParameters (fun _ _ -> TestSuccess),
+            emptyTeardown,
             "My ignored test",
             "S:\\path\\file.f",
             3
@@ -172,8 +173,8 @@ let ``return a test that does not call the test action when run when given tags,
         let test = fut.Ignore (
             TestTags [],
             Setup (fun _ -> Ok ()),
-            TestWithEnvironmentBody monitor.CallTestActionWithEnvironment,
-            Teardown (fun _ _ -> Ok ()),
+            TestBodyTwoParameters monitor.CallTestActionWithEnvironment,
+            emptyTeardown,
             "My ignored test",
             "S:\\path\\file.f",
             3
@@ -197,7 +198,7 @@ let ``return a test that does not call the teardown when run when given tags, se
         let test = fut.Ignore (
             TestTags [],
             Setup (fun _ -> Ok ()),
-            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
+            TestBodyTwoParameters (fun _ _ -> TestSuccess),
             Teardown monitor.CallTeardown,
             "My ignored test",
             "S:\\path\\file.f",
@@ -230,8 +231,8 @@ let ``return a test with correct tags when given tags, test body with environmen
             
         let test = fut.Ignore (
             TestTags tags,
-            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
-            Teardown (fun _ _ -> Ok ()),
+            TestBodyTwoParameters (fun _ _ -> TestSuccess),
+            emptyTeardown,
             "My ignored test",
             "S:\\path\\file.f",
             3
@@ -247,8 +248,8 @@ let ``return a test with correct test name when given tags, test body with envir
         
         let test = fut.Ignore (
             TestTags [],
-            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
-            Teardown (fun _ _ -> Ok ()),
+            TestBodyTwoParameters (fun _ _ -> TestSuccess),
+            emptyTeardown,
             "The ignored test",
             "S:\\path\\file.f",
             3
@@ -264,8 +265,8 @@ let ``return a test with correct file path when given tags, test body with envir
         
         let test = fut.Ignore (
             TestTags [],
-            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
-            Teardown (fun _ _ -> Ok ()),
+            TestBodyTwoParameters (fun _ _ -> TestSuccess),
+            emptyTeardown,
             "The ignored test",
             "S:\\path\\file.f",
             3
@@ -281,8 +282,8 @@ let ``return a test with correct file name when given tags, test body with envir
         
         let test = fut.Ignore (
             TestTags [],
-            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
-            Teardown (fun _ _ -> Ok ()),
+            TestBodyTwoParameters (fun _ _ -> TestSuccess),
+            emptyTeardown,
             "The ignored test",
             "S:\\path\\file.f",
             3
@@ -298,8 +299,8 @@ let ``return a test with correct line number when given tags, test body with env
         
         let test = fut.Ignore (
             TestTags [],
-            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
-            Teardown (fun _ _ -> Ok ()),
+            TestBodyTwoParameters (fun _ _ -> TestSuccess),
+            emptyTeardown,
             "The ignored test",
             "S:\\path\\file.f",
             32
@@ -316,8 +317,8 @@ let ``return a test that returns an "Ignored" result when given tags, test body 
         
         let test = fut.Ignore (
             TestTags [],
-            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
-            Teardown (fun _ _ -> Ok ()),
+            TestBodyTwoParameters (fun _ _ -> TestSuccess),
+            emptyTeardown,
             "My ignored test",
             "S:\\path\\file.f",
             3
@@ -339,8 +340,8 @@ let ``return a test that does not call the test action when run when given tags,
         
         let test = fut.Ignore (
             TestTags [],
-            TestWithEnvironmentBody monitor.CallTestActionWithEnvironment,
-            Teardown (fun _ _ -> Ok ()),
+            TestBodyTwoParameters monitor.CallTestActionWithEnvironment,
+            emptyTeardown,
             "My ignored test",
             "S:\\path\\file.f",
             3
@@ -363,7 +364,7 @@ let ``return a test that does not call the teardown when run when given tags, te
         
         let test = fut.Ignore (
             TestTags [],
-            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
+            TestBodyTwoParameters (fun _ _ -> TestSuccess),
             Teardown monitor.CallTeardown,
             "My ignored test",
             "S:\\path\\file.f",
@@ -397,7 +398,7 @@ let ``return a test with correct tags when given tags, setup, test body with env
         let test = fut.Ignore (
             TestTags tags,
             Setup (fun _ -> Ok ()),
-            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
+            TestBodyTwoParameters (fun _ _ -> TestSuccess),
             "My ignored test",
             "S:\\path\\file.f",
             3
@@ -414,7 +415,7 @@ let ``return a test with correct test name when given tags, setup, test body wit
         let test = fut.Ignore (
             TestTags [],
             Setup (fun _ -> Ok ()),
-            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
+            TestBodyTwoParameters (fun _ _ -> TestSuccess),
             "The ignored test",
             "S:\\path\\file.f",
             3
@@ -431,7 +432,7 @@ let ``return a test with correct file path when given tags, setup, test body wit
         let test = fut.Ignore (
             TestTags [],
             Setup (fun _ -> Ok ()),
-            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
+            TestBodyTwoParameters (fun _ _ -> TestSuccess),
             "The ignored test",
             "S:\\path\\file.f",
             3
@@ -448,7 +449,7 @@ let ``return a test with correct file name when given tags, setup, test body wit
         let test = fut.Ignore (
             TestTags [],
             Setup (fun _ -> Ok ()),
-            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
+            TestBodyTwoParameters (fun _ _ -> TestSuccess),
             "The ignored test",
             "S:\\path\\file.f",
             3
@@ -465,7 +466,7 @@ let ``return a test with correct line number when given tags, setup, test body w
         let test = fut.Ignore (
             TestTags [],
             Setup (fun _ -> Ok ()),
-            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
+            TestBodyTwoParameters (fun _ _ -> TestSuccess),
             "The ignored test",
             "S:\\path\\file.f",
             32
@@ -483,7 +484,7 @@ let ``return a test that returns an "Ignored" result when given tags, setup, tes
         let test = fut.Ignore (
             TestTags [],
             Setup (fun _ -> Ok ()),
-            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
+            TestBodyTwoParameters (fun _ _ -> TestSuccess),
             "My ignored test",
             "S:\\path\\file.f",
             3
@@ -506,7 +507,7 @@ let ``return a test that does not call setup when run when given tags, setup, te
         let test = fut.Ignore (
             TestTags [],
             Setup monitor.CallSetup,
-            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
+            TestBodyTwoParameters (fun _ _ -> TestSuccess),
             "My ignored test",
             "S:\\path\\file.f",
             3
@@ -530,7 +531,7 @@ let ``return a test that does not call the test action when run when given tags,
         let test = fut.Ignore (
             TestTags [],
             Setup (fun _ -> Ok ()),
-            TestWithEnvironmentBody monitor.CallTestActionWithEnvironment,
+            TestBodyTwoParameters monitor.CallTestActionWithEnvironment,
             "My ignored test",
             "S:\\path\\file.f",
             3
@@ -562,7 +563,7 @@ let ``return a test with correct tags when given tags, test body with environmen
             
         let test = fut.Ignore (
             TestTags tags,
-            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
+            TestBodyTwoParameters (fun _ _ -> TestSuccess),
             "My ignored test",
             "S:\\path\\file.f",
             3
@@ -578,7 +579,7 @@ let ``return a test with correct test name when given tags, test body with envir
         
         let test = fut.Ignore (
             TestTags [],
-            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
+            TestBodyTwoParameters (fun _ _ -> TestSuccess),
             "The ignored test",
             "S:\\path\\file.f",
             3
@@ -594,7 +595,7 @@ let ``return a test with correct file path when given tags, test body with envir
         
         let test = fut.Ignore (
             TestTags [],
-            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
+            TestBodyTwoParameters (fun _ _ -> TestSuccess),
             "The ignored test",
             "S:\\path\\file.f",
             3
@@ -610,7 +611,7 @@ let ``return a test with correct file name when given tags, test body with envir
         
         let test = fut.Ignore (
             TestTags [],
-            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
+            TestBodyTwoParameters (fun _ _ -> TestSuccess),
             "The ignored test",
             "S:\\path\\file.f",
             3
@@ -626,7 +627,7 @@ let ``return a test with correct line number when given tags, test body with env
         
         let test = fut.Ignore (
             TestTags [],
-            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
+            TestBodyTwoParameters (fun _ _ -> TestSuccess),
             "The ignored test",
             "S:\\path\\file.f",
             32
@@ -643,7 +644,7 @@ let ``return a test that returns an "Ignored" result when given tags, test body 
         
         let test = fut.Ignore (
             TestTags [],
-            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
+            TestBodyTwoParameters (fun _ _ -> TestSuccess),
             "My ignored test",
             "S:\\path\\file.f",
             3
@@ -665,7 +666,7 @@ let ``return a test that does not call the test action when run when given tags,
         
         let test = fut.Ignore (
             TestTags [],
-            TestWithEnvironmentBody monitor.CallTestActionWithEnvironment,
+            TestBodyTwoParameters monitor.CallTestActionWithEnvironment,
             "My ignored test",
             "S:\\path\\file.f",
             3
@@ -699,7 +700,7 @@ let ``return a test with correct tags when given tags, setup, test body, teardow
             TestTags tags,
             Setup (fun _ -> Ok ()),
             TestBody (fun _ -> TestSuccess),
-            Teardown (fun _ _ -> Ok ()),
+            emptyTeardown,
             "My ignored test",
             "S:\\path\\file.f",
             3
@@ -717,7 +718,7 @@ let ``return a test with correct test name when given tags, setup, test body, te
             TestTags [],
             Setup (fun _ -> Ok ()),
             TestBody (fun _ -> TestSuccess),
-            Teardown (fun _ _ -> Ok ()),
+            emptyTeardown,
             "The ignored test",
             "S:\\path\\file.f",
             3
@@ -735,7 +736,7 @@ let ``return a test with correct file path when given tags, setup, test body, te
             TestTags [],
             Setup (fun _ -> Ok ()),
             TestBody (fun _ -> TestSuccess),
-            Teardown (fun _ _ -> Ok ()),
+            emptyTeardown,
             "The ignored test",
             "S:\\path\\file.f",
             3
@@ -753,7 +754,7 @@ let ``return a test with correct file name when given tags, setup, test body, te
             TestTags [],
             Setup (fun _ -> Ok ()),
             TestBody (fun _ -> TestSuccess),
-            Teardown (fun _ _ -> Ok ()),
+            emptyTeardown,
             "The ignored test",
             "S:\\path\\file.f",
             3
@@ -771,7 +772,7 @@ let ``return a test with correct line number when given tags, setup, test body, 
             TestTags [],
             Setup (fun _ -> Ok ()),
             TestBody (fun _ -> TestSuccess),
-            Teardown (fun _ _ -> Ok ()),
+            emptyTeardown,
             "The ignored test",
             "S:\\path\\file.f",
             32
@@ -790,7 +791,7 @@ let ``return a test that returns an "Ignored" result when given tags, setup, tes
             TestTags [],
             Setup (fun _ -> Ok ()),
             TestBody (fun _ -> TestSuccess),
-            Teardown (fun _ _ -> Ok ()),
+            emptyTeardown,
             "My ignored test",
             "S:\\path\\file.f",
             3
@@ -814,7 +815,7 @@ let ``return a test that does not call setup when run when given tags, setup, te
             TestTags [],
             Setup monitor.CallSetup,
             TestBody (fun _ -> TestSuccess),
-            Teardown (fun _ _ -> Ok ()),
+            emptyTeardown,
             "My ignored test",
             "S:\\path\\file.f",
             3
@@ -839,7 +840,7 @@ let ``return a test that does not call the test action when run when given tags,
             TestTags [],
             Setup (fun _ -> Ok ()),
             TestBody monitor.CallTestActionWithoutEnvironment,
-            Teardown (fun _ _ -> Ok ()),
+            emptyTeardown,
             "My ignored test",
             "S:\\path\\file.f",
             3
@@ -897,7 +898,7 @@ let ``return a test with correct tags when given tags, test body, teardown, test
         let test = fut.Ignore (
             TestTags tags,
             TestBody (fun _ -> TestSuccess),
-            Teardown (fun _ _ -> Ok ()),
+            emptyTeardown,
             "My ignored test",
             "S:\\path\\file.f",
             3
@@ -914,7 +915,7 @@ let ``return a test with correct test name when given tags, test body, teardown,
         let test = fut.Ignore (
             TestTags [],
             TestBody (fun _ -> TestSuccess),
-            Teardown (fun _ _ -> Ok ()),
+            emptyTeardown,
             "The ignored test",
             "S:\\path\\file.f",
             3
@@ -931,7 +932,7 @@ let ``return a test with correct file path when given tags, test body, teardown,
         let test = fut.Ignore (
             TestTags [],
             TestBody (fun _ -> TestSuccess),
-            Teardown (fun _ _ -> Ok ()),
+            emptyTeardown,
             "The ignored test",
             "S:\\path\\file.f",
             3
@@ -948,7 +949,7 @@ let ``return a test with correct file name when given tags, test body, teardown,
         let test = fut.Ignore (
             TestTags [],
             TestBody (fun _ -> TestSuccess),
-            Teardown (fun _ _ -> Ok ()),
+            emptyTeardown,
             "The ignored test",
             "S:\\path\\file.f",
             3
@@ -965,7 +966,7 @@ let ``return a test with correct line number when given tags, test body, teardow
         let test = fut.Ignore (
             TestTags [],
             TestBody (fun _ -> TestSuccess),
-            Teardown (fun _ _ -> Ok ()),
+            emptyTeardown,
             "The ignored test",
             "S:\\path\\file.f",
             32
@@ -983,7 +984,7 @@ let ``return a test that returns an "Ignored" result when given tags, test body,
         let test = fut.Ignore (
             TestTags [],
             TestBody (fun _ -> TestSuccess),
-            Teardown (fun _ _ -> Ok ()),
+            emptyTeardown,
             "My ignored test",
             "S:\\path\\file.f",
             3
@@ -1006,7 +1007,7 @@ let ``return a test that does not call the test action when run when given tags,
         let test = fut.Ignore (
             TestTags [],
             TestBody monitor.CallTestActionWithoutEnvironment,
-            Teardown (fun _ _ -> Ok ()),
+            emptyTeardown,
             "My ignored test",
             "S:\\path\\file.f",
             3
@@ -1356,8 +1357,8 @@ let ``return a test with correct test name when given setup, test body with envi
         
         let test = fut.Ignore (
             Setup (fun _ -> Ok ()),
-            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
-            Teardown (fun _ _ -> Ok ()),
+            TestBodyTwoParameters (fun _ _ -> TestSuccess),
+            emptyTeardown,
             "The ignored test",
             "S:\\path\\file.f",
             3
@@ -1373,8 +1374,8 @@ let ``return a test with correct file path when given setup, test body with envi
         
         let test = fut.Ignore (
             Setup (fun _ -> Ok ()),
-            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
-            Teardown (fun _ _ -> Ok ()),
+            TestBodyTwoParameters (fun _ _ -> TestSuccess),
+            emptyTeardown,
             "The ignored test",
             "S:\\path\\file.f",
             3
@@ -1390,8 +1391,8 @@ let ``return a test with correct file name when given setup, test body with envi
         
         let test = fut.Ignore (
             Setup (fun _ -> Ok ()),
-            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
-            Teardown (fun _ _ -> Ok ()),
+            TestBodyTwoParameters (fun _ _ -> TestSuccess),
+            emptyTeardown,
             "The ignored test",
             "S:\\path\\file.f",
             3
@@ -1407,8 +1408,8 @@ let ``return a test with correct line number when given setup, test body with en
         
         let test = fut.Ignore (
             Setup (fun _ -> Ok ()),
-            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
-            Teardown (fun _ _ -> Ok ()),
+            TestBodyTwoParameters (fun _ _ -> TestSuccess),
+            emptyTeardown,
             "The ignored test",
             "S:\\path\\file.f",
             32
@@ -1425,8 +1426,8 @@ let ``return a test that returns an "Ignored" result when given setup, test body
         
         let test = fut.Ignore (
             Setup (fun _ -> Ok ()),
-            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
-            Teardown (fun _ _ -> Ok ()),
+            TestBodyTwoParameters (fun _ _ -> TestSuccess),
+            emptyTeardown,
             "My ignored test",
             "S:\\path\\file.f",
             3
@@ -1448,8 +1449,8 @@ let ``return a test that does not call setup when run when given setup, test bod
         
         let test = fut.Ignore (
             Setup monitor.CallSetup,
-            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
-            Teardown (fun _ _ -> Ok ()),
+            TestBodyTwoParameters (fun _ _ -> TestSuccess),
+            emptyTeardown,
             "My ignored test",
             "S:\\path\\file.f",
             3
@@ -1472,8 +1473,8 @@ let ``return a test that does not call the test action when run when given setup
         
         let test = fut.Ignore (
             Setup (fun _ -> Ok ()),
-            TestWithEnvironmentBody monitor.CallTestActionWithEnvironment,
-            Teardown (fun _ _ -> Ok ()),
+            TestBodyTwoParameters monitor.CallTestActionWithEnvironment,
+            emptyTeardown,
             "My ignored test",
             "S:\\path\\file.f",
             3
@@ -1496,7 +1497,7 @@ let ``return a test that does not call the teardown when run when given setup, t
         
         let test = fut.Ignore (
             Setup (fun _ -> Ok ()),
-            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
+            TestBodyTwoParameters (fun _ _ -> TestSuccess),
             Teardown monitor.CallTeardown,
             "My ignored test",
             "S:\\path\\file.f",
@@ -1522,7 +1523,7 @@ let ``return a test with correct test name when given setup, test body with envi
         
         let test = fut.Ignore (
             Setup (fun _ -> Ok ()),
-            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
+            TestBodyTwoParameters (fun _ _ -> TestSuccess),
             "The ignored test",
             "S:\\path\\file.f",
             3
@@ -1538,7 +1539,7 @@ let ``return a test with correct file path when given setup, test body with envi
         
         let test = fut.Ignore (
             Setup (fun _ -> Ok ()),
-            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
+            TestBodyTwoParameters (fun _ _ -> TestSuccess),
             "The ignored test",
             "S:\\path\\file.f",
             3
@@ -1554,7 +1555,7 @@ let ``return a test with correct file name when given setup, test body with envi
         
         let test = fut.Ignore (
             Setup (fun _ -> Ok ()),
-            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
+            TestBodyTwoParameters (fun _ _ -> TestSuccess),
             "The ignored test",
             "S:\\path\\file.f",
             3
@@ -1570,7 +1571,7 @@ let ``return a test with correct line number when given setup, test body with en
         
         let test = fut.Ignore (
             Setup (fun _ -> Ok ()),
-            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
+            TestBodyTwoParameters (fun _ _ -> TestSuccess),
             "The ignored test",
             "S:\\path\\file.f",
             32
@@ -1587,7 +1588,7 @@ let ``return a test that returns an "Ignored" result when given setup, test body
         
         let test = fut.Ignore (
             Setup (fun _ -> Ok ()),
-            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
+            TestBodyTwoParameters (fun _ _ -> TestSuccess),
             "My ignored test",
             "S:\\path\\file.f",
             3
@@ -1609,7 +1610,7 @@ let ``return a test that does not call setup when run when given setup, test bod
         
         let test = fut.Ignore (
             Setup monitor.CallSetup,
-            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
+            TestBodyTwoParameters (fun _ _ -> TestSuccess),
             "My ignored test",
             "S:\\path\\file.f",
             3
@@ -1632,7 +1633,7 @@ let ``return a test that does not call the test action when run when given setup
         
         let test = fut.Ignore (
             Setup (fun _ -> Ok ()),
-            TestWithEnvironmentBody monitor.CallTestActionWithEnvironment,
+            TestBodyTwoParameters monitor.CallTestActionWithEnvironment,
             "My ignored test",
             "S:\\path\\file.f",
             3
@@ -1658,7 +1659,7 @@ let ``return a test with correct test name when given setup, test body, teardown
         let test = fut.Ignore (
             Setup (fun _ -> Ok ()),
             TestBody (fun _ -> TestSuccess),
-            Teardown (fun _ _ -> Ok ()),
+            emptyTeardown,
             "The ignored test",
             "S:\\path\\file.f",
             3
@@ -1675,7 +1676,7 @@ let ``return a test with correct file path when given setup, test body, teardown
         let test = fut.Ignore (
             Setup (fun _ -> Ok ()),
             TestBody (fun _ -> TestSuccess),
-            Teardown (fun _ _ -> Ok ()),
+            emptyTeardown,
             "The ignored test",
             "S:\\path\\file.f",
             3
@@ -1692,7 +1693,7 @@ let ``return a test with correct file name when given setup, test body, teardown
         let test = fut.Ignore (
             Setup (fun _ -> Ok ()),
             TestBody (fun _ -> TestSuccess),
-            Teardown (fun _ _ -> Ok ()),
+            emptyTeardown,
             "The ignored test",
             "S:\\path\\file.f",
             3
@@ -1709,7 +1710,7 @@ let ``return a test with correct line number when given setup, test body, teardo
         let test = fut.Ignore (
             Setup (fun _ -> Ok ()),
             TestBody (fun _ -> TestSuccess),
-            Teardown (fun _ _ -> Ok ()),
+            emptyTeardown,
             "The ignored test",
             "S:\\path\\file.f",
             32
@@ -1727,7 +1728,7 @@ let ``return a test that returns an "Ignored" result when given setup, test body
         let test = fut.Ignore (
             Setup (fun _ -> Ok ()),
             TestBody (fun _ -> TestSuccess),
-            Teardown (fun _ _ -> Ok ()),
+            emptyTeardown,
             "My ignored test",
             "S:\\path\\file.f",
             3
@@ -1750,7 +1751,7 @@ let ``return a test that does not call setup when run when given setup, test bod
         let test = fut.Ignore (
             Setup monitor.CallSetup,
             TestBody (fun _ -> TestSuccess),
-            Teardown (fun _ _ -> Ok ()),
+            emptyTeardown,
             "My ignored test",
             "S:\\path\\file.f",
             3
@@ -1774,7 +1775,7 @@ let ``return a test that does not call the test action when run when given setup
         let test = fut.Ignore (
             Setup (fun _ -> Ok ()),
             TestBody monitor.CallTestActionWithoutEnvironment,
-            Teardown (fun _ _ -> Ok ()),
+            emptyTeardown,
             "My ignored test",
             "S:\\path\\file.f",
             3
@@ -1957,8 +1958,8 @@ let ``return a test with correct test name when given test body with environment
         let fut = Arrow.NewFeature ()
         
         let test = fut.Ignore (
-            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
-            Teardown (fun _ _ -> Ok ()),
+            TestBodyTwoParameters (fun _ _ -> TestSuccess),
+            emptyTeardown,
             "The ignored test",
             "S:\\path\\file.f",
             3
@@ -1973,8 +1974,8 @@ let ``return a test with correct file path when given test body with environment
         let fut = Arrow.NewFeature ()
         
         let test = fut.Ignore (
-            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
-            Teardown (fun _ _ -> Ok ()),
+            TestBodyTwoParameters (fun _ _ -> TestSuccess),
+            emptyTeardown,
             "The ignored test",
             "S:\\path\\file.f",
             3
@@ -1989,8 +1990,8 @@ let ``return a test with correct file name when given test body with environment
         let fut = Arrow.NewFeature ()
         
         let test = fut.Ignore (
-            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
-            Teardown (fun _ _ -> Ok ()),
+            TestBodyTwoParameters (fun _ _ -> TestSuccess),
+            emptyTeardown,
             "The ignored test",
             "S:\\path\\file.f",
             3
@@ -2005,8 +2006,8 @@ let ``return a test with correct line number when given test body with environme
         let fut = Arrow.NewFeature ()
         
         let test = fut.Ignore (
-            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
-            Teardown (fun _ _ -> Ok ()),
+            TestBodyTwoParameters (fun _ _ -> TestSuccess),
+            emptyTeardown,
             "The ignored test",
             "S:\\path\\file.f",
             32
@@ -2022,8 +2023,8 @@ let ``return a test that returns an "Ignored" result when given test body with e
         let fut = Arrow.NewFeature ()
         
         let test = fut.Ignore (
-            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
-            Teardown (fun _ _ -> Ok ()),
+            TestBodyTwoParameters (fun _ _ -> TestSuccess),
+            emptyTeardown,
             "My ignored test",
             "S:\\path\\file.f",
             3
@@ -2044,8 +2045,8 @@ let ``return a test that does not call the test action when run when given test 
         let fut = Arrow.NewFeature ()
         
         let test = fut.Ignore (
-            TestWithEnvironmentBody monitor.CallTestActionWithEnvironment,
-            Teardown (fun _ _ -> Ok ()),
+            TestBodyTwoParameters monitor.CallTestActionWithEnvironment,
+            emptyTeardown,
             "My ignored test",
             "S:\\path\\file.f",
             3
@@ -2067,7 +2068,7 @@ let ``return a test that does not call the teardown when run when given test bod
         let fut = Arrow.NewFeature ()
         
         let test = fut.Ignore (
-            TestWithEnvironmentBody (fun _ _ -> TestSuccess),
+            TestBodyTwoParameters (fun _ _ -> TestSuccess),
             Teardown monitor.CallTeardown,
             "My ignored test",
             "S:\\path\\file.f",
@@ -2093,7 +2094,7 @@ let ``return a test with correct test name when given test body, teardown, test 
         
         let test = fut.Ignore (
             TestBody (fun _ -> TestSuccess),
-            Teardown (fun _ _ -> Ok ()),
+            emptyTeardown,
             "The ignored test",
             "S:\\path\\file.f",
             3
@@ -2109,7 +2110,7 @@ let ``return a test with correct file path when given test body, teardown, test 
         
         let test = fut.Ignore (
             TestBody (fun _ -> TestSuccess),
-            Teardown (fun _ _ -> Ok ()),
+            emptyTeardown,
             "The ignored test",
             "S:\\path\\file.f",
             3
@@ -2125,7 +2126,7 @@ let ``return a test with correct file name when given test body, teardown, test 
         
         let test = fut.Ignore (
             TestBody (fun _ -> TestSuccess),
-            Teardown (fun _ _ -> Ok ()),
+            emptyTeardown,
             "The ignored test",
             "S:\\path\\file.f",
             3
@@ -2141,7 +2142,7 @@ let ``return a test with correct line number when given test body, teardown, tes
         
         let test = fut.Ignore (
             TestBody (fun _ -> TestSuccess),
-            Teardown (fun _ _ -> Ok ()),
+            emptyTeardown,
             "The ignored test",
             "S:\\path\\file.f",
             32
@@ -2158,7 +2159,7 @@ let ``return a test that returns an "Ignored" result when given test body, teard
         
         let test = fut.Ignore (
             TestBody (fun _ -> TestSuccess),
-            Teardown (fun _ _ -> Ok ()),
+            emptyTeardown,
             "My ignored test",
             "S:\\path\\file.f",
             3
@@ -2180,7 +2181,7 @@ let ``return a test that does not call the test action when run when given test 
         
         let test = fut.Ignore (
             TestBody monitor.CallTestActionWithoutEnvironment,
-            Teardown (fun _ _ -> Ok ()),
+            emptyTeardown,
             "My ignored test",
             "S:\\path\\file.f",
             3

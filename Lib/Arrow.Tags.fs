@@ -22,10 +22,10 @@ type Arrow with
         :> IFeature<'a>
         
     static member NewFeature (featurePath, featureName, featureTags: TagsIndicator, setup: SetupIndicator<unit, 'a>) =
-        Arrow.NewFeature (featurePath, featureName, featureTags, setup, Teardown (fun _ _ -> Ok ()))
+        Arrow.NewFeature (featurePath, featureName, featureTags, setup, emptyTeardown)
         
     static member Ignore (featurePath, featureName, featureTags: TagsIndicator, setup: SetupIndicator<unit, 'a>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
-        Arrow.Ignore (featurePath, featureName, featureTags, setup, Teardown (fun _ _ -> Ok ()), fileFullName, lineNumber)
+        Arrow.Ignore (featurePath, featureName, featureTags, setup, emptyTeardown, fileFullName, lineNumber)
         
     static member NewFeature (featurePath, featureName, featureTags: TagsIndicator, teardown: TeardownIndicator<unit>) =
         Arrow.NewFeature (featurePath, featureName, featureTags, Setup (fun () -> Ok ()) , teardown)
@@ -34,14 +34,14 @@ type Arrow with
         Arrow.Ignore (featurePath, featureName, featureTags, Setup (fun () -> Ok ()) , teardown, fileFullName, lineNumber)
         
     static member NewFeature (featurePath, featureName, featureTags: TagsIndicator) =
-        Arrow.NewFeature (featurePath, featureName, featureTags, Setup (fun () -> Ok ()), Teardown (fun _ _ -> Ok ()))
+        Arrow.NewFeature (featurePath, featureName, featureTags, Setup (fun () -> Ok ()), emptyTeardown)
     
     static member Ignore (featurePath, featureName, featureTags: TagsIndicator, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
-        Arrow.Ignore (featurePath, featureName, featureTags, Setup (fun () -> Ok ()), Teardown (fun _ _ -> Ok ()), fileFullName, lineNumber)
+        Arrow.Ignore (featurePath, featureName, featureTags, Setup (fun () -> Ok ()), emptyTeardown, fileFullName, lineNumber)
     
     static member Ignore (featureInfo: string * string, featureTags: TagsIndicator, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
         let featurePath, featureName = featureInfo
-        Arrow.Ignore (featurePath, featureName, featureTags, Setup (fun () -> Ok ()), Teardown (fun _ _ -> Ok ()), fileFullName, lineNumber)
+        Arrow.Ignore (featurePath, featureName, featureTags, Setup (fun () -> Ok ()), emptyTeardown, fileFullName, lineNumber)
     
     // ------- featureName -------
     static member NewFeature (featureName, featureTags: TagsIndicator, setup: SetupIndicator<unit, 'a>, teardown: TeardownIndicator<'a>) =
@@ -54,11 +54,11 @@ type Arrow with
         
     static member NewFeature (featureName, featureTags: TagsIndicator, setup: SetupIndicator<unit, 'a>) =
         let _, featurePath = getNames ()
-        Arrow.NewFeature (featurePath, featureName, featureTags, setup, Teardown (fun _ _ -> Ok ()))
+        Arrow.NewFeature (featurePath, featureName, featureTags, setup, emptyTeardown)
         
     static member Ignore (featureName, featureTags: TagsIndicator, setup: SetupIndicator<unit, 'a>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
         let _, featurePath = getNames ()
-        Arrow.Ignore (featurePath, featureName, featureTags, setup, Teardown (fun _ _ -> Ok ()), fileFullName, lineNumber)
+        Arrow.Ignore (featurePath, featureName, featureTags, setup, emptyTeardown, fileFullName, lineNumber)
         
     static member NewFeature (featureName, featureTags: TagsIndicator, teardown: TeardownIndicator<unit>) =
         let _, featurePath = getNames ()
@@ -70,11 +70,11 @@ type Arrow with
         
     static member NewFeature (featureName, featureTags: TagsIndicator) =
         let _, featurePath = getNames ()
-        Arrow.NewFeature (featurePath, featureName, featureTags, Setup (fun () -> Ok ()), Teardown (fun _ _ -> Ok ()))
+        Arrow.NewFeature (featurePath, featureName, featureTags, Setup (fun () -> Ok ()), emptyTeardown)
     
     static member Ignore (featureName, featureTags: TagsIndicator, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
         let _, featurePath = getNames ()
-        Arrow.Ignore (featurePath, featureName, featureTags, Setup (fun () -> Ok ()), Teardown (fun _ _ -> Ok ()), fileFullName, lineNumber)
+        Arrow.Ignore (featurePath, featureName, featureTags, Setup (fun () -> Ok ()), emptyTeardown, fileFullName, lineNumber)
     
     // // ------- setup -------
     static member NewFeature (featureTags: TagsIndicator, setup: SetupIndicator<unit, 'a>, teardown: TeardownIndicator<'a>) =
@@ -128,10 +128,10 @@ type Arrow with
         feature.GetTests ()
         
     static member Tests (featurePath, featureName, featureTags: TagsIndicator, setup: SetupIndicator<unit, 'a>, testBuilder: IScriptFeature<'a> -> unit) =
-        Arrow.Tests (featurePath, featureName, featureTags, setup, Teardown (fun _ _ -> Ok ()), testBuilder)
+        Arrow.Tests (featurePath, featureName, featureTags, setup, emptyTeardown, testBuilder)
         
     static member IgnoreTests (featurePath, featureName, featureTags: TagsIndicator, setup: SetupIndicator<unit, 'a>, testBuilder: IScriptFeature<'a> -> unit, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
-        Arrow.IgnoreTests (featurePath, featureName, featureTags, setup, Teardown (fun _ _ -> Ok ()), testBuilder, fileFullName, lineNumber)
+        Arrow.IgnoreTests (featurePath, featureName, featureTags, setup, emptyTeardown, testBuilder, fileFullName, lineNumber)
         
     static member Tests (featurePath, featureName, featureTags: TagsIndicator, teardown: TeardownIndicator<unit>, testBuilder: IScriptFeature<unit> -> unit) =
         Arrow.Tests (featurePath, featureName, featureTags, Setup (fun () -> Ok ()), teardown, testBuilder)
@@ -140,10 +140,10 @@ type Arrow with
         Arrow.IgnoreTests (featurePath, featureName, featureTags, Setup (fun () -> Ok ()), teardown, testBuilder, fileFullName, lineNumber)
         
     static member Tests (featurePath, featureName, featureTags: TagsIndicator, testBuilder: IScriptFeature<unit> -> unit) =
-        Arrow.Tests (featurePath, featureName, featureTags, Setup (fun () -> Ok ()), Teardown (fun _ _ -> Ok ()), testBuilder)
+        Arrow.Tests (featurePath, featureName, featureTags, Setup (fun () -> Ok ()), emptyTeardown, testBuilder)
         
     static member IgnoreTests (featurePath, featureName, featureTags: TagsIndicator, testBuilder: IScriptFeature<unit> -> unit, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
-        Arrow.IgnoreTests (featurePath, featureName, featureTags, Setup (fun () -> Ok ()), Teardown (fun _ _ -> Ok ()), testBuilder, fileFullName, lineNumber)
+        Arrow.IgnoreTests (featurePath, featureName, featureTags, Setup (fun () -> Ok ()), emptyTeardown, testBuilder, fileFullName, lineNumber)
         
     // ------- featureName -------
     static member Tests (featureName, featureTags: TagsIndicator, setup: SetupIndicator<unit, 'a>, teardown: TeardownIndicator<'a>, testBuilder: IScriptFeature<'a> -> unit) =
@@ -156,11 +156,11 @@ type Arrow with
         
     static member Tests (featureName, featureTags: TagsIndicator, setup: SetupIndicator<unit, 'a>, testBuilder: IScriptFeature<'a> -> unit) =
         let _, featurePath = getNamesAt 3
-        Arrow.Tests (featurePath, featureName, featureTags, setup, Teardown (fun _ _ -> Ok ()), testBuilder)
+        Arrow.Tests (featurePath, featureName, featureTags, setup, emptyTeardown, testBuilder)
         
     static member IgnoreTests (featureName, featureTags: TagsIndicator, setup: SetupIndicator<unit, 'a>, testBuilder: IScriptFeature<'a> -> unit, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
         let _, featurePath = getNamesAt 3
-        Arrow.IgnoreTests (featurePath, featureName, featureTags, setup, Teardown (fun _ _ -> Ok ()), testBuilder, fileFullName, lineNumber)
+        Arrow.IgnoreTests (featurePath, featureName, featureTags, setup, emptyTeardown, testBuilder, fileFullName, lineNumber)
         
     static member Tests (featureName, featureTags: TagsIndicator, teardown: TeardownIndicator<unit>, testBuilder: IScriptFeature<unit> -> unit) =
         let _, featurePath = getNamesAt 3
@@ -172,11 +172,11 @@ type Arrow with
         
     static member Tests (featureName, featureTags: TagsIndicator, testBuilder: IScriptFeature<unit> -> unit) =
         let _, featurePath = getNamesAt 3
-        Arrow.Tests (featurePath, featureName, featureTags, Setup (fun () -> Ok ()), Teardown (fun _ _ -> Ok ()), testBuilder)
+        Arrow.Tests (featurePath, featureName, featureTags, Setup (fun () -> Ok ()), emptyTeardown, testBuilder)
         
     static member IgnoreTests (featureName, featureTags: TagsIndicator, testBuilder: IScriptFeature<unit> -> unit, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
         let _, featurePath = getNamesAt 3
-        Arrow.IgnoreTests (featurePath, featureName, featureTags, Setup (fun () -> Ok ()), Teardown (fun _ _ -> Ok ()), testBuilder, fileFullName, lineNumber)
+        Arrow.IgnoreTests (featurePath, featureName, featureTags, Setup (fun () -> Ok ()), emptyTeardown, testBuilder, fileFullName, lineNumber)
         
     // ------- setup -------
     static member Tests (featureTags: TagsIndicator, setup: SetupIndicator<unit, 'a>, teardown: TeardownIndicator<'a>, testBuilder: IScriptFeature<'a> -> unit) =
@@ -189,11 +189,11 @@ type Arrow with
         
     static member Tests (featureTags: TagsIndicator, setup: SetupIndicator<unit, 'a>, testBuilder: IScriptFeature<'a> -> unit) =
         let featureName, featurePath = getNamesAt 3
-        Arrow.Tests (featurePath, featureName, featureTags, setup, Teardown (fun _ _ -> Ok ()), testBuilder)
+        Arrow.Tests (featurePath, featureName, featureTags, setup, emptyTeardown, testBuilder)
         
     static member IgnoreTests (featureTags: TagsIndicator, setup: SetupIndicator<unit, 'a>, testBuilder: IScriptFeature<'a> -> unit, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
         let featureName, featurePath = getNamesAt 3
-        Arrow.IgnoreTests (featurePath, featureName, featureTags, setup, Teardown (fun _ _ -> Ok ()), testBuilder, fileFullName, lineNumber)
+        Arrow.IgnoreTests (featurePath, featureName, featureTags, setup, emptyTeardown, testBuilder, fileFullName, lineNumber)
         
     // ------- teardown -------
     static member Tests (featureTags: TagsIndicator, teardown: TeardownIndicator<unit>, testBuilder: IScriptFeature<unit> -> unit) =
@@ -207,8 +207,8 @@ type Arrow with
     // ------- testBuilder -------
     static member Tests (featureTags: TagsIndicator, testBuilder: IScriptFeature<unit> -> unit) =
         let featureName, featurePath = getNamesAt 3
-        Arrow.Tests (featurePath, featureName, featureTags, Setup (fun () -> Ok ()), Teardown (fun _ _ -> Ok ()), testBuilder)
+        Arrow.Tests (featurePath, featureName, featureTags, Setup (fun () -> Ok ()), emptyTeardown, testBuilder)
         
     static member IgnoreTests (featureTags: TagsIndicator, testBuilder: IScriptFeature<unit> -> unit, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
         let featureName, featurePath = getNamesAt 3
-        Arrow.IgnoreTests (featurePath, featureName, featureTags, Setup (fun () -> Ok ()), Teardown (fun _ _ -> Ok ()), testBuilder, fileFullName, lineNumber)
+        Arrow.IgnoreTests (featurePath, featureName, featureTags, Setup (fun () -> Ok ()), emptyTeardown, testBuilder, fileFullName, lineNumber)
