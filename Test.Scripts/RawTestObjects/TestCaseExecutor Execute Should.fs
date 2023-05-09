@@ -88,8 +88,8 @@ let ``Pass the result of the setup supplied to feature.Test to the test action``
             |> runIt
             |> ignore
             
-            monitor.TestWasCalledWith
-            |> Should.BeEqualTo expected
+            monitor.TestInputSetupWas
+            |> Should.BeEqualTo [expected]
         )
     )
     
@@ -106,7 +106,7 @@ let ``Pass the result of the setup supplied to the feature to the setup supplied
         |> ignore
         
         monitor.SetupWasCalledWith
-        |> Should.BeEqualTo expectedValue
+        |> Should.BeEqualTo [expectedValue]
     )
     
 let ``Not throw an exception if the setup supplied to feature.Test fails`` =
@@ -333,7 +333,7 @@ let ``Calls the teardown that was passed to feature.Test with the successful res
             
             monitor.TeardownWasCalledWith
             |> fst
-            |> Should.BeEqualTo expectedSetupValue
+            |> Should.BeEqualTo [expectedSetupValue]
         )
     )
    
@@ -351,7 +351,7 @@ let ``Calls the teardown that was passed to the feature with the successful resu
         
         monitor.TeardownWasCalledWith
         |> fst
-        |> Should.BeEqualTo setupResult
+        |> Should.BeEqualTo [setupResult]
     )
     
 let ``Each teardown should be called with the corresponding successful setup`` =
@@ -372,13 +372,13 @@ let ``Each teardown should be called with the corresponding successful setup`` =
         let featureResult =
             featureMonitor.TeardownWasCalledWith
             |> fst
-            |> Should.BeEqualTo featureResult
+            |> Should.BeEqualTo [featureResult]
             
         featureResult
         |> andResult (
             testMonitor.TeardownWasCalledWith
             |> fst
-            |> Should.BeEqualTo testResult
+            |> Should.BeEqualTo [testResult]
         )
     )
     
@@ -403,7 +403,7 @@ let ``Calls the teardown that was passed to feature.Test with the unsuccessful r
             
             monitor.TeardownWasCalledWith
             |> fst
-            |> Should.BeEqualTo expectedSetupValue
+            |> Should.BeEqualTo [expectedSetupValue]
         )
     )
     
@@ -425,7 +425,7 @@ let ``Calls the teardown that was passed to the feature with the unsuccessful re
         
         monitor.TeardownWasCalledWith
         |> fst
-        |> Should.BeEqualTo expectedResult
+        |> Should.BeEqualTo [expectedResult]
     )
 
 let ``Calls the teardown that was passed to feature.Test with the TestSuccess if test is successful`` =
@@ -444,7 +444,7 @@ let ``Calls the teardown that was passed to feature.Test with the TestSuccess if
             
             monitor.TeardownWasCalledWith
             |> snd
-            |> Should.BeEqualTo (Some TestSuccess)
+            |> Should.BeEqualTo [Some TestSuccess]
         )
     )
 
@@ -461,7 +461,7 @@ let ``Calls the teardown that was passed to the feature with the TestSuccess if 
         
         monitor.TeardownWasCalledWith
         |> snd
-        |> Should.BeEqualTo (Some TestSuccess)
+        |> Should.BeEqualTo [Some TestSuccess]
     )
 
 let ``Calls the teardown that was passed to feature.Test with the TestFailure if test fails`` =
@@ -484,7 +484,7 @@ let ``Calls the teardown that was passed to feature.Test with the TestFailure if
             
             monitor.TeardownWasCalledWith
             |> snd
-            |> Should.BeEqualTo (Some expectedFailure)
+            |> Should.BeEqualTo [Some expectedFailure]
         )
     )
     
@@ -505,7 +505,7 @@ let ``Calls the teardown that was passed to the feature with the TestFailure if 
         
         monitor.TeardownWasCalledWith
         |> snd
-        |> Should.BeEqualTo (Some expectedFailure)
+        |> Should.BeEqualTo [Some expectedFailure]
     )
 
 let ``Return the failure if the teardown that was passed to feature.Test fails`` =
@@ -617,7 +617,7 @@ let ``Not have a test result passed to the teardown given to the feature if the 
         
         monitor.TeardownWasCalledWith
         |> snd
-        |> Should.BeEqualTo None
+        |> Should.BeEqualTo [None]
     )
 
 let ``Test Cases`` = feature.GetTests ()

@@ -92,6 +92,16 @@ type Feature<'featureType> (featurePath, featureName, featureTags: TestTag list,
         
     abstract member Test:   tags: TagsIndicator * setup: SetupIndicator<'featureType, 'setupType> * data: DataIndicator<'dataType> * testBody: TestBodyIndicatorThreeParameters<'dataType, 'setupType, TestEnvironment> * teardown: TeardownIndicator<'setupType> * [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> ITest list
     default    this.Test   (tags: TagsIndicator, setup: SetupIndicator<'featureType, 'setupType>, data: DataIndicator<'dataType>, testBody: TestBodyIndicatorThreeParameters<'dataType, 'setupType, TestEnvironment>, teardown: TeardownIndicator<'setupType>, [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+        let names = System.Collections.Generic.Dictionary<string, int>()
+        let getFixedName name =
+            if names.ContainsKey name |> not then
+                names.Add (name, 1)
+                name
+            else
+                let c = names[name]
+                names[name] <- c + 1
+                $"%s{name}^%i{c}"
+                
         let testNameFormat =
             let tn = 
                 let regexPattern = @"(^|[^%])%(\d+-)?\d*[A-z]"
@@ -102,7 +112,10 @@ type Feature<'featureType> (featurePath, featureName, featureTags: TestTag list,
             
         let (TestBodyThreeParameters testBody) = testBody
         
-        let getTestName = sprintf testNameFormat
+        let getTestName input =
+            let name = sprintf testNameFormat input
+            getFixedName name
+            
         let (Data data) = data
         
         data

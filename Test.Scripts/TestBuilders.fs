@@ -92,12 +92,12 @@ let setupBuiltExecutorWithTestBodyAndTeardownAction _ =
     builtExecutor |> Ok
 
 type Monitor<'dataType, 'setupInputType, 'setupOutputType> (setupAction: 'setupInputType -> Result<'setupOutputType, SetupTeardownFailure>, testAction: TestFunction<'setupOutputType>, teardownAction: Result<'setupOutputType, SetupTeardownFailure> -> TestResult option -> Result<unit, SetupTeardownFailure>) =
-    let mutable setupInput: 'setupInputType option = None
-    let mutable setupResult: Result<'setupOutputType, SetupTeardownFailure> option = None
-    let mutable testInput: 'setupOutputType option = None
-    let mutable testData: 'dataType option = None
-    let mutable testInputEnvironment: TestEnvironment option = None
-    let mutable testResultResult: TestResult option = None
+    let mutable setupInput: 'setupInputType list = []
+    let mutable setupResult: Result<'setupOutputType, SetupTeardownFailure> list = []
+    let mutable testInput: 'setupOutputType list = []
+    let mutable testData: 'dataType list = []
+    let mutable testInputEnvironment: TestEnvironment list = []
+    let mutable testResultResult: TestResult option list = []
     let mutable setupCount = 0
     let mutable teardownCount = 0
     let mutable testCount = 0
@@ -119,66 +119,56 @@ type Monitor<'dataType, 'setupInputType, 'setupOutputType> (setupAction: 'setupI
     
     member _.CallSetup input =
         setupCount <- setupCount + 1
-        setupInput <- (Some input)
+        setupInput <- input::setupInput
         setupAction input
         
     member this.CallTestActionWithSetupEnvironment input env =
-        testInputEnvironment <- Some env
+        testInputEnvironment <- env::testInputEnvironment
         this.CallTestActionWithSetup input
         
     member _.CallTestActionWithSetup input =
-        testInput <- Some input
+        testInput <- input::testInput
         testCount <- testCount + 1
         testAction input
         
     member _.CallTestActionWithData data =
-        testData <- Some data
+        testData <- data::testData
         testCount <- testCount + 1
         TestSuccess
         
     member this.CallTestActionWithDataSetup data input =
-        testData <- Some data
-        this.CallSetup input
+        testData <- data::testData
+        this.CallTestActionWithSetup input
         
     member this.CallTestActionWithDataEnvironment data environment =
-        testData <- Some data
-        testInputEnvironment <- Some environment
+        testData <- data::testData
+        testInputEnvironment <- environment::testInputEnvironment
         testCount <- testCount + 1
         TestSuccess
         
     member this.CallTestActionWithDataSetupEnvironment data input environment =
-        testData <- Some data
+        testData <- data::testData
         this.CallTestActionWithSetupEnvironment input environment
         
     member _.CallTeardown setupValue testValue =
         teardownCount <- teardownCount + 1
-        setupResult <- (Some setupValue)
-        testResultResult <- testValue
+        setupResult <- setupValue::setupResult
+        testResultResult <- testValue::testResultResult
         teardownAction setupValue testValue
         
-    member _.SetupWasCalled with get () = 0 < setupCount
-    member _.SetupWasCalledWith with get () =
-        match setupInput with
-        | None -> failwith "Setup was not called"
-        | Some value -> value
+    member _.SetupWasCalledWith with get () = setupInput |> List.rev
         
-    member _.TeardownWasCalled with get () = 0 < teardownCount
     member _.TeardownWasCalledWith with get () =
         match setupResult, testResultResult with
-        | None, _ -> failwith "Teardown was not called"
-        | Some setupValue, testValue -> setupValue, testValue
+        | [], _ -> failwith "Teardown was not called"
+        | setupValue, testValue -> setupValue |> List.rev, testValue |> List.rev
         
+    member _.TestInputSetupWas with get () = testInput |> List.rev
+    member _.TestEnvironmentWas with get () = testInputEnvironment |> List.rev
+    member _.TestDataWas with get () = testData |> List.rev
+    member _.SetupWasCalled with get () = 0 < setupCount
     member _.TestWasCalled with get () = 0 < testCount
-    member _.TestWasCalledWith with get () =
-        match testInput with
-        | None -> failwith "Test Action was not called"
-        | Some value -> value
-        
-    member _.TestEnvironmentWas with get () =
-        match testInputEnvironment with
-        | None -> failwith "Test was not called with environment"
-        | Some value -> value
-        
+    member _.TeardownWasCalled with get () = 0 < teardownCount
     member this.WasCalled with get () = this.SetupWasCalled || this.TeardownWasCalled || this.TestWasCalled
     member _.NumberOfTimesSetupWasCalled with get () = setupCount
     member _.NumberOfTimesTeardownWasCalled with get () = teardownCount
