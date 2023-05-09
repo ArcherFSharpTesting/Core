@@ -16,10 +16,10 @@ let buildFeatureUnderTestWithTeardown teardown =
     Arrow.NewFeature (ignoreString (), ignoreString (), Setup Ok, teardown)
 
 let buildFeatureUnderTest _ =
-    buildFeatureUnderTestWithSetupAndTeardown (Setup Ok) (emptyTeardown)
+    buildFeatureUnderTestWithSetupAndTeardown (Setup Ok) emptyTeardown
     
 let setupFeatureUnderTest _ =
-    buildFeatureUnderTestWithSetupAndTeardown (Setup Ok) (emptyTeardown)
+    buildFeatureUnderTestWithSetupAndTeardown (Setup Ok) emptyTeardown
     |> Ok
 
 let setupExecutor _ =
@@ -121,11 +121,11 @@ type Monitor<'setupInputType, 'setupOutputType> (setupAction: 'setupInputType ->
         setupInput <- (Some input)
         setupAction input
         
-    member this.CallTestActionWithEnvironment input env =
+    member this.CallTestActionWithSetupEnvironment input env =
         testInputEnvironment <- Some env
-        this.CallTestActionWithoutEnvironment input
+        this.CallTestActionWithSetup input
         
-    member _.CallTestActionWithoutEnvironment input =
+    member _.CallTestActionWithSetup input =
         testInput <- Some input
         testCount <- testCount + 1
         testAction input
@@ -188,7 +188,7 @@ let setupBuildExecutorWithMonitorAtTheFeature _ =
         Teardown monitor.CallTeardown
     )
     
-    let test = feature.Test monitor.CallTestActionWithEnvironment
+    let test = feature.Test monitor.CallTestActionWithSetupEnvironment
     Ok (monitor, test.GetExecutor ())
 
 let setupBuildExecutorWithMonitor _ =
@@ -198,7 +198,7 @@ let setupBuildExecutorWithMonitor _ =
             ignoreString ()
         )
         
-        let test = feature.Test (Setup monitor.CallSetup, TestBodyTwoParameters monitor.CallTestActionWithEnvironment, Teardown monitor.CallTeardown)
+        let test = feature.Test (Setup monitor.CallSetup, TestBodyTwoParameters monitor.CallTestActionWithSetupEnvironment, Teardown monitor.CallTeardown)
         test.GetExecutor ()
         
     Ok buildIt

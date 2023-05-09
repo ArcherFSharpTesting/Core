@@ -101,7 +101,7 @@ let ``run the test method passed to it when everything is passed`` =
                                 Category "My Category"
                             ],
                     Setup monitor.CallSetup,
-                    TestBodyTwoParameters monitor.CallTestActionWithEnvironment,
+                    TestBodyTwoParameters monitor.CallTestActionWithSetupEnvironment,
                     Teardown monitor.CallTeardown,
                     "D:\\dog.bark",
                     73
@@ -130,7 +130,7 @@ let ``run the teardown method passed to it when everything is passed`` =
                                 Category "My Category"
                             ],
                     Setup monitor.CallSetup,
-                    TestBodyTwoParameters monitor.CallTestActionWithEnvironment,
+                    TestBodyTwoParameters monitor.CallTestActionWithSetupEnvironment,
                     Teardown monitor.CallTeardown,
                     "My test",
                     "D:\\dog.bark",
@@ -232,7 +232,7 @@ let ``run the test method passed to it when given no teardown`` =
                                 Category "My Category"
                             ],
                     Setup monitor.CallSetup,
-                    TestBodyTwoParameters monitor.CallTestActionWithEnvironment,
+                    TestBodyTwoParameters monitor.CallTestActionWithSetupEnvironment,
                     "D:\\dog.bark",
                     73
                 )
@@ -302,7 +302,7 @@ let ``run the test method passed to it when given no setup`` =
                                 Only
                                 Category "My Category"
                             ],
-                    TestBodyTwoParameters monitor.CallTestActionWithEnvironment,
+                    TestBodyTwoParameters monitor.CallTestActionWithSetupEnvironment,
                     Teardown monitor.CallTeardown,
                     "D:\\dog.bark",
                     73
@@ -331,7 +331,7 @@ let ``run the teardown method passed to it when given no setup`` =
                                 Only
                                 Category "My Category"
                             ],
-                    TestBodyTwoParameters monitor.CallTestActionWithEnvironment,
+                    TestBodyTwoParameters monitor.CallTestActionWithSetupEnvironment,
                     Teardown monitor.CallTeardown,
                     "D:\\dog.bark",
                     73
@@ -401,7 +401,7 @@ let ``run the test method passed to it when given no setup or teardown`` =
                                 Only
                                 Category "My Category"
                             ],
-                    TestBodyTwoParameters monitor.CallTestActionWithEnvironment,
+                    TestBodyTwoParameters monitor.CallTestActionWithSetupEnvironment,
                     "D:\\dog.bark",
                     73
                 )
@@ -469,7 +469,7 @@ let ``run the test method passed to it when given no setup, teardown, or test bo
                                 Only
                                 Category "My Category"
                             ],
-                    monitor.CallTestActionWithEnvironment,
+                    monitor.CallTestActionWithSetupEnvironment,
                     "D:\\dog.bark",
                     73
                 )
@@ -557,7 +557,7 @@ let ``run the test method passed to it when given no tags`` =
                 testFeature.Test (
                     "My test",
                     Setup monitor.CallSetup,
-                    TestBodyTwoParameters monitor.CallTestActionWithEnvironment,
+                    TestBodyTwoParameters monitor.CallTestActionWithSetupEnvironment,
                     Teardown monitor.CallTeardown,
                     "D:\\dog.bark",
                     73
@@ -583,7 +583,7 @@ let ``run the teardown method passed to it when given no tags`` =
                 testFeature.Test (
                     "My test",
                     Setup monitor.CallSetup,
-                    TestBodyTwoParameters monitor.CallTestActionWithEnvironment,
+                    TestBodyTwoParameters monitor.CallTestActionWithSetupEnvironment,
                     Teardown monitor.CallTeardown,
                     "D:\\dog.bark",
                     73
@@ -670,7 +670,7 @@ let ``run the test method passed to it when given no tags, no teardown`` =
                 testFeature.Test (
                     "My test",
                     Setup monitor.CallSetup,
-                    TestBodyTwoParameters monitor.CallTestActionWithEnvironment,
+                    TestBodyTwoParameters monitor.CallTestActionWithSetupEnvironment,
                     "D:\\dog.bark",
                     73
                 )
@@ -730,7 +730,7 @@ let ``run the test method passed to it when given no tags, no setup`` =
             let test =
                 testFeature.Test (
                     "My test",
-                    TestBodyTwoParameters monitor.CallTestActionWithEnvironment,
+                    TestBodyTwoParameters monitor.CallTestActionWithSetupEnvironment,
                     Teardown monitor.CallTeardown,
                     "D:\\dog.bark",
                     73
@@ -755,7 +755,7 @@ let ``run the teardown method passed to it when given no tags, no setup`` =
             let test =
                 testFeature.Test (
                     "My test",
-                    TestBodyTwoParameters monitor.CallTestActionWithEnvironment,
+                    TestBodyTwoParameters monitor.CallTestActionWithSetupEnvironment,
                     Teardown monitor.CallTeardown,
                     "D:\\dog.bark",
                     73
@@ -815,7 +815,7 @@ let ``run the test method passed to it when given no tags, no setup, no teardown
             let test =
                 testFeature.Test (
                     "My test",
-                    TestBodyTwoParameters monitor.CallTestActionWithEnvironment,
+                    TestBodyTwoParameters monitor.CallTestActionWithSetupEnvironment,
                     "D:\\dog.bark",
                     73
                 )
@@ -873,7 +873,7 @@ let ``run the test method passed to it when given no tags, no setup, no teardown
             let test =
                 testFeature.Test (
                     "My test",
-                    monitor.CallTestActionWithEnvironment,
+                    monitor.CallTestActionWithSetupEnvironment,
                     "D:\\dog.bark",
                     73
                 )

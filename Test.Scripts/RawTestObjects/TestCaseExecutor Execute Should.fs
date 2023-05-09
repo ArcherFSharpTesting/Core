@@ -60,7 +60,7 @@ let ``Run the test body when called`` =
         TestBody (fun testBuilder ->
             let monitor = Monitor (Ok ())
             
-            let executor: ITestExecutor = testBuilder monitor.CallTestActionWithEnvironment
+            let executor: ITestExecutor = testBuilder monitor.CallTestActionWithSetupEnvironment
             
             executor
             |> executeFunction
@@ -100,7 +100,7 @@ let ``Pass the result of the setup supplied to the feature to the setup supplied
         
         let monitor = Monitor<string, unit> (Ok ())
         
-        testFeature.Test(Setup monitor.CallSetup, TestBody monitor.CallTestActionWithoutEnvironment).GetExecutor ()
+        testFeature.Test(Setup monitor.CallSetup, TestBody monitor.CallTestActionWithSetup).GetExecutor ()
         |> executeFunction
         |> runIt
         |> ignore
@@ -196,7 +196,7 @@ let ``Return the result of a failing test body when executed`` =
                 
             let monitor = newMonitorWithTestResult expectedFailure
                 
-            let executor: ITestExecutor = testBuilder monitor.CallTestActionWithEnvironment
+            let executor: ITestExecutor = testBuilder monitor.CallTestActionWithSetupEnvironment
             
             let result =
                 executor
@@ -265,7 +265,7 @@ let ``Not throw when test action throws`` =
             let expectedErrorMessage = "Really bad test body"
             let monitor = newMonitorWithTestAction (fun _ -> failwith expectedErrorMessage)
                 
-            let executor: ITestExecutor = testBuilder monitor.CallTestActionWithEnvironment
+            let executor: ITestExecutor = testBuilder monitor.CallTestActionWithSetupEnvironment
             
             try
                 let result =
@@ -498,7 +498,7 @@ let ``Calls the teardown that was passed to the feature with the TestFailure if 
         
         let testFeature = Arrow.NewFeature (Teardown monitor.CallTeardown)
         
-        testFeature.Test(monitor.CallTestActionWithoutEnvironment).GetExecutor ()
+        testFeature.Test(monitor.CallTestActionWithSetup).GetExecutor ()
         |> executeFunction
         |> runIt
         |> ignore

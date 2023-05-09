@@ -34,10 +34,10 @@ let ``Test Cases`` =
                     let tests =
                         Arrow.Tests (
                             fun f ->
-                                "A" |> f.IsTestedBy monitor.CallTestActionWithEnvironment
-                                "B" |> f.IsTestedBy monitor.CallTestActionWithEnvironment
-                                "3" |> f.IsTestedBy monitor.CallTestActionWithEnvironment
-                                "30" |> f.IsTestedBy monitor.CallTestActionWithEnvironment
+                                "A" |> f.IsTestedBy monitor.CallTestActionWithSetupEnvironment
+                                "B" |> f.IsTestedBy monitor.CallTestActionWithSetupEnvironment
+                                "3" |> f.IsTestedBy monitor.CallTestActionWithSetupEnvironment
+                                "30" |> f.IsTestedBy monitor.CallTestActionWithSetupEnvironment
                         )
                         |> List.map ((fun tst -> tst.GetExecutor ()) >> executeFunction >> runIt)
                     

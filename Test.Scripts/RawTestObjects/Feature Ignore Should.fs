@@ -173,7 +173,7 @@ let ``return a test that does not call the test action when run when given tags,
         let test = fut.Ignore (
             TestTags [],
             Setup (fun _ -> Ok ()),
-            TestBodyTwoParameters monitor.CallTestActionWithEnvironment,
+            TestBodyTwoParameters monitor.CallTestActionWithSetupEnvironment,
             emptyTeardown,
             "My ignored test",
             "S:\\path\\file.f",
@@ -340,7 +340,7 @@ let ``return a test that does not call the test action when run when given tags,
         
         let test = fut.Ignore (
             TestTags [],
-            TestBodyTwoParameters monitor.CallTestActionWithEnvironment,
+            TestBodyTwoParameters monitor.CallTestActionWithSetupEnvironment,
             emptyTeardown,
             "My ignored test",
             "S:\\path\\file.f",
@@ -531,7 +531,7 @@ let ``return a test that does not call the test action when run when given tags,
         let test = fut.Ignore (
             TestTags [],
             Setup (fun _ -> Ok ()),
-            TestBodyTwoParameters monitor.CallTestActionWithEnvironment,
+            TestBodyTwoParameters monitor.CallTestActionWithSetupEnvironment,
             "My ignored test",
             "S:\\path\\file.f",
             3
@@ -666,7 +666,7 @@ let ``return a test that does not call the test action when run when given tags,
         
         let test = fut.Ignore (
             TestTags [],
-            TestBodyTwoParameters monitor.CallTestActionWithEnvironment,
+            TestBodyTwoParameters monitor.CallTestActionWithSetupEnvironment,
             "My ignored test",
             "S:\\path\\file.f",
             3
@@ -839,7 +839,7 @@ let ``return a test that does not call the test action when run when given tags,
         let test = fut.Ignore (
             TestTags [],
             Setup (fun _ -> Ok ()),
-            TestBody monitor.CallTestActionWithoutEnvironment,
+            TestBody monitor.CallTestActionWithSetup,
             emptyTeardown,
             "My ignored test",
             "S:\\path\\file.f",
@@ -1006,7 +1006,7 @@ let ``return a test that does not call the test action when run when given tags,
         
         let test = fut.Ignore (
             TestTags [],
-            TestBody monitor.CallTestActionWithoutEnvironment,
+            TestBody monitor.CallTestActionWithSetup,
             emptyTeardown,
             "My ignored test",
             "S:\\path\\file.f",
@@ -1197,7 +1197,7 @@ let ``return a test that does not call the test action when run when given tags,
         let test = fut.Ignore (
             TestTags [],
             Setup (fun _ -> Ok ()),
-            TestBody monitor.CallTestActionWithoutEnvironment,
+            TestBody monitor.CallTestActionWithSetup,
             "My ignored test",
             "S:\\path\\file.f",
             3
@@ -1332,7 +1332,7 @@ let ``return a test that does not call the test action when run when given tags,
         
         let test = fut.Ignore (
             TestTags [],
-            TestBody monitor.CallTestActionWithoutEnvironment,
+            TestBody monitor.CallTestActionWithSetup,
             "My ignored test",
             "S:\\path\\file.f",
             3
@@ -1473,7 +1473,7 @@ let ``return a test that does not call the test action when run when given setup
         
         let test = fut.Ignore (
             Setup (fun _ -> Ok ()),
-            TestBodyTwoParameters monitor.CallTestActionWithEnvironment,
+            TestBodyTwoParameters monitor.CallTestActionWithSetupEnvironment,
             emptyTeardown,
             "My ignored test",
             "S:\\path\\file.f",
@@ -1633,7 +1633,7 @@ let ``return a test that does not call the test action when run when given setup
         
         let test = fut.Ignore (
             Setup (fun _ -> Ok ()),
-            TestBodyTwoParameters monitor.CallTestActionWithEnvironment,
+            TestBodyTwoParameters monitor.CallTestActionWithSetupEnvironment,
             "My ignored test",
             "S:\\path\\file.f",
             3
@@ -1774,7 +1774,7 @@ let ``return a test that does not call the test action when run when given setup
         
         let test = fut.Ignore (
             Setup (fun _ -> Ok ()),
-            TestBody monitor.CallTestActionWithoutEnvironment,
+            TestBody monitor.CallTestActionWithSetup,
             emptyTeardown,
             "My ignored test",
             "S:\\path\\file.f",
@@ -1934,7 +1934,7 @@ let ``return a test that does not call the test action when run when given setup
         
         let test = fut.Ignore (
             Setup (fun _ -> Ok ()),
-            TestBody monitor.CallTestActionWithoutEnvironment,
+            TestBody monitor.CallTestActionWithSetup,
             "My ignored test",
             "S:\\path\\file.f",
             3
@@ -2045,7 +2045,7 @@ let ``return a test that does not call the test action when run when given test 
         let fut = Arrow.NewFeature ()
         
         let test = fut.Ignore (
-            TestBodyTwoParameters monitor.CallTestActionWithEnvironment,
+            TestBodyTwoParameters monitor.CallTestActionWithSetupEnvironment,
             emptyTeardown,
             "My ignored test",
             "S:\\path\\file.f",
@@ -2180,7 +2180,7 @@ let ``return a test that does not call the test action when run when given test 
         let fut = Arrow.NewFeature ()
         
         let test = fut.Ignore (
-            TestBody monitor.CallTestActionWithoutEnvironment,
+            TestBody monitor.CallTestActionWithSetup,
             emptyTeardown,
             "My ignored test",
             "S:\\path\\file.f",
@@ -2310,7 +2310,7 @@ let ``return a test that does not call the test action when run when given test 
         let fut = Arrow.NewFeature ()
         
         let test = fut.Ignore (
-            monitor.CallTestActionWithEnvironment,
+            monitor.CallTestActionWithSetupEnvironment,
             "My ignored test",
             "S:\\path\\file.f",
             3
@@ -2416,7 +2416,7 @@ let ``return a test that does not call the test action when run when given test 
         let fut = Arrow.NewFeature ()
         
         let test = fut.Ignore (
-            monitor.CallTestActionWithoutEnvironment,
+            monitor.CallTestActionWithSetup,
             "My ignored test",
             "S:\\path\\file.f",
             3
