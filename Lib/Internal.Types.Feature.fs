@@ -831,7 +831,49 @@ type Feature<'featureType> (featurePath, featureName, featureTags: TestTag list,
         member this.Ignore (testName: string, data: DataIndicator<'dataType>, testBody: TestBodyIndicator<'dataType>, teardown: TeardownIndicator<unit>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             let (TestBody testBody) = testBody
             this.Ignore (TestTags [], Setup Ok, data, testBodyOneToThree testBody, wrapTeardown teardown, testName, fileFullName, lineNumber)
-    
+            
+        member this.Test (testName: string, data: DataIndicator<'dataType>, testBody: TestFunctionTwoParameters<'dataType, 'featureType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+            this.Test (TestTags [], Setup Ok, data, testBodyTwoToThreeIgnoreEnv testBody, emptyTeardown, testName, fileFullName, lineNumber)
+            
+        member this.Ignore (testName: string, data: DataIndicator<'dataType>, testBody: TestFunctionTwoParameters<'dataType, 'featureType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+            this.Ignore (TestTags [], Setup Ok, data, testBodyTwoToThreeIgnoreEnv testBody, emptyTeardown, testName, fileFullName, lineNumber)
+            
+        member this.Test (testName: string, data: DataIndicator<'dataType>, testBody: TestFunctionTwoParameters<'dataType, TestEnvironment>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+            this.Test (TestTags [], Setup Ok, data, testBodyTwoToThreeIgnoreSetup testBody, emptyTeardown, testName, fileFullName, lineNumber)
+            
+        member this.Ignore (testName: string, data: DataIndicator<'dataType>, testBody: TestFunctionTwoParameters<'dataType, TestEnvironment>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+            this.Ignore (TestTags [], Setup Ok, data, testBodyTwoToThreeIgnoreSetup testBody, emptyTeardown, testName, fileFullName, lineNumber)
+            
+        member this.Test (testName: string, data: DataIndicator<'dataType>, testBody: TestFunction<'dataType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+            this.Test (TestTags [], Setup Ok, data, testBodyOneToThree testBody, emptyTeardown, testName, fileFullName, lineNumber)
+            
+        member this.Ignore (testName: string, data: DataIndicator<'dataType>, testBody: TestFunction<'dataType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+            this.Ignore (TestTags [], Setup Ok, data, testBodyOneToThree testBody, emptyTeardown, testName, fileFullName, lineNumber)
+            
+        member this.Test (testName: string, data: DataIndicator<'dataType>, testBody: TestBodyIndicatorTwoParameters<'dataType, 'featureType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+            let (TestBodyTwoParameters testBody) = testBody
+            this.Test (TestTags [], Setup Ok, data, testBodyTwoToThreeIgnoreEnv testBody, emptyTeardown, testName, fileFullName, lineNumber)
+            
+        member this.Ignore (testName: string, data: DataIndicator<'dataType>, testBody: TestBodyIndicatorTwoParameters<'dataType, 'featureType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+            let (TestBodyTwoParameters testBody) = testBody
+            this.Ignore (TestTags [], Setup Ok, data, testBodyTwoToThreeIgnoreEnv testBody, emptyTeardown, testName, fileFullName, lineNumber)
+            
+        member this.Test (testName: string, data: DataIndicator<'dataType>, testBody: TestBodyIndicatorTwoParameters<'dataType, TestEnvironment>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+            let (TestBodyTwoParameters testBody) = testBody
+            this.Test (TestTags [], Setup Ok, data, testBodyTwoToThreeIgnoreSetup testBody, emptyTeardown, testName, fileFullName, lineNumber)
+            
+        member this.Ignore (testName: string, data: DataIndicator<'dataType>, testBody: TestBodyIndicatorTwoParameters<'dataType, TestEnvironment>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+            let (TestBodyTwoParameters testBody) = testBody
+            this.Ignore (TestTags [], Setup Ok, data, testBodyTwoToThreeIgnoreSetup testBody, emptyTeardown, testName, fileFullName, lineNumber)
+            
+        member this.Test (testName: string, data: DataIndicator<'dataType>, testBody: TestBodyIndicator<'dataType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+            let (TestBody testBody) = testBody
+            this.Test (TestTags [], Setup Ok, data, testBodyOneToThree testBody, emptyTeardown, testName, fileFullName, lineNumber)
+            
+        member this.Ignore (testName: string, data: DataIndicator<'dataType>, testBody: TestBodyIndicator<'dataType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+            let (TestBody testBody) = testBody
+            this.Ignore (TestTags [], Setup Ok, data, testBodyOneToThree testBody, emptyTeardown, testName, fileFullName, lineNumber)
+            
         member this.GetTests() = this.GetTests ()
         
     interface IScriptFeature<'featureType> with
