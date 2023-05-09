@@ -62,7 +62,7 @@ let ``run setup method passed to it when everything is passed`` =
     feature.Test (
         Setup setupFeatureUnderTest,
         TestBody (fun (testFeature: IFeature<unit>) ->
-            let monitor = Monitor<unit, unit> (Ok ())
+            let monitor = Monitor<unit, unit, unit> (Ok ())
             let test =
                 testFeature.Test (
                     TestTags [
@@ -92,7 +92,7 @@ let ``run the test method passed to it when everything is passed`` =
     feature.Test (
         Setup setupFeatureUnderTest,
         TestBody (fun (testFeature: IFeature<unit>) ->
-            let monitor = Monitor<unit, unit> (Ok ())
+            let monitor = Monitor<unit, unit, unit> (Ok ())
             let test =
                 testFeature.Test (
                     TestTags [
@@ -122,7 +122,7 @@ let ``run the teardown method passed to it when everything is passed`` =
     feature.Test (
         Setup setupFeatureUnderTest,
         TestBody (fun (testFeature: IFeature<unit>) ->
-            let monitor = Monitor<unit, unit> (Ok ())
+            let monitor = Monitor<unit, unit, unit> (Ok ())
             let test =
                 testFeature.Test (
                     TestTags [
@@ -194,7 +194,7 @@ let ``run setup method passed to it when given no teardown`` =
     feature.Test (
         Setup setupFeatureUnderTest,
         TestBody (fun (testFeature: IFeature<unit>) ->
-            let monitor = Monitor<unit, unit> (Ok ())
+            let monitor = Monitor<unit, unit, unit> (Ok ())
             let test =
                 testFeature.Test (
                     TestTags [
@@ -223,7 +223,7 @@ let ``run the test method passed to it when given no teardown`` =
     feature.Test (
         Setup setupFeatureUnderTest,
         TestBody (fun (testFeature: IFeature<unit>) ->
-            let monitor = Monitor<unit, unit> (Ok ())
+            let monitor = Monitor<unit, unit, unit> (Ok ())
             let test =
                 testFeature.Test (
                     TestTags [
@@ -294,7 +294,7 @@ let ``run the test method passed to it when given no setup`` =
     feature.Test (
         Setup setupFeatureUnderTest,
         TestBody (fun (testFeature: IFeature<unit>) ->
-            let monitor = Monitor<unit, unit> (Ok ())
+            let monitor = Monitor<unit, unit, unit> (Ok ())
             let test =
                 testFeature.Test (
                     TestTags [
@@ -323,7 +323,7 @@ let ``run the teardown method passed to it when given no setup`` =
     feature.Test (
         Setup setupFeatureUnderTest,
         TestBody (fun (testFeature: IFeature<unit>) ->
-            let monitor = Monitor<unit, unit> (Ok ())
+            let monitor = Monitor<unit, unit, unit> (Ok ())
             let test =
                 testFeature.Test (
                     TestTags [
@@ -433,7 +433,7 @@ let ``run the test method passed to it when given no setup, teardown, or test bo
     feature.Test (
         Setup setupFeatureUnderTest,
         TestBody (fun (testFeature: IFeature<unit>) ->
-            let monitor = Monitor<unit, unit> (Ok ())
+            let monitor = Monitor<unit, unit, unit> (Ok ())
             let test =
                 testFeature.Test (
                     TestTags [
@@ -498,7 +498,7 @@ let ``run setup method passed to it when given no tags`` =
     feature.Test (
         Setup setupFeatureUnderTest,
         TestBody (fun (testFeature: IFeature<unit>) ->
-            let monitor = Monitor<unit, unit> (Ok ())
+            let monitor = Monitor<unit, unit, unit> (Ok ())
             let test =
                 testFeature.Test (
                     Setup monitor.CallSetup,
@@ -524,7 +524,7 @@ let ``run the test method passed to it when given no tags`` =
     feature.Test (
         Setup setupFeatureUnderTest,
         TestBody (fun (testFeature: IFeature<unit>) ->
-            let monitor = Monitor<unit, unit> (Ok ())
+            let monitor = Monitor<unit, unit, unit> (Ok ())
             let test =
                 testFeature.Test (
                     Setup monitor.CallSetup,
@@ -550,7 +550,7 @@ let ``run the teardown method passed to it when given no tags`` =
     feature.Test (
         Setup setupFeatureUnderTest,
         TestBody (fun (testFeature: IFeature<unit>) ->
-            let monitor = Monitor<unit, unit> (Ok ())
+            let monitor = Monitor<unit, unit, unit> (Ok ())
             let test =
                 testFeature.Test (
                     Setup monitor.CallSetup,
@@ -612,7 +612,7 @@ let ``run setup method passed to it when given no tags, no teardown`` =
     feature.Test (
         Setup setupFeatureUnderTest,
         TestBody (fun (testFeature: IFeature<unit>) ->
-            let monitor = Monitor<unit, unit> (Ok ())
+            let monitor = Monitor<unit, unit, unit> (Ok ())
             let test =
                 testFeature.Test (
                     Setup monitor.CallSetup,
@@ -637,7 +637,7 @@ let ``run the test method passed to it when given no tags, no teardown`` =
     feature.Test (
         Setup setupFeatureUnderTest,
         TestBody (fun (testFeature: IFeature<unit>) ->
-            let monitor = Monitor<unit, unit> (Ok ())
+            let monitor = Monitor<unit, unit, unit> (Ok ())
             let test =
                 testFeature.Test (
                     Setup monitor.CallSetup,
@@ -698,7 +698,7 @@ let ``run the test method passed to it when given no tags, no setup`` =
     feature.Test (
         Setup setupFeatureUnderTest,
         TestBody (fun (testFeature: IFeature<unit>) ->
-            let monitor = Monitor<unit, unit> (Ok ())
+            let monitor = Monitor<unit, unit, unit> (Ok ())
             let test =
                 testFeature.Test (
                     TestBody monitor.CallTestActionWithSetup,
@@ -723,7 +723,7 @@ let ``run the teardown method passed to it when given no tags, no setup`` =
     feature.Test (
         Setup setupFeatureUnderTest,
         TestBody (fun (testFeature: IFeature<unit>) ->
-            let monitor = Monitor<unit, unit> (Ok ())
+            let monitor = Monitor<unit, unit, unit> (Ok ())
             let test =
                 testFeature.Test (
                     TestBody monitor.CallTestActionWithSetup,
@@ -783,7 +783,7 @@ let ``run the test method passed to it when given no tags, no setup, no teardown
     feature.Test (
         Setup setupFeatureUnderTest,
         TestBody (fun (testFeature: IFeature<unit>) ->
-            let monitor = Monitor<unit, unit> (Ok ())
+            let monitor = Monitor<unit, unit, unit> (Ok ())
             let test =
                 testFeature.Test (
                     TestBody monitor.CallTestActionWithSetup,
@@ -841,7 +841,7 @@ let ``run the test method passed to it when given no tags, no setup, no teardown
     feature.Test (
         Setup setupFeatureUnderTest,
         TestBody (fun (testFeature: IFeature<unit>) ->
-            let monitor = Monitor<unit, unit> (Ok ())
+            let monitor = Monitor<unit, unit, unit> (Ok ())
             let test =
                 testFeature.Test (
                     monitor.CallTestActionWithSetup,

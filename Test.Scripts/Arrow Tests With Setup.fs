@@ -14,7 +14,7 @@ let private feature = Arrow.NewFeature (
 let ``Should execute the setup by every test specified in the test builder when only setup and test builder are specified`` =
     feature.Test (
         fun _ ->
-            let monitor = Monitor<unit, unit> (Ok ())
+            let monitor = Monitor<unit, unit, unit> (Ok ())
             
             let tests =
                 Arrow.Tests (
@@ -34,7 +34,7 @@ let ``Should execute the setup by every test specified in the test builder when 
 let ``Should execute every test specified in the test builder when only setup and test builder are specified`` =
     feature.Test (
         fun _ ->
-            let monitor = Monitor<unit, unit> (Ok ())
+            let monitor = Monitor<unit, unit, unit> (Ok ())
             
             let tests =
                 Arrow.Tests (
@@ -54,7 +54,7 @@ let ``Should execute every test specified in the test builder when only setup an
 let ``Should execute the setup by every test specified in the test builder when name, setup, and test builder are specified`` =
     feature.Test (
         fun _ ->
-            let monitor = Monitor<unit, unit> (Ok ())
+            let monitor = Monitor<unit, unit, unit> (Ok ())
             
             let tests =
                 Arrow.Tests (
@@ -75,7 +75,7 @@ let ``Should execute the setup by every test specified in the test builder when 
 let ``Should execute every test specified in the test builder when name, setup, and test builder are specified`` =
     feature.Test (
         fun _ ->
-            let monitor = Monitor<unit, unit> (Ok ())
+            let monitor = Monitor<unit, unit, unit> (Ok ())
             
             let tests =
                 Arrow.Tests (
@@ -96,7 +96,7 @@ let ``Should execute every test specified in the test builder when name, setup, 
 let ``Should execute the setup by every test specified in the test builder when path, name, setup, and test builder are specified`` =
     feature.Test (
         fun _ ->
-            let monitor = Monitor<unit, unit> (Ok ())
+            let monitor = Monitor<unit, unit, unit> (Ok ())
             
             let tests =
                 Arrow.Tests (
@@ -118,7 +118,7 @@ let ``Should execute the setup by every test specified in the test builder when 
 let ``Should execute every test specified in the test builder when path, name, setup, and test builder are specified`` =
     feature.Test (
         fun _ ->
-            let monitor = Monitor<unit, unit> (Ok ())
+            let monitor = Monitor<unit, unit, unit> (Ok ())
             
             let tests =
                 Arrow.Tests (

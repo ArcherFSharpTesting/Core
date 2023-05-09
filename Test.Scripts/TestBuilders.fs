@@ -91,10 +91,11 @@ let setupBuiltExecutorWithTestBodyAndTeardownAction _ =
         
     builtExecutor |> Ok
 
-type Monitor<'setupInputType, 'setupOutputType> (setupAction: 'setupInputType -> Result<'setupOutputType, SetupTeardownFailure>, testAction: TestFunction<'setupOutputType>, teardownAction: Result<'setupOutputType, SetupTeardownFailure> -> TestResult option -> Result<unit, SetupTeardownFailure>) =
+type Monitor<'dataType, 'setupInputType, 'setupOutputType> (setupAction: 'setupInputType -> Result<'setupOutputType, SetupTeardownFailure>, testAction: TestFunction<'setupOutputType>, teardownAction: Result<'setupOutputType, SetupTeardownFailure> -> TestResult option -> Result<unit, SetupTeardownFailure>) =
     let mutable setupInput: 'setupInputType option = None
     let mutable setupResult: Result<'setupOutputType, SetupTeardownFailure> option = None
     let mutable testInput: 'setupOutputType option = None
+    let mutable testData: 'dataType option = None
     let mutable testInputEnvironment: TestEnvironment option = None
     let mutable testResultResult: TestResult option = None
     let mutable setupCount = 0
@@ -129,6 +130,25 @@ type Monitor<'setupInputType, 'setupOutputType> (setupAction: 'setupInputType ->
         testInput <- Some input
         testCount <- testCount + 1
         testAction input
+        
+    member _.CallTestActionWithData data =
+        testData <- Some data
+        testCount <- testCount + 1
+        TestSuccess
+        
+    member this.CallTestActionWithDataSetup data input =
+        testData <- Some data
+        this.CallSetup input
+        
+    member this.CallTestActionWithDataEnvironment data environment =
+        testData <- Some data
+        testInputEnvironment <- Some environment
+        testCount <- testCount + 1
+        TestSuccess
+        
+    member this.CallTestActionWithDataSetupEnvironment data input environment =
+        testData <- Some data
+        this.CallTestActionWithSetupEnvironment input environment
         
     member _.CallTeardown setupValue testValue =
         teardownCount <- teardownCount + 1
@@ -165,22 +185,22 @@ type Monitor<'setupInputType, 'setupOutputType> (setupAction: 'setupInputType ->
     member _.NumberOfTimesTestWasCalled with get () = testCount
 
 let newMonitorWithTestResult testResult =
-    Monitor<unit, unit> (Ok (), testResult, Ok ())
+    Monitor<unit, unit, unit> (Ok (), testResult, Ok ())
     
 let newMonitorWithTestAction (testAction: TestFunction<unit>) =
-    Monitor<unit, unit> (Ok (), testAction)
+    Monitor<unit, unit, unit> (Ok (), testAction)
     
 let newMonitorWithTeardownAction (teardownAction: Result<unit, SetupTeardownFailure> -> TestResult option -> Result<unit, SetupTeardownFailure>) =
-    Monitor<unit, unit> ((fun _ -> Ok ()), (fun _ -> TestSuccess), teardownAction)
+    Monitor<unit, unit, unit> ((fun _ -> Ok ()), (fun _ -> TestSuccess), teardownAction)
     
 let newMonitorWithTeardownResult teardownResult =
-    Monitor<unit, unit> (Ok (), TestSuccess, teardownResult)
+    Monitor<unit, unit, unit> (Ok (), TestSuccess, teardownResult)
     
 let newMonitorWithTestResultAndTeardownResult testResult teardownResult =
-    Monitor<unit, unit>(Ok (), testResult, teardownResult)
+    Monitor<unit, unit, unit>(Ok (), testResult, teardownResult)
 
 let setupBuildExecutorWithMonitorAtTheFeature _ =
-    let monitor = Monitor<unit, unit> (Ok ())
+    let monitor = Monitor<unit, unit, unit> (Ok ())
     let feature = Arrow.NewFeature (
         ignoreString (),
         ignoreString (),
@@ -192,7 +212,7 @@ let setupBuildExecutorWithMonitorAtTheFeature _ =
     Ok (monitor, test.GetExecutor ())
 
 let setupBuildExecutorWithMonitor _ =
-    let buildIt (monitor: Monitor<unit, 'b>) =
+    let buildIt (monitor: Monitor<unit, unit, 'b>) =
         let feature = Arrow.NewFeature (
             ignoreString (),
             ignoreString ()

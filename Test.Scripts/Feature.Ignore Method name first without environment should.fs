@@ -63,7 +63,7 @@ let ``not run setup method passed to it when everything is passed`` =
     feature.Test (
         Setup setupFeatureUnderTest,
         TestBody (fun (testFeature: IFeature<unit>) ->
-            let monitor = Monitor<unit, unit> (Ok ())
+            let monitor = Monitor<unit, unit, unit> (Ok ())
             let test =
                 testFeature.Ignore (
                     "My test",
@@ -93,7 +93,7 @@ let ``not run the test method passed to it when everything is passed`` =
     feature.Test (
         Setup setupFeatureUnderTest,
         TestBody (fun (testFeature: IFeature<unit>) ->
-            let monitor = Monitor<unit, unit> (Ok ())
+            let monitor = Monitor<unit, unit, unit> (Ok ())
             let test =
                 testFeature.Ignore (
                     "My test",
@@ -123,7 +123,7 @@ let ``return an ignored failure upon test being executed executed when everythin
     feature.Test (
         Setup setupFeatureUnderTest,
         TestBody (fun (testFeature: IFeature<unit>) ->
-            let monitor = Monitor<unit, unit> (Ok ())
+            let monitor = Monitor<unit, unit, unit> (Ok ())
             let test =
                 testFeature.Ignore (
                     "My test",
@@ -157,7 +157,7 @@ let ``not run the teardown method passed to it when everything is passed`` =
     feature.Test (
         Setup setupFeatureUnderTest,
         TestBody (fun (testFeature: IFeature<unit>) ->
-            let monitor = Monitor<unit, unit> (Ok ())
+            let monitor = Monitor<unit, unit, unit> (Ok ())
             let test =
                 testFeature.Ignore (
                     "My test",
@@ -229,7 +229,7 @@ let ``not run setup method passed to it when given no teardown`` =
     feature.Test (
         Setup setupFeatureUnderTest,
         TestBody (fun (testFeature: IFeature<unit>) ->
-            let monitor = Monitor<unit, unit> (Ok ())
+            let monitor = Monitor<unit, unit, unit> (Ok ())
             let test =
                 testFeature.Ignore (
                     "My test",
@@ -258,7 +258,7 @@ let ``not run the test method passed to it when given no teardown`` =
     feature.Test (
         Setup setupFeatureUnderTest,
         TestBody (fun (testFeature: IFeature<unit>) ->
-            let monitor = Monitor<unit, unit> (Ok ())
+            let monitor = Monitor<unit, unit, unit> (Ok ())
             let test =
                 testFeature.Ignore (
                     "My test",
@@ -287,7 +287,7 @@ let ``return an ignored failure upon test being executed executed when given no 
     feature.Test (
         Setup setupFeatureUnderTest,
         TestBody (fun (testFeature: IFeature<unit>) ->
-            let monitor = Monitor<unit, unit> (Ok ())
+            let monitor = Monitor<unit, unit, unit> (Ok ())
             let test =
                 testFeature.Ignore (
                     "My test",
@@ -362,7 +362,7 @@ let ``not run the test method passed to it when given no setup`` =
     feature.Test (
         Setup setupFeatureUnderTest,
         TestBody (fun (testFeature: IFeature<unit>) ->
-            let monitor = Monitor<unit, unit> (Ok ())
+            let monitor = Monitor<unit, unit, unit> (Ok ())
             let test =
                 testFeature.Ignore (
                     "My test",
@@ -391,7 +391,7 @@ let ``return an ignored failure upon test being executed executed when given no 
     feature.Test (
         Setup setupFeatureUnderTest,
         TestBody (fun (testFeature: IFeature<unit>) ->
-            let monitor = Monitor<unit, unit> (Ok ())
+            let monitor = Monitor<unit, unit, unit> (Ok ())
             let test =
                 testFeature.Ignore (
                     "My test",
@@ -424,7 +424,7 @@ let ``not run the teardown method passed to it when given no setup`` =
     feature.Test (
         Setup setupFeatureUnderTest,
         TestBody (fun (testFeature: IFeature<unit>) ->
-            let monitor = Monitor<unit, unit> (Ok ())
+            let monitor = Monitor<unit, unit, unit> (Ok ())
             let test =
                 testFeature.Ignore (
                     "My test",
@@ -494,7 +494,7 @@ let ``not run the test method passed to it when given no setup or teardown`` =
     feature.Test (
         Setup setupFeatureUnderTest,
         TestBody (fun (testFeature: IFeature<unit>) ->
-            let monitor = Monitor<unit, unit> (Ok ())
+            let monitor = Monitor<unit, unit, unit> (Ok ())
             let test =
                 testFeature.Ignore (
                     "My test",
@@ -562,7 +562,7 @@ let ``not run the test method passed to it when given no setup, teardown, or tes
     feature.Test (
         Setup setupFeatureUnderTest,
         TestBody (fun (testFeature: IFeature<unit>) ->
-            let monitor = Monitor<unit, unit> (Ok ())
+            let monitor = Monitor<unit, unit, unit> (Ok ())
             let test =
                 testFeature.Ignore (
                     "My test",
@@ -590,7 +590,7 @@ let ``return an ignored failure upon test being executed executed when given no 
     feature.Test (
         Setup setupFeatureUnderTest,
         TestBody (fun (testFeature: IFeature<unit>) ->
-            let monitor = Monitor<unit, unit> (Ok ())
+            let monitor = Monitor<unit, unit, unit> (Ok ())
             let test =
                 testFeature.Ignore (
                     "My test",
@@ -622,7 +622,7 @@ let ``return an ignored failure upon test being executed executed when given no 
     feature.Test (
         Setup setupFeatureUnderTest,
         TestBody (fun (testFeature: IFeature<unit>) ->
-            let monitor = Monitor<unit, unit> (Ok ())
+            let monitor = Monitor<unit, unit, unit> (Ok ())
             let test =
                 testFeature.Ignore (
                     "My test",
@@ -691,7 +691,7 @@ let ``not run setup method passed to it when given no tags`` =
     feature.Test (
         Setup setupFeatureUnderTest,
         TestBody (fun (testFeature: IFeature<unit>) ->
-            let monitor = Monitor<unit, unit> (Ok ())
+            let monitor = Monitor<unit, unit, unit> (Ok ())
             let test =
                 testFeature.Ignore (
                     "My test",
@@ -717,7 +717,7 @@ let ``not run the test method passed to it when given no tags`` =
     feature.Test (
         Setup setupFeatureUnderTest,
         TestBody (fun (testFeature: IFeature<unit>) ->
-            let monitor = Monitor<unit, unit> (Ok ())
+            let monitor = Monitor<unit, unit, unit> (Ok ())
             let test =
                 testFeature.Ignore (
                     "My test",
@@ -743,7 +743,7 @@ let ``return an ignored failure upon test being executed executed when given no 
     feature.Test (
         Setup setupFeatureUnderTest,
         TestBody (fun (testFeature: IFeature<unit>) ->
-            let monitor = Monitor<unit, unit> (Ok ())
+            let monitor = Monitor<unit, unit, unit> (Ok ())
             let test =
                 testFeature.Ignore (
                     "My test",
@@ -773,7 +773,7 @@ let ``not run the teardown method passed to it when given no tags`` =
     feature.Test (
         Setup setupFeatureUnderTest,
         TestBody (fun (testFeature: IFeature<unit>) ->
-            let monitor = Monitor<unit, unit> (Ok ())
+            let monitor = Monitor<unit, unit, unit> (Ok ())
             let test =
                 testFeature.Ignore (
                     "My test",
@@ -835,7 +835,7 @@ let ``not run setup method passed to it when given no tags, no teardown`` =
     feature.Test (
         Setup setupFeatureUnderTest,
         TestBody (fun (testFeature: IFeature<unit>) ->
-            let monitor = Monitor<unit, unit> (Ok ())
+            let monitor = Monitor<unit, unit, unit> (Ok ())
             let test =
                 testFeature.Ignore (
                     "My test",
@@ -860,7 +860,7 @@ let ``not run the test method passed to it when given no tags, no teardown`` =
     feature.Test (
         Setup setupFeatureUnderTest,
         TestBody (fun (testFeature: IFeature<unit>) ->
-            let monitor = Monitor<unit, unit> (Ok ())
+            let monitor = Monitor<unit, unit, unit> (Ok ())
             let test =
                 testFeature.Ignore (
                     "My test",
@@ -885,7 +885,7 @@ let ``return an ignored failure upon test being executed executed when no teardo
     feature.Test (
         Setup setupFeatureUnderTest,
         TestBody (fun (testFeature: IFeature<unit>) ->
-            let monitor = Monitor<unit, unit> (Ok ())
+            let monitor = Monitor<unit, unit, unit> (Ok ())
             let test =
                 testFeature.Ignore (
                     "My test",
@@ -950,7 +950,7 @@ let ``not run the test method passed to it when given no tags, no setup`` =
     feature.Test (
         Setup setupFeatureUnderTest,
         TestBody (fun (testFeature: IFeature<unit>) ->
-            let monitor = Monitor<unit, unit> (Ok ())
+            let monitor = Monitor<unit, unit, unit> (Ok ())
             let test =
                 testFeature.Ignore (
                     "My test",
@@ -975,7 +975,7 @@ let ``return an ignored failure upon test being executed executed when given no 
     feature.Test (
         Setup setupFeatureUnderTest,
         TestBody (fun (testFeature: IFeature<unit>) ->
-            let monitor = Monitor<unit, unit> (Ok ())
+            let monitor = Monitor<unit, unit, unit> (Ok ())
             let test =
                 testFeature.Ignore (
                     "My test",
@@ -1004,7 +1004,7 @@ let ``not run the teardown method passed to it when given no tags, no setup`` =
     feature.Test (
         Setup setupFeatureUnderTest,
         TestBody (fun (testFeature: IFeature<unit>) ->
-            let monitor = Monitor<unit, unit> (Ok ())
+            let monitor = Monitor<unit, unit, unit> (Ok ())
             let test =
                 testFeature.Ignore (
                     "My test",
@@ -1064,7 +1064,7 @@ let ``not run the test method passed to it when given no tags, no setup, no tear
     feature.Test (
         Setup setupFeatureUnderTest,
         TestBody (fun (testFeature: IFeature<unit>) ->
-            let monitor = Monitor<unit, unit> (Ok ())
+            let monitor = Monitor<unit, unit, unit> (Ok ())
             let test =
                 testFeature.Ignore (
                     "My test",
@@ -1088,7 +1088,7 @@ let ``return an ignored failure upon test being executed executed when given no 
     feature.Test (
         Setup setupFeatureUnderTest,
         TestBody (fun (testFeature: IFeature<unit>) ->
-            let monitor = Monitor<unit, unit> (Ok ())
+            let monitor = Monitor<unit, unit, unit> (Ok ())
             let test =
                 testFeature.Ignore (
                     "My test",
@@ -1150,7 +1150,7 @@ let ``not run the test method passed to it when given no tags, no setup, no tear
     feature.Test (
         Setup setupFeatureUnderTest,
         TestBody (fun (testFeature: IFeature<unit>) ->
-            let monitor = Monitor<unit, unit> (Ok ())
+            let monitor = Monitor<unit, unit, unit> (Ok ())
             let test =
                 testFeature.Ignore (
                     "My test",
@@ -1174,7 +1174,7 @@ let ``return an ignored failure upon test being executed executed when given no 
     feature.Test (
         Setup setupFeatureUnderTest,
         TestBody (fun (testFeature: IFeature<unit>) ->
-            let monitor = Monitor<unit, unit> (Ok ())
+            let monitor = Monitor<unit, unit, unit> (Ok ())
             let test =
                 testFeature.Ignore (
                     "My test",

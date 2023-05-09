@@ -30,7 +30,7 @@ let ``Test Cases`` =
                 
                 "Should run every test specified in the builder"
                 |> feature.IsTestedBy (fun _ ->
-                    let monitor = Monitor<unit, unit> (Ok ())
+                    let monitor = Monitor<unit, unit, unit> (Ok ())
                     let tests =
                         Arrow.Tests (
                             fun f ->
