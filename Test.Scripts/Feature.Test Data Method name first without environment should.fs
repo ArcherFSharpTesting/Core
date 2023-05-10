@@ -167,66 +167,70 @@ let ``run setup method passed to it when everything is passed`` =
         )
     )
     
-// let ``run the test method passed to it when everything is passed`` =
-//     feature.Test (
-//         Setup setupFeatureUnderTest,
-//         TestBody (fun (testFeature: IFeature<unit>) ->
-//             let monitor = Monitor<unit, unit, unit> (Ok ())
-//             let test =
-//                 testFeature.Test (
-//                     "My test",
-//                     TestTags [
-//                                 Only
-//                                 Category "My Category"
-//                             ],
-//                     Setup monitor.CallSetup,
-//                     TestBody monitor.CallTestActionWithSetup,
-//                     Teardown monitor.CallTeardown,
-//                     "D:\\dog.bark",
-//                     73
-//                 )
-//                 
-//             test.GetExecutor ()
-//             |> executeFunction
-//             |> runIt
-//             |> ignore
-//             
-//             monitor.TestWasCalled
-//             |> Should.BeTrue
-//             |> withMessage "test was not called"
-//         )
-//     )
-//     
-// let ``run the teardown method passed to it when everything is passed`` =
-//     feature.Test (
-//         Setup setupFeatureUnderTest,
-//         TestBody (fun (testFeature: IFeature<unit>) ->
-//             let monitor = Monitor<unit, unit, unit> (Ok ())
-//             let test =
-//                 testFeature.Test (
-//                     "My test",
-//                     TestTags [
-//                                 Only
-//                                 Category "My Category"
-//                             ],
-//                     Setup monitor.CallSetup,
-//                     TestBody monitor.CallTestActionWithSetup,
-//                     Teardown monitor.CallTeardown,
-//                     "D:\\dog.bark",
-//                     73
-//                 )
-//                 
-//             test.GetExecutor ()
-//             |> executeFunction
-//             |> runIt
-//             |> ignore
-//             
-//             monitor.TeardownWasCalled
-//             |> Should.BeTrue
-//             |> withMessage "teardown was not called"
-//         )
-//     )
-//
+let ``run the test method passed to it when everything is passed`` =
+    feature.Test (
+        Setup setupFeatureUnderTest,
+        TestBody (fun (testFeature: IFeature<unit>) ->
+            let monitor = Monitor<int, unit, unit> (Ok ())
+            let tests =
+                testFeature.Test (
+                    "My test",
+                    TestTags [
+                                Only
+                                Category "My Category"
+                            ],
+                    Setup monitor.CallSetup,
+                    Data [1;5;9],
+                    TestBodyTwoParameters monitor.CallTestActionWithDataSetup,
+                    Teardown monitor.CallTeardown,
+                    "D:\\dog.bark",
+                    73
+                )
+                
+            let getExecutor (test: ITest) = test.GetExecutor () 
+            
+            tests
+            |> List.map (getExecutor >> executeFunction >> runIt)
+            |> ignore
+            
+            monitor.NumberOfTimesTestWasCalled
+            |> Should.BeEqualTo 3
+            |> withMessage "test was not called"
+        )
+    )
+    
+let ``run the teardown method passed to it when everything is passed`` =
+    feature.Test (
+        Setup setupFeatureUnderTest,
+        TestBody (fun (testFeature: IFeature<unit>) ->
+            let monitor = Monitor<int, unit, unit> (Ok ())
+            let tests =
+                testFeature.Test (
+                    "My test",
+                    TestTags [
+                                Only
+                                Category "My Category"
+                            ],
+                    Setup monitor.CallSetup,
+                    Data [1; 2],
+                    TestBodyTwoParameters monitor.CallTestActionWithDataSetup,
+                    Teardown monitor.CallTeardown,
+                    "D:\\dog.bark",
+                    73
+                )
+                
+            let getExecutor (test: ITest) = test.GetExecutor ()
+            
+            tests
+            |> List.map (getExecutor >> executeFunction >> runIt)
+            |> ignore
+            
+            monitor.NumberOfTimesTeardownWasCalled
+            |> Should.BeEqualTo 2
+            |> withMessage "teardown was not called"
+        )
+    )
+
 // // Tags, Setup, TestBody!
 // let ``return an ITest with everything when given no teardown`` =
 //     feature.Test (
