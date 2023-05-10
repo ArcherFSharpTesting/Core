@@ -105,7 +105,7 @@ let ``Pass the result of the setup supplied to the feature to the setup supplied
         |> runIt
         |> ignore
         
-        monitor.SetupWasCalledWith
+        monitor.TestSetupInputWas
         |> Should.BeEqualTo [expectedValue]
     )
     

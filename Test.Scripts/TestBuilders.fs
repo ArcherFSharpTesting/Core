@@ -156,7 +156,7 @@ type Monitor<'dataType, 'setupInputType, 'setupOutputType> (setupAction: 'setupI
         testResultResult <- testValue::testResultResult
         teardownAction setupValue testValue
         
-    member _.SetupWasCalledWith with get () = setupInput |> List.rev
+    member _.TestSetupInputWas with get () = setupInput |> List.rev
         
     member _.TeardownWasCalledWith with get () =
         match setupResult, testResultResult with

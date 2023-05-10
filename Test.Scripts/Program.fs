@@ -17,13 +17,15 @@ runner.RunnerLifecycleEvent
     | RunnerTestLifeCycle (test, testEventLifecycle, _) ->
         match testEventLifecycle with
         | TestEndExecution testExecutionResult ->
-            let successMsg =
-                match testExecutionResult with
-                | TestExecutionResult TestSuccess -> "Success"
-                | _ -> "Fail"
-                
-            let report = $"%A{test} : (%s{successMsg})"
-            printfn $"%s{report}"
+            match testExecutionResult with
+            | TestExecutionResult TestSuccess -> ()
+            | TestExecutionResult (TestFailure (TestIgnored _)) ->
+                let report = $"%A{test} : (Ignored)"
+                printfn $"%s{report}"
+            | _ ->
+                let report = $"%A{test} : (Fail)"
+                printfn $"%s{report}"
+            
         | _ -> ()
     | RunnerEndExecution ->
         printfn "\n"
