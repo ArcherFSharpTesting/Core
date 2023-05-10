@@ -551,9 +551,6 @@ let ``return an ITest with everything when given no setup no name hints`` =
                     lineNumber
                 )
         
-            let getContainerName (test: ITest) =
-                $"%s{test.ContainerPath}.%s{test.ContainerName}"
-                
             test
             |> Should.PassAllOf [
                 List.head >> getTestName >> Should.BeEqualTo "My test ('a')" >> withMessage "TestName"

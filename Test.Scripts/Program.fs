@@ -53,5 +53,6 @@ runner
     ``Ignore Method name first without environment should``.``Test Cases``
     ``Ignore Method name first with environment should``.``Test Cases``
     ``Test Data Method without environment should``.``Test Cases``
+    ``Test Data Method name first without environment should``.``Test Cases``
 ]
 |> runAndReport
