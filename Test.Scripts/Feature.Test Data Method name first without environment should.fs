@@ -1115,56 +1115,81 @@ let ``return an ITest with everything when given no tags, no teardown, no name h
         )
     )
     
-// let ``run setup method passed to it when given no tags, no teardown`` =
-//     feature.Test (
-//         Setup setupFeatureUnderTest,
-//         TestBody (fun (testFeature: IFeature<unit>) ->
-//             let monitor = Monitor<unit, unit, unit> (Ok ())
-//             let test =
-//                 testFeature.Test (
-//                     "My test",
-//                     Setup monitor.CallSetup,
-//                     TestBody (fun _ -> TestSuccess),
-//                     "D:\\dog.bark",
-//                     73
-//                 )
-//                 
-//             test.GetExecutor ()
-//             |> executeFunction
-//             |> runIt
-//             |> ignore
-//             
-//             monitor.SetupWasCalled
-//             |> Should.BeTrue
-//             |> withMessage "Setup was not called"
-//         )
-//     )
-//     
-// let ``run the test method passed to it when given no tags, no teardown`` =
-//     feature.Test (
-//         Setup setupFeatureUnderTest,
-//         TestBody (fun (testFeature: IFeature<unit>) ->
-//             let monitor = Monitor<unit, unit, unit> (Ok ())
-//             let test =
-//                 testFeature.Test (
-//                     "My test",
-//                     Setup monitor.CallSetup,
-//                     TestBody monitor.CallTestActionWithSetup,
-//                     "D:\\dog.bark",
-//                     73
-//                 )
-//                 
-//             test.GetExecutor ()
-//             |> executeFunction
-//             |> runIt
-//             |> ignore
-//             
-//             monitor.TestWasCalled
-//             |> Should.BeTrue
-//             |> withMessage "test was not called"
-//         )
-//     )
-//
+let ``run setup method passed to it when given no tags, no teardown`` =
+    feature.Test (
+        Setup setupFeatureUnderTest,
+        TestBody (fun (testFeature: IFeature<unit>) ->
+            let monitor = Monitor<unit, unit, unit> (Ok ())
+            let tests =
+                testFeature.Test (
+                    "My test",
+                    Setup monitor.CallSetup,
+                    Data ['a'; 'b'; 'c'; 'd'],
+                    TestBodyTwoParameters (fun _ _ -> TestSuccess),
+                    "D:\\dog.bark",
+                    73
+                )
+                
+            tests
+            |> List.map (getTestExecutor >> executeFunction >> runIt)
+            |> ignore
+            
+            monitor.NumberOfTimesSetupWasCalled
+            |> Should.BeEqualTo 4
+            |> withMessage "Setup was not called"
+        )
+    )
+    
+let ``run the test method passed to it when given no tags, no teardown`` =
+    feature.Test (
+        Setup setupFeatureUnderTest,
+        TestBody (fun (testFeature: IFeature<unit>) ->
+            let monitor = Monitor<char, unit, unit> (Ok ())
+            let tests =
+                testFeature.Test (
+                    "My test",
+                    Setup monitor.CallSetup,
+                    Data ['a'; 'b'; 'c'; 'd'],
+                    TestBodyTwoParameters monitor.CallTestActionWithDataSetup,
+                    "D:\\dog.bark",
+                    73
+                )
+                
+            tests
+            |> List.map (getTestExecutor >> executeFunction >> runIt)
+            |> ignore
+            
+            monitor.NumberOfTimesTestWasCalled
+            |> Should.BeEqualTo 4
+            |> withMessage "test was not called"
+        )
+    )
+    
+let ``run the test method passed to it when given no tags, no teardown by calling it with test data`` =
+    feature.Test (
+        Setup setupFeatureUnderTest,
+        TestBody (fun (testFeature: IFeature<unit>) ->
+            let monitor = Monitor<char, unit, unit> (Ok ())
+            let tests =
+                testFeature.Test (
+                    "My test",
+                    Setup monitor.CallSetup,
+                    Data ['a'; 'b'; 'c'; 'd'],
+                    TestBodyTwoParameters monitor.CallTestActionWithDataSetup,
+                    "D:\\dog.bark",
+                    73
+                )
+                
+            tests
+            |> List.map (getTestExecutor >> executeFunction >> runIt)
+            |> ignore
+            
+            monitor.TestDataWas
+            |> Should.BeEqualTo ['a'; 'b'; 'c'; 'd']
+            |> withMessage "test was not called"
+        )
+    )
+
 // // TestBody, Teardown
 // let ``return an ITest with everything when given no tags, no setup`` =
 //     feature.Test (
