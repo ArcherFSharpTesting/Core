@@ -1107,42 +1107,89 @@ let ``run the teardown method passed to it when given no tags`` =
         )
     )
 
-// // Setup, TestBody
-// let ``return an ITest with everything when given no tags, no teardown`` =
-//     feature.Test (
-//         Setup setupFeatureUnderTest,
-//         TestBody (fun (testFeature: IFeature<unit>) ->
-//             let testName = "My test"
-//             
-//             let fileName = "dog.bark"
-//             let path = "D:\\"
-//             let fullPath = $"%s{path}%s{fileName}"
-//             let lineNumber = 73
-//             
-//             let test =
-//                 testFeature.Test (
-//                     Setup (fun _ -> Ok ()),
-//                     TestBodyTwoParameters (fun _ _ -> TestSuccess),
-//                     testName,
-//                     fullPath,
-//                     lineNumber
-//                 )
-//         
-//             let getContainerName (test: ITest) =
-//                 $"%s{test.ContainerPath}.%s{test.ContainerName}"
-//                 
-//             test
-//             |> Should.PassAllOf [
-//                 getTags >> Should.BeEqualTo [] >> withMessage "Tags"
-//                 getTestName >> Should.BeEqualTo testName >> withMessage "TestName"
-//                 getContainerName >> Should.BeEqualTo (testFeature.ToString ()) >> withMessage "Container Information"
-//                 getFilePath >> Should.BeEqualTo path >> withMessage "file path"
-//                 getFileName >> Should.BeEqualTo fileName >> withMessage "File Name"
-//                 getLineNumber >> Should.BeEqualTo lineNumber >> withMessage "Line Number"
-//             ]
-//         )
-//     )
-//     
+// Setup, TestBody
+let ``return an ITest with everything when given no tags, no teardown`` =
+    feature.Test (
+        Setup setupFeatureUnderTest,
+        TestBody (fun (testFeature: IFeature<unit>) ->
+            let testName = "My test %A"
+            
+            let fileName = "dog.bark"
+            let path = "D:\\"
+            let fullPath = $"%s{path}%s{fileName}"
+            let lineNumber = 73
+            
+            let test =
+                testFeature.Test (
+                    Setup (fun _ -> Ok ()),
+                    Data (seq {'a'..'c'} |> Seq.map (fun l -> (l, $"%c{l}".ToUpper ()))),
+                    TestBodyThreeParameters (fun _ _ _ -> TestSuccess),
+                    testName,
+                    fullPath,
+                    lineNumber
+                )
+        
+            let getContainerName (test: ITest) =
+                $"%s{test.ContainerPath}.%s{test.ContainerName}"
+                
+            test
+            |> Should.PassAllOf [
+                List.length >> Should.BeEqualTo 3 >> withMessage "Incorrect number of tests"
+                
+                List.head >> getTags >> Should.BeEqualTo [] >> withMessage "Tags"
+                List.head >> getTestName >> Should.BeEqualTo "My test ('a', \"A\")" >> withMessage "TestName"
+                List.head >> getContainerName >> Should.BeEqualTo (testFeature.ToString ()) >> withMessage "Container Information"
+                List.head >> getFilePath >> Should.BeEqualTo path >> withMessage "file path"
+                List.head >> getFileName >> Should.BeEqualTo fileName >> withMessage "File Name"
+                List.head >> getLineNumber >> Should.BeEqualTo lineNumber >> withMessage "Line Number"
+                
+                List.skip 1 >> List.head >> getTags >> Should.BeEqualTo [] >> withMessage "Tags"
+                List.skip 1 >> List.head >> getTestName >> Should.BeEqualTo "My test ('b', \"B\")" >> withMessage "TestName"
+                List.skip 1 >> List.head >> getContainerName >> Should.BeEqualTo (testFeature.ToString ()) >> withMessage "Container Information"
+                List.skip 1 >> List.head >> getFilePath >> Should.BeEqualTo path >> withMessage "file path"
+                List.skip 1 >> List.head >> getFileName >> Should.BeEqualTo fileName >> withMessage "File Name"
+                List.skip 1 >> List.head >> getLineNumber >> Should.BeEqualTo lineNumber >> withMessage "Line Number"
+                
+                List.last >> getTags >> Should.BeEqualTo [] >> withMessage "Tags"
+                List.last >> getTestName >> Should.BeEqualTo "My test ('c', \"C\")" >> withMessage "TestName"
+                List.last >> getContainerName >> Should.BeEqualTo (testFeature.ToString ()) >> withMessage "Container Information"
+                List.last >> getFilePath >> Should.BeEqualTo path >> withMessage "file path"
+                List.last >> getFileName >> Should.BeEqualTo fileName >> withMessage "File Name"
+                List.last >> getLineNumber >> Should.BeEqualTo lineNumber >> withMessage "Line Number"
+            ]
+        )
+    )
+    
+let ``return an ITest with everything when given no tags, no teardown, no name hints`` =
+    feature.Test (
+        Setup setupFeatureUnderTest,
+        TestBody (fun (testFeature: IFeature<unit>) ->
+            let testName = "My test"
+            
+            let fileName = "dog.bark"
+            let path = "D:\\"
+            let fullPath = $"%s{path}%s{fileName}"
+            let lineNumber = 73
+            
+            let test =
+                testFeature.Test (
+                    Setup (fun _ -> Ok ()),
+                    Data (seq {'a'..'c'} |> Seq.map (fun l -> (l, $"%c{l}".ToUpper ()))),
+                    TestBodyThreeParameters (fun _ _ _ -> TestSuccess),
+                    testName,
+                    fullPath,
+                    lineNumber
+                )
+        
+            test
+            |> Should.PassAllOf [
+                List.head >> getTestName >> Should.BeEqualTo "My test (('a', \"A\"))" >> withMessage "TestName"
+                List.skip 1 >> List.head >> getTestName >> Should.BeEqualTo "My test (('b', \"B\"))" >> withMessage "TestName"
+                List.last >> getTestName >> Should.BeEqualTo "My test (('c', \"C\"))" >> withMessage "TestName"
+            ]
+        )
+    )
+    
 // let ``run setup method passed to it when given no tags, no teardown`` =
 //     feature.Test (
 //         Setup setupFeatureUnderTest,
