@@ -1190,257 +1190,495 @@ let ``return an ITest with everything when given no tags, no teardown, no name h
         )
     )
     
-// let ``run setup method passed to it when given no tags, no teardown`` =
-//     feature.Test (
-//         Setup setupFeatureUnderTest,
-//         TestBody (fun (testFeature: IFeature<unit>) ->
-//             let monitor = Monitor<unit, unit, unit> (Ok ())
-//             let test =
-//                 testFeature.Test (
-//                     Setup monitor.CallSetup,
-//                     TestBodyTwoParameters (fun _ _ -> TestSuccess),
-//                     "My test",
-//                     "D:\\dog.bark",
-//                     73
-//                 )
-//                 
-//             test.GetExecutor ()
-//             |> executeFunction
-//             |> runIt
-//             |> ignore
-//             
-//             monitor.SetupWasCalled
-//             |> Should.BeTrue
-//             |> withMessage "Setup was not called"
-//         )
-//     )
-//     
-// let ``run the test method passed to it when given no tags, no teardown`` =
-//     feature.Test (
-//         Setup setupFeatureUnderTest,
-//         TestBody (fun (testFeature: IFeature<unit>) ->
-//             let monitor = Monitor<unit, unit, unit> (Ok ())
-//             let test =
-//                 testFeature.Test (
-//                     Setup monitor.CallSetup,
-//                     TestBodyTwoParameters monitor.CallTestActionWithSetupEnvironment,
-//                     "My test",
-//                     "D:\\dog.bark",
-//                     73
-//                 )
-//                 
-//             test.GetExecutor ()
-//             |> executeFunction
-//             |> runIt
-//             |> ignore
-//             
-//             monitor.TestWasCalled
-//             |> Should.BeTrue
-//             |> withMessage "test was not called"
-//         )
-//     )
-//
-// // TestBody, Teardown
-// let ``return an ITest with everything when given no tags, no setup`` =
-//     feature.Test (
-//         Setup setupFeatureUnderTest,
-//         TestBody (fun (testFeature: IFeature<unit>) ->
-//             let testName = "My test"
-//             
-//             let fileName = "dog.bark"
-//             let path = "D:\\"
-//             let fullPath = $"%s{path}%s{fileName}"
-//             let lineNumber = 73
-//             
-//             let test =
-//                 testFeature.Test (
-//                     TestBodyTwoParameters (fun _ _ -> TestSuccess),
-//                     emptyTeardown,
-//                     testName,
-//                     fullPath,
-//                     lineNumber
-//                 )
-//         
-//             let getContainerName (test: ITest) =
-//                 $"%s{test.ContainerPath}.%s{test.ContainerName}"
-//                 
-//             test
-//             |> Should.PassAllOf [
-//                 getTags >> Should.BeEqualTo [] >> withMessage "Tags"
-//                 getTestName >> Should.BeEqualTo testName >> withMessage "TestName"
-//                 getContainerName >> Should.BeEqualTo (testFeature.ToString ()) >> withMessage "Container Information"
-//                 getFilePath >> Should.BeEqualTo path >> withMessage "file path"
-//                 getFileName >> Should.BeEqualTo fileName >> withMessage "File Name"
-//                 getLineNumber >> Should.BeEqualTo lineNumber >> withMessage "Line Number"
-//             ]
-//         )
-//     )
-//     
-// let ``run the test method passed to it when given no tags, no setup`` =
-//     feature.Test (
-//         Setup setupFeatureUnderTest,
-//         TestBody (fun (testFeature: IFeature<unit>) ->
-//             let monitor = Monitor<unit, unit, unit> (Ok ())
-//             let test =
-//                 testFeature.Test (
-//                     TestBodyTwoParameters monitor.CallTestActionWithSetupEnvironment,
-//                     Teardown monitor.CallTeardown,
-//                     "My test",
-//                     "D:\\dog.bark",
-//                     73
-//                 )
-//                 
-//             test.GetExecutor ()
-//             |> executeFunction
-//             |> runIt
-//             |> ignore
-//             
-//             monitor.TestWasCalled
-//             |> Should.BeTrue
-//             |> withMessage "test was not called"
-//         )
-//     )
-//     
-// let ``run the teardown method passed to it when given no tags, no setup`` =
-//     feature.Test (
-//         Setup setupFeatureUnderTest,
-//         TestBody (fun (testFeature: IFeature<unit>) ->
-//             let monitor = Monitor<unit, unit, unit> (Ok ())
-//             let test =
-//                 testFeature.Test (
-//                     TestBodyTwoParameters monitor.CallTestActionWithSetupEnvironment,
-//                     Teardown monitor.CallTeardown,
-//                     "My test",
-//                     "D:\\dog.bark",
-//                     73
-//                 )
-//                 
-//             test.GetExecutor ()
-//             |> executeFunction
-//             |> runIt
-//             |> ignore
-//             
-//             monitor.TeardownWasCalled
-//             |> Should.BeTrue
-//             |> withMessage "teardown was not called"
-//         )
-//     )
-//
-// // TestBody
-// let ``return an ITest with everything when given no tags, no setup, no teardown`` =
-//     feature.Test (
-//         Setup setupFeatureUnderTest,
-//         TestBody (fun (testFeature: IFeature<unit>) ->
-//             let testName = "My test"
-//             
-//             let fileName = "dog.bark"
-//             let path = "D:\\"
-//             let fullPath = $"%s{path}%s{fileName}"
-//             let lineNumber = 73
-//             
-//             let test =
-//                 testFeature.Test (
-//                     TestBodyTwoParameters (fun _ _ -> TestSuccess),
-//                     testName,
-//                     fullPath,
-//                     lineNumber
-//                 )
-//         
-//             let getContainerName (test: ITest) =
-//                 $"%s{test.ContainerPath}.%s{test.ContainerName}"
-//                 
-//             test
-//             |> Should.PassAllOf [
-//                 getTags >> Should.BeEqualTo [] >> withMessage "Tags"
-//                 getTestName >> Should.BeEqualTo testName >> withMessage "TestName"
-//                 getContainerName >> Should.BeEqualTo (testFeature.ToString ()) >> withMessage "Container Information"
-//                 getFilePath >> Should.BeEqualTo path >> withMessage "file path"
-//                 getFileName >> Should.BeEqualTo fileName >> withMessage "File Name"
-//                 getLineNumber >> Should.BeEqualTo lineNumber >> withMessage "Line Number"
-//             ]
-//         )
-//     )
-//     
-// let ``run the test method passed to it when given no tags, no setup, no teardown`` =
-//     feature.Test (
-//         Setup setupFeatureUnderTest,
-//         TestBody (fun (testFeature: IFeature<unit>) ->
-//             let monitor = Monitor<unit, unit, unit> (Ok ())
-//             let test =
-//                 testFeature.Test (
-//                     TestBodyTwoParameters monitor.CallTestActionWithSetupEnvironment,
-//                     "My test",
-//                     "D:\\dog.bark",
-//                     73
-//                 )
-//                 
-//             test.GetExecutor ()
-//             |> executeFunction
-//             |> runIt
-//             |> ignore
-//             
-//             monitor.TestWasCalled
-//             |> Should.BeTrue
-//             |> withMessage "test was not called"
-//         )
-//     )
-//
-// let ``return an ITest with everything when given no tags, no setup, no teardown, no test body indicator`` =
-//     feature.Test (
-//         Setup setupFeatureUnderTest,
-//         TestBody (fun (testFeature: IFeature<unit>) ->
-//             let testName = "My test"
-//             
-//             let fileName = "dog.bark"
-//             let path = "D:\\"
-//             let fullPath = $"%s{path}%s{fileName}"
-//             let lineNumber = 73
-//             
-//             let test =
-//                 testFeature.Test (
-//                     (fun _ _ -> TestSuccess),
-//                     testName,
-//                     fullPath,
-//                     lineNumber
-//                 )
-//         
-//             let getContainerName (test: ITest) =
-//                 $"%s{test.ContainerPath}.%s{test.ContainerName}"
-//                 
-//             test
-//             |> Should.PassAllOf [
-//                 getTags >> Should.BeEqualTo [] >> withMessage "Tags"
-//                 getTestName >> Should.BeEqualTo testName >> withMessage "TestName"
-//                 getContainerName >> Should.BeEqualTo (testFeature.ToString ()) >> withMessage "Container Information"
-//                 getFilePath >> Should.BeEqualTo path >> withMessage "file path"
-//                 getFileName >> Should.BeEqualTo fileName >> withMessage "File Name"
-//                 getLineNumber >> Should.BeEqualTo lineNumber >> withMessage "Line Number"
-//             ]
-//         )
-//     )
-//     
-// let ``run the test method passed to it when given no tags, no setup, no teardown, no test body indicator`` =
-//     feature.Test (
-//         Setup setupFeatureUnderTest,
-//         TestBody (fun (testFeature: IFeature<unit>) ->
-//             let monitor = Monitor<unit, unit, unit> (Ok ())
-//             let test =
-//                 testFeature.Test (
-//                     monitor.CallTestActionWithSetupEnvironment,
-//                     "My test",
-//                     "D:\\dog.bark",
-//                     73
-//                 )
-//                 
-//             test.GetExecutor ()
-//             |> executeFunction
-//             |> runIt
-//             |> ignore
-//             
-//             monitor.TestWasCalled
-//             |> Should.BeTrue
-//             |> withMessage "test was not called"
-//         )
-//     )
+let ``run setup method passed to it when given no tags, no teardown`` =
+    feature.Test (
+        Setup setupFeatureUnderTest,
+        TestBody (fun (testFeature: IFeature<unit>) ->
+            let monitor = Monitor<unit, unit, unit> (Ok ())
+            let tests =
+                testFeature.Test (
+                    Setup monitor.CallSetup,
+                    Data (seq {'a'..'c'} |> Seq.map (fun l -> (l, $"%c{l}".ToUpper ()))),
+                    TestBodyThreeParameters (fun _ _ _ -> TestSuccess),
+                    "My test",
+                    "D:\\dog.bark",
+                    73
+                )
+                
+            tests
+            |> List.map (getTestExecutor >> executeFunction >> runIt)
+            |> ignore
+            
+            monitor.NumberOfTimesSetupWasCalled
+            |> Should.BeEqualTo 3
+            |> withMessage "Setup was not called"
+        )
+    )
+    
+let ``run the test method passed to it when given no tags, no teardown`` =
+    feature.Test (
+        Setup setupFeatureUnderTest,
+        TestBody (fun (testFeature: IFeature<unit>) ->
+            let monitor = Monitor<char * string, unit, unit> (Ok ())
+            let tests =
+                testFeature.Test (
+                    Setup monitor.CallSetup,
+                    Data (seq {'a'..'c'} |> Seq.map (fun l -> (l, $"%c{l}".ToUpper ()))),
+                    TestBodyThreeParameters monitor.CallTestActionWithDataSetupEnvironment,
+                    "My test",
+                    "D:\\dog.bark",
+                    73
+                )
+                
+            tests
+            |> List.map (getTestExecutor >> executeFunction >> runIt)
+            |> ignore
+            
+            monitor.NumberOfTimesTestWasCalled
+            |> Should.BeEqualTo 3
+            |> withMessage "test was not called"
+        )
+    )
+    
+let ``run the test method passed to it when given no tags, no teardown by calling it with test data`` =
+    feature.Test (
+        Setup setupFeatureUnderTest,
+        TestBody (fun (testFeature: IFeature<unit>) ->
+            let monitor = Monitor<char * string, unit, unit> (Ok ())
+            let tests =
+                testFeature.Test (
+                    Setup monitor.CallSetup,
+                    Data (seq {'a'..'c'} |> Seq.map (fun l -> (l, $"%c{l}".ToUpper ()))),
+                    TestBodyThreeParameters monitor.CallTestActionWithDataSetupEnvironment,
+                    "My test",
+                    "D:\\dog.bark",
+                    73
+                )
+                
+            tests
+            |> List.map (getTestExecutor >> executeFunction >> runIt)
+            |> ignore
+            
+            monitor.TestDataWas
+            |> Should.BeEqualTo [('a', "A"); ('b', "B"); ('c', "C")]
+            |> withMessage "test was not called"
+        )
+    )
+
+// TestBody, Teardown
+let ``return an ITest with everything when given no tags, no setup`` =
+    feature.Test (
+        Setup setupFeatureUnderTest,
+        TestBody (fun (testFeature: IFeature<unit>) ->
+            let testName = "Test %i"
+            
+            let fileName = "dog.bark"
+            let path = "D:\\"
+            let fullPath = $"%s{path}%s{fileName}"
+            let lineNumber = 73
+            
+            let test =
+                testFeature.Test (
+                    Data (seq { 1..3 }),
+                    TestBodyThreeParameters (fun _ _ _ -> TestSuccess),
+                    emptyTeardown,
+                    testName,
+                    fullPath,
+                    lineNumber
+                )
+        
+            let getContainerName (test: ITest) =
+                $"%s{test.ContainerPath}.%s{test.ContainerName}"
+                
+            test
+            |> Should.PassAllOf [
+                List.length >> Should.BeEqualTo 3 >> withMessage "Incorrect Number of tests"
+                
+                List.head >> getTags >> Should.BeEqualTo [] >> withMessage "Tags"
+                List.head >> getTestName >> Should.BeEqualTo "Test 1" >> withMessage "TestName"
+                List.head >> getContainerName >> Should.BeEqualTo (testFeature.ToString ()) >> withMessage "Container Information"
+                List.head >> getFilePath >> Should.BeEqualTo path >> withMessage "file path"
+                List.head >> getFileName >> Should.BeEqualTo fileName >> withMessage "File Name"
+                List.head >> getLineNumber >> Should.BeEqualTo lineNumber >> withMessage "Line Number"
+                
+                List.skip 1 >> List.head >> getTags >> Should.BeEqualTo [] >> withMessage "Tags"
+                List.skip 1 >> List.head >> getTestName >> Should.BeEqualTo "Test 2" >> withMessage "TestName"
+                List.skip 1 >> List.head >> getContainerName >> Should.BeEqualTo (testFeature.ToString ()) >> withMessage "Container Information"
+                List.skip 1 >> List.head >> getFilePath >> Should.BeEqualTo path >> withMessage "file path"
+                List.skip 1 >> List.head >> getFileName >> Should.BeEqualTo fileName >> withMessage "File Name"
+                List.skip 1 >> List.head >> getLineNumber >> Should.BeEqualTo lineNumber >> withMessage "Line Number"
+                
+                List.last >> getTags >> Should.BeEqualTo [] >> withMessage "Tags"
+                List.last >> getTestName >> Should.BeEqualTo "Test 3" >> withMessage "TestName"
+                List.last >> getContainerName >> Should.BeEqualTo (testFeature.ToString ()) >> withMessage "Container Information"
+                List.last >> getFilePath >> Should.BeEqualTo path >> withMessage "file path"
+                List.last >> getFileName >> Should.BeEqualTo fileName >> withMessage "File Name"
+                List.last >> getLineNumber >> Should.BeEqualTo lineNumber >> withMessage "Line Number"
+            ]
+        )
+    )
+    
+let ``return an ITest with everything when given no tags, no setup, no name hints`` =
+    feature.Test (
+        Setup setupFeatureUnderTest,
+        TestBody (fun (testFeature: IFeature<unit>) ->
+            let testName = "Test"
+            
+            let fileName = "dog.bark"
+            let path = "D:\\"
+            let fullPath = $"%s{path}%s{fileName}"
+            let lineNumber = 73
+            
+            let test =
+                testFeature.Test (
+                    Data (seq { 1..3 }),
+                    TestBodyThreeParameters (fun _ _ _ -> TestSuccess),
+                    emptyTeardown,
+                    testName,
+                    fullPath,
+                    lineNumber
+                )
+        
+            test
+            |> Should.PassAllOf [
+                List.head >> getTestName >> Should.BeEqualTo "Test (1)" >> withMessage "TestName"
+                List.skip 1 >> List.head >> getTestName >> Should.BeEqualTo "Test (2)" >> withMessage "TestName"
+                List.last >> getTestName >> Should.BeEqualTo "Test (3)" >> withMessage "TestName"
+            ]
+        )
+    )
+    
+let ``run the test method passed to it when given no tags, no setup`` =
+    feature.Test (
+        Setup setupFeatureUnderTest,
+        TestBody (fun (testFeature: IFeature<unit>) ->
+            let monitor = Monitor<float, unit, unit> (Ok ())
+            let tests =
+                testFeature.Test (
+                    Data (seq {1.1..1.1..3.4}),
+                    TestBodyThreeParameters monitor.CallTestActionWithDataSetupEnvironment,
+                    Teardown monitor.CallTeardown,
+                    "My test",
+                    "D:\\dog.bark",
+                    73
+                )
+                
+            tests
+            |> List.map (getTestExecutor >> executeFunction >> runIt)
+            |> ignore
+            
+            monitor.NumberOfTimesTestWasCalled
+            |> Should.BeEqualTo 3
+            |> withMessage "test was not called"
+        )
+    )
+    
+let ``run the test method passed to it when given no tags, no setup by calling it with test data`` =
+    feature.Test (
+        Setup setupFeatureUnderTest,
+        TestBody (fun (testFeature: IFeature<unit>) ->
+            let monitor = Monitor<float, unit, unit> (Ok ())
+            let tests =
+                testFeature.Test (
+                    Data (seq {1.1..1.1..3.4}),
+                    TestBodyThreeParameters monitor.CallTestActionWithDataSetupEnvironment,
+                    Teardown monitor.CallTeardown,
+                    "My test",
+                    "D:\\dog.bark",
+                    73
+                )
+                
+            tests
+            |> List.map (getTestExecutor >> executeFunction >> runIt)
+            |> ignore
+            
+            monitor.TestDataWas
+            |> List.map (fun a -> $"%f{a}")
+            |> Should.BeEqualTo ["1.100000"; "2.200000"; "3.300000"]
+            |> withMessage "test was not called"
+        )
+    )
+    
+let ``run the teardown method passed to it when given no tags, no setup`` =
+    feature.Test (
+        Setup setupFeatureUnderTest,
+        TestBody (fun (testFeature: IFeature<unit>) ->
+            let monitor = Monitor<int, unit, unit> (Ok ())
+            let tests =
+                testFeature.Test (
+                    Data (seq{ -99..3..-90 }),
+                    TestBodyThreeParameters monitor.CallTestActionWithDataSetupEnvironment,
+                    Teardown monitor.CallTeardown,
+                    "My test",
+                    "D:\\dog.bark",
+                    73
+                )
+                
+            tests
+            |> List.map (getTestExecutor >> executeFunction >> runIt)
+            |> ignore
+            
+            monitor.NumberOfTimesTeardownWasCalled
+            |> Should.BeEqualTo 4
+            |> withMessage "teardown was not called"
+        )
+    )
+
+// TestBody
+let ``return an ITest with everything when given no tags, no setup, no teardown`` =
+    feature.Test (
+        Setup setupFeatureUnderTest,
+        TestBody (fun (testFeature: IFeature<unit>) ->
+            let testName = "%s"
+            
+            let fileName = "dog.bark"
+            let path = "D:\\"
+            let fullPath = $"%s{path}%s{fileName}"
+            let lineNumber = 73
+            
+            let test =
+                testFeature.Test (
+                    Data ["Meow"; "Bark"; "Moo"],
+                    TestBodyThreeParameters (fun _ _ _ -> TestSuccess),
+                    testName,
+                    fullPath,
+                    lineNumber
+                )
+        
+            let getContainerName (test: ITest) =
+                $"%s{test.ContainerPath}.%s{test.ContainerName}"
+                
+            test
+            |> Should.PassAllOf [
+                List.length >> Should.BeEqualTo 3 >> withMessage "Incorrect number of tests"
+                
+                List.head >> getTags >> Should.BeEqualTo [] >> withMessage "Tags"
+                List.head >> getTestName >> Should.BeEqualTo "Meow" >> withMessage "TestName"
+                List.head >> getContainerName >> Should.BeEqualTo (testFeature.ToString ()) >> withMessage "Container Information"
+                List.head >> getFilePath >> Should.BeEqualTo path >> withMessage "file path"
+                List.head >> getFileName >> Should.BeEqualTo fileName >> withMessage "File Name"
+                List.head >> getLineNumber >> Should.BeEqualTo lineNumber >> withMessage "Line Number"
+                
+                List.skip 1 >> List.head >> getTags >> Should.BeEqualTo [] >> withMessage "Tags"
+                List.skip 1 >> List.head >> getTestName >> Should.BeEqualTo "Bark" >> withMessage "TestName"
+                List.skip 1 >> List.head >> getContainerName >> Should.BeEqualTo (testFeature.ToString ()) >> withMessage "Container Information"
+                List.skip 1 >> List.head >> getFilePath >> Should.BeEqualTo path >> withMessage "file path"
+                List.skip 1 >> List.head >> getFileName >> Should.BeEqualTo fileName >> withMessage "File Name"
+                List.skip 1 >> List.head >> getLineNumber >> Should.BeEqualTo lineNumber >> withMessage "Line Number"
+                
+                List.last >> getTags >> Should.BeEqualTo [] >> withMessage "Tags"
+                List.last >> getTestName >> Should.BeEqualTo "Moo" >> withMessage "TestName"
+                List.last >> getContainerName >> Should.BeEqualTo (testFeature.ToString ()) >> withMessage "Container Information"
+                List.last >> getFilePath >> Should.BeEqualTo path >> withMessage "file path"
+                List.last >> getFileName >> Should.BeEqualTo fileName >> withMessage "File Name"
+                List.last >> getLineNumber >> Should.BeEqualTo lineNumber >> withMessage "Line Number"
+            ]
+        )
+    )
+    
+let ``return an ITest with everything when given no tags, no setup, no teardown, not name hints`` =
+    feature.Test (
+        Setup setupFeatureUnderTest,
+        TestBody (fun (testFeature: IFeature<unit>) ->
+            let testName = ""
+            
+            let fileName = "dog.bark"
+            let path = "D:\\"
+            let fullPath = $"%s{path}%s{fileName}"
+            let lineNumber = 73
+            
+            let tests =
+                testFeature.Test (
+                    Data ["Meow"; "Bark"; "Moo"],
+                    TestBodyThreeParameters (fun _ _ _ -> TestSuccess),
+                    testName,
+                    fullPath,
+                    lineNumber
+                )
+        
+            tests
+            |> Should.PassAllOf [
+                List.head >> getTestName >> Should.BeEqualTo " (\"Meow\")" >> withMessage "TestName"
+                List.skip 1 >> List.head >> getTestName >> Should.BeEqualTo " (\"Bark\")" >> withMessage "TestName"
+                List.last >> getTestName >> Should.BeEqualTo " (\"Moo\")" >> withMessage "TestName"
+            ]
+        )
+    )
+    
+let ``run the test method passed to it when given no tags, no setup, no teardown`` =
+    feature.Test (
+        Setup setupFeatureUnderTest,
+        TestBody (fun (testFeature: IFeature<unit>) ->
+            let monitor = Monitor<int, unit, unit> (Ok ())
+            let tests =
+                testFeature.Test (
+                    Data (seq{ 1..3 }),
+                    TestBodyThreeParameters monitor.CallTestActionWithDataSetupEnvironment,
+                    "My test",
+                    "D:\\dog.bark",
+                    73
+                )
+                
+            tests
+            |> List.map (getTestExecutor >> executeFunction >> runIt)
+            |> ignore
+            
+            monitor.NumberOfTimesTestWasCalled
+            |> Should.BeEqualTo 3
+            |> withMessage "test was not called"
+        )
+    )
+    
+let ``run the test method passed to it when given no tags, no setup, no teardown, by calling it with test data`` =
+    feature.Test (
+        Setup setupFeatureUnderTest,
+        TestBody (fun (testFeature: IFeature<unit>) ->
+            let monitor = Monitor<int, unit, unit> (Ok ())
+            let tests =
+                testFeature.Test (
+                    Data (seq{ 1..3 }),
+                    TestBodyThreeParameters monitor.CallTestActionWithDataSetupEnvironment,
+                    "My test",
+                    "D:\\dog.bark",
+                    73
+                )
+                
+            tests
+            |> List.map (getTestExecutor >> executeFunction >> runIt)
+            |> ignore
+            
+            monitor.TestDataWas
+            |> Should.BeEqualTo [1; 2; 3]
+            |> withMessage "test was not called"
+        )
+    )
+
+let ``return an ITest with everything when given no tags, no setup, no teardown, no test body indicator`` =
+    feature.Test (
+        Setup setupFeatureUnderTest,
+        TestBody (fun (testFeature: IFeature<unit>) ->
+            let testName = "Working %c"
+            
+            let fileName = "dog.bark"
+            let path = "D:\\"
+            let fullPath = $"%s{path}%s{fileName}"
+            let lineNumber = 73
+            
+            let tests =
+                testFeature.Test (
+                    Data (seq { 'A'..'C' }),
+                    (fun _ _ _ -> TestSuccess),
+                    testName,
+                    fullPath,
+                    lineNumber
+                )
+        
+            let getContainerName (test: ITest) =
+                $"%s{test.ContainerPath}.%s{test.ContainerName}"
+                
+            tests
+            |> Should.PassAllOf [
+                List.length >> Should.BeEqualTo 3 >> withMessage "Incorrect number of tests"
+                
+                List.head >> getTags >> Should.BeEqualTo [] >> withMessage "Tags"
+                List.head >> getTestName >> Should.BeEqualTo "Working A" >> withMessage "TestName"
+                List.head >> getContainerName >> Should.BeEqualTo (testFeature.ToString ()) >> withMessage "Container Information"
+                List.head >> getFilePath >> Should.BeEqualTo path >> withMessage "file path"
+                List.head >> getFileName >> Should.BeEqualTo fileName >> withMessage "File Name"
+                List.head >> getLineNumber >> Should.BeEqualTo lineNumber >> withMessage "Line Number"
+                
+                List.skip 1 >> List.head >> getTags >> Should.BeEqualTo [] >> withMessage "Tags"
+                List.skip 1 >> List.head >> getTestName >> Should.BeEqualTo "Working B" >> withMessage "TestName"
+                List.skip 1 >> List.head >> getContainerName >> Should.BeEqualTo (testFeature.ToString ()) >> withMessage "Container Information"
+                List.skip 1 >> List.head >> getFilePath >> Should.BeEqualTo path >> withMessage "file path"
+                List.skip 1 >> List.head >> getFileName >> Should.BeEqualTo fileName >> withMessage "File Name"
+                List.skip 1 >> List.head >> getLineNumber >> Should.BeEqualTo lineNumber >> withMessage "Line Number"
+                
+                List.last >> getTags >> Should.BeEqualTo [] >> withMessage "Tags"
+                List.last >> getTestName >> Should.BeEqualTo "Working C" >> withMessage "TestName"
+                List.last >> getContainerName >> Should.BeEqualTo (testFeature.ToString ()) >> withMessage "Container Information"
+                List.last >> getFilePath >> Should.BeEqualTo path >> withMessage "file path"
+                List.last >> getFileName >> Should.BeEqualTo fileName >> withMessage "File Name"
+                List.last >> getLineNumber >> Should.BeEqualTo lineNumber >> withMessage "Line Number"
+            ]
+        )
+    )
+
+let ``return an ITest with everything when given no tags, no setup, no teardown, no test body indicator, no name hints`` =
+    feature.Test (
+        Setup setupFeatureUnderTest,
+        TestBody (fun (testFeature: IFeature<unit>) ->
+            let testName = "Working"
+            
+            let fileName = "dog.bark"
+            let path = "D:\\"
+            let fullPath = $"%s{path}%s{fileName}"
+            let lineNumber = 73
+            
+            let tests =
+                testFeature.Test (
+                    Data (seq { 'A'..'C' }),
+                    (fun _ _ _ -> TestSuccess),
+                    testName,
+                    fullPath,
+                    lineNumber
+                )
+        
+            tests
+            |> Should.PassAllOf [
+                List.head >> getTestName >> Should.BeEqualTo "Working ('A')" >> withMessage "TestName"
+                List.skip 1 >> List.head >> getTestName >> Should.BeEqualTo "Working ('B')" >> withMessage "TestName"
+                List.last >> getTestName >> Should.BeEqualTo "Working ('C')" >> withMessage "TestName"
+            ]
+        )
+    )
+    
+let ``run the test method passed to it when given no tags, no setup, no teardown, no test body indicator`` =
+    feature.Test (
+        Setup setupFeatureUnderTest,
+        TestBody (fun (testFeature: IFeature<unit>) ->
+            let monitor = Monitor<int, unit, unit> (Ok ())
+            let tests =
+                testFeature.Test (
+                    Data (seq{ 2..2..6 }),
+                    monitor.CallTestActionWithDataSetupEnvironment,
+                    "My test",
+                    "D:\\dog.bark",
+                    73
+                )
+                
+            tests
+            |> List.map (getTestExecutor >> executeFunction >> runIt)
+            |> ignore
+            
+            monitor.NumberOfTimesTestWasCalled
+            |> Should.BeEqualTo 3
+            |> withMessage "test was not called"
+        )
+    )
+    
+let ``run the test method passed to it when given no tags, no setup, no teardown, no test body indicator by calling it with test data`` =
+    feature.Test (
+        Setup setupFeatureUnderTest,
+        TestBody (fun (testFeature: IFeature<unit>) ->
+            let monitor = Monitor<int, unit, unit> (Ok ())
+            let tests =
+                testFeature.Test (
+                    Data (seq{ 2..2..6 }),
+                    monitor.CallTestActionWithDataSetupEnvironment,
+                    "My test",
+                    "D:\\dog.bark",
+                    73
+                )
+                
+            tests
+            |> List.map (getTestExecutor >> executeFunction >> runIt)
+            |> ignore
+            
+            monitor.TestDataWas
+            |> Should.BeEqualTo [2; 4; 6]
+            |> withMessage "test was not called"
+        )
+    )
 
 let ``Test Cases`` = feature.GetTests ()
