@@ -154,11 +154,8 @@ let ``run setup method passed to it when everything is passed`` =
                     73
                 )
                 
-            let getExecutor (test: ITest) =
-                test.GetExecutor ()
-            
             tests
-            |> List.map (getExecutor >> executeFunction >> runIt)
+            |> List.map (getTestExecutor >> executeFunction >> runIt)
             |> ignore
             
             monitor.NumberOfTimesSetupWasCalled
@@ -187,10 +184,8 @@ let ``run the test method passed to it when everything is passed`` =
                     73
                 )
                 
-            let getExecutor (test: ITest) = test.GetExecutor () 
-            
             tests
-            |> List.map (getExecutor >> executeFunction >> runIt)
+            |> List.map (getTestExecutor >> executeFunction >> runIt)
             |> ignore
             
             monitor.NumberOfTimesTestWasCalled
@@ -219,10 +214,8 @@ let ``run the test method defined with everything by calling it with data`` =
                     73
                 )
                 
-            let getExecutor (test: ITest) = test.GetExecutor () 
-            
             tests
-            |> List.map (getExecutor >> executeFunction >> runIt)
+            |> List.map (getTestExecutor >> executeFunction >> runIt)
             |> ignore
             
             monitor.TestDataWas
@@ -251,10 +244,8 @@ let ``run the teardown method passed to it when everything is passed`` =
                     73
                 )
                 
-            let getExecutor (test: ITest) = test.GetExecutor ()
-            
             tests
-            |> List.map (getExecutor >> executeFunction >> runIt)
+            |> List.map (getTestExecutor >> executeFunction >> runIt)
             |> ignore
             
             monitor.NumberOfTimesTeardownWasCalled
@@ -399,10 +390,8 @@ let ``run setup method passed to it when given no teardown`` =
                     73
                 )
                 
-            let getExecutor (test: ITest) = test.GetExecutor ()
-            
             tests
-            |> List.map (getExecutor >> executeFunction>> runIt)
+            |> List.map (getTestExecutor >> executeFunction>> runIt)
             |> ignore
             
             monitor.NumberOfTimesSetupWasCalled
@@ -430,10 +419,8 @@ let ``run the test method passed to it when given no teardown`` =
                     73
                 )
                 
-            let getExecutor (test: ITest) = test.GetExecutor ()
-                
             tests
-            |> List.map (getExecutor >> executeFunction >> runIt)
+            |> List.map (getTestExecutor >> executeFunction >> runIt)
             |> ignore
             
             monitor.NumberOfTimesTestWasCalled
@@ -461,10 +448,8 @@ let ``run the test method passed to it when given no teardown by calling it with
                     73
                 )
                 
-            let getExecutor (test: ITest) = test.GetExecutor ()
-                
             tests
-            |> List.map (getExecutor >> executeFunction >> runIt)
+            |> List.map (getTestExecutor >> executeFunction >> runIt)
             |> ignore
             
             monitor.TestDataWas
@@ -551,10 +536,8 @@ let ``run the test method passed to it when given no setup`` =
                     73
                 )
                 
-            let getExecutor (test: ITest) = test.GetExecutor ()
-                
             tests
-            |> List.map (getExecutor >> executeFunction >> runIt)
+            |> List.map (getTestExecutor >> executeFunction >> runIt)
             |> ignore
                 
             monitor.NumberOfTimesTestWasCalled
@@ -583,10 +566,8 @@ let ``run the test method passed to it when given no setup by calling it with da
                     73
                 )
                 
-            let getExecutor (test: ITest) = test.GetExecutor ()
-                
             tests
-            |> List.map (getExecutor >> executeFunction >> runIt)
+            |> List.map (getTestExecutor >> executeFunction >> runIt)
             |> ignore
                 
             monitor.TestDataWas
@@ -613,10 +594,8 @@ let ``run the teardown method passed to it when given no setup`` =
                     73
                 )
                 
-            let getExecutor (test: ITest) = test.GetExecutor ()
-            
             tests
-            |> List.map (getExecutor >> executeFunction >> runIt)
+            |> List.map (getTestExecutor >> executeFunction >> runIt)
             |> ignore
             
             monitor.NumberOfTimesTeardownWasCalled
@@ -709,9 +688,6 @@ let ``return an ITest with everything when given no setup or teardown no name hi
                     lineNumber
                 )
         
-            let getContainerName (test: ITest) =
-                $"%s{test.ContainerPath}.%s{test.ContainerName}"
-                
             tests
             |> Should.PassAllOf [
                 List.head >> getTestName >> Should.BeEqualTo "My test (\"Passes\")" >> withMessage "TestName"
@@ -797,9 +773,6 @@ let ``return an ITest with everything when given no setup, teardown, or test bod
                     lineNumber
                 )
         
-            let getContainerName (test: ITest) =
-                $"%s{test.ContainerPath}.%s{test.ContainerName}"
-                
             tests
             |> Should.PassAllOf [
                 List.head >> getTestName >> Should.BeEqualTo "My test ((6, \"Tin\"))" >> withMessage "TestName"
@@ -826,10 +799,8 @@ let ``run the test method passed to it when given no setup, teardown, or test bo
                     73
                 )
             
-            let getExecutor (test: ITest) = test.GetExecutor ()
-                
             tests
-            |> List.map (getExecutor >> executeFunction >> runIt)
+            |> List.map (getTestExecutor >> executeFunction >> runIt)
             |> ignore
             
             monitor.NumberOfTimesTestWasCalled
@@ -856,10 +827,8 @@ let ``run the test method passed to it when given no setup, teardown, or test bo
                     73
                 )
             
-            let getExecutor (test: ITest) = test.GetExecutor ()
-                
             tests
-            |> List.map (getExecutor >> executeFunction >> runIt)
+            |> List.map (getTestExecutor >> executeFunction >> runIt)
             |> ignore
             
             monitor.TestDataWas

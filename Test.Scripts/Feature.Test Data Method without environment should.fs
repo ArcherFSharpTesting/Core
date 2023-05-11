@@ -198,10 +198,8 @@ let ``run the test method passed using the setup when everything is passed`` =
                     73
                 )
              
-            let getExecutor (test: ITest) = test.GetExecutor ()
-             
             tests
-            |> List.map (getExecutor >> executeFunction >> runIt)
+            |> List.map (getTestExecutor >> executeFunction >> runIt)
             |> ignore
             
             monitor.TestInputSetupWas
@@ -230,10 +228,8 @@ let ``run the test method passed using the data when everything is passed`` =
                     73
                 )
                 
-            let getExecutor (test: ITest) = test.GetExecutor ()
-             
             tests
-            |> List.map (getExecutor >> executeFunction >> runIt)
+            |> List.map (getTestExecutor >> executeFunction >> runIt)
             |> ignore
             
             monitor.TestDataWas
