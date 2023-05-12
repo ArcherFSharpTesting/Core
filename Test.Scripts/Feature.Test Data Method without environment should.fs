@@ -134,10 +134,8 @@ let ``run setup method passed to it when everything is passed`` =
                
             let test = tests |> List.head
             
-            test.GetExecutor ()
-            |> executeFunction
-            |> runIt
-            |> ignore
+            test
+            |> silentlyRunTest
             
             monitor.SetupWasCalled
             |> Should.BeTrue
@@ -167,10 +165,8 @@ let ``run the test method passed to it when everything is passed`` =
              
             let test = tests |> List.head
             
-            test.GetExecutor ()
-            |> executeFunction
-            |> runIt
-            |> ignore
+            test
+            |> silentlyRunTest
             
             monitor.TestWasCalled
             |> Should.BeTrue
@@ -199,8 +195,7 @@ let ``run the test method passed using the setup when everything is passed`` =
                 )
              
             tests
-            |> List.map (getTestExecutor >> executeFunction >> runIt)
-            |> ignore
+            |> silentlyRunAllTests
             
             monitor.TestInputSetupWas
             |> Should.BeEqualTo ["Hello";"Hello";"Hello"]
@@ -229,8 +224,7 @@ let ``run the test method passed using the data when everything is passed`` =
                 )
                 
             tests
-            |> List.map (getTestExecutor >> executeFunction >> runIt)
-            |> ignore
+            |> silentlyRunAllTests
             
             monitor.TestDataWas
             |> Should.BeEqualTo ["1"; "2"; "3"]
@@ -291,10 +285,8 @@ let ``run the teardown method passed to it when everything is passed`` =
                 
             let test = tests |> List.head
                 
-            test.GetExecutor ()
-            |> executeFunction
-            |> runIt
-            |> ignore
+            test
+            |> silentlyRunTest
             
             monitor.TeardownWasCalled
             |> Should.BeTrue
@@ -418,10 +410,8 @@ let ``run setup method passed to it when given no teardown`` =
                 
             let test = tests |> List.head
                 
-            test.GetExecutor ()
-            |> executeFunction
-            |> runIt
-            |> ignore
+            test
+            |> silentlyRunTest
             
             monitor.SetupWasCalled
             |> Should.BeTrue
@@ -450,10 +440,8 @@ let ``run the test method passed to it when given no teardown`` =
                 
             let test = tests |> List.head
             
-            test.GetExecutor ()
-            |> executeFunction
-            |> runIt
-            |> ignore
+            test
+            |> silentlyRunTest
             
             monitor.TestWasCalled
             |> Should.BeTrue
@@ -577,10 +565,8 @@ let ``run the test method passed to it when given no setup`` =
                 
             let test = tests |> List.head
                 
-            test.GetExecutor ()
-            |> executeFunction
-            |> runIt
-            |> ignore
+            test
+            |> silentlyRunTest
             
             monitor.TestWasCalled
             |> Should.BeTrue
@@ -609,10 +595,8 @@ let ``run the teardown method passed to it when given no setup`` =
                 
             let test = tests |> List.head
                 
-            test.GetExecutor ()
-            |> executeFunction
-            |> runIt
-            |> ignore
+            test
+            |> silentlyRunTest
             
             monitor.TeardownWasCalled
             |> Should.BeTrue
@@ -825,10 +809,8 @@ let ``run the test method passed to it when given no setup, teardown, or test bo
                 
             let test = tests |> List.head
                 
-            test.GetExecutor ()
-            |> executeFunction
-            |> runIt
-            |> ignore
+            test
+            |> silentlyRunTest
             
             monitor.TestWasCalled
             |> Should.BeTrue
@@ -941,10 +923,8 @@ let ``run setup method passed to it when given no tags`` =
                 
             let test = tests |> List.head
                 
-            test.GetExecutor ()
-            |> executeFunction
-            |> runIt
-            |> ignore
+            test
+            |> silentlyRunTest
             
             monitor.SetupWasCalled
             |> Should.BeTrue
@@ -970,10 +950,8 @@ let ``run the test method passed to it when given no tags`` =
                 
             let test = tests |> List.head
                 
-            test.GetExecutor ()
-            |> executeFunction
-            |> runIt
-            |> ignore
+            test
+            |> silentlyRunTest
             
             monitor.TestWasCalled
             |> Should.BeTrue
@@ -999,10 +977,8 @@ let ``run the teardown method passed to it when given no tags`` =
                 
             let test = tests |> List.head
                 
-            test.GetExecutor ()
-            |> executeFunction
-            |> runIt
-            |> ignore
+            test
+            |> silentlyRunTest
             
             monitor.TeardownWasCalled
             |> Should.BeTrue
@@ -1099,10 +1075,8 @@ let ``run setup method passed to it when given no tags, no teardown`` =
                     73
                 )
                 
-            test.GetExecutor ()
-            |> executeFunction
-            |> runIt
-            |> ignore
+            test
+            |> silentlyRunTest
             
             monitor.SetupWasCalled
             |> Should.BeTrue
@@ -1127,10 +1101,8 @@ let ``run the test method passed to it when given no tags, no teardown`` =
                 
             let test = tests |> List.head
                 
-            test.GetExecutor ()
-            |> executeFunction
-            |> runIt
-            |> ignore
+            test
+            |> silentlyRunTest
             
             monitor.TestWasCalled
             |> Should.BeTrue
@@ -1223,10 +1195,8 @@ let ``run the test method passed to it when given no tags, no setup`` =
                 
             let test = tests |> List.head
                 
-            test.GetExecutor ()
-            |> executeFunction
-            |> runIt
-            |> ignore
+            test
+            |> silentlyRunTest
             
             monitor.TestWasCalled
             |> Should.BeTrue
@@ -1251,10 +1221,8 @@ let ``run the teardown method passed to it when given no tags, no setup`` =
                 
             let test = tests |> List.head
                 
-            test.GetExecutor ()
-            |> executeFunction
-            |> runIt
-            |> ignore
+            test
+            |> silentlyRunTest
             
             monitor.TeardownWasCalled
             |> Should.BeTrue
@@ -1351,10 +1319,8 @@ let ``run the test method passed to it when given no tags, no setup, no teardown
                 
             let test = tests |> List.head
                 
-            test.GetExecutor ()
-            |> executeFunction
-            |> runIt
-            |> ignore
+            test
+            |> silentlyRunTest
             
             monitor.TestWasCalled
             |> Should.BeTrue
@@ -1458,10 +1424,8 @@ let ``run the test method passed to it when given no tags, no setup, no teardown
                 
             let test = tests |> List.head
                 
-            test.GetExecutor ()
-            |> executeFunction
-            |> runIt
-            |> ignore
+            test
+            |> silentlyRunTest
             
             monitor.TestWasCalled
             |> Should.BeTrue

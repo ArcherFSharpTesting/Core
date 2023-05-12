@@ -25,10 +25,8 @@ let ``Should call setup when it is the only thing passed to it`` =
             
             let test = testFeature.Test (fun _ -> TestSuccess)
             
-            test.GetExecutor ()
-            |> executeFunction
-            |> runIt
-            |> ignore
+            test
+            |> silentlyRunTest
             
             monitor.SetupWasCalled
             |> Should.BeTrue
@@ -47,10 +45,8 @@ let ``Should call setup when name and setup are specified`` =
             
             let test = testFeature.Test (fun _ -> TestSuccess)
             
-            test.GetExecutor ()
-            |> executeFunction
-            |> runIt
-            |> ignore
+            test
+            |> silentlyRunTest
             
             monitor.SetupWasCalled
             |> Should.BeTrue
@@ -70,10 +66,8 @@ let ``Should call setup when path, name, and setup are specified`` =
             
             let test = testFeature.Test (fun _ -> TestSuccess)
             
-            test.GetExecutor ()
-            |> executeFunction
-            |> runIt
-            |> ignore
+            test
+            |> silentlyRunTest
             
             monitor.SetupWasCalled
             |> Should.BeTrue
@@ -92,10 +86,8 @@ let ``Should call setup when it is passed with a teardown`` =
             
             let test = testFeature.Test (fun _ -> TestSuccess)
             
-            test.GetExecutor ()
-            |> executeFunction
-            |> runIt
-            |> ignore
+            test
+            |> silentlyRunTest
             
             monitor.SetupWasCalled
             |> Should.BeTrue
@@ -115,10 +107,8 @@ let ``Should call setup when name, setup, and teardown are specified`` =
             
             let test = testFeature.Test (fun _ -> TestSuccess)
             
-            test.GetExecutor ()
-            |> executeFunction
-            |> runIt
-            |> ignore
+            test
+            |> silentlyRunTest
             
             monitor.SetupWasCalled
             |> Should.BeTrue
@@ -139,10 +129,8 @@ let ``Should call setup when path, name, setup, and teardown are specified`` =
             
             let test = testFeature.Test (fun _ -> TestSuccess)
             
-            test.GetExecutor ()
-            |> executeFunction
-            |> runIt
-            |> ignore
+            test
+            |> silentlyRunTest
             
             monitor.SetupWasCalled
             |> Should.BeTrue

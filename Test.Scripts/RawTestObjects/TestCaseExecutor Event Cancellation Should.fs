@@ -51,8 +51,8 @@ let ``Not call any methods when canceled in TestExecutionStart`` =
                 | _ -> ()
             )
             
-            executor.Execute (getFakeEnvironment ())
-            |> ignore
+            executor
+            |> silentlyRunExecutor
             
             monitor.SetupWasCalled
             |> expects.ToBeFalse
@@ -100,9 +100,7 @@ let ``Call Teardown if canceled on TestEndSetup`` =
             )
             
             executor
-            |> executeFunction
-            |> runIt
-            |> ignore
+            |> silentlyRunExecutor
             
             monitor.TeardownWasCalled
             |> expects.ToBeTrue
@@ -149,9 +147,7 @@ let ``Call Teardown if canceled on TestStart`` =
             )
             
             executor
-            |> executeFunction
-            |> runIt
-            |> ignore
+            |> silentlyRunExecutor
             
             monitor.TeardownWasCalled
             |> expects.ToBeTrue
@@ -223,9 +219,7 @@ let ``Should not call the test action if canceled at TestStart`` =
             )
             
             executor
-            |> executeFunction
-            |> runIt
-            |> ignore
+            |> silentlyRunExecutor
             
             monitor.TestWasCalled
             |> expects.ToBeFalse

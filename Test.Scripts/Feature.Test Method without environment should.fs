@@ -77,10 +77,8 @@ let ``run setup method passed to it when everything is passed`` =
                     73
                 )
                 
-            test.GetExecutor ()
-            |> executeFunction
-            |> runIt
-            |> ignore
+            test
+            |> silentlyRunTest
             
             monitor.SetupWasCalled
             |> Should.BeTrue
@@ -107,10 +105,8 @@ let ``run the test method passed to it when everything is passed`` =
                     73
                 )
                 
-            test.GetExecutor ()
-            |> executeFunction
-            |> runIt
-            |> ignore
+            test
+            |> silentlyRunTest
             
             monitor.TestWasCalled
             |> Should.BeTrue
@@ -137,10 +133,8 @@ let ``run the teardown method passed to it when everything is passed`` =
                     73
                 )
                 
-            test.GetExecutor ()
-            |> executeFunction
-            |> runIt
-            |> ignore
+            test
+            |> silentlyRunTest
             
             monitor.TeardownWasCalled
             |> Should.BeTrue
@@ -208,10 +202,8 @@ let ``run setup method passed to it when given no teardown`` =
                     73
                 )
                 
-            test.GetExecutor ()
-            |> executeFunction
-            |> runIt
-            |> ignore
+            test
+            |> silentlyRunTest
             
             monitor.SetupWasCalled
             |> Should.BeTrue
@@ -237,10 +229,8 @@ let ``run the test method passed to it when given no teardown`` =
                     73
                 )
                 
-            test.GetExecutor ()
-            |> executeFunction
-            |> runIt
-            |> ignore
+            test
+            |> silentlyRunTest
             
             monitor.TestWasCalled
             |> Should.BeTrue
@@ -308,10 +298,8 @@ let ``run the test method passed to it when given no setup`` =
                     73
                 )
                 
-            test.GetExecutor ()
-            |> executeFunction
-            |> runIt
-            |> ignore
+            test
+            |> silentlyRunTest
             
             monitor.TestWasCalled
             |> Should.BeTrue
@@ -337,10 +325,8 @@ let ``run the teardown method passed to it when given no setup`` =
                     73
                 )
                 
-            test.GetExecutor ()
-            |> executeFunction
-            |> runIt
-            |> ignore
+            test
+            |> silentlyRunTest
             
             monitor.TeardownWasCalled
             |> Should.BeTrue
@@ -446,10 +432,8 @@ let ``run the test method passed to it when given no setup, teardown, or test bo
                     73
                 )
                 
-            test.GetExecutor ()
-            |> executeFunction
-            |> runIt
-            |> ignore
+            test
+            |> silentlyRunTest
             
             monitor.TestWasCalled
             |> Should.BeTrue
@@ -509,10 +493,8 @@ let ``run setup method passed to it when given no tags`` =
                     73
                 )
                 
-            test.GetExecutor ()
-            |> executeFunction
-            |> runIt
-            |> ignore
+            test
+            |> silentlyRunTest
             
             monitor.SetupWasCalled
             |> Should.BeTrue
@@ -535,10 +517,8 @@ let ``run the test method passed to it when given no tags`` =
                     73
                 )
                 
-            test.GetExecutor ()
-            |> executeFunction
-            |> runIt
-            |> ignore
+            test
+            |> silentlyRunTest
             
             monitor.TestWasCalled
             |> Should.BeTrue
@@ -561,10 +541,8 @@ let ``run the teardown method passed to it when given no tags`` =
                     73
                 )
                 
-            test.GetExecutor ()
-            |> executeFunction
-            |> runIt
-            |> ignore
+            test
+            |> silentlyRunTest
             
             monitor.TeardownWasCalled
             |> Should.BeTrue
@@ -622,10 +600,8 @@ let ``run setup method passed to it when given no tags, no teardown`` =
                     73
                 )
                 
-            test.GetExecutor ()
-            |> executeFunction
-            |> runIt
-            |> ignore
+            test
+            |> silentlyRunTest
             
             monitor.SetupWasCalled
             |> Should.BeTrue
@@ -647,10 +623,8 @@ let ``run the test method passed to it when given no tags, no teardown`` =
                     73
                 )
                 
-            test.GetExecutor ()
-            |> executeFunction
-            |> runIt
-            |> ignore
+            test
+            |> silentlyRunTest
             
             monitor.TestWasCalled
             |> Should.BeTrue
@@ -708,10 +682,8 @@ let ``run the test method passed to it when given no tags, no setup`` =
                     73
                 )
                 
-            test.GetExecutor ()
-            |> executeFunction
-            |> runIt
-            |> ignore
+            test
+            |> silentlyRunTest
             
             monitor.TestWasCalled
             |> Should.BeTrue
@@ -733,10 +705,8 @@ let ``run the teardown method passed to it when given no tags, no setup`` =
                     73
                 )
                 
-            test.GetExecutor ()
-            |> executeFunction
-            |> runIt
-            |> ignore
+            test
+            |> silentlyRunTest
             
             monitor.TeardownWasCalled
             |> Should.BeTrue
@@ -792,10 +762,8 @@ let ``run the test method passed to it when given no tags, no setup, no teardown
                     73
                 )
                 
-            test.GetExecutor ()
-            |> executeFunction
-            |> runIt
-            |> ignore
+            test
+            |> silentlyRunTest
             
             monitor.TestWasCalled
             |> Should.BeTrue
@@ -850,10 +818,8 @@ let ``run the test method passed to it when given no tags, no setup, no teardown
                     73
                 )
                 
-            test.GetExecutor ()
-            |> executeFunction
-            |> runIt
-            |> ignore
+            test
+            |> silentlyRunTest
             
             monitor.TestWasCalled
             |> Should.BeTrue

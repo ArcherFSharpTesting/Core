@@ -132,9 +132,8 @@ let ``return a test that returns an "Ignored" result when given tags, setup, tes
         )
         
         let result =
-            test.GetExecutor ()
-            |> executeFunction
-            |> runIt
+            test
+            |> runTest
         
         result
         |> Should.BeEqualTo expected
@@ -155,10 +154,8 @@ let ``return a test that does not call setup when run when given tags, setup, te
             3
         )
         
-        test.GetExecutor ()
-        |> executeFunction
-        |> runIt
-        |> ignore
+        test
+        |> silentlyRunTest
         
         monitor.SetupWasCalled
         |> Should.BeFalse
@@ -180,10 +177,8 @@ let ``return a test that does not call the test action when run when given tags,
             3
         )
         
-        test.GetExecutor ()
-        |> executeFunction
-        |> runIt
-        |> ignore
+        test
+        |> silentlyRunTest
         
         monitor.TestWasCalled
         |> Should.BeFalse
@@ -205,10 +200,8 @@ let ``return a test that does not call the teardown when run when given tags, se
             3
         )
         
-        test.GetExecutor ()
-        |> executeFunction
-        |> runIt
-        |> ignore
+        test
+        |> silentlyRunTest
         
         monitor.TeardownWasCalled
         |> Should.BeFalse
@@ -347,10 +340,8 @@ let ``return a test that does not call the test action when run when given tags,
             3
         )
         
-        test.GetExecutor ()
-        |> executeFunction
-        |> runIt
-        |> ignore
+        test
+        |> silentlyRunTest
         
         monitor.TestWasCalled
         |> Should.BeFalse
@@ -371,10 +362,8 @@ let ``return a test that does not call the teardown when run when given tags, te
             3
         )
         
-        test.GetExecutor ()
-        |> executeFunction
-        |> runIt
-        |> ignore
+        test
+        |> silentlyRunTest
         
         monitor.TeardownWasCalled
         |> Should.BeFalse
@@ -513,10 +502,8 @@ let ``return a test that does not call setup when run when given tags, setup, te
             3
         )
         
-        test.GetExecutor ()
-        |> executeFunction
-        |> runIt
-        |> ignore
+        test
+        |> silentlyRunTest
         
         monitor.SetupWasCalled
         |> Should.BeFalse
@@ -537,10 +524,8 @@ let ``return a test that does not call the test action when run when given tags,
             3
         )
         
-        test.GetExecutor ()
-        |> executeFunction
-        |> runIt
-        |> ignore
+        test
+        |> silentlyRunTest
         
         monitor.TestWasCalled
         |> Should.BeFalse
@@ -672,10 +657,8 @@ let ``return a test that does not call the test action when run when given tags,
             3
         )
         
-        test.GetExecutor ()
-        |> executeFunction
-        |> runIt
-        |> ignore
+        test
+        |> silentlyRunTest
         
         monitor.TestWasCalled
         |> Should.BeFalse
@@ -821,10 +804,8 @@ let ``return a test that does not call setup when run when given tags, setup, te
             3
         )
         
-        test.GetExecutor ()
-        |> executeFunction
-        |> runIt
-        |> ignore
+        test
+        |> silentlyRunTest
         
         monitor.SetupWasCalled
         |> Should.BeFalse
@@ -846,10 +827,8 @@ let ``return a test that does not call the test action when run when given tags,
             3
         )
         
-        test.GetExecutor ()
-        |> executeFunction
-        |> runIt
-        |> ignore
+        test
+        |> silentlyRunTest
         
         monitor.TestWasCalled
         |> Should.BeFalse
@@ -871,10 +850,8 @@ let ``return a test that does not call the teardown when run when given tags, se
             3
         )
         
-        test.GetExecutor ()
-        |> executeFunction
-        |> runIt
-        |> ignore
+        test
+        |> silentlyRunTest
         
         monitor.TeardownWasCalled
         |> Should.BeFalse
@@ -1013,10 +990,8 @@ let ``return a test that does not call the test action when run when given tags,
             3
         )
         
-        test.GetExecutor ()
-        |> executeFunction
-        |> runIt
-        |> ignore
+        test
+        |> silentlyRunTest
         
         monitor.TestWasCalled
         |> Should.BeFalse
@@ -1037,10 +1012,8 @@ let ``return a test that does not call the teardown when run when given tags, te
             3
         )
         
-        test.GetExecutor ()
-        |> executeFunction
-        |> runIt
-        |> ignore
+        test
+        |> silentlyRunTest
         
         monitor.TeardownWasCalled
         |> Should.BeFalse
@@ -1179,10 +1152,8 @@ let ``return a test that does not call setup when run when given tags, setup, te
             3
         )
         
-        test.GetExecutor ()
-        |> executeFunction
-        |> runIt
-        |> ignore
+        test
+        |> silentlyRunTest
         
         monitor.SetupWasCalled
         |> Should.BeFalse
@@ -1203,10 +1174,8 @@ let ``return a test that does not call the test action when run when given tags,
             3
         )
         
-        test.GetExecutor ()
-        |> executeFunction
-        |> runIt
-        |> ignore
+        test
+        |> silentlyRunTest
         
         monitor.TestWasCalled
         |> Should.BeFalse
@@ -1338,10 +1307,8 @@ let ``return a test that does not call the test action when run when given tags,
             3
         )
         
-        test.GetExecutor ()
-        |> executeFunction
-        |> runIt
-        |> ignore
+        test
+        |> silentlyRunTest
         
         monitor.TestWasCalled
         |> Should.BeFalse
@@ -1456,10 +1423,8 @@ let ``return a test that does not call setup when run when given setup, test bod
             3
         )
         
-        test.GetExecutor ()
-        |> executeFunction
-        |> runIt
-        |> ignore
+        test
+        |> silentlyRunTest
         
         monitor.SetupWasCalled
         |> Should.BeFalse
@@ -1480,10 +1445,8 @@ let ``return a test that does not call the test action when run when given setup
             3
         )
         
-        test.GetExecutor ()
-        |> executeFunction
-        |> runIt
-        |> ignore
+        test
+        |> silentlyRunTest
         
         monitor.TestWasCalled
         |> Should.BeFalse
@@ -1504,10 +1467,8 @@ let ``return a test that does not call the teardown when run when given setup, t
             3
         )
         
-        test.GetExecutor ()
-        |> executeFunction
-        |> runIt
-        |> ignore
+        test
+        |> silentlyRunTest
         
         monitor.TeardownWasCalled
         |> Should.BeFalse
@@ -1616,10 +1577,8 @@ let ``return a test that does not call setup when run when given setup, test bod
             3
         )
         
-        test.GetExecutor ()
-        |> executeFunction
-        |> runIt
-        |> ignore
+        test
+        |> silentlyRunTest
         
         monitor.SetupWasCalled
         |> Should.BeFalse
@@ -1639,10 +1598,8 @@ let ``return a test that does not call the test action when run when given setup
             3
         )
         
-        test.GetExecutor ()
-        |> executeFunction
-        |> runIt
-        |> ignore
+        test
+        |> silentlyRunTest
         
         monitor.TestWasCalled
         |> Should.BeFalse
@@ -1757,10 +1714,8 @@ let ``return a test that does not call setup when run when given setup, test bod
             3
         )
         
-        test.GetExecutor ()
-        |> executeFunction
-        |> runIt
-        |> ignore
+        test
+        |> silentlyRunTest
         
         monitor.SetupWasCalled
         |> Should.BeFalse
@@ -1781,10 +1736,8 @@ let ``return a test that does not call the test action when run when given setup
             3
         )
         
-        test.GetExecutor ()
-        |> executeFunction
-        |> runIt
-        |> ignore
+        test
+        |> silentlyRunTest
         
         monitor.TestWasCalled
         |> Should.BeFalse
@@ -1805,10 +1758,8 @@ let ``return a test that does not call the teardown when run when given setup, t
             3
         )
         
-        test.GetExecutor ()
-        |> executeFunction
-        |> runIt
-        |> ignore
+        test
+        |> silentlyRunTest
         
         monitor.TeardownWasCalled
         |> Should.BeFalse
@@ -1917,10 +1868,8 @@ let ``return a test that does not call setup when run when given setup, test bod
             3
         )
         
-        test.GetExecutor ()
-        |> executeFunction
-        |> runIt
-        |> ignore
+        test
+        |> silentlyRunTest
         
         monitor.SetupWasCalled
         |> Should.BeFalse
@@ -1940,10 +1889,8 @@ let ``return a test that does not call the test action when run when given setup
             3
         )
         
-        test.GetExecutor ()
-        |> executeFunction
-        |> runIt
-        |> ignore
+        test
+        |> silentlyRunTest
         
         monitor.TestWasCalled
         |> Should.BeFalse
@@ -2052,10 +1999,8 @@ let ``return a test that does not call the test action when run when given test 
             3
         )
         
-        test.GetExecutor ()
-        |> executeFunction
-        |> runIt
-        |> ignore
+        test
+        |> silentlyRunTest
         
         monitor.TestWasCalled
         |> Should.BeFalse
@@ -2075,10 +2020,8 @@ let ``return a test that does not call the teardown when run when given test bod
             3
         )
         
-        test.GetExecutor ()
-        |> executeFunction
-        |> runIt
-        |> ignore
+        test
+        |> silentlyRunTest
         
         monitor.TeardownWasCalled
         |> Should.BeFalse
@@ -2187,10 +2130,8 @@ let ``return a test that does not call the test action when run when given test 
             3
         )
         
-        test.GetExecutor ()
-        |> executeFunction
-        |> runIt
-        |> ignore
+        test
+        |> silentlyRunTest
         
         monitor.TestWasCalled
         |> Should.BeFalse
@@ -2210,10 +2151,8 @@ let ``return a test that does not call the teardown when run when given test bod
             3
         )
         
-        test.GetExecutor ()
-        |> executeFunction
-        |> runIt
-        |> ignore
+        test
+        |> silentlyRunTest
         
         monitor.TeardownWasCalled
         |> Should.BeFalse
@@ -2316,10 +2255,8 @@ let ``return a test that does not call the test action when run when given test 
             3
         )
         
-        test.GetExecutor ()
-        |> executeFunction
-        |> runIt
-        |> ignore
+        test
+        |> silentlyRunTest
         
         monitor.TestWasCalled
         |> Should.BeFalse
@@ -2422,10 +2359,8 @@ let ``return a test that does not call the test action when run when given test 
             3
         )
         
-        test.GetExecutor ()
-        |> executeFunction
-        |> runIt
-        |> ignore
+        test
+        |> silentlyRunTest
         
         monitor.TestWasCalled
         |> Should.BeFalse

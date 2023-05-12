@@ -24,7 +24,7 @@ let ``Should execute the setup by every test specified in the test builder when 
                         "Test B" |> f.IsTestedBy (fun _ -> TestSuccess)
                         "Test C" |> f.IsTestedBy (fun _ -> TestSuccess)
                 )
-                |> List.map ((fun tst -> tst.GetExecutor ()) >> executeFunction >> runIt)
+                |> List.map runTest
             
             monitor.NumberOfTimesSetupWasCalled
             |> Should.BeEqualTo tests.Length

@@ -133,8 +133,7 @@ let ``run setup method passed to it when everything is passed`` =
                 )
                 
             tests
-            |> List.map (getTestExecutor >> executeFunction >> runIt)
-            |> ignore
+            |> silentlyRunAllTests
             
             monitor.NumberOfTimesSetupWasCalled
             |> Should.BeEqualTo 3
@@ -163,8 +162,7 @@ let ``run the test method passed to it when everything is passed`` =
                 )
                 
             tests
-            |> List.map (getTestExecutor >> executeFunction >> runIt)
-            |> ignore
+            |> silentlyRunAllTests
             
             monitor.NumberOfTimesTestWasCalled
             |> Should.BeEqualTo 3
@@ -193,8 +191,7 @@ let ``run the test method passed to it when everything is passed by calling it w
                 )
                 
             tests
-            |> List.map (getTestExecutor >> executeFunction >> runIt)
-            |> ignore
+            |> silentlyRunAllTests
             
             monitor.TestDataWas
             |> Should.BeEqualTo [66; 15; 0]
@@ -223,8 +220,7 @@ let ``run the teardown method passed to it when everything is passed`` =
                 )
                 
             tests
-            |> List.map (getTestExecutor >> executeFunction >> runIt)
-            |> ignore
+            |> silentlyRunAllTests
             
             monitor.NumberOfTimesTeardownWasCalled
             |> Should.BeEqualTo 3
@@ -347,8 +343,7 @@ let ``run setup method passed to it when given no teardown`` =
                 )
                 
             tests
-            |> List.map (getTestExecutor >> executeFunction >> runIt)
-            |> ignore
+            |> silentlyRunAllTests
             
             monitor.NumberOfTimesSetupWasCalled
             |> Should.BeEqualTo 3
@@ -376,8 +371,7 @@ let ``run the test method passed to it when given no teardown`` =
                 )
                 
             tests
-            |> List.map (getTestExecutor >> executeFunction >> runIt)
-            |> ignore
+            |> silentlyRunAllTests
             
             monitor.NumberOfTimesTestWasCalled
             |> Should.BeEqualTo 4
@@ -405,8 +399,7 @@ let ``run the test method passed to it when given no teardown by calling it with
                 )
                 
             tests
-            |> List.map (getTestExecutor >> executeFunction >> runIt)
-            |> ignore
+            |> silentlyRunAllTests
             
             monitor.TestDataWas
             |> Should.BeEqualTo ["Bob"; "Builder"; "Hammer"]
@@ -538,8 +531,7 @@ let ``run the test method passed to it when given no setup`` =
                 )
                 
             tests
-            |> List.map (getTestExecutor >> executeFunction >> runIt)
-            |> ignore
+            |> silentlyRunAllTests
             
             monitor.NumberOfTimesTestWasCalled
             |> Should.BeEqualTo 1
@@ -567,8 +559,7 @@ let ``run the test method passed to it when given no setup by calling it with te
                 )
                 
             tests
-            |> List.map (getTestExecutor >> executeFunction >> runIt)
-            |> ignore
+            |> silentlyRunAllTests
             
             monitor.TestDataWas
             |> Should.BeEqualTo [66]
@@ -596,8 +587,7 @@ let ``run the teardown method passed to it when given no setup`` =
                 )
                 
             tests
-            |> List.map (getTestExecutor >> executeFunction >> runIt)
-            |> ignore
+            |> silentlyRunAllTests
             
             monitor.NumberOfTimesTeardownWasCalled
             |> Should.BeEqualTo 3
@@ -717,8 +707,7 @@ let ``run the test method passed to it when given no setup or teardown`` =
                 )
                 
             tests
-            |> List.map (getTestExecutor >> executeFunction >> runIt)
-            |> ignore
+            |> silentlyRunAllTests
             
             monitor.NumberOfTimesTestWasCalled
             |> Should.BeEqualTo 5
@@ -745,8 +734,7 @@ let ``run the test method passed to it when given no setup or teardown by callin
                 )
                 
             tests
-            |> List.map (getTestExecutor >> executeFunction >> runIt)
-            |> ignore
+            |> silentlyRunAllTests
             
             monitor.TestDataWas
             |> Should.BeEqualTo [1; 2; 3; 4; 5]
@@ -873,8 +861,7 @@ let ``run the test method passed to it when given no setup, teardown, or test bo
                 )
                 
             tests
-            |> List.map (getTestExecutor >> executeFunction >> runIt)
-            |> ignore
+            |> silentlyRunAllTests
             
             monitor.NumberOfTimesTestWasCalled
             |> Should.BeEqualTo 3
@@ -901,8 +888,7 @@ let ``run the test method passed to it when given no setup, teardown, or test bo
                 )
                 
             tests
-            |> List.map (getTestExecutor >> executeFunction >> runIt)
-            |> ignore
+            |> silentlyRunAllTests
             
             monitor.TestDataWas
             |> Should.BeEqualTo [-3; -4; -5]
@@ -1020,8 +1006,7 @@ let ``run setup method passed to it when given no tags`` =
                 )
                 
             tests
-            |> List.map (getTestExecutor >> executeFunction >> runIt)
-            |> ignore
+            |> silentlyRunAllTests
             
             monitor.NumberOfTimesSetupWasCalled
             |> Should.BeEqualTo 3
@@ -1046,8 +1031,7 @@ let ``run the test method passed to it when given no tags`` =
                 )
                 
             tests
-            |> List.map (getTestExecutor >> executeFunction >> runIt)
-            |> ignore
+            |> silentlyRunAllTests
             
             monitor.NumberOfTimesTestWasCalled
             |> Should.BeEqualTo 3
@@ -1072,8 +1056,7 @@ let ``run the test method passed to it when given no tags by calling it with tes
                 )
                 
             tests
-            |> List.map (getTestExecutor >> executeFunction >> runIt)
-            |> ignore
+            |> silentlyRunAllTests
             
             monitor.TestDataWas
             |> Should.BeEqualTo [-1; 0; 1]
@@ -1098,8 +1081,7 @@ let ``run the teardown method passed to it when given no tags`` =
                 )
                 
             tests
-            |> List.map (getTestExecutor >> executeFunction >> runIt)
-            |> ignore
+            |> silentlyRunAllTests
             
             monitor.NumberOfTimesTeardownWasCalled
             |> Should.BeEqualTo 3
@@ -1206,8 +1188,7 @@ let ``run setup method passed to it when given no tags, no teardown`` =
                 )
                 
             tests
-            |> List.map (getTestExecutor >> executeFunction >> runIt)
-            |> ignore
+            |> silentlyRunAllTests
             
             monitor.NumberOfTimesSetupWasCalled
             |> Should.BeEqualTo 3
@@ -1231,8 +1212,7 @@ let ``run the test method passed to it when given no tags, no teardown`` =
                 )
                 
             tests
-            |> List.map (getTestExecutor >> executeFunction >> runIt)
-            |> ignore
+            |> silentlyRunAllTests
             
             monitor.NumberOfTimesTestWasCalled
             |> Should.BeEqualTo 3
@@ -1256,8 +1236,7 @@ let ``run the test method passed to it when given no tags, no teardown by callin
                 )
                 
             tests
-            |> List.map (getTestExecutor >> executeFunction >> runIt)
-            |> ignore
+            |> silentlyRunAllTests
             
             monitor.TestDataWas
             |> Should.BeEqualTo [('a', "A"); ('b', "B"); ('c', "C")]
@@ -1364,8 +1343,7 @@ let ``run the test method passed to it when given no tags, no setup`` =
                 )
                 
             tests
-            |> List.map (getTestExecutor >> executeFunction >> runIt)
-            |> ignore
+            |> silentlyRunAllTests
             
             monitor.NumberOfTimesTestWasCalled
             |> Should.BeEqualTo 3
@@ -1389,8 +1367,7 @@ let ``run the test method passed to it when given no tags, no setup by calling i
                 )
                 
             tests
-            |> List.map (getTestExecutor >> executeFunction >> runIt)
-            |> ignore
+            |> silentlyRunAllTests
             
             monitor.TestDataWas
             |> List.map (fun a -> $"%f{a}")
@@ -1415,8 +1392,7 @@ let ``run the teardown method passed to it when given no tags, no setup`` =
                 )
                 
             tests
-            |> List.map (getTestExecutor >> executeFunction >> runIt)
-            |> ignore
+            |> silentlyRunAllTests
             
             monitor.NumberOfTimesTeardownWasCalled
             |> Should.BeEqualTo 4
@@ -1520,8 +1496,7 @@ let ``run the test method passed to it when given no tags, no setup, no teardown
                 )
                 
             tests
-            |> List.map (getTestExecutor >> executeFunction >> runIt)
-            |> ignore
+            |> silentlyRunAllTests
             
             monitor.NumberOfTimesTestWasCalled
             |> Should.BeEqualTo 3
@@ -1544,8 +1519,7 @@ let ``run the test method passed to it when given no tags, no setup, no teardown
                 )
                 
             tests
-            |> List.map (getTestExecutor >> executeFunction >> runIt)
-            |> ignore
+            |> silentlyRunAllTests
             
             monitor.TestDataWas
             |> Should.BeEqualTo [1; 2; 3]
@@ -1648,8 +1622,7 @@ let ``run the test method passed to it when given no tags, no setup, no teardown
                 )
                 
             tests
-            |> List.map (getTestExecutor >> executeFunction >> runIt)
-            |> ignore
+            |> silentlyRunAllTests
             
             monitor.NumberOfTimesTestWasCalled
             |> Should.BeEqualTo 3
@@ -1672,8 +1645,7 @@ let ``run the test method passed to it when given no tags, no setup, no teardown
                 )
                 
             tests
-            |> List.map (getTestExecutor >> executeFunction >> runIt)
-            |> ignore
+            |> silentlyRunAllTests
             
             monitor.TestDataWas
             |> Should.BeEqualTo [2; 4; 6]

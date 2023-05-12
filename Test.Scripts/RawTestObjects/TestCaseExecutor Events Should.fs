@@ -68,8 +68,8 @@ let ``Trigger all the events in order`` =
                 cnt <- cnt + 1
             )
             
-            executor.Execute (getFakeEnvironment ())
-            |> ignore
+            executor
+            |> silentlyRunExecutor
             
             result
             |> andResult (cnt |> expects.ToBe 7 |> withMessage "Did not trigger all events")
@@ -101,8 +101,8 @@ let ``Trigger events with parent`` =
                 |> checkResult (fun () -> $"%A{args}")
             )
             
-            executor.Execute (getFakeEnvironment ())
-            |> ignore
+            executor
+            |> silentlyRunExecutor
             
             hasRun
             |> expects.ToBeTrue
@@ -227,9 +227,7 @@ let ``Trigger TestEndSetup with a successful result if setup function returns Ok
             )
             
             executor
-            |> executeFunction
-            |> runIt
-            |> ignore
+            |> silentlyRunExecutor
                 
             result
         )
@@ -261,9 +259,7 @@ let ``Trigger TestEndSetup with a failure if setup returns Error`` =
             )
             
             executor
-            |> executeFunction
-            |> runIt
-            |> ignore
+            |> silentlyRunExecutor
             
             result
         )
@@ -348,9 +344,7 @@ let ``Pass a successful result to TestEnd`` =
             )
             
             executor
-            |> executeFunction
-            |> runIt
-            |> ignore
+            |> silentlyRunExecutor
             
             result
         )
@@ -384,9 +378,7 @@ let ``Pass a failure result to TestEnd`` =
             )
             
             executor
-            |> executeFunction
-            |> runIt
-            |> ignore
+            |> silentlyRunExecutor
             
             result
         )
@@ -472,9 +464,7 @@ let ``Passing results are passed to the TestEndExecution event`` =
             )
             
             executor
-            |> executeFunction
-            |> runIt
-            |> ignore
+            |> silentlyRunExecutor
             
             result
         )
@@ -508,9 +498,7 @@ let ``Passes setup failure to TestEndExecution event`` =
             )
             
             executor
-            |> executeFunction
-            |> runIt
-            |> ignore
+            |> silentlyRunExecutor
             
             result
         )
@@ -544,9 +532,7 @@ let ``Passes Test failure to TestEndExecution event`` =
             )
             
             executor
-            |> executeFunction
-            |> runIt
-            |> ignore
+            |> silentlyRunExecutor
             
             result
         )

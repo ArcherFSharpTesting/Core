@@ -22,10 +22,8 @@ let ``Should call teardown when it is the only thing specified`` =
             
             let test = testFeature.Test (fun _ -> TestSuccess)
             
-            test.GetExecutor ()
-            |> executeFunction
-            |> runIt
-            |> ignore
+            test
+            |> silentlyRunTest
             
             monitor.TeardownWasCalled
             |> Should.BeTrue
@@ -44,10 +42,8 @@ let ``Should call name, and teardown when are specified`` =
             
             let test = testFeature.Test (fun _ -> TestSuccess)
             
-            test.GetExecutor ()
-            |> executeFunction
-            |> runIt
-            |> ignore
+            test
+            |> silentlyRunTest
             
             monitor.TeardownWasCalled
             |> Should.BeTrue
@@ -67,10 +63,8 @@ let ``Should call path, name, and teardown when are specified`` =
             
             let test = testFeature.Test (fun _ -> TestSuccess)
             
-            test.GetExecutor ()
-            |> executeFunction
-            |> runIt
-            |> ignore
+            test
+            |> silentlyRunTest
             
             monitor.TeardownWasCalled
             |> Should.BeTrue
@@ -89,10 +83,8 @@ let ``Should call teardown when setup, and teardown are specified`` =
             
             let test = testFeature.Test (fun _ -> TestSuccess)
             
-            test.GetExecutor ()
-            |> executeFunction
-            |> runIt
-            |> ignore
+            test
+            |> silentlyRunTest
             
             monitor.TeardownWasCalled
             |> Should.BeTrue
@@ -112,10 +104,8 @@ let ``Should call teardown when name, setup, and teardown are specified`` =
             
             let test = testFeature.Test (fun _ -> TestSuccess)
             
-            test.GetExecutor ()
-            |> executeFunction
-            |> runIt
-            |> ignore
+            test
+            |> silentlyRunTest
             
             monitor.TeardownWasCalled
             |> Should.BeTrue
@@ -136,10 +126,8 @@ let ``Should call teardown when path, name, setup, and teardown are specified`` 
             
             let test = testFeature.Test (fun _ -> TestSuccess)
             
-            test.GetExecutor ()
-            |> executeFunction
-            |> runIt
-            |> ignore
+            test
+            |> silentlyRunTest
             
             monitor.TeardownWasCalled
             |> Should.BeTrue

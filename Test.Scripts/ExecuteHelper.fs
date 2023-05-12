@@ -10,3 +10,28 @@ let executeFunction (executor: ITestExecutor) =
     run
     
 let runIt f = f ()
+
+let runExecutor (test: ITestExecutor) =
+    test
+    |> executeFunction
+    |> runIt
+
+let runTest (test: ITest) =
+    test
+    |> getTestExecutor
+    |> runExecutor
+    
+let silentlyRunExecutor (test: ITestExecutor) =
+    test
+    |> runExecutor
+    |> ignore
+    
+let silentlyRunTest (test: ITest) =
+    test
+    |> runTest
+    |> ignore
+    
+let silentlyRunAllTests (tests: ITest list) =
+    tests
+    |> List.map runTest
+    |> ignore
