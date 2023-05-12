@@ -29,6 +29,7 @@
     <Compile Include="Feature.Test Method with environment should.fs" />
     <Compile Include="Feature.Test Data Method with environment should.fs" />
     <Compile Include="Feature.Test Method name first with environment should.fs" />
+    <Compile Include="Feature.Test Data Method name first with environment should.fs" />
     <Compile Include="Feature.Ignore Method without environment should.fs" />
     <Compile Include="Feature.Ignore Method name first without environment should.fs" />
     <Compile Include="Feature.Ignore Method with environment should.fs" />
