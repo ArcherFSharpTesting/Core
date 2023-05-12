@@ -679,32 +679,60 @@ let ``return an ITest with everything when given no setup, no teardown, no name 
         )
     )
     
-// let ``run the test method passed to it when given no setup or teardown`` =
-//     feature.Test (
-//         Setup setupFeatureUnderTest,
-//         TestBody (fun (testFeature: IFeature<unit>) ->
-//             let monitor = Monitor<unit, unit, unit> (Ok ())
-//             let test =
-//                 testFeature.Test (
-//                     "My test",
-//                     TestTags [
-//                                 Only
-//                                 Category "My Category"
-//                             ],
-//                     TestBodyTwoParameters monitor.CallTestActionWithSetupEnvironment,
-//                     "D:\\dog.bark",
-//                     73
-//                 )
-//                 
-//             test
-//             |> silentlyRunTest
-//             
-//             monitor.TestWasCalled
-//             |> Should.BeTrue
-//             |> withMessage "Test was not called"
-//         )
-//     )
-//
+let ``run the test method passed to it when given no setup or teardown`` =
+    feature.Test (
+        Setup setupFeatureUnderTest,
+        TestBody (fun (testFeature: IFeature<unit>) ->
+            let monitor = Monitor<int, unit, unit> (Ok ())
+            let test =
+                testFeature.Test (
+                    "My test",
+                    TestTags [
+                                Only
+                                Category "My Category"
+                            ],
+                    Data (seq{ 1..3 }),
+                    TestBodyThreeParameters monitor.CallTestActionWithDataSetupEnvironment,
+                    "D:\\dog.bark",
+                    73
+                )
+                
+            test
+            |> silentlyRunAllTests
+            
+            monitor.NumberOfTimesTestWasCalled
+            |> Should.BeEqualTo 3
+            |> withMessage "Test was not called"
+        )
+    )
+    
+let ``run the test method passed to it when given no setup or teardown by calling it with test data`` =
+    feature.Test (
+        Setup setupFeatureUnderTest,
+        TestBody (fun (testFeature: IFeature<unit>) ->
+            let monitor = Monitor<int, unit, unit> (Ok ())
+            let test =
+                testFeature.Test (
+                    "My test",
+                    TestTags [
+                                Only
+                                Category "My Category"
+                            ],
+                    Data (seq{ 1..3 }),
+                    TestBodyThreeParameters monitor.CallTestActionWithDataSetupEnvironment,
+                    "D:\\dog.bark",
+                    73
+                )
+                
+            test
+            |> silentlyRunAllTests
+            
+            monitor.TestDataWas
+            |> Should.BeEqualTo [1; 2; 3]
+            |> withMessage "Test was not called"
+        )
+    )
+
 // let ``return an ITest with everything when given no setup, teardown, or test body indicator`` =
 //     feature.Test (
 //         Setup setupFeatureUnderTest,
