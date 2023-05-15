@@ -286,33 +286,34 @@ let ``return an ITest with everything when given no teardown`` =
         )
     )
     
-// let ``not run setup method passed to it when given no teardown`` =
-//     feature.Test (
-//         Setup setupFeatureUnderTest,
-//         TestBody (fun (testFeature: IFeature<unit>) ->
-//             let monitor = Monitor<unit, unit, unit> (Ok ())
-//             let test =
-//                 testFeature.Ignore (
-//                     TestTags [
-//                                 Only
-//                                 Category "My Category"
-//                             ],
-//                     Setup monitor.CallSetup,
-//                     TestBody (fun _ -> TestSuccess),
-//                     "My test",
-//                     "D:\\dog.bark",
-//                     73
-//                 )
-//                 
-//             test
-//             |> silentlyRunTest
-//             
-//             monitor.SetupWasCalled
-//             |> Should.BeFalse
-//             |> withMessage "Setup called"
-//         )
-//     )
-//     
+let ``not run setup method passed to it when given no teardown`` =
+    feature.Test (
+        Setup setupFeatureUnderTest,
+        TestBody (fun (testFeature: IFeature<unit>) ->
+            let monitor = Monitor<unit, unit, unit> (Ok ())
+            let tests =
+                testFeature.Ignore (
+                    TestTags [
+                                Only
+                                Category "My Category"
+                            ],
+                    Setup monitor.CallSetup,
+                    Data (seq{ 1..3 }),
+                    TestBodyTwoParameters (fun _ _ -> TestSuccess),
+                    "My test",
+                    "D:\\dog.bark",
+                    73
+                )
+                
+            tests
+            |> silentlyRunAllTests
+            
+            monitor.SetupWasCalled
+            |> Should.BeFalse
+            |> withMessage "Setup called"
+        )
+    )
+    
 // let ``not run the test method passed to it when given no teardown`` =
 //     feature.Test (
 //         Setup setupFeatureUnderTest,
