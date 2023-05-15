@@ -49,7 +49,7 @@ let ``return an ITest with everything when everything is passed`` =
                 
             tests
             |> Should.PassAllOf [
-                List.length >> Should.BeEqualTo 3 >> withMessage "Incorrect number of tests"
+                ListShould.HaveLengthOf 3 >> withMessage "Incorrect number of tests"
                 
                 List.head >> getTags >> Should.BeEqualTo testTags >> withMessage "Tags"
                 List.head >> getTestName >> Should.BeEqualTo "My test 1" >> withMessage "TestName"
@@ -261,7 +261,7 @@ let ``return an ITest with everything when given no teardown`` =
                 
             test
             |> Should.PassAllOf [
-                List.length >> Should.BeEqualTo 3 >> withMessage "Incorrect number of tests"
+                ListShould.HaveLengthOf 3 >> withMessage "Incorrect number of tests"
                 
                 List.head >> getTags >> Should.BeEqualTo testTags >> withMessage "Tags"
                 List.head >> getTestName >> Should.BeEqualTo "My test -1" >> withMessage "TestName"
@@ -440,7 +440,7 @@ let ``return an ITest with everything when given no setup`` =
                 
             test
             |> Should.PassAllOf [
-                List.length >> Should.BeEqualTo 4 >> withMessage "Incorrect number of test"
+                ListShould.HaveLengthOf 4 >> withMessage "Incorrect number of test"
                 
                 List.head >> getTags >> Should.BeEqualTo testTags >> withMessage "Tags"
                 List.head >> getTestName >> Should.BeEqualTo "go language" >> withMessage "TestName"
@@ -627,7 +627,7 @@ let ``return an ITest with everything when given no setup or teardown`` =
                 
             tests
             |> Should.PassAllOf [
-                List.length >> Should.BeEqualTo 3 >> withMessage "Incorrect number of tests"
+                ListShould.HaveLengthOf 3 >> withMessage "Incorrect number of tests"
                 
                 List.head >> getTags >> Should.BeEqualTo testTags >> withMessage "Tags"
                 List.head >> getTestName >> Should.BeEqualTo "C. My test" >> withMessage "TestName"
@@ -773,7 +773,7 @@ let ``return an ITest with everything when given no setup, teardown, or test bod
                 
             tests
             |> Should.PassAllOf [
-                List.length >> Should.BeEqualTo 4 >> withMessage "Incorrect number of tests"
+                ListShould.HaveLengthOf 4 >> withMessage "Incorrect number of tests"
                 
                 List.head >> getTags >> Should.BeEqualTo testTags >> withMessage "Tags"
                 List.head >> getTestName >> Should.BeEqualTo "1. My test" >> withMessage "TestName"
@@ -924,7 +924,7 @@ let ``return an ITest with everything when given no tags`` =
                 
             test
             |> Should.PassAllOf [
-                List.length >> Should.BeEqualTo 4 >> withMessage "Incorrect number of tests"
+                ListShould.HaveLengthOf 4 >> withMessage "Incorrect number of tests"
                 
                 List.head >> getTags >> Should.BeEqualTo [] >> withMessage "Tags"
                 List.head >> getTestName >> Should.BeEqualTo "a) A test" >> withMessage "TestName"
@@ -1116,7 +1116,7 @@ let ``return an ITest with everything when given no tags, no teardown`` =
                 
             test
             |> Should.PassAllOf [
-                List.length >> Should.BeEqualTo 3 >> withMessage "Incorrect number of tests"
+                ListShould.HaveLengthOf 3 >> withMessage "Incorrect number of tests"
                 
                 List.head >> getTags >> Should.BeEqualTo [] >> withMessage "Tags"
                 List.head >> getTestName >> Should.BeEqualTo "My test ('a', \"A\")" >> withMessage "TestName"
@@ -1271,7 +1271,7 @@ let ``return an ITest with everything when given no tags, no setup`` =
                 
             test
             |> Should.PassAllOf [
-                List.length >> Should.BeEqualTo 3 >> withMessage "Incorrect Number of tests"
+                ListShould.HaveLengthOf 3 >> withMessage "Incorrect Number of tests"
                 
                 List.head >> getTags >> Should.BeEqualTo [] >> withMessage "Tags"
                 List.head >> getTestName >> Should.BeEqualTo "Test 1" >> withMessage "TestName"
@@ -1426,7 +1426,7 @@ let ``return an ITest with everything when given no tags, no setup, no teardown`
                 
             test
             |> Should.PassAllOf [
-                List.length >> Should.BeEqualTo 3 >> withMessage "Incorrect number of tests"
+                ListShould.HaveLengthOf 3 >> withMessage "Incorrect number of tests"
                 
                 List.head >> getTags >> Should.BeEqualTo [] >> withMessage "Tags"
                 List.head >> getTestName >> Should.BeEqualTo "Meow" >> withMessage "TestName"
@@ -1552,7 +1552,7 @@ let ``return an ITest with everything when given no tags, no setup, no teardown,
                 
             tests
             |> Should.PassAllOf [
-                List.length >> Should.BeEqualTo 3 >> withMessage "Incorrect number of tests"
+                ListShould.HaveLengthOf 3 >> withMessage "Incorrect number of tests"
                 
                 List.head >> getTags >> Should.BeEqualTo [] >> withMessage "Tags"
                 List.head >> getTestName >> Should.BeEqualTo "Working A" >> withMessage "TestName"

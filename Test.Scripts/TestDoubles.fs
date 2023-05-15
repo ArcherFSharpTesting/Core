@@ -68,3 +68,10 @@ let getFakeEnvironment () =
         RunnerVersion = Version "0.0.0.0"
         TestInfo = getEmptyDummyTest ()
     }
+    
+let resultIsIgnored =
+    <@fun result ->
+        match result with
+        | TestExecutionResult (TestFailure (TestIgnored _)) -> true
+        | _ -> false
+    @>
