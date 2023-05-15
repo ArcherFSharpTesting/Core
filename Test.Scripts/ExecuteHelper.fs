@@ -21,6 +21,10 @@ let runTest (test: ITest) =
     |> getTestExecutor
     |> runExecutor
     
+let runAllTests (tests: ITest list) =
+    tests
+    |> List.map runTest
+    
 let silentlyRunExecutor (test: ITestExecutor) =
     test
     |> runExecutor
