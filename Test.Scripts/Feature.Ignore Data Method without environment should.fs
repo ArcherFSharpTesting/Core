@@ -194,10 +194,12 @@ let ``return an ignored failure upon test being executed executed when everythin
                 tests
                 |> runAllTests
             
-            let isIgnoredResult result =
-                match result with
-                | TestExecutionResult (TestFailure (TestIgnored _)) -> true
-                | _ -> false
+            let isIgnoredResult =
+                <@fun result ->
+                    match result with
+                    | TestExecutionResult (TestFailure (TestIgnored _)) -> true
+                    | _ -> false
+                @>
                     
             results
             |> Should.PassAllOf [

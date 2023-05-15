@@ -150,9 +150,9 @@ let ``Should Create a feature with the name given to it`` =
             let testFeature = Arrow.Ignore (featureName = name)
             
             testFeature.ToString ()
-            |> Should.PassTestOf (fun featureName ->
+            |> Should.PassTestOf <@fun featureName ->
                 featureName.EndsWith $".%s{name}"
-            )
+            @>
     )
 
 let ``Should Create a feature with the name and setup given to it`` =
@@ -165,9 +165,9 @@ let ``Should Create a feature with the name and setup given to it`` =
             )
             
             testFeature.ToString ()
-            |> Should.PassTestOf (fun featureName ->
+            |> Should.PassTestOf <@fun featureName ->
                 featureName.EndsWith $".%s{name}"
-            )
+            @>
     )
 
 let ``Should Create a feature with the name and teardown given to it`` =
@@ -180,9 +180,9 @@ let ``Should Create a feature with the name and teardown given to it`` =
             )
             
             testFeature.ToString ()
-            |> Should.PassTestOf (fun featureName ->
+            |> Should.PassTestOf <@fun featureName ->
                 featureName.EndsWith $".%s{name}"
-            )
+            @>
     )
 
 let ``Should Create a feature with the name, setup and teardown given to it`` =
@@ -196,9 +196,9 @@ let ``Should Create a feature with the name, setup and teardown given to it`` =
             )
             
             testFeature.ToString ()
-            |> Should.PassTestOf (fun featureName ->
+            |> Should.PassTestOf <@fun featureName ->
                 featureName.EndsWith $".%s{name}"
-            )
+            @>
     )
 
 let ``Test Cases`` = feature.GetTests ()

@@ -46,7 +46,7 @@
 
   <ItemGroup>
     <PackageReference Include="Archer.Bow.Lib" Version="0.0.9.31" />
-    <PackageReference Include="Archer.Fletching.Lib" Version="0.0.0.12" />
+    <PackageReference Include="Archer.Fletching.Lib" Version="0.0.0.13" />
     <PackageReference Include="MicroLang.Lib" Version="0.0.12.46" />
     <PackageReference Update="FSharp.Core" Version="7.0.200" />
   </ItemGroup>
