@@ -204,10 +204,7 @@ let ``return an ignored failure upon test being executed executed when everythin
             results
             |> Should.PassAllOf [
                 List.length >> Should.BeEqualTo 3 >> withMessage "Incorrect length"
-                
-                List.head >> Should.PassTestOf isIgnoredResult >> withMessage "Is not ignored"
-                List.skip 1 >> List.head >> Should.PassTestOf isIgnoredResult >> withMessage "Is not ignored"
-                List.last >> Should.PassTestOf isIgnoredResult >> withMessage "Is not ignored"
+                ListShould.FindAllValuesWith isIgnoredResult
             ]
         )
     )
