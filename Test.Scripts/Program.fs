@@ -23,7 +23,7 @@ runner.RunnerLifecycleEvent
                 let report = $"%A{test} : (Ignored)"
                 printfn $"%s{report}"
             | _ ->
-                let report = $"%A{test} : (Fail)"
+                let report = $"%A{test} : (Fail) @ %i{test.Location.LineNumber}"
                 printfn $"%s{report}"
             
         | _ -> ()
