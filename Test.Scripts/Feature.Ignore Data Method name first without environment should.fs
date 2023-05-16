@@ -198,7 +198,7 @@ let ``return an ignored failure upon test being executed executed when everythin
             results
             |> Should.PassAllOf [
                 ListShould.HaveLengthOf 3 >> withMessage "Incorrect number of results"
-                ListShould.FindAllValuesWith resultIsIgnored
+                ListShould.AllValuesPassTestOf resultIsIgnored
             ]
         )
     )

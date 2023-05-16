@@ -197,7 +197,7 @@ let ``return an ignored failure upon test being executed executed when everythin
             results
             |> Should.PassAllOf [
                 ListShould.HaveLengthOf 3 >> withMessage "Incorrect length"
-                ListShould.FindAllValuesWith resultIsIgnored
+                ListShould.AllValuesPassTestOf resultIsIgnored
             ]
         )
     )
@@ -389,7 +389,7 @@ let ``return an ignored failure upon test being executed executed when given no 
             |> Should.PassAllOf [
                 ListShould.HaveLengthOf 3 >> withMessage "Incorrect number of results"
                 
-                ListShould.FindAllValuesWith resultIsIgnored
+                ListShould.AllValuesPassTestOf resultIsIgnored
             ]
         )
     )
@@ -572,7 +572,7 @@ let ``return an ignored failure upon test being executed executed when given no 
             |> Should.PassAllOf [
                 ListShould.HaveLengthOf 3 >> withMessage "Incorrect number of results"
                 
-                ListShould.FindAllValuesWith resultIsIgnored
+                ListShould.AllValuesPassTestOf resultIsIgnored
             ]
         )
     )
@@ -779,7 +779,7 @@ let ``have an ignored result when given no setup or teardown`` =
             |> Should.PassAllOf [
                 ListShould.HaveLengthOf 3 >> withMessage "Incorrect number of results"
                 
-                ListShould.FindAllValuesWith resultIsIgnored
+                ListShould.AllValuesPassTestOf resultIsIgnored
             ]
         )
     )
@@ -929,7 +929,7 @@ let ``return an ignored result when given no setup, teardown, or test body indic
             |> Should.PassAllOf [
                 ListShould.HaveLengthOf 3 >> withMessage "Incorrect number of results"
                 
-                ListShould.FindAllValuesWith resultIsIgnored
+                ListShould.AllValuesPassTestOf resultIsIgnored
             ]
         )
     )
@@ -959,7 +959,7 @@ let ``return an ignored failure upon test being executed executed when given no 
             results
             |> Should.PassAllOf [
                 ListShould.HaveLengthOf 3 >> withMessage "Incorrect number of tests"
-                ListShould.FindAllValuesWith resultIsIgnored
+                ListShould.AllValuesPassTestOf resultIsIgnored
             ]
         )
     )
@@ -1016,7 +1016,7 @@ let ``return an ignored failure upon test being executed executed when given no 
             results
             |> Should.PassAllOf [
                 ListShould.HaveLengthOf 3 >> withMessage "Incorrect number of tests"
-                ListShould.FindAllValuesWith resultIsIgnored
+                ListShould.AllValuesPassTestOf resultIsIgnored
             ]
         )
     )
@@ -1206,7 +1206,7 @@ let ``return ignored result when given no tags`` =
             results
             |> Should.PassAllOf [
                 ListShould.HaveLengthOf 3 >> withMessage "Incorrect number of results"
-                ListShould.FindAllValuesWith resultIsIgnored
+                ListShould.AllValuesPassTestOf resultIsIgnored
             ]
         )
     )
@@ -1388,7 +1388,7 @@ let ``return an ignored failure upon test being executed executed when no teardo
             results
             |> Should.PassAllOf [
                 ListShould.HaveLengthOf 3 >> withMessage "Incorrect number of results"
-                ListShould.FindAllValuesWith resultIsIgnored
+                ListShould.AllValuesPassTestOf resultIsIgnored
             ]
         )
     )
@@ -1521,7 +1521,7 @@ let ``return an ignored failure upon test being executed executed when given no 
             results
             |> Should.PassAllOf [
                 ListShould.HaveLengthOf 3 >> withMessage "Incorrect number of tests"
-                ListShould.FindAllValuesWith resultIsIgnored
+                ListShould.AllValuesPassTestOf resultIsIgnored
             ]
         )
     )
@@ -1675,7 +1675,7 @@ let ``return an ignored failure upon test being executed executed when given no 
             results
             |> Should.PassAllOf [
                 ListShould.HaveLengthOf 3 >> withMessage "Incorrect number of results"
-                ListShould.FindAllValuesWith resultIsIgnored
+                ListShould.AllValuesPassTestOf resultIsIgnored
             ]
         )
     )
@@ -1806,7 +1806,7 @@ let ``return an ignored failure upon test being executed executed when given no 
             results
             |> Should.PassAllOf [
                 ListShould.HaveLengthOf 3 >> withMessage "Incorrect number of results"
-                ListShould.FindAllValuesWith resultIsIgnored
+                ListShould.AllValuesPassTestOf resultIsIgnored
             ]
         )
     )
