@@ -197,7 +197,7 @@ let ``return an ignored failure upon test being executed executed when everythin
             results
             |> Should.PassAllOf [
                 ListShould.HaveLengthOf 3 >> withMessage "Incorrect number of results"
-                ListShould.AllValuesPassTestOf resultIsIgnored
+                ListShould.HaveAllValuesPassTestOf resultIsIgnored
             ]
         )
     )
@@ -409,7 +409,7 @@ let ``return an ignored failure upon test being executed executed when given no 
             results
             |> Should.PassAllOf [
                 ListShould.HaveLengthOf 3 >> withMessage "Incorrect number of results"
-                ListShould.AllValuesPassTestOf resultIsIgnored
+                ListShould.HaveAllValuesPassTestOf resultIsIgnored
             ]
         )
     )
