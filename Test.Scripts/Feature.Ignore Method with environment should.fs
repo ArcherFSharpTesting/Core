@@ -138,16 +138,8 @@ let ``return an ignored failure upon test being executed executed when everythin
                 |> executeFunction
                 |> runIt
             
-            match result with
-            | TestExecutionResult (TestFailure (TestIgnored _)) ->
-                TestSuccess
-            | _ ->
-                { new IVerificationInfo with
-                    member _.Expected = "TestExecutionResult (TestFailure (TestIgnored _))"
-                    member _.Actual = result.ToString ()
-                }
-                |> newFailure.With.TestValidationFailure
-                |> TestFailure
+            result
+            |> Should.PassTestOf resultIsIgnored
         )
     )
     
@@ -298,16 +290,8 @@ let ``return an ignored failure upon test being executed executed when given no 
                 |> executeFunction
                 |> runIt
             
-            match result with
-            | TestExecutionResult (TestFailure (TestIgnored _)) ->
-                TestSuccess
-            | _ ->
-                { new IVerificationInfo with
-                    member _.Expected = "TestExecutionResult (TestFailure (TestIgnored _))"
-                    member _.Actual = result.ToString ()
-                }
-                |> newFailure.With.TestValidationFailure
-                |> TestFailure
+            result
+            |> Should.PassTestOf resultIsIgnored
         )
     )
 
@@ -403,16 +387,8 @@ let ``return an ignored failure upon test being executed executed when given no 
                 |> executeFunction
                 |> runIt
             
-            match result with
-            | TestExecutionResult (TestFailure (TestIgnored _)) ->
-                TestSuccess
-            | _ ->
-                { new IVerificationInfo with
-                    member _.Expected = "TestExecutionResult (TestFailure (TestIgnored _))"
-                    member _.Actual = result.ToString ()
-                }
-                |> newFailure.With.TestValidationFailure
-                |> TestFailure
+            result
+            |> Should.PassTestOf resultIsIgnored
         )
     )
     
@@ -532,16 +508,8 @@ let ``return an ignored failure upon test being executed executed when given no 
                 |> executeFunction
                 |> runIt
             
-            match result with
-            | TestExecutionResult (TestFailure (TestIgnored _)) ->
-                TestSuccess
-            | _ ->
-                { new IVerificationInfo with
-                    member _.Expected = "TestExecutionResult (TestFailure (TestIgnored _))"
-                    member _.Actual = result.ToString ()
-                }
-                |> newFailure.With.TestValidationFailure
-                |> TestFailure
+            result
+            |> Should.PassTestOf resultIsIgnored
         )
     )
 
@@ -633,16 +601,8 @@ let ``return an ignored failure upon test being executed executed when given no 
                 |> executeFunction
                 |> runIt
             
-            match result with
-            | TestExecutionResult (TestFailure (TestIgnored _)) ->
-                TestSuccess
-            | _ ->
-                { new IVerificationInfo with
-                    member _.Expected = "TestExecutionResult (TestFailure (TestIgnored _))"
-                    member _.Actual = result.ToString ()
-                }
-                |> newFailure.With.TestValidationFailure
-                |> TestFailure
+            result
+            |> Should.PassTestOf resultIsIgnored
         )
     )
 
@@ -751,16 +711,8 @@ let ``return an ignored failure upon test being executed executed when given no 
                 |> executeFunction
                 |> runIt
             
-            match result with
-            | TestExecutionResult (TestFailure (TestIgnored _)) ->
-                TestSuccess
-            | _ ->
-                { new IVerificationInfo with
-                    member _.Expected = "TestExecutionResult (TestFailure (TestIgnored _))"
-                    member _.Actual = result.ToString ()
-                }
-                |> newFailure.With.TestValidationFailure
-                |> TestFailure
+            result
+            |> Should.PassTestOf resultIsIgnored
         )
     )
     
@@ -889,16 +841,8 @@ let ``return an ignored failure upon test being executed executed when no teardo
                 |> executeFunction
                 |> runIt
             
-            match result with
-            | TestExecutionResult (TestFailure (TestIgnored _)) ->
-                TestSuccess
-            | _ ->
-                { new IVerificationInfo with
-                    member _.Expected = "TestExecutionResult (TestFailure (TestIgnored _))"
-                    member _.Actual = result.ToString ()
-                }
-                |> newFailure.With.TestValidationFailure
-                |> TestFailure
+            result
+            |> Should.PassTestOf resultIsIgnored
         )
     )
 
@@ -980,16 +924,8 @@ let ``return an ignored failure upon test being executed executed when given no 
                 |> executeFunction
                 |> runIt
             
-            match result with
-            | TestExecutionResult (TestFailure (TestIgnored _)) ->
-                TestSuccess
-            | _ ->
-                { new IVerificationInfo with
-                    member _.Expected = "TestExecutionResult (TestFailure (TestIgnored _))"
-                    member _.Actual = result.ToString ()
-                }
-                |> newFailure.With.TestValidationFailure
-                |> TestFailure
+            result
+            |> Should.PassTestOf resultIsIgnored
         )
     )
     
@@ -1091,16 +1027,8 @@ let ``return an ignored failure upon test being executed executed when given no 
                 |> executeFunction
                 |> runIt
             
-            match result with
-            | TestExecutionResult (TestFailure (TestIgnored _)) ->
-                TestSuccess
-            | _ ->
-                { new IVerificationInfo with
-                    member _.Expected = "TestExecutionResult (TestFailure (TestIgnored _))"
-                    member _.Actual = result.ToString ()
-                }
-                |> newFailure.With.TestValidationFailure
-                |> TestFailure
+            result
+            |> Should.PassTestOf resultIsIgnored
         )
     )
 
@@ -1178,15 +1106,8 @@ let ``return an ignored failure upon test being executed executed when given no 
                 |> executeFunction
                 |> runIt
             
-            match result with
-            | TestExecutionResult (TestFailure (TestIgnored _)) ->
-                TestSuccess
-            | _ ->
-                { new IVerificationInfo with
-                    member _.Expected = "TestExecutionResult (TestFailure (TestIgnored _))"
-                    member _.Actual = result.ToString () }
-                |> newFailure.With.TestValidationFailure
-                |> TestFailure
+            result
+            |> Should.PassTestOf resultIsIgnored
         )
     )
 
