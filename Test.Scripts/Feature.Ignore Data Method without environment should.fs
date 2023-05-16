@@ -1763,57 +1763,52 @@ let ``return an ITest with everything when given no tags, no setup, no teardown,
         )
     )
     
-// let ``not run the test method passed to it when given no tags, no setup, no teardown, no test body indicator`` =
-//     feature.Test (
-//         Setup setupFeatureUnderTest,
-//         TestBody (fun (testFeature: IFeature<unit>) ->
-//             let monitor = Monitor<unit, unit, unit> (Ok ())
-//             let test =
-//                 testFeature.Ignore (
-//                     monitor.CallTestActionWithSetup,
-//                     "My test",
-//                     "D:\\dog.bark",
-//                     73
-//                 )
-//                 
-//             test
-//             |> silentlyRunTest
-//             
-//             monitor.TestWasCalled
-//             |> Should.BeFalse
-//             |> withMessage "test was called"
-//         )
-//     )
-//     
-// let ``return an ignored failure upon test being executed executed when given no tags, no setup, no teardown, no test body indicator`` =
-//     feature.Test (
-//         Setup setupFeatureUnderTest,
-//         TestBody (fun (testFeature: IFeature<unit>) ->
-//             let monitor = Monitor<unit, unit, unit> (Ok ())
-//             let test =
-//                 testFeature.Ignore (
-//                     monitor.CallTestActionWithSetup,
-//                     "My test",
-//                     "D:\\dog.bark",
-//                     73
-//                 )
-//             
-//             let result =    
-//                 test.GetExecutor ()
-//                 |> executeFunction
-//                 |> runIt
-//             
-//             match result with
-//             | TestExecutionResult (TestFailure (TestIgnored _)) ->
-//                 TestSuccess
-//             | _ ->
-//                 { new IVerificationInfo with
-//                     member _.Expected = "TestExecutionResult (TestFailure (TestIgnored _))"
-//                     member _.Actual = result.ToString ()
-//                 }
-//                 |> newFailure.With.TestValidationFailure
-//                 |> TestFailure
-//         )
-//     )
+let ``not run the test method passed to it when given no tags, no setup, no teardown, no test body indicator`` =
+    feature.Test (
+        Setup setupFeatureUnderTest,
+        TestBody (fun (testFeature: IFeature<unit>) ->
+            let monitor = Monitor<char, unit, unit> (Ok ())
+            let test =
+                testFeature.Ignore (
+                    Data (seq{ 'b'..'d' }),
+                    monitor.CallTestActionWithData,
+                    "My test",
+                    "D:\\dog.bark",
+                    73
+                )
+                
+            test
+            |> silentlyRunAllTests
+            
+            monitor.TestWasCalled
+            |> Should.BeFalse
+            |> withMessage "test was called"
+        )
+    )
+    
+let ``return an ignored failure upon test being executed executed when given no tags, no setup, no teardown, no test body indicator`` =
+    feature.Test (
+        Setup setupFeatureUnderTest,
+        TestBody (fun (testFeature: IFeature<unit>) ->
+            let monitor = Monitor<char, unit, unit> (Ok ())
+            let tests =
+                testFeature.Ignore (
+                    Data (seq{ 'b'..'d' }),
+                    monitor.CallTestActionWithData,
+                    "My test",
+                    "D:\\dog.bark",
+                    73
+                )
+            
+            let results =    
+                tests |> runAllTests
+            
+            results
+            |> Should.PassAllOf [
+                ListShould.HaveLengthOf 3 >> withMessage "Incorrect number of results"
+                ListShould.FindAllValuesWith resultIsIgnored
+            ]
+        )
+    )
 
 let ``Test Cases`` = feature.GetTests ()
