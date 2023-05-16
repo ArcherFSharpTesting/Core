@@ -130,16 +130,15 @@ let ``Not throw if exception is thrown from TestStartExecution`` =
                 |> executeFunction
                 |> expects.ToNotThrowWithResult
                 
+                
             match result with
             | Error errorValue -> errorValue
-            | Ok testExecutionResult ->
-                match testExecutionResult with
-                | GeneralExecutionFailure (GeneralExceptionFailure ex) ->
-                    ex.Message
-                    |> expects.ToBe expectedExceptionMessage
-                | _ ->
-                    "Should not get here" |> newFailure.With.TestOtherExpectationFailure |> TestFailure
-            )
+            | Ok (GeneralExecutionFailure (GeneralExceptionFailure ex)) ->
+                ex.Message
+                |> Should.BeEqualTo expectedExceptionMessage
+            | _ ->
+                "Should not get here" |> newFailure.With.TestOtherExpectationFailure |> TestFailure
+        )
     )
     
 let ``Not throw if exception is thrown from TestStartSetup`` =
@@ -164,13 +163,11 @@ let ``Not throw if exception is thrown from TestStartSetup`` =
                 
             match result with
             | Error errorValue -> errorValue
-            | Ok testExecutionResult ->
-                match testExecutionResult with
-                | SetupExecutionFailure (SetupTeardownExceptionFailure ex) ->
-                    ex.Message
-                    |> expects.ToBe exceptionMessage
-                | _ ->
-                    "Should not get here" |> newFailure.With.TestOtherExpectationFailure |> TestFailure
+            | Ok (SetupExecutionFailure (SetupTeardownExceptionFailure ex)) ->
+                ex.Message
+                |> expects.ToBe exceptionMessage
+            | _ ->
+                "Should not get here" |> newFailure.With.TestOtherExpectationFailure |> TestFailure
         )
     )
     
@@ -196,13 +193,11 @@ let ``Not throw when TestEndSetup throws`` =
                 
             match result with
             | Error errorValue -> errorValue
-            | Ok testExecutionResult ->
-                match testExecutionResult with
-                | SetupExecutionFailure (SetupTeardownExceptionFailure ex) ->
-                    ex.Message
-                    |> expects.ToBe exceptionMessage
-                | _ ->
-                    "Should not get here" |> newFailure.With.TestOtherExpectationFailure |> TestFailure
+            | Ok (SetupExecutionFailure (SetupTeardownExceptionFailure ex)) ->
+                ex.Message
+                |> expects.ToBe exceptionMessage
+            | _ ->
+                "Should not get here" |> newFailure.With.TestOtherExpectationFailure |> TestFailure
         )
     )
     
@@ -287,13 +282,11 @@ let ``Not throw when TestStart throws`` =
                 
             match result with
             | Error errorValue -> errorValue
-            | Ok testExecutionResult ->
-                match testExecutionResult with
-                | GeneralExecutionFailure (GeneralExceptionFailure ex) ->
-                    ex.Message
-                    |> expects.ToBe exceptionMessage
-                | _ ->
-                    "Should not get here" |> newFailure.With.TestOtherExpectationFailure |> TestFailure
+            | Ok (GeneralExecutionFailure (GeneralExceptionFailure ex)) ->
+                ex.Message
+                |> expects.ToBe exceptionMessage
+            | _ ->
+                "Should not get here" |> newFailure.With.TestOtherExpectationFailure |> TestFailure
         )
     )
     
@@ -318,13 +311,11 @@ let ``Not throw when TestEnd throws`` =
                 
             match result with
             | Error errorValue -> errorValue
-            | Ok testExecutionResult ->
-                match testExecutionResult with
-                | GeneralExecutionFailure (GeneralExceptionFailure ex) ->
-                    ex.Message
-                    |> expects.ToBe exceptionMessage
-                | _ ->
-                    expects.NotToBeCalled ()
+            | Ok (GeneralExecutionFailure (GeneralExceptionFailure ex)) ->
+                ex.Message
+                |> expects.ToBe exceptionMessage
+            | _ ->
+                expects.NotToBeCalled ()
         )
     )
     
@@ -406,13 +397,11 @@ let ``Not throw when TestStartTeardown throws`` =
                 
             match result with
             | Error errorValue -> errorValue
-            | Ok testExecutionResult ->
-                match testExecutionResult with
-                | GeneralExecutionFailure (GeneralExceptionFailure ex) ->
-                    ex.Message
-                    |> expects.ToBe exceptionMessage
-                | _ ->
-                    expects.NotToBeCalled ()
+            | Ok (GeneralExecutionFailure (GeneralExceptionFailure ex)) ->
+                ex.Message
+                |> expects.ToBe exceptionMessage
+            | _ ->
+                expects.NotToBeCalled ()
         )
     )
     
@@ -438,13 +427,11 @@ let ``Not throw when TestEndExecution throws`` =
                 
             match result with
             | Error errorValue -> errorValue
-            | Ok testExecutionResult ->
-                match testExecutionResult with
-                | GeneralExecutionFailure (GeneralExceptionFailure ex) ->
-                    ex.Message
-                    |> expects.ToBe exceptionMessage
-                | _ ->
-                    expects.NotToBeCalled ()
+            | Ok (GeneralExecutionFailure (GeneralExceptionFailure ex)) ->
+                ex.Message
+                |> expects.ToBe exceptionMessage
+            | _ ->
+                expects.NotToBeCalled ()
         )
     )
     
