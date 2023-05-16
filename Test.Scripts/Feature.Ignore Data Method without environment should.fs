@@ -1631,93 +1631,138 @@ let ``return an ITest with everything when given no tags, no setup, no teardown,
         )
     )
     
-// let ``not run the test method passed to it when given no tags, no setup, no teardown`` =
-//     feature.Test (
-//         Setup setupFeatureUnderTest,
-//         TestBody (fun (testFeature: IFeature<unit>) ->
-//             let monitor = Monitor<unit, unit, unit> (Ok ())
-//             let test =
-//                 testFeature.Ignore (
-//                     TestBody monitor.CallTestActionWithSetup,
-//                     "My test",
-//                     "D:\\dog.bark",
-//                     73
-//                 )
-//                 
-//             test
-//             |> silentlyRunTest
-//             
-//             monitor.TestWasCalled
-//             |> Should.BeFalse
-//             |> withMessage "test was called"
-//         )
-//     )
-//     
-// let ``return an ignored failure upon test being executed executed when given no tags, no setup, no teardown`` =
-//     feature.Test (
-//         Setup setupFeatureUnderTest,
-//         TestBody (fun (testFeature: IFeature<unit>) ->
-//             let monitor = Monitor<unit, unit, unit> (Ok ())
-//             let test =
-//                 testFeature.Ignore (
-//                     TestBody monitor.CallTestActionWithSetup,
-//                     "My test",
-//                     "D:\\dog.bark",
-//                     73
-//                 )
-//             
-//             let result =    
-//                 test.GetExecutor ()
-//                 |> executeFunction
-//                 |> runIt
-//             
-//             match result with
-//             | TestExecutionResult (TestFailure (TestIgnored _)) ->
-//                 TestSuccess
-//             | _ ->
-//                 { new IVerificationInfo with
-//                     member _.Expected = "TestExecutionResult (TestFailure (TestIgnored _))"
-//                     member _.Actual = result.ToString ()
-//                 }
-//                 |> newFailure.With.TestValidationFailure
-//                 |> TestFailure
-//         )
-//     )
-//
-// let ``return an ITest with everything when given no tags, no setup, no teardown, no test body indicator`` =
-//     feature.Test (
-//         Setup setupFeatureUnderTest,
-//         TestBody (fun (testFeature: IFeature<unit>) ->
-//             let testName = "My test"
-//             
-//             let fileName = "dog.bark"
-//             let path = "D:\\"
-//             let fullPath = $"%s{path}%s{fileName}"
-//             let lineNumber = 73
-//             
-//             let test =
-//                 testFeature.Ignore (
-//                     (fun _ -> TestSuccess),
-//                     testName,
-//                     fullPath,
-//                     lineNumber
-//                 )
-//         
-//             let getContainerName (test: ITest) =
-//                 $"%s{test.ContainerPath}.%s{test.ContainerName}"
-//                 
-//             test
-//             |> Should.PassAllOf [
-//                 getTags >> Should.BeEqualTo [] >> withMessage "Tags"
-//                 getTestName >> Should.BeEqualTo testName >> withMessage "TestName"
-//                 getContainerName >> Should.BeEqualTo (testFeature.ToString ()) >> withMessage "Container Information"
-//                 getFilePath >> Should.BeEqualTo path >> withMessage "file path"
-//                 getFileName >> Should.BeEqualTo fileName >> withMessage "File Name"
-//                 getLineNumber >> Should.BeEqualTo lineNumber >> withMessage "Line Number"
-//             ]
-//         )
-//     )
-//     
+let ``not run the test method passed to it when given no tags, no setup, no teardown`` =
+    feature.Test (
+        Setup setupFeatureUnderTest,
+        TestBody (fun (testFeature: IFeature<unit>) ->
+            let monitor = Monitor<int, unit, unit> (Ok ())
+            let test =
+                testFeature.Ignore (
+                    Data (seq{ 3..-1..1 }),
+                    TestBody monitor.CallTestActionWithData,
+                    "My test",
+                    "D:\\dog.bark",
+                    73
+                )
+                
+            test
+            |> silentlyRunAllTests
+            
+            monitor.TestWasCalled
+            |> Should.BeFalse
+            |> withMessage "test was called"
+        )
+    )
+    
+let ``return an ignored failure upon test being executed executed when given no tags, no setup, no teardown`` =
+    feature.Test (
+        Setup setupFeatureUnderTest,
+        TestBody (fun (testFeature: IFeature<unit>) ->
+            let monitor = Monitor<int, unit, unit> (Ok ())
+            let tests =
+                testFeature.Ignore (
+                    Data (seq{ 3..-1..1 }),
+                    TestBody monitor.CallTestActionWithData,
+                    "My test",
+                    "D:\\dog.bark",
+                    73
+                )
+            
+            let results =    
+                tests
+                |> runAllTests
+            
+            results
+            |> Should.PassAllOf [
+                ListShould.HaveLengthOf 3 >> withMessage "Incorrect number of results"
+                ListShould.FindAllValuesWith resultIsIgnored
+            ]
+        )
+    )
+
+let ``return an ITest with everything when given no tags, no setup, no teardown, no test body indicator`` =
+    feature.Test (
+        Setup setupFeatureUnderTest,
+        TestBody (fun (testFeature: IFeature<unit>) ->
+            let testName = "My test %c"
+            
+            let fileName = "dog.bark"
+            let path = "D:\\"
+            let fullPath = $"%s{path}%s{fileName}"
+            let lineNumber = 73
+            
+            let tests =
+                testFeature.Ignore (
+                    Data (seq {'b'..'d'}),
+                    (fun _ -> TestSuccess),
+                    testName,
+                    fullPath,
+                    lineNumber
+                )
+        
+            let getContainerName (test: ITest) =
+                $"%s{test.ContainerPath}.%s{test.ContainerName}"
+                
+            tests
+            |> Should.PassAllOf [
+                ListShould.HaveLengthOf 3 >> withMessage "Incorrect number of tests"
+                
+                List.head >> getTags >> Should.BeEqualTo [] >> withMessage "Tags"
+                List.head >> getTestName >> Should.BeEqualTo "My test b" >> withMessage "TestName"
+                List.head >> getContainerName >> Should.BeEqualTo (testFeature.ToString ()) >> withMessage "Container Information"
+                List.head >> getFilePath >> Should.BeEqualTo path >> withMessage "file path"
+                List.head >> getFileName >> Should.BeEqualTo fileName >> withMessage "File Name"
+                List.head >> getLineNumber >> Should.BeEqualTo lineNumber >> withMessage "Line Number"
+                
+                List.skip 1 >> List.head >> getTags >> Should.BeEqualTo [] >> withMessage "Tags"
+                List.skip 1 >> List.head >> getTestName >> Should.BeEqualTo "My test c" >> withMessage "TestName"
+                List.skip 1 >> List.head >> getContainerName >> Should.BeEqualTo (testFeature.ToString ()) >> withMessage "Container Information"
+                List.skip 1 >> List.head >> getFilePath >> Should.BeEqualTo path >> withMessage "file path"
+                List.skip 1 >> List.head >> getFileName >> Should.BeEqualTo fileName >> withMessage "File Name"
+                List.skip 1 >> List.head >> getLineNumber >> Should.BeEqualTo lineNumber >> withMessage "Line Number"
+                
+                List.last >> getTags >> Should.BeEqualTo [] >> withMessage "Tags"
+                List.last >> getTestName >> Should.BeEqualTo "My test d" >> withMessage "TestName"
+                List.last >> getContainerName >> Should.BeEqualTo (testFeature.ToString ()) >> withMessage "Container Information"
+                List.last >> getFilePath >> Should.BeEqualTo path >> withMessage "file path"
+                List.last >> getFileName >> Should.BeEqualTo fileName >> withMessage "File Name"
+                List.last >> getLineNumber >> Should.BeEqualTo lineNumber >> withMessage "Line Number"
+            ]
+        )
+    )
+
+let ``return an ITest with everything when given no tags, no setup, no teardown, no test body indicator, no name hint`` =
+    feature.Test (
+        Setup setupFeatureUnderTest,
+        TestBody (fun (testFeature: IFeature<unit>) ->
+            let testName = "My test"
+            
+            let fileName = "dog.bark"
+            let path = "D:\\"
+            let fullPath = $"%s{path}%s{fileName}"
+            let lineNumber = 73
+            
+            let tests =
+                testFeature.Ignore (
+                    Data (seq {'b'..'d'}),
+                    (fun _ -> TestSuccess),
+                    testName,
+                    fullPath,
+                    lineNumber
+                )
+        
+            let getContainerName (test: ITest) =
+                $"%s{test.ContainerPath}.%s{test.ContainerName}"
+                
+            tests
+            |> Should.PassAllOf [
+                List.head >> getTestName >> Should.BeEqualTo "My test ('b')" >> withMessage "TestName"
+                List.skip 1 >> List.head >> getTestName >> Should.BeEqualTo "My test ('c')" >> withMessage "TestName"
+                List.last >> getTestName >> Should.BeEqualTo "My test ('d')" >> withMessage "TestName"
+            ]
+        )
+    )
+    
 // let ``not run the test method passed to it when given no tags, no setup, no teardown, no test body indicator`` =
 //     feature.Test (
 //         Setup setupFeatureUnderTest,
