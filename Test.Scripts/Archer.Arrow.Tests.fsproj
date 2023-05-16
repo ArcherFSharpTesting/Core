@@ -33,6 +33,7 @@
     <Compile Include="Feature.Ignore Method without environment should.fs" />
     <Compile Include="Feature.Ignore Data Method without environment should.fs" />
     <Compile Include="Feature.Ignore Method name first without environment should.fs" />
+    <Compile Include="Feature.Ignore Data Method name first without environment should.fs" />
     <Compile Include="Feature.Ignore Method with environment should.fs" />
     <Compile Include="Feature.Ignore Method name first with environment should.fs" />
     <Compile Include="Arrow Tests.fs" />
