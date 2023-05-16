@@ -27,6 +27,39 @@ type Feature<'featureType> (featurePath, featureName, featureTags: TestTag list,
         let (Teardown teardown) = teardown
         Teardown (fun _ -> teardown (Ok ()))
         
+    let buildDataTests (ctor: TagsIndicator * SetupIndicator<'featureType,'setupType> * TestBodyIndicatorTwoParameters<'setupType,TestEnvironment> * TeardownIndicator<'setupType> * string * string * int -> ITest) (tags: TagsIndicator) (setup: SetupIndicator<'featureType, 'setupType>) (data: DataIndicator<'dataType>) (testBody: TestBodyIndicatorThreeParameters<'dataType, 'setupType, TestEnvironment>) (teardown: TeardownIndicator<'setupType>) (testName: string) (fileFullName: string) (lineNumber: int) =
+        let names = System.Collections.Generic.Dictionary<string, int>()
+        let getFixedName name =
+            if names.ContainsKey name |> not then
+                names.Add (name, 1)
+                name
+            else
+                let c = names[name]
+                names[name] <- c + 1
+                $"%s{name}^%i{c}"
+                
+        let testNameFormat =
+            let tn = 
+                let regexPattern = @"(^|[^%])%(\d+-)?\d*[A-z]"
+                let regex = System.Text.RegularExpressions.Regex regexPattern
+                if regex.IsMatch testName then testName
+                else $"%s{testName} (%%A)"
+            Printf.StringFormat<'dataType -> string> tn
+            
+        let (TestBodyThreeParameters testBody) = testBody
+        
+        let getTestName input =
+            let name = sprintf testNameFormat input
+            getFixedName name
+            
+        let (Data data) = data
+        
+        data
+        |> Seq.map (fun datum ->
+            ctor (tags, setup, (TestBodyTwoParameters (testBody datum)), teardown, getTestName datum, fileFullName, lineNumber)
+        )
+        |> List.ofSeq
+        
     interface IBuilder<'featureType, ITest> with
         member _.Add (internals: TestInternals, executor: ISetupTeardownExecutor<'featureType>) =
             let test = transformer (internals, executor)
@@ -92,71 +125,11 @@ type Feature<'featureType> (featurePath, featureName, featureTags: TestTag list,
         
     abstract member Test:   tags: TagsIndicator * setup: SetupIndicator<'featureType, 'setupType> * data: DataIndicator<'dataType> * testBody: TestBodyIndicatorThreeParameters<'dataType, 'setupType, TestEnvironment> * teardown: TeardownIndicator<'setupType> * [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> ITest list
     default    this.Test   (tags: TagsIndicator, setup: SetupIndicator<'featureType, 'setupType>, data: DataIndicator<'dataType>, testBody: TestBodyIndicatorThreeParameters<'dataType, 'setupType, TestEnvironment>, teardown: TeardownIndicator<'setupType>, [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
-        let names = System.Collections.Generic.Dictionary<string, int>()
-        let getFixedName name =
-            if names.ContainsKey name |> not then
-                names.Add (name, 1)
-                name
-            else
-                let c = names[name]
-                names[name] <- c + 1
-                $"%s{name}^%i{c}"
-                
-        let testNameFormat =
-            let tn = 
-                let regexPattern = @"(^|[^%])%(\d+-)?\d*[A-z]"
-                let regex = System.Text.RegularExpressions.Regex regexPattern
-                if regex.IsMatch testName then testName
-                else $"%s{testName} (%%A)"
-            Printf.StringFormat<'dataType -> string> tn
-            
-        let (TestBodyThreeParameters testBody) = testBody
-        
-        let getTestName input =
-            let name = sprintf testNameFormat input
-            getFixedName name
-            
-        let (Data data) = data
-        
-        data
-        |> Seq.map (fun datum ->
-            this.Test (tags, setup, (TestBodyTwoParameters (testBody datum)), teardown, getTestName datum, fileFullName, lineNumber)
-        )
-        |> List.ofSeq
+        buildDataTests this.Test tags setup data testBody teardown testName fileFullName lineNumber
         
     abstract member Ignore:   tags: TagsIndicator * setup: SetupIndicator<'featureType, 'setupType> * data: DataIndicator<'dataType> * testBody: TestBodyIndicatorThreeParameters<'dataType, 'setupType, TestEnvironment> * teardown: TeardownIndicator<'setupType> * [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> ITest list
     default    this.Ignore   (tags: TagsIndicator, setup: SetupIndicator<'featureType, 'setupType>, data: DataIndicator<'dataType>, testBody: TestBodyIndicatorThreeParameters<'dataType, 'setupType, TestEnvironment>, teardown: TeardownIndicator<'setupType>, [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
-        let names = System.Collections.Generic.Dictionary<string, int>()
-        let testNameFormat =
-            let tn = 
-                let regexPattern = @"(^|[^%])%(\d+-)?\d*[A-z]"
-                let regex = System.Text.RegularExpressions.Regex regexPattern
-                if regex.IsMatch testName then testName
-                else $"%s{testName} (%%A)"
-            Printf.StringFormat<'dataType -> string> tn
-            
-        let getFixedName name =
-            if names.ContainsKey name |> not then
-                names.Add (name, 1)
-                name
-            else
-                let c = names[name]
-                names[name] <- c + 1
-                $"%s{name}^%i{c}"
-                
-        let (TestBodyThreeParameters testBody) = testBody
-        
-        let getTestName input =
-            let name = sprintf testNameFormat input
-            getFixedName name
-            
-        let (Data data) = data
-        
-        data
-        |> Seq.map (fun datum ->
-            this.Ignore (tags, setup, (TestBodyTwoParameters (testBody datum)), teardown, getTestName datum, fileFullName, lineNumber)
-        )
-        |> List.ofSeq
+        buildDataTests this.Ignore tags setup data testBody teardown testName fileFullName lineNumber
         
     interface IFeature<'featureType> with
         member _.FeatureTags with get () = featureTags
