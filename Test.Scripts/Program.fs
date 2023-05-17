@@ -48,6 +48,7 @@ runner
     ``Feature Test with tags setup TestFunction teardown should``.``Test Cases``
     ``Feature Test with tags setup TestFunctionTwoParameters should``.``Test Cases``
     ``Feature Test with tags setup TestFunction should``.``Test Cases``
+    ``Feature Test with tags setup data TestFunctionThreeParameters should``.``Test Cases``
     
     ``Arrow Tests``.``Test Cases``
     ``Arrow Tests With Setup``.``Test Cases``

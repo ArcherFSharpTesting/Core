@@ -15,6 +15,20 @@ let randomLetter () =
     
     letters[i]
     
+let randomDistinctLetters length =
+    let catch = System.Collections.Generic.List<string>() 
+    let rec getLetters length =
+        if length < 1 then catch |> List.ofSeq
+        else
+            let letter = randomLetter ()
+            if catch.Contains letter then getLetters length
+            else
+                catch.Add letter
+                length - 1 |> getLetters
+                
+    getLetters length
+    
+    
 let randomCapitalLetter () =
     let letter = randomLetter ()
     letter.ToUpper ()
