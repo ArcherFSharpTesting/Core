@@ -186,9 +186,6 @@ type Feature<'featureType> (featurePath, featureName, featureTags: TestTag list,
         member this.Test   (testName: string, tags: TagsIndicator, setup: SetupIndicator<'featureType, 'setupType>, testBody: TestBodyIndicatorTwoParameters<'setupType, TestEnvironment>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             this.Test (tags, setup, testBody, emptyTeardown, testName, fileFullName, lineNumber)
             
-        member this.Ignore (testName: string, tags: TagsIndicator, setup: SetupIndicator<'featureType, 'setupType>, testBody: TestBodyIndicatorTwoParameters<'setupType, TestEnvironment>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
-            this.Ignore (tags, setup, testBody, emptyTeardown, testName, fileFullName, lineNumber)
-            
         member this.Test   (testName: string, tags: TagsIndicator, testBody: TestFunctionTwoParameters<'featureType, TestEnvironment>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             this.Test (tags, Setup Ok, TestBodyTwoParameters testBody, emptyTeardown, testName, fileFullName, lineNumber)
             
