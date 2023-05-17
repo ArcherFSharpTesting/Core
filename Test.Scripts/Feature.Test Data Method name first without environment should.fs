@@ -38,7 +38,7 @@ let ``return an ITest with everything when everything is passed`` =
                     TestTags testTags,
                     Setup (fun _ -> Ok ()),
                     Data [1; 2; 3],
-                    TestBodyTwoParameters (fun _ _ -> TestSuccess),
+                    TestBody (fun _ _ -> TestSuccess),
                     emptyTeardown,
                     fullPath,
                     lineNumber
@@ -97,7 +97,7 @@ let ``return an ITest with everything when everything is passed no name hints`` 
                     TestTags testTags,
                     Setup (fun _ -> Ok ()),
                     Data [1; 2; 3],
-                    TestBodyTwoParameters (fun _ _ -> TestSuccess),
+                    TestBody (fun _ _ -> TestSuccess),
                     emptyTeardown,
                     fullPath,
                     lineNumber
@@ -148,7 +148,7 @@ let ``run setup method passed to it when everything is passed`` =
                             ],
                     Setup monitor.CallSetup,
                     Data [1; 2; 3],
-                    TestBodyTwoParameters (fun _ _ -> TestSuccess),
+                    TestBody (fun _ _ -> TestSuccess),
                     emptyTeardown,
                     "D:\\dog.bark",
                     73
@@ -177,7 +177,7 @@ let ``run the test method passed to it when everything is passed`` =
                             ],
                     Setup monitor.CallSetup,
                     Data [1;5;9],
-                    TestBodyTwoParameters monitor.CallTestActionWithDataSetup,
+                    TestBody monitor.CallTestActionWithDataSetup,
                     Teardown monitor.CallTeardown,
                     "D:\\dog.bark",
                     73
@@ -206,7 +206,7 @@ let ``run the test method defined with everything by calling it with data`` =
                             ],
                     Setup monitor.CallSetup,
                     Data [1;5;9],
-                    TestBodyTwoParameters monitor.CallTestActionWithDataSetup,
+                    TestBody monitor.CallTestActionWithDataSetup,
                     Teardown monitor.CallTeardown,
                     "D:\\dog.bark",
                     73
@@ -235,7 +235,7 @@ let ``run the teardown method passed to it when everything is passed`` =
                             ],
                     Setup monitor.CallSetup,
                     Data [1; 2],
-                    TestBodyTwoParameters monitor.CallTestActionWithDataSetup,
+                    TestBody monitor.CallTestActionWithDataSetup,
                     Teardown monitor.CallTeardown,
                     "D:\\dog.bark",
                     73
@@ -273,7 +273,7 @@ let ``return an ITest with everything when given no teardown`` =
                     TestTags testTags,
                     Setup (fun _ -> Ok ()),
                     Data ['Z';'p';'M'],
-                    TestBodyTwoParameters (fun _ _ -> TestSuccess),
+                    TestBody (fun _ _ -> TestSuccess),
                     fullPath,
                     lineNumber
                 )
@@ -331,7 +331,7 @@ let ``return an ITest with everything when given no teardown no name hints`` =
                     TestTags testTags,
                     Setup (fun _ -> Ok ()),
                     Data ['Z';'p';'p'],
-                    TestBodyTwoParameters (fun _ _ -> TestSuccess),
+                    TestBody (fun _ _ -> TestSuccess),
                     fullPath,
                     lineNumber
                 )
@@ -381,7 +381,7 @@ let ``run setup method passed to it when given no teardown`` =
                             ],
                     Setup monitor.CallSetup,
                     Data ["First"; "Second"; "Last"],
-                    TestBodyTwoParameters (fun _ _ -> TestSuccess),
+                    TestBody (fun _ _ -> TestSuccess),
                     "D:\\dog.bark",
                     73
                 )
@@ -409,7 +409,7 @@ let ``run the test method passed to it when given no teardown`` =
                             ],
                     Setup monitor.CallSetup,
                     Data ["One"; "Two"; "Three"],
-                    TestBodyTwoParameters monitor.CallTestActionWithDataSetup,
+                    TestBody monitor.CallTestActionWithDataSetup,
                     "D:\\dog.bark",
                     73
                 )
@@ -437,7 +437,7 @@ let ``run the test method passed to it when given no teardown by calling it with
                             ],
                     Setup monitor.CallSetup,
                     Data ["One"; "Two"; "Three"],
-                    TestBodyTwoParameters monitor.CallTestActionWithDataSetup,
+                    TestBody monitor.CallTestActionWithDataSetup,
                     "D:\\dog.bark",
                     73
                 )
@@ -523,7 +523,7 @@ let ``run the test method passed to it when given no setup`` =
                                 Category "My Category"
                             ],
                     Data [2; 5; 8;],
-                    TestBodyTwoParameters monitor.CallTestActionWithDataSetup,
+                    TestBody monitor.CallTestActionWithDataSetup,
                     Teardown monitor.CallTeardown,
                     "D:\\dog.bark",
                     73
@@ -552,7 +552,7 @@ let ``run the test method passed to it when given no setup by calling it with da
                                 Category "My Category"
                             ],
                     Data [2; 5; 8;],
-                    TestBodyTwoParameters monitor.CallTestActionWithDataSetup,
+                    TestBody monitor.CallTestActionWithDataSetup,
                     Teardown monitor.CallTeardown,
                     "D:\\dog.bark",
                     73
@@ -579,7 +579,7 @@ let ``run the teardown method passed to it when given no setup`` =
                                 Category "My Category"
                             ],
                     Data [7; 8; 3],
-                    TestBodyTwoParameters monitor.CallTestActionWithDataSetup,
+                    TestBody monitor.CallTestActionWithDataSetup,
                     Teardown monitor.CallTeardown,
                     "D:\\dog.bark",
                     73
@@ -842,7 +842,7 @@ let ``return an ITest with everything when given no tags`` =
                     testName,
                     Setup (fun _ -> Ok ()),
                     Data [6; 2; 8],
-                    TestBodyTwoParameters (fun _ _ -> TestSuccess),
+                    TestBody (fun _ _ -> TestSuccess),
                     emptyTeardown,
                     fullPath,
                     lineNumber
@@ -895,7 +895,7 @@ let ``return an ITest with everything when given no tags no name hints`` =
                     testName,
                     Setup (fun _ -> Ok ()),
                     Data [6; 2; 8],
-                    TestBodyTwoParameters (fun _ _ -> TestSuccess),
+                    TestBody (fun _ _ -> TestSuccess),
                     emptyTeardown,
                     fullPath,
                     lineNumber
@@ -920,7 +920,7 @@ let ``run setup method passed to it when given no tags`` =
                     "My test",
                     Setup monitor.CallSetup,
                     Data [5; 1; 7],
-                    TestBodyTwoParameters (fun _ _ -> TestSuccess),
+                    TestBody (fun _ _ -> TestSuccess),
                     emptyTeardown,
                     "D:\\dog.bark",
                     73
@@ -945,7 +945,7 @@ let ``run the test method passed to it when given no tags`` =
                     "My test",
                     Setup monitor.CallSetup,
                     Data [5; 9; 3],
-                    TestBodyTwoParameters monitor.CallTestActionWithDataSetup,
+                    TestBody monitor.CallTestActionWithDataSetup,
                     Teardown monitor.CallTeardown,
                     "D:\\dog.bark",
                     73
@@ -970,7 +970,7 @@ let ``run the test method passed to it when given no tags by calling it with tes
                     "My test",
                     Setup monitor.CallSetup,
                     Data [5; 9; 3],
-                    TestBodyTwoParameters monitor.CallTestActionWithDataSetup,
+                    TestBody monitor.CallTestActionWithDataSetup,
                     Teardown monitor.CallTeardown,
                     "D:\\dog.bark",
                     73
@@ -995,7 +995,7 @@ let ``run the teardown method passed to it when given no tags`` =
                     "My test",
                     Setup monitor.CallSetup,
                     Data [('a', 'Z'); ('z', 'D'); ('d', 'A')],
-                    TestBodyTwoParameters monitor.CallTestActionWithDataSetup,
+                    TestBody monitor.CallTestActionWithDataSetup,
                     Teardown monitor.CallTeardown,
                     "D:\\dog.bark",
                     73
@@ -1027,7 +1027,7 @@ let ``return an ITest with everything when given no tags, no teardown`` =
                     testName,
                     Setup (fun _ -> Ok ()),
                     Data [('a', 'F'); ('f', 'G'); ('g', 'A')],
-                    TestBodyTwoParameters (fun _ _ -> TestSuccess),
+                    TestBody (fun _ _ -> TestSuccess),
                     fullPath,
                     lineNumber
                 )
@@ -1079,7 +1079,7 @@ let ``return an ITest with everything when given no tags, no teardown, no name h
                     testName,
                     Setup (fun _ -> Ok ()),
                     Data [('a', 'F'); ('f', 'G'); ('g', 'A')],
-                    TestBodyTwoParameters (fun _ _ -> TestSuccess),
+                    TestBody (fun _ _ -> TestSuccess),
                     fullPath,
                     lineNumber
                 )
@@ -1103,7 +1103,7 @@ let ``run setup method passed to it when given no tags, no teardown`` =
                     "My test",
                     Setup monitor.CallSetup,
                     Data ['a'; 'b'; 'c'; 'd'],
-                    TestBodyTwoParameters (fun _ _ -> TestSuccess),
+                    TestBody (fun _ _ -> TestSuccess),
                     "D:\\dog.bark",
                     73
                 )
@@ -1127,7 +1127,7 @@ let ``run the test method passed to it when given no tags, no teardown`` =
                     "My test",
                     Setup monitor.CallSetup,
                     Data ['a'; 'b'; 'c'; 'd'],
-                    TestBodyTwoParameters monitor.CallTestActionWithDataSetup,
+                    TestBody monitor.CallTestActionWithDataSetup,
                     "D:\\dog.bark",
                     73
                 )
@@ -1151,7 +1151,7 @@ let ``run the test method passed to it when given no tags, no teardown by callin
                     "My test",
                     Setup monitor.CallSetup,
                     Data ['a'; 'b'; 'c'; 'd'],
-                    TestBodyTwoParameters monitor.CallTestActionWithDataSetup,
+                    TestBody monitor.CallTestActionWithDataSetup,
                     "D:\\dog.bark",
                     73
                 )

@@ -37,7 +37,7 @@ let ``return an ITest with everything when given no teardown`` =
                     TestTags testTags,
                     Setup (fun _ -> Ok ()),
                     Data (seq{ 12..12..36 }),
-                    TestBodyThreeParameters (fun _ _ _ -> TestSuccess),
+                    TestBody (fun _ _ _ -> TestSuccess),
                     testName,
                     fullPath,
                     lineNumber
@@ -95,7 +95,7 @@ let ``return an ITest with everything when given no teardown, no name hints`` =
                     TestTags testTags,
                     Setup (fun _ -> Ok ()),
                     Data (seq{ 12..12..36 }),
-                    TestBodyThreeParameters (fun _ _ _ -> TestSuccess),
+                    TestBody (fun _ _ _ -> TestSuccess),
                     testName,
                     fullPath,
                     lineNumber
@@ -123,7 +123,7 @@ let ``not run setup method passed to it when given no teardown`` =
                             ],
                     Setup monitor.CallSetup,
                     Data (seq{ 12..12..36 }),
-                    TestBodyThreeParameters (fun _ _ _ -> TestSuccess),
+                    TestBody (fun _ _ _ -> TestSuccess),
                     "My test",
                     "D:\\dog.bark",
                     73
@@ -151,7 +151,7 @@ let ``not run the test method passed to it when given no teardown`` =
                             ],
                     Setup monitor.CallSetup,
                     Data (seq{ 12..12..36 }),
-                    TestBodyThreeParameters monitor.CallTestActionWithDataSetupEnvironment,
+                    TestBody monitor.CallTestActionWithDataSetupEnvironment,
                     "My test",
                     "D:\\dog.bark",
                     73
@@ -179,7 +179,7 @@ let ``return an ignored failure upon test being executed executed when given no 
                             ],
                     Setup monitor.CallSetup,
                     Data (seq{ 12..12..36 }),
-                    TestBodyThreeParameters monitor.CallTestActionWithDataSetupEnvironment,
+                    TestBody monitor.CallTestActionWithDataSetupEnvironment,
                     "My test",
                     "D:\\dog.bark",
                     73
@@ -212,7 +212,7 @@ let ``return an ITest with everything when given no tags`` =
                 testFeature.Ignore (
                     Setup (fun _ -> Ok ()),
                     Data (seq { 9..9..27 }),
-                    TestBodyThreeParameters (fun _ _ _ -> TestSuccess),
+                    TestBody (fun _ _ _ -> TestSuccess),
                     emptyTeardown,
                     testName,
                     fullPath,
@@ -265,7 +265,7 @@ let ``return an ITest with everything when given no tags, no name hints`` =
                 testFeature.Ignore (
                     Setup (fun _ -> Ok ()),
                     Data (seq { 9..9..27 }),
-                    TestBodyThreeParameters (fun _ _ _ -> TestSuccess),
+                    TestBody (fun _ _ _ -> TestSuccess),
                     emptyTeardown,
                     testName,
                     fullPath,
@@ -290,7 +290,7 @@ let ``not run setup method passed to it when given no tags`` =
                 testFeature.Ignore (
                     Setup monitor.CallSetup,
                     Data (seq{ 9..9..27 }),
-                    TestBodyThreeParameters (fun _ _ _ -> TestSuccess),
+                    TestBody (fun _ _ _ -> TestSuccess),
                     emptyTeardown,
                     "My test",
                     "D:\\dog.bark",
@@ -315,7 +315,7 @@ let ``not run the test method passed to it when given no tags`` =
                 testFeature.Ignore (
                     Setup monitor.CallSetup,
                     Data (seq{ 9..9..27 }),
-                    TestBodyThreeParameters monitor.CallTestActionWithDataSetupEnvironment,
+                    TestBody monitor.CallTestActionWithDataSetupEnvironment,
                     Teardown monitor.CallTeardown,
                     "My test",
                     "D:\\dog.bark",
@@ -340,7 +340,7 @@ let ``return an ignored failure upon test being executed executed when given no 
                 testFeature.Ignore (
                     Setup monitor.CallSetup,
                     Data (seq{ 9..9..27 }),
-                    TestBodyThreeParameters monitor.CallTestActionWithDataSetupEnvironment,
+                    TestBody monitor.CallTestActionWithDataSetupEnvironment,
                     Teardown monitor.CallTeardown,
                     "My test",
                     "D:\\dog.bark",
@@ -367,7 +367,7 @@ let ``not run the teardown method passed to it when given no tags`` =
                 testFeature.Ignore (
                     Setup monitor.CallSetup,
                     Data (seq{ 9..9..27 }),
-                    TestBodyThreeParameters monitor.CallTestActionWithDataSetupEnvironment,
+                    TestBody monitor.CallTestActionWithDataSetupEnvironment,
                     Teardown monitor.CallTeardown,
                     "My test",
                     "D:\\dog.bark",
@@ -399,7 +399,7 @@ let ``return an ITest with everything when given no tags, no teardown`` =
                 testFeature.Ignore (
                     Setup (fun _ -> Ok ()),
                     Data (seq{ 9..-9..-9 }),
-                    TestBodyThreeParameters (fun _ _ _ -> TestSuccess),
+                    TestBody (fun _ _ _ -> TestSuccess),
                     testName,
                     fullPath,
                     lineNumber
@@ -451,7 +451,7 @@ let ``return an ITest with everything when given no tags, no teardown, no name h
                 testFeature.Ignore (
                     Setup (fun _ -> Ok ()),
                     Data (seq{ 9..-9..-9 }),
-                    TestBodyThreeParameters (fun _ _ _ -> TestSuccess),
+                    TestBody (fun _ _ _ -> TestSuccess),
                     testName,
                     fullPath,
                     lineNumber
@@ -475,7 +475,7 @@ let ``not run setup method passed to it when given no tags, no teardown`` =
                 testFeature.Ignore (
                     Setup monitor.CallSetup,
                     Data (seq{ 9..-9..-9 }),
-                    TestBodyThreeParameters (fun _ _ _ -> TestSuccess),
+                    TestBody (fun _ _ _ -> TestSuccess),
                     "My test",
                     "D:\\dog.bark",
                     73
@@ -499,7 +499,7 @@ let ``not run the test method passed to it when given no tags, no teardown`` =
                 testFeature.Ignore (
                     Setup monitor.CallSetup,
                     Data (seq { 9..-9..-9 }),
-                    TestBodyThreeParameters monitor.CallTestActionWithDataSetupEnvironment,
+                    TestBody monitor.CallTestActionWithDataSetupEnvironment,
                     "My test",
                     "D:\\dog.bark",
                     73
@@ -523,7 +523,7 @@ let ``return an ignored failure upon test being executed executed when no teardo
                 testFeature.Ignore (
                     Setup monitor.CallSetup,
                     Data (seq { 9..-9..-9 }),
-                    TestBodyThreeParameters monitor.CallTestActionWithDataSetupEnvironment,
+                    TestBody monitor.CallTestActionWithDataSetupEnvironment,
                     "My test",
                     "D:\\dog.bark",
                     73
