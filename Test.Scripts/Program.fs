@@ -47,7 +47,6 @@ runner
     ``Feature Ignore Should``.``Test Cases``
     ``Test Method without environment should``.``Test Cases``
     ``Test Method with environment should``.``Test Cases``
-    ``Ignore Method without environment should``.``Test Cases``
     ``Ignore Method with environment should``.``Test Cases``
     ``Arrow Ignore``.``Test Cases``
     ``Test Method name first without environment should``.``Test Cases``
