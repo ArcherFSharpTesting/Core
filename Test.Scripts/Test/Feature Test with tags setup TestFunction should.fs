@@ -1,4 +1,4 @@
-module Archer.Arrows.Tests.Test.``Feature Test with tags setup TestFunctionTwoParameters teardown should``
+module Archer.Arrows.Tests.Test.``Feature Test with tags setup TestFunction should``
 
 open System
 open Archer
@@ -43,8 +43,7 @@ let ``Create a valid ITest`` =
                 testFeature.Test (
                     TestTags tags,
                     Setup monitor.CallSetup,
-                    TestBody monitor.CallTestActionWithSetupEnvironment,
-                    Teardown monitor.CallTeardown,
+                    TestBody monitor.CallTestActionWithSetup,
                     testName,
                     fullPath,
                     lineNumber
@@ -84,8 +83,7 @@ let ``Call setup when executed`` =
                 testFeature.Test (
                     TestTags tags,
                     Setup monitor.CallSetup,
-                    TestBody monitor.CallTestActionWithSetupEnvironment,
-                    Teardown monitor.CallTeardown,
+                    TestBody monitor.CallTestActionWithSetup,
                     testName,
                     fullPath,
                     lineNumber
@@ -123,8 +121,7 @@ let ``Call Test when executed`` =
                 testFeature.Test (
                     TestTags tags,
                     Setup monitor.CallSetup,
-                    TestBody monitor.CallTestActionWithSetupEnvironment,
-                    Teardown monitor.CallTeardown,
+                    TestBody monitor.CallTestActionWithSetup,
                     testName,
                     fullPath,
                     lineNumber
@@ -162,8 +159,7 @@ let ``Call Test with return value of setup when executed`` =
                 testFeature.Test (
                     TestTags tags,
                     Setup monitor.CallSetup,
-                    TestBody monitor.CallTestActionWithSetupEnvironment,
-                    Teardown monitor.CallTeardown,
+                    TestBody monitor.CallTestActionWithSetup,
                     testName,
                     fullPath,
                     lineNumber
@@ -175,88 +171,6 @@ let ``Call Test with return value of setup when executed`` =
             monitor.TestInputSetupWas
             |> Should.BeEqualTo [setupValue]
             |> withMessage "Test was not called"
-        ) 
-    )
-
-let ``Call Test with test environment when executed`` =
-    feature.Test (
-        Setup setupFeatureUnderTest,
-        TestBody (fun (testFeature: IFeature<unit>) ->
-            let testName = $"My %s{randomWord 5} Test"
-            let path = $"%s{randomCapitalLetter ()}:\\"
-            let fileName = $"%s{randomWord (rand.Next (1, 5))}.%s{randomLetter ()}"
-            let fullPath = $"%s{path}%s{fileName}"
-            let lineNumber = rand.Next ()
-            let setupValue = rand.Next ()
-            
-            let monitor = Monitor (Ok setupValue)
-            
-            let tags = [
-                Category "Not important"
-                Only
-                Serial
-            ]
-            
-            let test =
-                testFeature.Test (
-                    TestTags tags,
-                    Setup monitor.CallSetup,
-                    TestBody monitor.CallTestActionWithSetupEnvironment,
-                    Teardown monitor.CallTeardown,
-                    testName,
-                    fullPath,
-                    lineNumber
-                )
-                
-            test
-            |> silentlyRunTest
-            
-            monitor.TestEnvironmentWas
-            |> Should.PassAllOf [
-                ListShould.HaveLengthOf 1 >> withMessage "Incorrect number of calls to test"
-                List.head >> (fun env -> env.ApiEnvironment.ApiName) >> Should.BeEqualTo "Archer.Arrows"
-                List.head >> (fun env -> env.ApiEnvironment.ApiVersion) >> Should.BeEqualTo (Version "0.0.0.34") >> withMessage "Api Version"
-                List.head >> (fun env -> env.TestInfo) >> Should.BeEqualTo test
-            ]
-        ) 
-    )
-    
-let ``Call teardown when executed`` =
-    feature.Test (
-        Setup setupFeatureUnderTest,
-        TestBody (fun (testFeature: IFeature<unit>) ->
-            let testName = $"My %s{randomWord 5} Test"
-            let path = $"%s{randomCapitalLetter ()}:\\"
-            let fileName = $"%s{randomWord (rand.Next (1, 5))}.%s{randomLetter ()}"
-            let fullPath = $"%s{path}%s{fileName}"
-            let lineNumber = rand.Next ()
-            let setupValue = rand.Next ()
-            
-            let monitor = Monitor (Ok setupValue)
-            
-            let tags = [
-                Category "Not important"
-                Only
-                Serial
-            ]
-            
-            let test =
-                testFeature.Test (
-                    TestTags tags,
-                    Setup monitor.CallSetup,
-                    TestBody monitor.CallTestActionWithSetupEnvironment,
-                    Teardown monitor.CallTeardown,
-                    testName,
-                    fullPath,
-                    lineNumber
-                )
-                
-            test
-            |> silentlyRunTest
-            
-            monitor.TeardownWasCalled
-            |> Should.BeTrue
-            |> withMessage "Teardown was not called"
         ) 
     )
 

@@ -21,6 +21,7 @@
     <Compile Include="Test\Feature Test with tags setup TestFunctionTwoParameters teardown should.fs" />
     <Compile Include="Test\Feature Test with tags setup TestFunction teardown should.fs" />
     <Compile Include="Test\Feature Test with tags setup TestFunctionTwoParameters should.fs" />
+    <Compile Include="Test\Feature Test with tags setup TestFunction should.fs" />
     <Compile Include="Arrow NewFeature.fs" />
     <Compile Include="Arrow Ignorefs.fs" />
     <Compile Include="Arrow NewFeature With Setup.fs" />
