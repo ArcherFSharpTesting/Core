@@ -6,6 +6,24 @@ open Archer.Arrows
 open Archer.Arrows.Internals
 open Archer.MicroLang
 
+let private rand = System.Random ()
+
+let randomLetter () =
+    let letters = seq{'A'..'a'} |> Seq.map (sprintf "%c") |> Array.ofSeq
+    let max = letters.Length - 1
+    let i = rand.Next (0, max)
+    
+    letters[i]
+    
+let randomCapitalLetter () =
+    let letter = randomLetter ()
+    letter.ToUpper ()
+    
+let randomWord length =
+    seq{ 0..(length - 1) }
+    |> Seq.map (fun _ -> randomLetter ())
+    |> fun items -> System.String.Join ("", items)
+
 let buildFeatureUnderTestWithSetupAndTeardown setup teardown =
     Arrow.NewFeature (ignoreString (), ignoreString (), setup, teardown)
 

@@ -1,6 +1,7 @@
 ﻿open Archer.Arrows.Tests
 open Archer.Arrows.Tests.Feature
 open Archer.Arrows.Tests.RawTestObjects
+open Archer.Arrows.Tests.Test
 open Archer.Bow
 open Archer
 open Archer.CoreTypes.InternalTypes
@@ -42,15 +43,14 @@ runner
     ``Arrow NewFeature``.``Test Cases``
     ``Arrow NewFeature With Setup``.``Test Cases``
     ``Arrow NewFeature With Teardown``.``Test Cases``
+    
+    ``Feature Test with tags setup TestFunctionTwoParameters teardown should``.``Test Cases``
+    
     ``Arrow Tests``.``Test Cases``
     ``Arrow Tests With Setup``.``Test Cases``
     ``Feature Ignore Should``.``Test Cases``
-    ``Test Method without environment should``.``Test Cases``
-    ``Test Method with environment should``.``Test Cases``
     ``Ignore Method with environment should``.``Test Cases``
     ``Arrow Ignore``.``Test Cases``
-    ``Test Method name first without environment should``.``Test Cases``
-    ``Test Method name first with environment should``.``Test Cases``
     ``Ignore Method name first without environment should``.``Test Cases``
     ``Test Data Method without environment should``.``Test Cases``
     ``Test Data Method name first without environment should``.``Test Cases``
