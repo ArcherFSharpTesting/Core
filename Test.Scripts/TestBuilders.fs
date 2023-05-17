@@ -9,7 +9,7 @@ open Archer.MicroLang
 let private rand = System.Random ()
 
 let randomLetter () =
-    let letters = seq{'A'..'a'} |> Seq.map (sprintf "%c") |> Array.ofSeq
+    let letters = seq { seq{'A'..'Z'}; seq{'a'..'z'} } |> Seq.concat |> Seq.map (sprintf "%c") |> Array.ofSeq
     let max = letters.Length - 1
     let i = rand.Next (0, max)
     

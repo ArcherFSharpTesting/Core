@@ -45,6 +45,8 @@ runner
     ``Arrow NewFeature With Teardown``.``Test Cases``
     
     ``Feature Test with tags setup TestFunctionTwoParameters teardown should``.``Test Cases``
+    ``Feature Test with tags setup TestFunction teardown should``.``Test Cases``
+    ``Feature Test with tags setup TestFunctionTwoParameters should``.``Test Cases``
     
     ``Arrow Tests``.``Test Cases``
     ``Arrow Tests With Setup``.``Test Cases``

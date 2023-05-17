@@ -1,4 +1,4 @@
-module Archer.Arrows.Tests.Test.``Feature Test with tags setup TestFunctionTwoParameters teardown should``
+module Archer.Arrows.Tests.Test.``Feature Test with tags setup TestFunctionTwoParameters should``
 
 open System
 open Archer
@@ -43,7 +43,6 @@ let ``Create a valid ITest`` =
                     TestTags tags,
                     Setup monitor.CallSetup,
                     TestBody monitor.CallTestActionWithSetupEnvironment,
-                    Teardown monitor.CallTeardown,
                     testName,
                     fullPath,
                     lineNumber
@@ -71,8 +70,7 @@ let ``Call setup when executed`` =
             let lineNumber = rand.Next ()
             let setupValue = rand.Next ()
             
-            let monitor = Monitor (Ok setupValue)
-            
+            let monitor = Monitor (Ok setupValue)         
             let tags = [
                 Category "Not important"
                 Only
@@ -84,7 +82,6 @@ let ``Call setup when executed`` =
                     TestTags tags,
                     Setup monitor.CallSetup,
                     TestBody monitor.CallTestActionWithSetupEnvironment,
-                    Teardown monitor.CallTeardown,
                     testName,
                     fullPath,
                     lineNumber
@@ -123,7 +120,6 @@ let ``Call Test when executed`` =
                     TestTags tags,
                     Setup monitor.CallSetup,
                     TestBody monitor.CallTestActionWithSetupEnvironment,
-                    Teardown monitor.CallTeardown,
                     testName,
                     fullPath,
                     lineNumber
@@ -162,7 +158,6 @@ let ``Call Test with return value of setup when executed`` =
                     TestTags tags,
                     Setup monitor.CallSetup,
                     TestBody monitor.CallTestActionWithSetupEnvironment,
-                    Teardown monitor.CallTeardown,
                     testName,
                     fullPath,
                     lineNumber
@@ -201,7 +196,6 @@ let ``Call Test with test environment when executed`` =
                     TestTags tags,
                     Setup monitor.CallSetup,
                     TestBody monitor.CallTestActionWithSetupEnvironment,
-                    Teardown monitor.CallTeardown,
                     testName,
                     fullPath,
                     lineNumber
@@ -217,45 +211,6 @@ let ``Call Test with test environment when executed`` =
                 List.head >> (fun env -> env.ApiEnvironment.ApiVersion) >> Should.BeEqualTo (Version "0.0.0.34") >> withMessage "Api Version"
                 List.head >> (fun env -> env.TestInfo) >> Should.BeEqualTo test
             ]
-        ) 
-    )
-    
-let ``Call teardown when executed`` =
-    feature.Test (
-        Setup setupFeatureUnderTest,
-        TestBody (fun (testFeature: IFeature<unit>) ->
-            let testName = $"My %s{randomWord 5} Test"
-            let path = $"%s{randomCapitalLetter ()}:\\"
-            let fileName = $"%s{randomWord (rand.Next (1, 5))}.%s{randomLetter ()}"
-            let fullPath = $"%s{path}%s{fileName}"
-            let lineNumber = rand.Next ()
-            let setupValue = rand.Next ()
-            
-            let monitor = Monitor (Ok setupValue)
-            
-            let tags = [
-                Category "Not important"
-                Only
-                Serial
-            ]
-            
-            let test =
-                testFeature.Test (
-                    TestTags tags,
-                    Setup monitor.CallSetup,
-                    TestBody monitor.CallTestActionWithSetupEnvironment,
-                    Teardown monitor.CallTeardown,
-                    testName,
-                    fullPath,
-                    lineNumber
-                )
-                
-            test
-            |> silentlyRunTest
-            
-            monitor.TeardownWasCalled
-            |> Should.BeTrue
-            |> withMessage "Teardown was not called"
         ) 
     )
 
