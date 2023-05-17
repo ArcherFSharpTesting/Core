@@ -167,27 +167,27 @@ type Feature<'featureType> (featurePath, featureName, featureTags: TestTag list,
             this.Test (tags, Setup Ok, TestBodyTwoParameters testBody, emptyTeardown, testName, fileFullName, lineNumber)
             
         // --------- TEST TAGS (without environment) ---------
-        member this.Test  (tags: TagsIndicator, setup: SetupIndicator<'featureType, 'setupType>, testBody: TestBodyIndicator<'setupType>, teardown: TeardownIndicator<'setupType>, [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+        member this.Test  (tags: TagsIndicator, setup: SetupIndicator<'featureType, 'setupType>, testBody: TestBodyIndicator<TestFunction<'setupType>>, teardown: TeardownIndicator<'setupType>, [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
            let (TestBody testBody) = testBody
            this.Test (tags, setup, testBodyOneToTwo testBody, teardown, testName, fileFullName, lineNumber)
            
-        member this.Test   (testName: string, tags: TagsIndicator, testBody: TestBodyIndicator<'featureType>, teardown: TeardownIndicator<unit>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+        member this.Test   (testName: string, tags: TagsIndicator, testBody: TestBodyIndicator<TestFunction<'featureType>>, teardown: TeardownIndicator<unit>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             let (TestBody testBody) = testBody
             this.Test (tags, Setup Ok, testBodyOneToTwo testBody, wrapTeardown teardown, testName, fileFullName, lineNumber)
             
-        member this.Test   (testName: string, tags: TagsIndicator, testBody: TestBodyIndicator<'featureType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+        member this.Test   (testName: string, tags: TagsIndicator, testBody: TestBodyIndicator<TestFunction<'featureType>>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             let (TestBody testBody) = testBody
             this.Test (tags, Setup Ok, testBodyOneToTwo testBody, emptyTeardown, testName, fileFullName, lineNumber)
             
-        member this.Test   (tags: TagsIndicator, testBody: TestBodyIndicator<'featureType>, teardown: TeardownIndicator<unit>, [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+        member this.Test   (tags: TagsIndicator, testBody: TestBodyIndicator<TestFunction<'featureType>>, teardown: TeardownIndicator<unit>, [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             let (TestBody testBody) = testBody
             this.Test (tags, Setup Ok, testBodyOneToTwo testBody, wrapTeardown teardown, testName, fileFullName, lineNumber)
             
-        member this.Test   (tags: TagsIndicator, setup: SetupIndicator<'featureType, 'setupType>, testBody: TestBodyIndicator<'setupType>, [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+        member this.Test   (tags: TagsIndicator, setup: SetupIndicator<'featureType, 'setupType>, testBody: TestBodyIndicator<TestFunction<'setupType>>, [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             let (TestBody testBody) = testBody
             this.Test (tags, setup, testBodyOneToTwo testBody, emptyTeardown, testName, fileFullName, lineNumber)
             
-        member this.Test   (tags: TagsIndicator, testBody: TestBodyIndicator<'featureType>, [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+        member this.Test   (tags: TagsIndicator, testBody: TestBodyIndicator<TestFunction<'featureType>>, [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             let (TestBody testBody) = testBody
             this.Test (tags, Setup Ok, testBodyOneToTwo testBody, emptyTeardown, testName, fileFullName, lineNumber)
             
@@ -195,14 +195,14 @@ type Feature<'featureType> (featurePath, featureName, featureTags: TestTag list,
             this.Test (tags, Setup Ok, testBodyOneToTwo testBody, emptyTeardown, testName, fileFullName, lineNumber)
             
         // --------- TEST NAME / TAGS (without environment) ---------
-        member this.Test   (testName: string, tags: TagsIndicator, setup: SetupIndicator<'featureType,'setupType>, testBody: TestBodyIndicator<'setupType>, teardown: TeardownIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+        member this.Test   (testName: string, tags: TagsIndicator, setup: SetupIndicator<'featureType,'setupType>, testBody: TestBodyIndicator<TestFunction<'setupType>>, teardown: TeardownIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             let (TestBody testBody) = testBody
             this.Test (tags, setup, testBodyOneToTwo testBody, teardown, testName, fileFullName, lineNumber)
             
         member this.Ignore (testName: string, tags: TagsIndicator, setup: SetupIndicator<'featureType,'setupType>, _testBody: 'testBodyType, teardown: TeardownIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             this.Ignore (tags, setup, (), teardown, testName, fileFullName, lineNumber)
             
-        member this.Test   (testName: string, tags: TagsIndicator, setup: SetupIndicator<'featureType, 'setupType>, testBody: TestBodyIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+        member this.Test   (testName: string, tags: TagsIndicator, setup: SetupIndicator<'featureType, 'setupType>, testBody: TestBodyIndicator<TestFunction<'setupType>>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             let (TestBody testBody) = testBody
             this.Test (tags, setup, testBodyOneToTwo testBody, emptyTeardown, testName, fileFullName, lineNumber)
             
@@ -242,23 +242,23 @@ type Feature<'featureType> (featurePath, featureName, featureTags: TestTag list,
             this.Test (TestTags [], setup, testBody, emptyTeardown, testName, fileFullName, lineNumber)
             
         // --------- SET UP (without environment) ---------
-        member this.Test   (setup: SetupIndicator<'featureType, 'setupType>, testBody: TestBodyIndicator<'setupType>, teardown: TeardownIndicator<'setupType>, [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+        member this.Test   (setup: SetupIndicator<'featureType, 'setupType>, testBody: TestBodyIndicator<TestFunction<'setupType>>, teardown: TeardownIndicator<'setupType>, [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             let (TestBody testBody) = testBody
             this.Test (TestTags [], setup, testBodyOneToTwo testBody, teardown, testName, fileFullName, lineNumber)
             
-        member this.Test   (setup: SetupIndicator<'featureType, 'setupType>, testBody: TestBodyIndicator<'setupType>, [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+        member this.Test   (setup: SetupIndicator<'featureType, 'setupType>, testBody: TestBodyIndicator<TestFunction<'setupType>>, [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             let (TestBody testBody) = testBody
             this.Test (TestTags [], setup, testBodyOneToTwo testBody, emptyTeardown, testName, fileFullName, lineNumber)
             
         // --------- TEST NAME / SET UP (without environment) ---------
-        member this.Test   (testName: string, setup: SetupIndicator<'featureType, 'setupType>, testBody: TestBodyIndicator<'setupType>, teardown: TeardownIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+        member this.Test   (testName: string, setup: SetupIndicator<'featureType, 'setupType>, testBody: TestBodyIndicator<TestFunction<'setupType>>, teardown: TeardownIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             let (TestBody testBody) = testBody
             this.Test (TestTags [], setup, testBodyOneToTwo testBody, teardown, testName, fileFullName, lineNumber)
             
         member this.Ignore (testName: string, setup: SetupIndicator<'featureType, 'setupType>, _testBody: 'testBodyType, teardown: TeardownIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             this.Ignore (TestTags [], setup, (), teardown, testName, fileFullName, lineNumber)
             
-        member this.Test   (testName: string, setup: SetupIndicator<'featureType, 'setupType>, testBody: TestBodyIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+        member this.Test   (testName: string, setup: SetupIndicator<'featureType, 'setupType>, testBody: TestBodyIndicator<TestFunction<'setupType>>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             let (TestBody testBody) = testBody
             this.Test (TestTags [], setup, testBodyOneToTwo testBody, emptyTeardown, testName, fileFullName, lineNumber)
             
@@ -293,19 +293,19 @@ type Feature<'featureType> (featurePath, featureName, featureTags: TestTag list,
             this.Test (TestTags [], Setup Ok, TestBodyTwoParameters testBody, emptyTeardown, testName, fileFullName, lineNumber)
             
         // --------- TEST BODY (without environment)---------
-        member this.Test   (testBody: TestBodyIndicator<'featureType>, teardown: TeardownIndicator<unit>, [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+        member this.Test   (testBody: TestBodyIndicator<TestFunction<'featureType>>, teardown: TeardownIndicator<unit>, [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             let (TestBody testBody) = testBody
             this.Test (TestTags [], Setup Ok, testBodyOneToTwo testBody, wrapTeardown teardown, testName, fileFullName, lineNumber)
             
         member this.Test   (testBody: TestFunction<'featureType>, [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             this.Test (TestTags [], Setup Ok, testBodyOneToTwo testBody, emptyTeardown, testName, fileFullName, lineNumber)
             
-        member this.Test   (testBody: TestBodyIndicator<'featureType>, [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+        member this.Test   (testBody: TestBodyIndicator<TestFunction<'featureType>>, [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             let (TestBody testBody) = testBody
             this.Test (TestTags [], Setup Ok, testBodyOneToTwo testBody, emptyTeardown, testName, fileFullName, lineNumber)
             
         // --------- TEST NAME / TEST BODY (without environment)---------
-        member this.Test   (testName: string, testBody: TestBodyIndicator<'featureType>, teardown: TeardownIndicator<unit>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+        member this.Test   (testName: string, testBody: TestBodyIndicator<TestFunction<'featureType>>, teardown: TeardownIndicator<unit>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             let (TestBody testBody) = testBody
             this.Test (TestTags [], Setup Ok, testBodyOneToTwo testBody, wrapTeardown teardown, testName, fileFullName, lineNumber)
             
@@ -315,7 +315,7 @@ type Feature<'featureType> (featurePath, featureName, featureTags: TestTag list,
         member this.Test   (testName: string, testBody: TestFunction<'featureType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             this.Test (TestTags [], Setup Ok, testBodyOneToTwo testBody, emptyTeardown, testName, fileFullName, lineNumber)
             
-        member this.Test   (testName: string, testBody: TestBodyIndicator<'featureType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+        member this.Test   (testName: string, testBody: TestBodyIndicator<TestFunction<'featureType>>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             let (TestBody testBody) = testBody
             this.Test (TestTags [], Setup Ok, testBodyOneToTwo testBody, emptyTeardown, testName, fileFullName, lineNumber)
             
@@ -463,22 +463,22 @@ type Feature<'featureType> (featurePath, featureName, featureTags: TestTag list,
             let (TestBodyTwoParameters testBody) = testBody
             this.Test (TestTags [], setup, data, testBodyTwoToThreeIgnoreEnv testBody, emptyTeardown, testName, fileFullName, lineNumber)
             
-        member this.Test (testName: string, tags: TagsIndicator, data: DataIndicator<'dataType>, testBody: TestBodyIndicator<'dataType>, teardown: TeardownIndicator<unit>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+        member this.Test (testName: string, tags: TagsIndicator, data: DataIndicator<'dataType>, testBody: TestBodyIndicator<TestFunction<'dataType>>, teardown: TeardownIndicator<unit>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             let (TestBody testBody) = testBody
             this.Test (tags, Setup Ok, data, testBodyOneToThree testBody, wrapTeardown teardown, testName, fileFullName, lineNumber)
             
-        member this.Test (tags: TagsIndicator, data: DataIndicator<'dataType>, testBody: TestBodyIndicator<'dataType>, teardown: TeardownIndicator<unit>, [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+        member this.Test (tags: TagsIndicator, data: DataIndicator<'dataType>, testBody: TestBodyIndicator<TestFunction<'dataType>>, teardown: TeardownIndicator<unit>, [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             let (TestBody testBody) = testBody
             this.Test (tags, Setup Ok, data, testBodyOneToThree testBody, wrapTeardown teardown, testName, fileFullName, lineNumber)
             
-        member this.Test (tags: TagsIndicator, data: DataIndicator<'dataType>, testBody: TestBodyIndicator<'dataType>, [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+        member this.Test (tags: TagsIndicator, data: DataIndicator<'dataType>, testBody: TestBodyIndicator<TestFunction<'dataType>>, [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             let (TestBody testBody) = testBody
             this.Test (tags, Setup Ok, data, testBodyOneToThree testBody, emptyTeardown, testName, fileFullName, lineNumber)
             
         member this.Test (tags: TagsIndicator, data: DataIndicator<'dataType>, testBody: TestFunction<'dataType>, [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             this.Test (tags, Setup Ok, data, testBodyOneToThree testBody, emptyTeardown, testName, fileFullName, lineNumber)
             
-        member this.Test (testName: string, tags: TagsIndicator, data: DataIndicator<'dataType>, testBody: TestBodyIndicator<'dataType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+        member this.Test (testName: string, tags: TagsIndicator, data: DataIndicator<'dataType>, testBody: TestBodyIndicator<TestFunction<'dataType>>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             let (TestBody testBody) = testBody
             this.Test (tags, Setup Ok, data, testBodyOneToThree testBody, emptyTeardown, testName, fileFullName, lineNumber)
             
@@ -534,7 +534,7 @@ type Feature<'featureType> (featurePath, featureName, featureTags: TestTag list,
             let (TestBodyTwoParameters testBody) = testBody
             this.Test (TestTags [], Setup Ok, data, testBodyTwoToThreeIgnoreSetup testBody, wrapTeardown teardown, testName, fileFullName, lineNumber)
             
-        member this.Test (data: DataIndicator<'dataType>, testBody: TestBodyIndicator<'dataType>, teardown: TeardownIndicator<unit>, [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+        member this.Test (data: DataIndicator<'dataType>, testBody: TestBodyIndicator<TestFunction<'dataType>>, teardown: TeardownIndicator<unit>, [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             let (TestBody testBody) = testBody
             this.Test (TestTags [], Setup Ok, data, testBodyOneToThree testBody, wrapTeardown teardown, testName, fileFullName, lineNumber)
             
@@ -555,7 +555,7 @@ type Feature<'featureType> (featurePath, featureName, featureTags: TestTag list,
             let (TestBodyTwoParameters testBody) = testBody
             this.Test (TestTags [], Setup Ok, data, testBodyTwoToThreeIgnoreSetup testBody, emptyTeardown, testName, fileFullName, lineNumber)
             
-        member this.Test (data: DataIndicator<'dataType>, testBody: TestBodyIndicator<'dataType>, [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+        member this.Test (data: DataIndicator<'dataType>, testBody: TestBodyIndicator<TestFunction<'dataType>>, [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             let (TestBody testBody) = testBody
             this.Test (TestTags [], Setup Ok, data, testBodyOneToThree testBody, emptyTeardown, testName, fileFullName, lineNumber)
             
@@ -567,7 +567,7 @@ type Feature<'featureType> (featurePath, featureName, featureTags: TestTag list,
             let (TestBodyTwoParameters testBody) = testBody
             this.Test (TestTags [], Setup Ok, data, testBodyTwoToThreeIgnoreSetup testBody, wrapTeardown teardown, testName, fileFullName, lineNumber)
             
-        member this.Test (testName: string, data: DataIndicator<'dataType>, testBody: TestBodyIndicator<'dataType>, teardown: TeardownIndicator<unit>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+        member this.Test (testName: string, data: DataIndicator<'dataType>, testBody: TestBodyIndicator<TestFunction<'dataType>>, teardown: TeardownIndicator<unit>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             let (TestBody testBody) = testBody
             this.Test (TestTags [], Setup Ok, data, testBodyOneToThree testBody, wrapTeardown teardown, testName, fileFullName, lineNumber)
             
@@ -594,7 +594,7 @@ type Feature<'featureType> (featurePath, featureName, featureTags: TestTag list,
             let (TestBodyTwoParameters testBody) = testBody
             this.Test (TestTags [], Setup Ok, data, testBodyTwoToThreeIgnoreSetup testBody, emptyTeardown, testName, fileFullName, lineNumber)
             
-        member this.Test (testName: string, data: DataIndicator<'dataType>, testBody: TestBodyIndicator<'dataType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+        member this.Test (testName: string, data: DataIndicator<'dataType>, testBody: TestBodyIndicator<TestFunction<'dataType>>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             let (TestBody testBody) = testBody
             this.Test (TestTags [], Setup Ok, data, testBodyOneToThree testBody, emptyTeardown, testName, fileFullName, lineNumber)
             
@@ -639,20 +639,20 @@ type Feature<'featureType> (featurePath, featureName, featureTags: TestTag list,
             this.Script.IsTestedBy (tags, Setup Ok, TestBodyTwoParameters testBody, emptyTeardown, fileFullName, lineNumber)
             
         // --------- isTestedBy - Test Tags (without environment) ---------
-        member this.IsTestedBy (tags: TagsIndicator, setup: SetupIndicator<_, 'setupType>, testBody: TestBodyIndicator<'setupType>, teardown: TeardownIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+        member this.IsTestedBy (tags: TagsIndicator, setup: SetupIndicator<_, 'setupType>, testBody: TestBodyIndicator<TestFunction<'setupType>>, teardown: TeardownIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             let testBody =
                match testBody with
                | TestBody f -> f
                
             this.Script.IsTestedBy (tags, setup, testBodyOneToTwo testBody, teardown, fileFullName, lineNumber)
             
-        member this.IsTestedBy (tags: TagsIndicator, setup: SetupIndicator<_, 'setupType>, testBody: TestBodyIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+        member this.IsTestedBy (tags: TagsIndicator, setup: SetupIndicator<_, 'setupType>, testBody: TestBodyIndicator<TestFunction<'setupType>>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             this.Script.IsTestedBy (tags, setup, testBody, emptyTeardown, fileFullName, lineNumber)
         
-        member this.IsTestedBy (tags: TagsIndicator, testBody: TestBodyIndicator<'featureType>, teardown: TeardownIndicator<unit>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+        member this.IsTestedBy (tags: TagsIndicator, testBody: TestBodyIndicator<TestFunction<'featureType>>, teardown: TeardownIndicator<unit>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             this.Script.IsTestedBy (tags, Setup Ok, testBody, wrapTeardown teardown, fileFullName, lineNumber)
         
-        member this.IsTestedBy (tags: TagsIndicator, testBody: TestBodyIndicator<'featureType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+        member this.IsTestedBy (tags: TagsIndicator, testBody: TestBodyIndicator<TestFunction<'featureType>>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             this.Script.IsTestedBy (tags, Setup Ok, testBody, emptyTeardown, fileFullName, lineNumber)
         
         member this.IsTestedBy (tags: TagsIndicator, testBody: TestFunction<'featureType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
@@ -672,14 +672,14 @@ type Feature<'featureType> (featurePath, featureName, featureTags: TestTag list,
             this.Script.IsIgnored (setup, testBody, emptyTeardown, fileFullName, lineNumber)
         
         // --------- isTestedBy - Setup (without environment) ---------
-        member this.IsTestedBy (setup: SetupIndicator<_, 'setupType>, testBody: TestBodyIndicator<'setupType>, teardown: TeardownIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+        member this.IsTestedBy (setup: SetupIndicator<_, 'setupType>, testBody: TestBodyIndicator<TestFunction<'setupType>>, teardown: TeardownIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             let testBody =
                 match testBody with
                 | TestBody f -> f
                 
             this.Script.IsTestedBy (setup, testBodyOneToTwo testBody, teardown, fileFullName, lineNumber)
         
-        member this.IsTestedBy (setup: SetupIndicator<_, 'setupType>, testBody: TestBodyIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+        member this.IsTestedBy (setup: SetupIndicator<_, 'setupType>, testBody: TestBodyIndicator<TestFunction<'setupType>>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             this.Script.IsTestedBy (setup, testBody, emptyTeardown, fileFullName, lineNumber)
         
         // --------- isTestedBy - TEST BODY (with environment) ---------
@@ -699,10 +699,10 @@ type Feature<'featureType> (featurePath, featureName, featureTags: TestTag list,
             this.Script.IsTestedBy (TestBodyTwoParameters testBody, fileFullName, lineNumber)
         
         // --------- isTestedBy - TEST BODY (without environment) ---------
-        member this.IsTestedBy (testBody: TestBodyIndicator<'featureType>, teardown: TeardownIndicator<unit>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+        member this.IsTestedBy (testBody: TestBodyIndicator<TestFunction<'featureType>>, teardown: TeardownIndicator<unit>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             this.Script.IsTestedBy (Setup Ok, testBody, wrapTeardown teardown, fileFullName, lineNumber)
         
-        member this.IsTestedBy (testBody: TestBodyIndicator<'featureType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+        member this.IsTestedBy (testBody: TestBodyIndicator<TestFunction<'featureType>>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
             this.Script.IsTestedBy (testBody, emptyTeardown, fileFullName, lineNumber)
         
         member this.IsTestedBy (testBody: TestFunction<'featureType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =

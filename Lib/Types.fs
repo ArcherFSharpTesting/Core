@@ -24,7 +24,7 @@ type TestFunction<'a> = 'a -> TestResult
 type TestFunctionTwoParameters<'a, 'b> = 'a -> 'b -> TestResult
 type TestFunctionThreeParameters<'a, 'b, 'c> = 'a -> 'b -> 'c -> TestResult
 
-type TestBodyIndicator<'a> = | TestBody of TestFunction<'a> 
+type TestBodyIndicator<'a> = | TestBody of 'a 
 type TestBodyIndicatorTwoParameters<'a, 'b> = | TestBodyTwoParameters of TestFunctionTwoParameters<'a, 'b>
 type TestBodyIndicatorThreeParameters<'a, 'b, 'c> = | TestBodyThreeParameters of TestFunctionThreeParameters<'a, 'b, 'c>
 
