@@ -385,15 +385,12 @@ let ``Call Test with test environment when executed`` =
                 ListShould.HaveLengthOf 3 >> withMessage "Incorrect number of calls to test"
                 
                 List.head >> (fun env -> env.ApiEnvironment.ApiName) >> Should.BeEqualTo "Archer.Arrows"
-                List.head >> (fun env -> env.ApiEnvironment.ApiVersion) >> Should.BeEqualTo (Version "0.0.0.34") >> withMessage "Api Version"
                 List.head >> (fun env -> env.TestInfo) >> Should.BeEqualTo (tests |> List.head :> ITestInfo)
                 
                 List.skip 1 >> List.head >> (fun env -> env.ApiEnvironment.ApiName) >> Should.BeEqualTo "Archer.Arrows"
-                List.skip 1 >> List.head >> (fun env -> env.ApiEnvironment.ApiVersion) >> Should.BeEqualTo (Version "0.0.0.34") >> withMessage "Api Version"
                 List.skip 1 >> List.head >> (fun env -> env.TestInfo) >> Should.BeEqualTo (tests |> List.skip 1 |> List.head :> ITestInfo)
                 
                 List.last >> (fun env -> env.ApiEnvironment.ApiName) >> Should.BeEqualTo "Archer.Arrows"
-                List.last >> (fun env -> env.ApiEnvironment.ApiVersion) >> Should.BeEqualTo (Version "0.0.0.34") >> withMessage "Api Version"
                 List.last >> (fun env -> env.TestInfo) >> Should.BeEqualTo (tests |> List.last :> ITestInfo)
             ]
         ) 

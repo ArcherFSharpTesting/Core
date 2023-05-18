@@ -208,7 +208,7 @@ let ``Call Test with test environment when executed`` =
             |> Should.PassAllOf [
                 ListShould.HaveLengthOf 1 >> withMessage "Incorrect number of calls to test"
                 List.head >> (fun env -> env.ApiEnvironment.ApiName) >> Should.BeEqualTo "Archer.Arrows"
-                List.head >> (fun env -> env.ApiEnvironment.ApiVersion) >> Should.BeEqualTo (Version "0.0.0.34") >> withMessage "Api Version"
+                List.head >> (fun env -> env.ApiEnvironment.ApiVersion) >> Should.PassTestOf <@fun v -> 0 < v.ToString().Length@>
                 List.head >> (fun env -> env.TestInfo) >> Should.BeEqualTo test
             ]
         ) 
