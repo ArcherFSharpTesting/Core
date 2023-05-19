@@ -13,16 +13,16 @@ let private feature = Arrow.NewFeature (
     
 let ``Should execute the setup by every test specified in the test builder when only setup and test builder are specified`` =
     feature.Test (
-        fun _ ->
+        fun () ->
             let monitor = Monitor<unit, unit, unit> (Ok ())
             
             let tests =
                 Arrow.Tests (
                     Setup monitor.CallSetup,
                     fun f ->
-                        "Test A" |> f.IsTestedBy (fun _ -> TestSuccess)
-                        "Test B" |> f.IsTestedBy (fun _ -> TestSuccess)
-                        "Test C" |> f.IsTestedBy (fun _ -> TestSuccess)
+                        "Test A" |> f.IsTestedBy (fun () -> TestSuccess)
+                        "Test B" |> f.IsTestedBy (fun () -> TestSuccess)
+                        "Test C" |> f.IsTestedBy (fun () -> TestSuccess)
                 )
                 |> List.map runTest
             
@@ -33,7 +33,7 @@ let ``Should execute the setup by every test specified in the test builder when 
     
 let ``Should execute every test specified in the test builder when only setup and test builder are specified`` =
     feature.Test (
-        fun _ ->
+        fun () ->
             let monitor = Monitor<unit, unit, unit> (Ok ())
             
             let tests =
@@ -53,7 +53,7 @@ let ``Should execute every test specified in the test builder when only setup an
     
 let ``Should execute the setup by every test specified in the test builder when name, setup, and test builder are specified`` =
     feature.Test (
-        fun _ ->
+        fun () ->
             let monitor = Monitor<unit, unit, unit> (Ok ())
             
             let tests =
@@ -61,9 +61,9 @@ let ``Should execute the setup by every test specified in the test builder when 
                     "My Feature Name",
                     Setup monitor.CallSetup,
                     fun f ->
-                        "Test A" |> f.IsTestedBy (fun _ -> TestSuccess)
-                        "Test B" |> f.IsTestedBy (fun _ -> TestSuccess)
-                        "Test C" |> f.IsTestedBy (fun _ -> TestSuccess)
+                        "Test A" |> f.IsTestedBy (fun () -> TestSuccess)
+                        "Test B" |> f.IsTestedBy (fun () -> TestSuccess)
+                        "Test C" |> f.IsTestedBy (fun () -> TestSuccess)
                 )
                 |> List.map ((fun tst -> tst.GetExecutor ()) >> executeFunction >> runIt)
             
@@ -74,7 +74,7 @@ let ``Should execute the setup by every test specified in the test builder when 
     
 let ``Should execute every test specified in the test builder when name, setup, and test builder are specified`` =
     feature.Test (
-        fun _ ->
+        fun () ->
             let monitor = Monitor<unit, unit, unit> (Ok ())
             
             let tests =
@@ -95,7 +95,7 @@ let ``Should execute every test specified in the test builder when name, setup, 
     
 let ``Should execute the setup by every test specified in the test builder when path, name, setup, and test builder are specified`` =
     feature.Test (
-        fun _ ->
+        fun () ->
             let monitor = Monitor<unit, unit, unit> (Ok ())
             
             let tests =
@@ -104,9 +104,9 @@ let ``Should execute the setup by every test specified in the test builder when 
                     "My Feature",
                     Setup monitor.CallSetup,
                     fun f ->
-                        "Test A" |> f.IsTestedBy (fun _ -> TestSuccess)
-                        "Test B" |> f.IsTestedBy (fun _ -> TestSuccess)
-                        "Test C" |> f.IsTestedBy (fun _ -> TestSuccess)
+                        "Test A" |> f.IsTestedBy (fun () -> TestSuccess)
+                        "Test B" |> f.IsTestedBy (fun () -> TestSuccess)
+                        "Test C" |> f.IsTestedBy (fun () -> TestSuccess)
                 )
                 |> List.map ((fun tst -> tst.GetExecutor ()) >> executeFunction >> runIt)
             
@@ -117,7 +117,7 @@ let ``Should execute the setup by every test specified in the test builder when 
     
 let ``Should execute every test specified in the test builder when path, name, setup, and test builder are specified`` =
     feature.Test (
-        fun _ ->
+        fun () ->
             let monitor = Monitor<unit, unit, unit> (Ok ())
             
             let tests =

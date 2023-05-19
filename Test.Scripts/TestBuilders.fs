@@ -56,7 +56,7 @@ let setupFeatureUnderTest _ =
 
 let setupExecutor _ =
     let feature = buildFeatureUnderTest ()
-    let test = feature.Test successfulTest
+    let test = feature.Test (fun _ _ -> TestSuccess)
     test.GetExecutor () |> Ok
 
 let setupBuildExecutorWithSetupAction _ =

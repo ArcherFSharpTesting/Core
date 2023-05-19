@@ -16,7 +16,7 @@ let private feature = Arrow.NewFeature (
 let private ignored = Arrow.Ignore ()
 
 let private exampleWithSetup = Arrow.Ignore (
-    Setup (fun _ -> Ok ())
+    Setup (fun () -> Ok ())
 )
 
 let private exampleWithTeardown = Arrow.Ignore (
@@ -24,7 +24,7 @@ let private exampleWithTeardown = Arrow.Ignore (
 )
 
 let private exampleWithBoth = Arrow.Ignore (
-    Setup (fun _ -> Ok ()),
+    Setup (fun () -> Ok ()),
     emptyTeardown
 )
 
@@ -38,14 +38,14 @@ let private names =
 
 let ``Should Create a Feature`` =
     feature.Test (
-        fun _ ->
+        fun () ->
             ignored
             |> expects.ToBeOfType<Feature<unit>>
     )
     
 let ``Should Create a Feature with the name of the containing module`` =
     feature.Test (
-        fun _ ->
+        fun () ->
             let containerPath, containerName = names
             ignored.ToString ()
             |> Should.BeEqualTo $"%s{containerPath}.%s{containerName}"
@@ -53,7 +53,7 @@ let ``Should Create a Feature with the name of the containing module`` =
     
 let ``Should Create a Feature with the name of the containing module even if setup added`` =
     feature.Test (
-        fun _ ->
+        fun () ->
             let containerPath, containerName = names
             exampleWithSetup.ToString ()
             |> Should.BeEqualTo $"%s{containerPath}.%s{containerName}"
@@ -61,7 +61,7 @@ let ``Should Create a Feature with the name of the containing module even if set
     
 let ``Should Create a Feature with the name of the containing module even if teardown added`` =
     feature.Test (
-        fun _ ->
+        fun () ->
             let containerPath, containerName = names
             exampleWithTeardown.ToString ()
             |> Should.BeEqualTo $"%s{containerPath}.%s{containerName}"
@@ -69,7 +69,7 @@ let ``Should Create a Feature with the name of the containing module even if tea
     
 let ``Should Create a Feature with the name of the containing module even if both setup and teardown added`` =
     feature.Test (
-        fun _ ->
+        fun () ->
             let containerPath, containerName = names
             exampleWithTeardown.ToString ()
             |> Should.BeEqualTo $"%s{containerPath}.%s{containerName}"
@@ -77,7 +77,7 @@ let ``Should Create a Feature with the name of the containing module even if bot
     
 let ``Should Create a Feature with the name and path given to it`` =
     feature.Test (
-        fun _ ->
+        fun () ->
             let path = "This feature's path"
             let name = "This feature's name"
             let testFeature = Arrow.Ignore (featurePath = path, featureName = name)
@@ -88,7 +88,7 @@ let ``Should Create a Feature with the name and path given to it`` =
     
 let ``Should Create a Feature with the name and path as tuple given to it`` =
     feature.Test (
-        fun _ ->
+        fun () ->
             let path = "This feature's path"
             let name = "This feature's name"
             let testFeature = Arrow.Ignore ((path, name))
@@ -99,13 +99,13 @@ let ``Should Create a Feature with the name and path as tuple given to it`` =
     
 let ``Should Create a Feature with the name, path, and setup given to it`` =
     feature.Test (
-        fun _ ->
+        fun () ->
             let path = "This feature's path"
             let name = "This feature's name"
             let testFeature = Arrow.Ignore (
                 path,
                 name,
-                Setup (fun _ -> Ok ())
+                Setup (fun () -> Ok ())
             )
             
             testFeature.ToString ()
@@ -114,7 +114,7 @@ let ``Should Create a Feature with the name, path, and setup given to it`` =
     
 let ``Should Create a Feature with the name, path, and teardown given to it`` =
     feature.Test (
-        fun _ ->
+        fun () ->
             let path = "This feature's path"
             let name = "This feature's name"
             let testFeature = Arrow.Ignore (
@@ -129,13 +129,13 @@ let ``Should Create a Feature with the name, path, and teardown given to it`` =
     
 let ``Should Create a Feature with the name, path, setup and teardown given to it`` =
     feature.Test (
-        fun _ ->
+        fun () ->
             let path = "This feature's path"
             let name = "This feature's name"
             let testFeature = Arrow.Ignore (
                 path,
                 name,
-                Setup (fun _ -> Ok ()),
+                Setup (fun () -> Ok ()),
                 emptyTeardown
             )
             
@@ -145,7 +145,7 @@ let ``Should Create a Feature with the name, path, setup and teardown given to i
 
 let ``Should Create a feature with the name given to it`` =
     feature.Test (
-        fun _ ->
+        fun () ->
             let name = "A specified name"
             let testFeature = Arrow.Ignore (featureName = name)
             
@@ -157,11 +157,11 @@ let ``Should Create a feature with the name given to it`` =
 
 let ``Should Create a feature with the name and setup given to it`` =
     feature.Test (
-        fun _ ->
+        fun () ->
             let name = "A specified name"
             let testFeature = Arrow.Ignore (
                 name,
-                Setup (fun _ -> Ok ())
+                Setup (fun () -> Ok ())
             )
             
             testFeature.ToString ()
@@ -172,7 +172,7 @@ let ``Should Create a feature with the name and setup given to it`` =
 
 let ``Should Create a feature with the name and teardown given to it`` =
     feature.Test (
-        fun _ ->
+        fun () ->
             let name = "A specified name"
             let testFeature = Arrow.Ignore (
                 name,
@@ -187,11 +187,11 @@ let ``Should Create a feature with the name and teardown given to it`` =
 
 let ``Should Create a feature with the name, setup and teardown given to it`` =
     feature.Test (
-        fun _ ->
+        fun () ->
             let name = "A specified name"
             let testFeature = Arrow.Ignore (
                 name,
-                Setup (fun _ -> Ok ()),
+                Setup (fun () -> Ok ()),
                 emptyTeardown
             )
             

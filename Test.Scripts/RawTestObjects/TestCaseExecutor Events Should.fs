@@ -78,9 +78,9 @@ let ``Trigger all the events in order`` =
     
 let ``Trigger events with parent`` =
     feature.Test (
-        fun _ ->
+        fun () ->
             let feature = Arrow.NewFeature ("Events", "ThatTrigger")
-            let test = feature.Test (successfulTest, "From a test")
+            let test = feature.Test ((fun _ _ -> TestSuccess), "From a test")
             let executor = test.GetExecutor ()
             
             let mutable result = TestSuccess

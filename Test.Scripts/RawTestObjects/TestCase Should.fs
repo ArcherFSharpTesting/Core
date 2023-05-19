@@ -15,7 +15,7 @@ let private container = Arrow.NewFeature (
 let private random = Random ()
 
 let ``has all the data passed to it`` =
-    container.Test (fun _ ->
+    container.Test (fun () ->
         let expectedContainerPath = $"Container Path %d{random.Next ()}"
         let expectedContainerName = $"Container Name %d{random.Next ()}"
         let expectedTestName = $"Test Name %d{random.Next ()}"
@@ -39,9 +39,9 @@ let ``has all the data passed to it`` =
     
 let ``have a decent ToString`` =
     container.Test (
-        fun _ ->
+        fun () ->
             let feature = Arrow.NewFeature ("TestCase", "ToStringTests")
-            let test = feature.Test (successfulTest, "ToString should")
+            let test = feature.Test ((fun _ _ -> TestSuccess), "ToString should")
             
             test.ToString ()
             |> expects.ToBe "TestCase.ToStringTests.ToString should"
