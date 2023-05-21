@@ -1,4 +1,4 @@
-module Archer.Arrows.Tests.Test.``Feature Test with tags setup data TestFunctionThreeParameters should``
+module Archer.Arrows.Tests.Test.``Feature Test with tags, setup, data, test body indicator three parameters should``
 
 open System
 open Archer

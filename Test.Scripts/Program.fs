@@ -44,11 +44,12 @@ runner
     ``Arrow NewFeature With Setup``.``Test Cases``
     ``Arrow NewFeature With Teardown``.``Test Cases``
     
-    ``Feature Test with tags setup TestFunctionTwoParameters teardown should``.``Test Cases``
-    ``Feature Test with tags setup TestFunction teardown should``.``Test Cases``
-    ``Feature Test with tags setup TestFunctionTwoParameters should``.``Test Cases``
-    ``Feature Test with tags setup TestFunction should``.``Test Cases``
-    ``Feature Test with tags setup data TestFunctionThreeParameters should``.``Test Cases``
+    ``Feature Test with test name, tags, setup, data, test body indicator three parameters, teardown should``.``Test Cases``
+    ``Feature Test with tags, setup, test body indicator two parameters, teardown should``.``Test Cases``
+    ``Feature Test with tags, setup, test body indicator, teardown should``.``Test Cases``
+    ``Feature Test with tags, setup, test body indicator two parameters should``.``Test Cases``
+    ``Feature Test with tags, setup, test body indicator should``.``Test Cases``
+    ``Feature Test with tags, setup, data, test body indicator three parameters should``.``Test Cases``
     
     ``Arrow Tests``.``Test Cases``
     ``Arrow Tests With Setup``.``Test Cases``
