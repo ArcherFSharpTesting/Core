@@ -24,40 +24,12 @@ let ``Create a valid ITest`` =
     feature.Test (
         Setup setupFeatureUnderTest,
         TestBody (fun (testFeature: IFeature<unit>) ->
-            let testNameBase = $"My %s{randomWord 5} Test"
-            let testName = $"%s{testNameBase} %%s"
-            let path = $"%s{randomCapitalLetter ()}:\\"
-            let fileName = $"%s{randomWord (rand.Next (1, 5))}.%s{randomLetter ()}"
-            let fullPath = $"%s{path}%s{fileName}"
-            let lineNumber = rand.Next ()
-            let setupValue = rand.Next ()
-            
-            let monitor = Monitor (Ok setupValue)
-            
-            let tags = [
-                Category "Not important"
-                Only
-                Serial
-            ]
-            
-            let data = randomDistinctLetters 3
-            
+            let (_monitor, tests), (tags, _setupValue, data, testNameBase), (path, fileName, _lineNumber) = TestBuilder.BuildTestWithTestNameTagsSetupDataTestBodyThreeParametersTeardownNameHints testFeature
+                
             let [ name1; name2; name3 ] =
                 data
                 |> List.map (sprintf "%s %s" testNameBase)
             
-            let tests =
-                testFeature.Test (
-                    testName,
-                    TestTags tags,
-                    Setup monitor.CallSetup,
-                    Data data,
-                    TestBody monitor.CallTestActionWithDataSetupEnvironment,
-                    Teardown monitor.CallTeardown,
-                    fullPath,
-                    lineNumber
-                )
-                
             tests
             |> Should.PassAllOf [
                 ListShould.HaveLengthOf 3 >> withMessage "Number of tests"
@@ -87,42 +59,12 @@ let ``Create a test name with name hints and repeating data`` =
     feature.Test (
         Setup setupFeatureUnderTest,
         TestBody (fun (testFeature: IFeature<unit>) ->
-            let testNameBase = $"My %s{randomWord 5} Test"
-            let testName = $"%s{testNameBase} %%s"
-            let path = $"%s{randomCapitalLetter ()}:\\"
-            let fileName = $"%s{randomWord (rand.Next (1, 5))}.%s{randomLetter ()}"
-            let fullPath = $"%s{path}%s{fileName}"
-            let lineNumber = rand.Next ()
-            let setupValue = rand.Next ()
-            
-            let monitor = Monitor (Ok setupValue)
-            
-            let tags = [
-                Category "Not important"
-                Only
-                Serial
-            ]
-            
-            let data =
-                let l = randomLetter ()
-                [l; l; l]
+            let (_monitor, tests), (_tags, _setupValue, data, testNameBase), _ = TestBuilder.BuildTestWithTestNameTagsSetupDataTestBodyThreeParametersTeardownNameHints (testFeature, true)
             
             let [ name1; name2; name3 ] =
                 data
                 |> List.mapi (fun i v -> sprintf "%s %s%s" testNameBase v (if 0 = i then "" else $"^%i{i}"))
-            
-            let tests =
-                testFeature.Test (
-                    testName,
-                    TestTags tags,
-                    Setup monitor.CallSetup,
-                    Data data,
-                    TestBody monitor.CallTestActionWithDataSetupEnvironment,
-                    Teardown monitor.CallTeardown,
-                    fullPath,
-                    lineNumber
-                )
-                
+
             tests
             |> Should.PassAllOf [
                 List.head >> getTestName >> Should.BeEqualTo name1 >> withMessage "Test Name"
@@ -136,39 +78,12 @@ let ``Create a test name with no name hints`` =
     feature.Test (
         Setup setupFeatureUnderTest,
         TestBody (fun (testFeature: IFeature<unit>) ->
-            let testName = $"My %s{randomWord 5} Test"
-            let path = $"%s{randomCapitalLetter ()}:\\"
-            let fileName = $"%s{randomWord (rand.Next (1, 5))}.%s{randomLetter ()}"
-            let fullPath = $"%s{path}%s{fileName}"
-            let lineNumber = rand.Next ()
-            let setupValue = rand.Next ()
-            
-            let monitor = Monitor (Ok setupValue)
-            
-            let tags = [
-                Category "Not important"
-                Only
-                Serial
-            ]
-            
-            let data = randomDistinctLetters 3
+            let (_monitor, tests), (_tags, _setupValue, data, testName), _ = TestBuilder.BuildTestWithTestNameTagsSetupDataTestBodyThreeParametersTeardown testFeature
             
             let [ name1; name2; name3 ] =
                 data
                 |> List.map (sprintf "%s (%A)" testName)
-            
-            let tests =
-                testFeature.Test (
-                    testName,
-                    TestTags tags,
-                    Setup monitor.CallSetup,
-                    Data data,
-                    TestBody monitor.CallTestActionWithDataSetupEnvironment,
-                    Teardown monitor.CallTeardown,
-                    fullPath,
-                    lineNumber
-                )
-                
+
             tests
             |> Should.PassAllOf [
                 List.head >> getTestName >> Should.BeEqualTo name1 >> withMessage "Test Name"
