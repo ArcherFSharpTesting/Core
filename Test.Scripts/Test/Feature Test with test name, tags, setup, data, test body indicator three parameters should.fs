@@ -1,4 +1,4 @@
-module Archer.Arrows.Tests.Test.``Feature Test with test name, tags, setup, data, test body indicator three parameters, teardown should``
+module Archer.Arrows.Tests.Test.``Feature Test with test name, tags, setup, data, test body indicator three parameters should``
 
 open System
 open Archer
@@ -53,7 +53,6 @@ let ``Create a valid ITest`` =
                     Setup monitor.CallSetup,
                     Data data,
                     TestBody monitor.CallTestActionWithDataSetupEnvironment,
-                    Teardown monitor.CallTeardown,
                     fullPath,
                     lineNumber
                 )
@@ -118,7 +117,6 @@ let ``Create a test name with name hints and repeating data`` =
                     Setup monitor.CallSetup,
                     Data data,
                     TestBody monitor.CallTestActionWithDataSetupEnvironment,
-                    Teardown monitor.CallTeardown,
                     fullPath,
                     lineNumber
                 )
@@ -164,7 +162,6 @@ let ``Create a test name with no name hints`` =
                     Setup monitor.CallSetup,
                     Data data,
                     TestBody monitor.CallTestActionWithDataSetupEnvironment,
-                    Teardown monitor.CallTeardown,
                     fullPath,
                     lineNumber
                 )
@@ -212,7 +209,6 @@ let ``Create a test name with no name hints same data repeated`` =
                     Setup monitor.CallSetup,
                     Data data,
                     TestBody monitor.CallTestActionWithDataSetupEnvironment,
-                    Teardown monitor.CallTeardown,
                     fullPath,
                     lineNumber
                 )
@@ -254,7 +250,6 @@ let ``Call setup when executed`` =
                     Setup monitor.CallSetup,
                     Data data,
                     TestBody monitor.CallTestActionWithDataSetupEnvironment,
-                    Teardown monitor.CallTeardown,
                     fullPath,
                     lineNumber
                 )
@@ -296,7 +291,6 @@ let ``Call Test when executed`` =
                     Setup monitor.CallSetup,
                     Data data,
                     TestBody monitor.CallTestActionWithDataSetupEnvironment,
-                    Teardown monitor.CallTeardown,
                     fullPath,
                     lineNumber
                 )
@@ -338,7 +332,6 @@ let ``Call Test with return value of setup when executed`` =
                     Setup monitor.CallSetup,
                     Data data,
                     TestBody monitor.CallTestActionWithDataSetupEnvironment,
-                    Teardown monitor.CallTeardown,
                     fullPath,
                     lineNumber
                 )
@@ -380,7 +373,6 @@ let ``Call Test with test environment when executed`` =
                     Setup monitor.CallSetup,
                     Data data,
                     TestBody monitor.CallTestActionWithDataSetupEnvironment,
-                    Teardown monitor.CallTeardown,
                     fullPath,
                     lineNumber
                 )
@@ -432,7 +424,6 @@ let ``Call Test with test data when executed`` =
                     Setup monitor.CallSetup,
                     Data data,
                     TestBody monitor.CallTestActionWithDataSetupEnvironment,
-                    Teardown monitor.CallTeardown,
                     fullPath,
                     lineNumber
                 )
@@ -442,48 +433,6 @@ let ``Call Test with test data when executed`` =
             
             monitor.TestDataWas
             |> Should.BeEqualTo data
-        ) 
-    )
-    
-let ``Call teardown when executed`` =
-    feature.Test (
-        Setup setupFeatureUnderTest,
-        TestBody (fun (testFeature: IFeature<unit>) ->
-            let testName = $"My %s{randomWord 5} Test"
-            let path = $"%s{randomCapitalLetter ()}:\\"
-            let fileName = $"%s{randomWord (rand.Next (1, 5))}.%s{randomLetter ()}"
-            let fullPath = $"%s{path}%s{fileName}"
-            let lineNumber = rand.Next ()
-            let setupValue = rand.Next ()
-            
-            let monitor = Monitor (Ok setupValue)
-            
-            let data = randomDistinctLetters 3
-            
-            let tags = [
-                Category "Not important"
-                Only
-                Serial
-            ]
-            
-            let tests =
-                testFeature.Test (
-                    testName,
-                    TestTags tags,
-                    Setup monitor.CallSetup,
-                    Data data,
-                    TestBody monitor.CallTestActionWithDataSetupEnvironment,
-                    Teardown monitor.CallTeardown,
-                    fullPath,
-                    lineNumber
-                )
-                
-            tests
-            |> silentlyRunAllTests
-            
-            monitor.TeardownWasCalled
-            |> Should.BeTrue
-            |> withMessage "Teardown was not called"
         ) 
     )
     
