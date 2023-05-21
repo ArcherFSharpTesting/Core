@@ -14,9 +14,6 @@ type Feature<'featureType> (featurePath, featureName, featureTags: TestTag list,
     let testBodyOneToTwo (testBody: 'a -> TestResult) =
         TestBody (fun a _b -> testBody a)
         
-    let testBodyOneToTwoEnvironment (testBody: 'a -> TestResult) =
-        TestBody (fun _a b -> testBody b)
-    
     let testBodyOneToThree (testBody: 'a -> TestResult) =
         TestBody (fun a _b _c -> testBody a)
     
