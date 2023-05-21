@@ -331,8 +331,15 @@ let private getDataTestPartsNoSetup repeat =
             randomDistinctLetters 3
 
     monitor, (testName, tags, data), (path, fileName, fullPath, lineNumber)
-
+    
 type TestBuilder =
+    static member GetTestNames (f: int -> 'a -> string) data =
+        let [a; b; c] =
+            data
+            |> List.mapi f
+            
+        (a, b, c)
+        
     static member BuildTestWithTestNameTagsSetupDataTestBodyThreeParametersTeardownNameHints (testFeature: IFeature<unit>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
         let monitor, nameInfo, testParts, locationInfo = getDataTestPartsNameHints repeatDataValue
         let testNameBase, testName = nameInfo
