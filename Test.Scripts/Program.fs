@@ -45,6 +45,7 @@ runner
     ``Arrow NewFeature With Teardown``.``Test Cases``
     
     ``Feature Test with test name, tags, setup, data, test body indicator three parameters, teardown should``.``Test Cases``
+    ``Feature Test with test name, tags, setup, data, test body indicator two parameters, teardown should``.``Test Cases``
     ``Feature Test with tags, setup, test body indicator two parameters, teardown should``.``Test Cases``
     ``Feature Test with tags, setup, test body indicator, teardown should``.``Test Cases``
     ``Feature Test with tags, setup, test body indicator two parameters should``.``Test Cases``
