@@ -20,7 +20,7 @@ let private failureBuilder = TestResultFailureBuilder TestExecutionResult
 // -                 All items with environment                 -
 // --------------------------------------------------------------
 let ``return a test with correct tags when given tags, setup, test body with environment, teardown, test name, path, and line number`` =
-    feature.Test (fun () ->
+    feature.Test (fun _ ->
         let fut = Arrow.NewFeature ()
         
         let tags = 
@@ -45,7 +45,7 @@ let ``return a test with correct tags when given tags, setup, test body with env
     )
 
 let ``return a test with correct test name when given tags, setup, test body with environment, teardown, test name, path, and line number`` =
-    feature.Test (fun () ->
+    feature.Test (fun _ ->
         let fut = Arrow.NewFeature ()
         
         let test = fut.Ignore (
@@ -63,7 +63,7 @@ let ``return a test with correct test name when given tags, setup, test body wit
     )
 
 let ``return a test with correct file path when given tags, setup, test body with environment, teardown, test name, path, and line number`` =
-    feature.Test (fun () ->
+    feature.Test (fun _ ->
         let fut = Arrow.NewFeature ()
         
         let test = fut.Ignore (
@@ -81,7 +81,7 @@ let ``return a test with correct file path when given tags, setup, test body wit
     )
 
 let ``return a test with correct file name when given tags, setup, test body with environment, teardown, test name, path, and line number`` =
-    feature.Test (fun () ->
+    feature.Test (fun _ ->
         let fut = Arrow.NewFeature ()
         
         let test = fut.Ignore (
@@ -99,7 +99,7 @@ let ``return a test with correct file name when given tags, setup, test body wit
     )
 
 let ``return a test with correct line number when given tags, setup, test body with environment, teardown, test name, path, and line number`` =
-    feature.Test (fun () ->
+    feature.Test (fun _ ->
         let fut = Arrow.NewFeature ()
         
         let test = fut.Ignore (
@@ -117,7 +117,7 @@ let ``return a test with correct line number when given tags, setup, test body w
     )
 
 let ``return a test that returns an "Ignored" result when given tags, setup, test body with environment, teardown, test name, path, and line number`` =
-    feature.Test (fun () ->
+    feature.Test (fun _ ->
         let expected = failureBuilder.IgnoreFailure ("S:\\path\\file.f", 3)
         let fut = Arrow.NewFeature ()
         
@@ -140,7 +140,7 @@ let ``return a test that returns an "Ignored" result when given tags, setup, tes
     )
 
 let ``return a test that does not call setup when run when given tags, setup, test body with environment, teardown, test name, path, and line number`` =
-    feature.Test (fun () ->
+    feature.Test (fun _ ->
         let monitor = Monitor (Ok ())
         let fut = Arrow.NewFeature ()
         
@@ -163,7 +163,7 @@ let ``return a test that does not call setup when run when given tags, setup, te
     )
 
 let ``return a test that does not call the test action when run when given tags, setup, test body with environment, teardown, test name, path, and line number`` =
-    feature.Test (fun () ->
+    feature.Test (fun _ ->
         let monitor = Monitor (Ok ())
         let fut = Arrow.NewFeature ()
         
@@ -186,7 +186,7 @@ let ``return a test that does not call the test action when run when given tags,
     )
 
 let ``return a test that does not call the teardown when run when given tags, setup, test body with environment, teardown, test name, path, and line number`` =
-    feature.Test (fun () ->
+    feature.Test (fun _ ->
         let monitor = Monitor (Ok ())
         let fut = Arrow.NewFeature ()
         
@@ -212,7 +212,7 @@ let ``return a test that does not call the teardown when run when given tags, se
 // -       No setup, test body with environment, teardown       -
 // --------------------------------------------------------------
 let ``return a test with correct tags when given tags, test body with environment, teardown, test name, path, and line number`` =
-    feature.Test (fun () ->
+    feature.Test (fun _ ->
         let fut = Arrow.NewFeature ()
         
         let tags = 
@@ -236,7 +236,7 @@ let ``return a test with correct tags when given tags, test body with environmen
     )
 
 let ``return a test with correct test name when given tags, test body with environment, teardown, test name, path, and line number`` =
-    feature.Test (fun () ->
+    feature.Test (fun _ ->
         let fut = Arrow.NewFeature ()
         
         let test = fut.Ignore (
@@ -253,7 +253,7 @@ let ``return a test with correct test name when given tags, test body with envir
     )
 
 let ``return a test with correct file path when given tags, test body with environment, teardown, test name, path, and line number`` =
-    feature.Test (fun () ->
+    feature.Test (fun _ ->
         let fut = Arrow.NewFeature ()
         
         let test = fut.Ignore (
@@ -270,7 +270,7 @@ let ``return a test with correct file path when given tags, test body with envir
     )
 
 let ``return a test with correct file name when given tags, test body with environment, teardown, test name, path, and line number`` =
-    feature.Test (fun () ->
+    feature.Test (fun _ ->
         let fut = Arrow.NewFeature ()
         
         let test = fut.Ignore (
@@ -287,7 +287,7 @@ let ``return a test with correct file name when given tags, test body with envir
     )
 
 let ``return a test with correct line number when given tags, test body with environment, teardown, test name, path, and line number`` =
-    feature.Test (fun () ->
+    feature.Test (fun _ ->
         let fut = Arrow.NewFeature ()
         
         let test = fut.Ignore (
@@ -304,7 +304,7 @@ let ``return a test with correct line number when given tags, test body with env
     )
 
 let ``return a test that returns an "Ignored" result when given tags, test body with environment, teardown, test name, path, and line number`` =
-    feature.Test (fun () ->
+    feature.Test (fun _ ->
         let expected = failureBuilder.IgnoreFailure ("S:\\path\\file.f", 3)
         let fut = Arrow.NewFeature ()
         
@@ -327,7 +327,7 @@ let ``return a test that returns an "Ignored" result when given tags, test body 
     )
 
 let ``return a test that does not call the test action when run when given tags, test body with environment, teardown, test name, path, and line number`` =
-    feature.Test (fun () ->
+    feature.Test (fun _ ->
         let monitor = Monitor (Ok ())
         let fut = Arrow.NewFeature ()
         
@@ -349,7 +349,7 @@ let ``return a test that does not call the test action when run when given tags,
     )
 
 let ``return a test that does not call the teardown when run when given tags, test body with environment, teardown, test name, path, and line number`` =
-    feature.Test (fun () ->
+    feature.Test (fun _ ->
         let monitor = Monitor (Ok ())
         let fut = Arrow.NewFeature ()
         
@@ -374,7 +374,7 @@ let ``return a test that does not call the teardown when run when given tags, te
 // -      No teardown, test body with environment, teardown      -
 // ---------------------------------------------------------------
 let ``return a test with correct tags when given tags, setup, test body with environment, test name, path, and line number`` =
-    feature.Test (fun () ->
+    feature.Test (fun _ ->
         let fut = Arrow.NewFeature ()
         
         let tags = 
@@ -398,7 +398,7 @@ let ``return a test with correct tags when given tags, setup, test body with env
     )
 
 let ``return a test with correct test name when given tags, setup, test body with environment, test name, path, and line number`` =
-    feature.Test (fun () ->
+    feature.Test (fun _ ->
         let fut = Arrow.NewFeature ()
         
         let test = fut.Ignore (
@@ -415,7 +415,7 @@ let ``return a test with correct test name when given tags, setup, test body wit
     )
 
 let ``return a test with correct file path when given tags, setup, test body with environment, test name, path, and line number`` =
-    feature.Test (fun () ->
+    feature.Test (fun _ ->
         let fut = Arrow.NewFeature ()
         
         let test = fut.Ignore (
@@ -432,7 +432,7 @@ let ``return a test with correct file path when given tags, setup, test body wit
     )
 
 let ``return a test with correct file name when given tags, setup, test body with environment, test name, path, and line number`` =
-    feature.Test (fun () ->
+    feature.Test (fun _ ->
         let fut = Arrow.NewFeature ()
         
         let test = fut.Ignore (
@@ -449,7 +449,7 @@ let ``return a test with correct file name when given tags, setup, test body wit
     )
 
 let ``return a test with correct line number when given tags, setup, test body with environment, test name, path, and line number`` =
-    feature.Test (fun () ->
+    feature.Test (fun _ ->
         let fut = Arrow.NewFeature ()
         
         let test = fut.Ignore (
@@ -466,7 +466,7 @@ let ``return a test with correct line number when given tags, setup, test body w
     )
 
 let ``return a test that returns an "Ignored" result when given tags, setup, test body with environment, test name, path, and line number`` =
-    feature.Test (fun () ->
+    feature.Test (fun _ ->
         let expected = failureBuilder.IgnoreFailure ("S:\\path\\file.f", 3)
         let fut = Arrow.NewFeature ()
         
@@ -489,7 +489,7 @@ let ``return a test that returns an "Ignored" result when given tags, setup, tes
     )
 
 let ``return a test that does not call setup when run when given tags, setup, test body with environment, test name, path, and line number`` =
-    feature.Test (fun () ->
+    feature.Test (fun _ ->
         let monitor = Monitor (Ok ())
         let fut = Arrow.NewFeature ()
         
@@ -511,7 +511,7 @@ let ``return a test that does not call setup when run when given tags, setup, te
     )
 
 let ``return a test that does not call the test action when run when given tags, setup, test body with environment, test name, path, and line number`` =
-    feature.Test (fun () ->
+    feature.Test (fun _ ->
         let monitor = Monitor (Ok ())
         let fut = Arrow.NewFeature ()
         
@@ -536,7 +536,7 @@ let ``return a test that does not call the test action when run when given tags,
 // -      No setup, test body with environment, no teardown      -
 // ---------------------------------------------------------------
 let ``return a test with correct tags when given tags, test body with environment, test name, path, and line number`` =
-    feature.Test (fun () ->
+    feature.Test (fun _ ->
         let fut = Arrow.NewFeature ()
         
         let tags = 
@@ -559,7 +559,7 @@ let ``return a test with correct tags when given tags, test body with environmen
     )
 
 let ``return a test with correct test name when given tags, test body with environment, test name, path, and line number`` =
-    feature.Test (fun () ->
+    feature.Test (fun _ ->
         let fut = Arrow.NewFeature ()
         
         let test = fut.Ignore (
@@ -575,7 +575,7 @@ let ``return a test with correct test name when given tags, test body with envir
     )
 
 let ``return a test with correct file path when given tags, test body with environment, test name, path, and line number`` =
-    feature.Test (fun () ->
+    feature.Test (fun _ ->
         let fut = Arrow.NewFeature ()
         
         let test = fut.Ignore (
@@ -591,7 +591,7 @@ let ``return a test with correct file path when given tags, test body with envir
     )
 
 let ``return a test with correct file name when given tags, test body with environment, test name, path, and line number`` =
-    feature.Test (fun () ->
+    feature.Test (fun _ ->
         let fut = Arrow.NewFeature ()
         
         let test = fut.Ignore (
@@ -607,7 +607,7 @@ let ``return a test with correct file name when given tags, test body with envir
     )
 
 let ``return a test with correct line number when given tags, test body with environment, test name, path, and line number`` =
-    feature.Test (fun () ->
+    feature.Test (fun _ ->
         let fut = Arrow.NewFeature ()
         
         let test = fut.Ignore (
@@ -623,7 +623,7 @@ let ``return a test with correct line number when given tags, test body with env
     )
 
 let ``return a test that returns an "Ignored" result when given tags, test body with environment, test name, path, and line number`` =
-    feature.Test (fun () ->
+    feature.Test (fun _ ->
         let expected = failureBuilder.IgnoreFailure ("S:\\path\\file.f", 3)
         let fut = Arrow.NewFeature ()
         
@@ -645,7 +645,7 @@ let ``return a test that returns an "Ignored" result when given tags, test body 
     )
 
 let ``return a test that does not call the test action when run when given tags, test body with environment, test name, path, and line number`` =
-    feature.Test (fun () ->
+    feature.Test (fun _ ->
         let monitor = Monitor (Ok ())
         let fut = Arrow.NewFeature ()
         
@@ -669,7 +669,7 @@ let ``return a test that does not call the test action when run when given tags,
 // -                    No tags, environment                    -
 // --------------------------------------------------------------
 let ``return a test with correct test name when given setup, test body with environment, teardown, test name, path, and line number`` =
-    feature.Test (fun () ->
+    feature.Test (fun _ ->
         let fut = Arrow.NewFeature ()
         
         let test = fut.Ignore (
@@ -686,7 +686,7 @@ let ``return a test with correct test name when given setup, test body with envi
     )
 
 let ``return a test with correct file path when given setup, test body with environment, teardown, test name, path, and line number`` =
-    feature.Test (fun () ->
+    feature.Test (fun _ ->
         let fut = Arrow.NewFeature ()
         
         let test = fut.Ignore (
@@ -703,7 +703,7 @@ let ``return a test with correct file path when given setup, test body with envi
     )
 
 let ``return a test with correct file name when given setup, test body with environment, teardown, test name, path, and line number`` =
-    feature.Test (fun () ->
+    feature.Test (fun _ ->
         let fut = Arrow.NewFeature ()
         
         let test = fut.Ignore (
@@ -720,7 +720,7 @@ let ``return a test with correct file name when given setup, test body with envi
     )
 
 let ``return a test with correct line number when given setup, test body with environment, teardown, test name, path, and line number`` =
-    feature.Test (fun () ->
+    feature.Test (fun _ ->
         let fut = Arrow.NewFeature ()
         
         let test = fut.Ignore (
@@ -737,7 +737,7 @@ let ``return a test with correct line number when given setup, test body with en
     )
 
 let ``return a test that returns an "Ignored" result when given setup, test body with environment, teardown, test name, path, and line number`` =
-    feature.Test (fun () ->
+    feature.Test (fun _ ->
         let expected = failureBuilder.IgnoreFailure ("S:\\path\\file.f", 3)
         let fut = Arrow.NewFeature ()
         
@@ -760,7 +760,7 @@ let ``return a test that returns an "Ignored" result when given setup, test body
     )
 
 let ``return a test that does not call setup when run when given setup, test body with environment, teardown, test name, path, and line number`` =
-    feature.Test (fun () ->
+    feature.Test (fun _ ->
         let monitor = Monitor (Ok ())
         let fut = Arrow.NewFeature ()
         
@@ -782,7 +782,7 @@ let ``return a test that does not call setup when run when given setup, test bod
     )
 
 let ``return a test that does not call the test action when run when given setup, test body with environment, teardown, test name, path, and line number`` =
-    feature.Test (fun () ->
+    feature.Test (fun _ ->
         let monitor = Monitor (Ok ())
         let fut = Arrow.NewFeature ()
         
@@ -804,7 +804,7 @@ let ``return a test that does not call the test action when run when given setup
     )
 
 let ``return a test that does not call the teardown when run when given setup, test body with environment, teardown, test name, path, and line number`` =
-    feature.Test (fun () ->
+    feature.Test (fun _ ->
         let monitor = Monitor (Ok ())
         let fut = Arrow.NewFeature ()
         
@@ -829,7 +829,7 @@ let ``return a test that does not call the teardown when run when given setup, t
 // -       No tags, test body with environment, No teardown       -
 // ----------------------------------------------------------------
 let ``return a test with correct test name when given setup, test body with environment, test name, path, and line number`` =
-    feature.Test (fun () ->
+    feature.Test (fun _ ->
         let fut = Arrow.NewFeature ()
         
         let test = fut.Ignore (
@@ -845,7 +845,7 @@ let ``return a test with correct test name when given setup, test body with envi
     )
 
 let ``return a test with correct file path when given setup, test body with environment, test name, path, and line number`` =
-    feature.Test (fun () ->
+    feature.Test (fun _ ->
         let fut = Arrow.NewFeature ()
         
         let test = fut.Ignore (
@@ -861,7 +861,7 @@ let ``return a test with correct file path when given setup, test body with envi
     )
 
 let ``return a test with correct file name when given setup, test body with environment, test name, path, and line number`` =
-    feature.Test (fun () ->
+    feature.Test (fun _ ->
         let fut = Arrow.NewFeature ()
         
         let test = fut.Ignore (
@@ -877,7 +877,7 @@ let ``return a test with correct file name when given setup, test body with envi
     )
 
 let ``return a test with correct line number when given setup, test body with environment, test name, path, and line number`` =
-    feature.Test (fun () ->
+    feature.Test (fun _ ->
         let fut = Arrow.NewFeature ()
         
         let test = fut.Ignore (
@@ -893,7 +893,7 @@ let ``return a test with correct line number when given setup, test body with en
     )
 
 let ``return a test that returns an "Ignored" result when given setup, test body with environment, test name, path, and line number`` =
-    feature.Test (fun () ->
+    feature.Test (fun _ ->
         let expected = failureBuilder.IgnoreFailure ("S:\\path\\file.f", 3)
         let fut = Arrow.NewFeature ()
         
@@ -915,7 +915,7 @@ let ``return a test that returns an "Ignored" result when given setup, test body
     )
 
 let ``return a test that does not call setup when run when given setup, test body with environment, test name, path, and line number`` =
-    feature.Test (fun () ->
+    feature.Test (fun _ ->
         let monitor = Monitor (Ok ())
         let fut = Arrow.NewFeature ()
         
@@ -936,7 +936,7 @@ let ``return a test that does not call setup when run when given setup, test bod
     )
 
 let ``return a test that does not call the test action when run when given setup, test body with environment, test name, path, and line number`` =
-    feature.Test (fun () ->
+    feature.Test (fun _ ->
         let monitor = Monitor (Ok ())
         let fut = Arrow.NewFeature ()
         
@@ -960,7 +960,7 @@ let ``return a test that does not call the test action when run when given setup
 // -       No setup, test body with environment, teardown       -
 // --------------------------------------------------------------
 let ``return a test with correct test name when given test body with environment, teardown, test name, path, and line number`` =
-    feature.Test (fun () ->
+    feature.Test (fun _ ->
         let fut = Arrow.NewFeature ()
         
         let test = fut.Ignore (
@@ -976,7 +976,7 @@ let ``return a test with correct test name when given test body with environment
     )
 
 let ``return a test with correct file path when given test body with environment, teardown, test name, path, and line number`` =
-    feature.Test (fun () ->
+    feature.Test (fun _ ->
         let fut = Arrow.NewFeature ()
         
         let test = fut.Ignore (
@@ -992,7 +992,7 @@ let ``return a test with correct file path when given test body with environment
     )
 
 let ``return a test with correct file name when given test body with environment, teardown, test name, path, and line number`` =
-    feature.Test (fun () ->
+    feature.Test (fun _ ->
         let fut = Arrow.NewFeature ()
         
         let test = fut.Ignore (
@@ -1008,7 +1008,7 @@ let ``return a test with correct file name when given test body with environment
     )
 
 let ``return a test with correct line number when given test body with environment, teardown, test name, path, and line number`` =
-    feature.Test (fun () ->
+    feature.Test (fun _ ->
         let fut = Arrow.NewFeature ()
         
         let test = fut.Ignore (
@@ -1024,7 +1024,7 @@ let ``return a test with correct line number when given test body with environme
     )
 
 let ``return a test that returns an "Ignored" result when given test body with environment, teardown, test name, path, and line number`` =
-    feature.Test (fun () ->
+    feature.Test (fun _ ->
         let expected = failureBuilder.IgnoreFailure ("S:\\path\\file.f", 3)
         let fut = Arrow.NewFeature ()
         
@@ -1046,7 +1046,7 @@ let ``return a test that returns an "Ignored" result when given test body with e
     )
 
 let ``return a test that does not call the test action when run when given test body with environment, teardown, test name, path, and line number`` =
-    feature.Test (fun () ->
+    feature.Test (fun _ ->
         let monitor = Monitor (Ok ())
         let fut = Arrow.NewFeature ()
         
@@ -1067,7 +1067,7 @@ let ``return a test that does not call the test action when run when given test 
     )
 
 let ``return a test that does not call the teardown when run when given test body with environment, teardown, test name, path, and line number`` =
-    feature.Test (fun () ->
+    feature.Test (fun _ ->
         let monitor = Monitor (Ok ())
         let fut = Arrow.NewFeature ()
         

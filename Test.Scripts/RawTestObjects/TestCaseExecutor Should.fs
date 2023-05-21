@@ -12,7 +12,7 @@ let private container = Arrow.NewFeature (
 
 let ``Have a decent toString`` =
     container.Test (
-        fun () ->
+        fun _ ->
             let feature = Arrow.NewFeature ("TestCase", "Executor")
             let test = feature.Test ((fun () -> TestSuccess), "ToString should return a string", "M:\\y.file", 66)
             let executor = test.GetExecutor ()

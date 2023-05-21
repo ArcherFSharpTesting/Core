@@ -16,14 +16,14 @@ let private feature = Arrow.NewFeature (
 
 let ``Should call setup when it is the only thing passed to it`` =
     feature.Test (
-        fun () ->
+        fun _ ->
             let monitor = Monitor (Ok ())
                 
             let testFeature = Arrow.NewFeature (
                 Setup monitor.CallSetup
             )
             
-            let test = testFeature.Test (fun () -> TestSuccess)
+            let test = testFeature.Test (fun _ -> TestSuccess)
             
             test
             |> silentlyRunTest
@@ -35,7 +35,7 @@ let ``Should call setup when it is the only thing passed to it`` =
 
 let ``Should call setup when name and setup are specified`` =
     feature.Test (
-        fun () ->
+        fun _ ->
             let monitor = Monitor (Ok ())
                 
             let testFeature = Arrow.NewFeature (
@@ -43,7 +43,7 @@ let ``Should call setup when name and setup are specified`` =
                 Setup monitor.CallSetup
             )
             
-            let test = testFeature.Test (fun () -> TestSuccess)
+            let test = testFeature.Test (fun _ -> TestSuccess)
             
             test
             |> silentlyRunTest
@@ -55,7 +55,7 @@ let ``Should call setup when name and setup are specified`` =
 
 let ``Should call setup when path, name, and setup are specified`` =
     feature.Test (
-        fun () ->
+        fun _ ->
             let monitor = Monitor (Ok ())
                 
             let testFeature = Arrow.NewFeature (
@@ -64,7 +64,7 @@ let ``Should call setup when path, name, and setup are specified`` =
                 Setup monitor.CallSetup
             )
             
-            let test = testFeature.Test (fun () -> TestSuccess)
+            let test = testFeature.Test (fun _ -> TestSuccess)
             
             test
             |> silentlyRunTest
@@ -76,7 +76,7 @@ let ``Should call setup when path, name, and setup are specified`` =
     
 let ``Should call setup when it is passed with a teardown`` =
     feature.Test (
-        fun () ->
+        fun _ ->
             let monitor = Monitor (Ok ())
             
             let testFeature = Arrow.NewFeature (
@@ -84,7 +84,7 @@ let ``Should call setup when it is passed with a teardown`` =
                 emptyTeardown
             )
             
-            let test = testFeature.Test (fun () -> TestSuccess)
+            let test = testFeature.Test (fun _ -> TestSuccess)
             
             test
             |> silentlyRunTest
@@ -96,7 +96,7 @@ let ``Should call setup when it is passed with a teardown`` =
     
 let ``Should call setup when name, setup, and teardown are specified`` =
     feature.Test (
-        fun () ->
+        fun _ ->
             let monitor = Monitor (Ok ())
             
             let testFeature = Arrow.NewFeature (
@@ -105,7 +105,7 @@ let ``Should call setup when name, setup, and teardown are specified`` =
                 emptyTeardown
             )
             
-            let test = testFeature.Test (fun () -> TestSuccess)
+            let test = testFeature.Test (fun _ -> TestSuccess)
             
             test
             |> silentlyRunTest
@@ -117,7 +117,7 @@ let ``Should call setup when name, setup, and teardown are specified`` =
     
 let ``Should call setup when path, name, setup, and teardown are specified`` =
     feature.Test (
-        fun () ->
+        fun _ ->
             let monitor = Monitor (Ok ())
             
             let testFeature = Arrow.NewFeature (
@@ -127,7 +127,7 @@ let ``Should call setup when path, name, setup, and teardown are specified`` =
                 emptyTeardown
             )
             
-            let test = testFeature.Test (fun () -> TestSuccess)
+            let test = testFeature.Test (fun _ -> TestSuccess)
             
             test
             |> silentlyRunTest
