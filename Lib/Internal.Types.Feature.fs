@@ -87,7 +87,7 @@ type Feature<'featureType> (featurePath, featureName, featureTags: TestTag list,
         let location = getLocation fileFullName lineNumber
         let failure = TestIgnored (None, location) |> TestFailure
         let tb = TestBody (fun _ _ -> failure)
-        this.Test (tags, Setup (fun _ -> Ok ()), tb, emptyTeardown, testName, fileFullName, lineNumber)
+        this.Test (tags, Setup Ok, tb, emptyTeardown, testName, fileFullName, lineNumber)
         
     abstract member IsTestedBy: tags: TagsIndicator * setup: SetupIndicator<'featureType, 'setupType> * testBody: TestBodyIndicator<TestFunctionTwoParameters<'setupType, TestEnvironment>> * teardown: TeardownIndicator<'setupType> * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> (string -> unit)
     default this.IsTestedBy (tags: TagsIndicator, setup: SetupIndicator<'featureType, 'setupType>, testBody: TestBodyIndicator<TestFunctionTwoParameters<'setupType, TestEnvironment>>, teardown: TeardownIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
@@ -659,6 +659,8 @@ type Feature<'featureType> (featurePath, featureName, featureTags: TestTag list,
         member this.GetTests() = this.GetTests ()
         
     interface IScriptFeature<'featureType> with
+        member _.FeatureTags with get () = featureTags
+        
         member this.IsTestedBy (tags: TagsIndicator, setup: SetupIndicator<'featureType, 'setupType>, testBody: TestBodyIndicator<TestFunctionTwoParameters<'setupType, TestEnvironment>>, teardown: TeardownIndicator<'setupType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int): (string -> unit) =
             this.IsTestedBy (tags, setup, testBody, teardown, fileFullName, lineNumber)
 

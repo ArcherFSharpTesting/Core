@@ -35,7 +35,7 @@ let ``return an ITest with everything when given no teardown`` =
             let tests =
                 testFeature.Ignore (
                     TestTags testTags,
-                    Setup (fun _ -> Ok ()),
+                    Setup Ok,
                     Data (seq{ 12..12..36 }),
                     TestBody (fun _ _ _ -> TestSuccess),
                     testName,
@@ -93,7 +93,7 @@ let ``return an ITest with everything when given no teardown, no name hints`` =
             let tests =
                 testFeature.Ignore (
                     TestTags testTags,
-                    Setup (fun _ -> Ok ()),
+                    Setup Ok,
                     Data (seq{ 12..12..36 }),
                     TestBody (fun _ _ _ -> TestSuccess),
                     testName,
@@ -210,7 +210,7 @@ let ``return an ITest with everything when given no tags`` =
             
             let tests =
                 testFeature.Ignore (
-                    Setup (fun _ -> Ok ()),
+                    Setup Ok,
                     Data (seq { 9..9..27 }),
                     TestBody (fun _ _ _ -> TestSuccess),
                     emptyTeardown,
@@ -263,7 +263,7 @@ let ``return an ITest with everything when given no tags, no name hints`` =
             
             let tests =
                 testFeature.Ignore (
-                    Setup (fun _ -> Ok ()),
+                    Setup Ok,
                     Data (seq { 9..9..27 }),
                     TestBody (fun _ _ _ -> TestSuccess),
                     emptyTeardown,
@@ -397,7 +397,7 @@ let ``return an ITest with everything when given no tags, no teardown`` =
             
             let tests =
                 testFeature.Ignore (
-                    Setup (fun _ -> Ok ()),
+                    Setup Ok,
                     Data (seq{ 9..-9..-9 }),
                     TestBody (fun _ _ _ -> TestSuccess),
                     testName,
@@ -449,7 +449,7 @@ let ``return an ITest with everything when given no tags, no teardown, no name h
             
             let tests =
                 testFeature.Ignore (
-                    Setup (fun _ -> Ok ()),
+                    Setup Ok,
                     Data (seq{ 9..-9..-9 }),
                     TestBody (fun _ _ _ -> TestSuccess),
                     testName,

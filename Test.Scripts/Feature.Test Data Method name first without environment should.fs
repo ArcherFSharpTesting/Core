@@ -36,7 +36,7 @@ let ``return an ITest with everything when everything is passed`` =
                 testFeature.Test (
                     testName,
                     TestTags testTags,
-                    Setup (fun _ -> Ok ()),
+                    Setup Ok,
                     Data [1; 2; 3],
                     TestBody (fun _ _ -> TestSuccess),
                     emptyTeardown,
@@ -95,7 +95,7 @@ let ``return an ITest with everything when everything is passed no name hints`` 
                 testFeature.Test (
                     testName,
                     TestTags testTags,
-                    Setup (fun _ -> Ok ()),
+                    Setup Ok,
                     Data [1; 2; 3],
                     TestBody (fun _ _ -> TestSuccess),
                     emptyTeardown,
@@ -271,7 +271,7 @@ let ``return an ITest with everything when given no teardown`` =
                 testFeature.Test (
                     testName,
                     TestTags testTags,
-                    Setup (fun _ -> Ok ()),
+                    Setup Ok,
                     Data ['Z';'p';'M'],
                     TestBody (fun _ _ -> TestSuccess),
                     fullPath,
@@ -329,7 +329,7 @@ let ``return an ITest with everything when given no teardown no name hints`` =
                 testFeature.Test (
                     testName,
                     TestTags testTags,
-                    Setup (fun _ -> Ok ()),
+                    Setup Ok,
                     Data ['Z';'p';'p'],
                     TestBody (fun _ _ -> TestSuccess),
                     fullPath,
@@ -840,7 +840,7 @@ let ``return an ITest with everything when given no tags`` =
             let tests =
                 testFeature.Test (
                     testName,
-                    Setup (fun _ -> Ok ()),
+                    Setup Ok,
                     Data [6; 2; 8],
                     TestBody (fun _ _ -> TestSuccess),
                     emptyTeardown,
@@ -893,7 +893,7 @@ let ``return an ITest with everything when given no tags no name hints`` =
             let tests =
                 testFeature.Test (
                     testName,
-                    Setup (fun _ -> Ok ()),
+                    Setup Ok,
                     Data [6; 2; 8],
                     TestBody (fun _ _ -> TestSuccess),
                     emptyTeardown,
@@ -1025,7 +1025,7 @@ let ``return an ITest with everything when given no tags, no teardown`` =
             let tests =
                 testFeature.Test (
                     testName,
-                    Setup (fun _ -> Ok ()),
+                    Setup Ok,
                     Data [('a', 'F'); ('f', 'G'); ('g', 'A')],
                     TestBody (fun _ _ -> TestSuccess),
                     fullPath,
@@ -1077,7 +1077,7 @@ let ``return an ITest with everything when given no tags, no teardown, no name h
             let tests =
                 testFeature.Test (
                     testName,
-                    Setup (fun _ -> Ok ()),
+                    Setup Ok,
                     Data [('a', 'F'); ('f', 'G'); ('g', 'A')],
                     TestBody (fun _ _ -> TestSuccess),
                     fullPath,

@@ -36,7 +36,7 @@ let ``return an ITest with everything when everything is passed`` =
                 testFeature.Test (
                     testName,
                     TestTags testTags,
-                    Setup (fun _ -> Ok ()),
+                    Setup Ok,
                     Data [6; 4; 3],
                     TestBody (fun _ _ _ -> TestSuccess),
                     emptyTeardown,
@@ -95,7 +95,7 @@ let ``return an ITest with everything when everything is passed no name hints`` 
                 testFeature.Test (
                     testName,
                     TestTags testTags,
-                    Setup (fun _ -> Ok ()),
+                    Setup Ok,
                     Data [6; 4; 3],
                     TestBody (fun _ _ _ -> TestSuccess),
                     emptyTeardown,
@@ -249,7 +249,7 @@ let ``return an ITest with everything when given no teardown`` =
                 testFeature.Test (
                     testName,
                     TestTags testTags,
-                    Setup (fun _ -> Ok ()),
+                    Setup Ok,
                     Data ["park"; "pool"; "eatery"],
                     TestBody (fun _ _ _ -> TestSuccess),
                     fullPath,
@@ -307,7 +307,7 @@ let ``return an ITest with everything when given no teardown, no name hints`` =
                 testFeature.Test (
                     testName,
                     TestTags testTags,
-                    Setup (fun _ -> Ok ()),
+                    Setup Ok,
                     Data ["park"; "pool"; "eatery"],
                     TestBody (fun _ _ _ -> TestSuccess),
                     fullPath,
@@ -894,7 +894,7 @@ let ``return an ITest with everything when given no tags`` =
             let tests =
                 testFeature.Test (
                     testName,
-                    Setup (fun _ -> Ok ()),
+                    Setup Ok,
                     Data (seq{ 1..3 }),
                     TestBody (fun _ _ _ -> TestSuccess),
                     emptyTeardown,
@@ -947,7 +947,7 @@ let ``return an ITest with everything when given no tags by calling it with test
             let tests =
                 testFeature.Test (
                     testName,
-                    Setup (fun _ -> Ok ()),
+                    Setup Ok,
                     Data (seq{ 1..3 }),
                     TestBody (fun _ _ _ -> TestSuccess),
                     emptyTeardown,
@@ -1079,7 +1079,7 @@ let ``return an ITest with everything when given no tags, no teardown`` =
             let test =
                 testFeature.Test (
                     testName,
-                    Setup (fun _ -> Ok ()),
+                    Setup Ok,
                     Data (seq{ 119..121 }),
                     TestBody (fun _ _ _ -> TestSuccess),
                     fullPath,
@@ -1131,7 +1131,7 @@ let ``return an ITest with everything when given no tags, no teardown, no name h
             let test =
                 testFeature.Test (
                     testName,
-                    Setup (fun _ -> Ok ()),
+                    Setup Ok,
                     Data (seq{ 119..121 }),
                     TestBody (fun _ _ _ -> TestSuccess),
                     fullPath,

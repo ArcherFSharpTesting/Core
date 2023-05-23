@@ -35,7 +35,7 @@ let ``return an ITest with everything when everything is passed`` =
             let test =
                 testFeature.Ignore (
                     TestTags testTags,
-                    Setup (fun _ -> Ok ()),
+                    Setup Ok,
                     TestBody (fun _ _ -> TestSuccess),
                     emptyTeardown,
                     testName,
@@ -191,7 +191,7 @@ let ``return an ITest with everything when given no teardown`` =
             let test =
                 testFeature.Ignore (
                     TestTags testTags,
-                    Setup (fun _ -> Ok ()),
+                    Setup Ok,
                     TestBody (fun _ _ -> TestSuccess),
                     testName,
                     fullPath,
@@ -527,7 +527,7 @@ let ``return an ITest with everything when given no tags`` =
             
             let test =
                 testFeature.Ignore (
-                    Setup (fun _ -> Ok ()),
+                    Setup Ok,
                     TestBody (fun _ _ -> TestSuccess),
                     emptyTeardown,
                     testName,
@@ -661,7 +661,7 @@ let ``return an ITest with everything when given no tags, no teardown`` =
             
             let test =
                 testFeature.Ignore (
-                    Setup (fun _ -> Ok ()),
+                    Setup Ok,
                     TestBody (fun _ _ -> TestSuccess),
                     testName,
                     fullPath,

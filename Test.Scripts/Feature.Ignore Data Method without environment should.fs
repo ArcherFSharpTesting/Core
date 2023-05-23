@@ -35,7 +35,7 @@ let ``return an ITest with everything when everything is passed`` =
             let tests =
                 testFeature.Ignore (
                     TestTags testTags,
-                    Setup (fun _ -> Ok ()),
+                    Setup Ok,
                     Data (seq { 0..-1..-2 }),
                     TestBody (fun _ _ -> TestSuccess),
                     emptyTeardown,
@@ -94,7 +94,7 @@ let ``return an ITest with everything when everything is passed no name hints`` 
             let tests =
                 testFeature.Ignore (
                     TestTags testTags,
-                    Setup (fun _ -> Ok ()),
+                    Setup Ok,
                     Data (seq { 0..-1..-2 }),
                     TestBody (fun _ _ -> TestSuccess),
                     emptyTeardown,

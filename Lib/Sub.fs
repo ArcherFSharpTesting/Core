@@ -8,7 +8,7 @@ open Archer.Arrows.Internals
 open Archer.CoreTypes.InternalTypes
 
 type Sub =
-    static member Feature (subFeatureName, setup: SetupIndicator<'featureType, 'subFeatureType>, teardown: TeardownIndicator<'subFeatureType>) =
+    static member Feature (subFeatureName, TestTags featureTags, setup: SetupIndicator<'featureType, 'subFeatureType>, teardown: TeardownIndicator<'subFeatureType>) =
         let buildIt (feature: Feature<'featureType>) =
             let builder = feature :> IBuilder<'featureType, ITest>
             
@@ -18,13 +18,13 @@ type Sub =
                 (internals, (WrappedTeardownExecutor (setup, teardown, executor) :> ISetupTeardownExecutor<'featureType>))
                 |> builder.Add
             
-            let subFeature = Feature<'subFeatureType> (feature.ToString (), subFeatureName, [], transformer)
+            let subFeature = Feature<'subFeatureType> (feature.ToString (), subFeatureName, [feature.Feature.FeatureTags; featureTags] |> List.concat, transformer)
             
             subFeature :> IFeature<'subFeatureType>
             
         buildIt
         
-    static member Ignore (subFeatureName, setup: SetupIndicator<'featureType, 'subFeatureType>, teardown: TeardownIndicator<'subFeatureType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+    static member Ignore (subFeatureName, TestTags featureTags, setup: SetupIndicator<'featureType, 'subFeatureType>, teardown: TeardownIndicator<'subFeatureType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
         let buildIt (feature: Feature<'featureType>) =
             let builder = feature :> IBuilder<'featureType, ITest>
             
@@ -35,63 +35,113 @@ type Sub =
                 |> builder.Add
             
             let location = getLocation fileFullName lineNumber
-            let subFeature = IgnoreFeature<'subFeatureType> (feature.ToString (), subFeatureName, [], transformer, location)
+            let subFeature = IgnoreFeature<'subFeatureType> (feature.ToString (), subFeatureName, [feature.Feature.FeatureTags; featureTags] |> List.concat, transformer, location)
             
             subFeature :> IFeature<'subFeatureType>
             
         buildIt
         
     static member Feature (subFeatureName, setup: SetupIndicator<'featureType, 'subFeatureType>) =
-        Sub.Feature (subFeatureName, setup, emptyTeardown)
+        Sub.Feature (subFeatureName, TestTags [], setup, emptyTeardown)
+        
+    static member Feature (subFeatureName, featureTags, setup: SetupIndicator<'featureType, 'subFeatureType>) =
+        Sub.Feature (subFeatureName, featureTags, setup, emptyTeardown)
         
     static member Ignore (subFeatureName, setup: SetupIndicator<'featureType, 'subFeatureType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
-        Sub.Ignore (subFeatureName, setup, emptyTeardown, fileFullName, lineNumber)
+        Sub.Ignore (subFeatureName, TestTags [], setup, emptyTeardown, fileFullName, lineNumber)
+        
+    static member Ignore (subFeatureName, featureTags, setup: SetupIndicator<'featureType, 'subFeatureType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+        Sub.Ignore (subFeatureName, featureTags, setup, emptyTeardown, fileFullName, lineNumber)
         
     static member Feature (subFeatureName, teardown: TeardownIndicator<unit>) =
-        Sub.Feature (subFeatureName, Setup (fun _ -> Ok ()), teardown)
+        Sub.Feature (subFeatureName, TestTags [], Setup Ok, teardown)
+        
+    static member Feature (subFeatureName, featureTags, teardown: TeardownIndicator<unit>) =
+        Sub.Feature (subFeatureName, featureTags, Setup Ok, teardown)
         
     static member Ignore (subFeatureName, teardown: TeardownIndicator<unit>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
-        Sub.Ignore (subFeatureName, Setup (fun _ -> Ok ()), teardown, fileFullName, lineNumber)
+        Sub.Ignore (subFeatureName, TestTags [], Setup Ok, teardown, fileFullName, lineNumber)
+        
+    static member Ignore (subFeatureName, featureTags, teardown: TeardownIndicator<unit>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+        Sub.Ignore (subFeatureName, featureTags, Setup Ok, teardown, fileFullName, lineNumber)
         
     static member Feature subFeatureName =
-        Sub.Feature (subFeatureName, Setup (fun _ -> Ok ()), emptyTeardown)
+        Sub.Feature (subFeatureName, TestTags [], Setup Ok, emptyTeardown)
+        
+    static member Feature (subFeatureName, featureTags) =
+        Sub.Feature (subFeatureName, featureTags, Setup Ok, emptyTeardown)
         
     static member Ignore (subFeatureName, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
-        Sub.Ignore (subFeatureName, Setup (fun _ -> Ok ()), emptyTeardown, fileFullName, lineNumber)
+        Sub.Ignore (subFeatureName, TestTags [], Setup Ok, emptyTeardown, fileFullName, lineNumber)
+        
+    static member Ignore (subFeatureName, featureTags, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+        Sub.Ignore (subFeatureName, featureTags, Setup Ok, emptyTeardown, fileFullName, lineNumber)
         
     static member Feature (setup: SetupIndicator<'featureType, 'subFeatureType>, teardown: TeardownIndicator<'subFeatureType>) =
         let featureName, _ = getNames ()
-        Sub.Feature (featureName, setup, teardown)
+        Sub.Feature (featureName, TestTags [], setup, teardown)
+        
+    static member Feature (featureTags, setup: SetupIndicator<'featureType, 'subFeatureType>, teardown: TeardownIndicator<'subFeatureType>) =
+        let featureName, _ = getNames ()
+        Sub.Feature (featureName, featureTags, setup, teardown)
         
     static member Ignore (setup: SetupIndicator<'featureType, 'subFeatureType>, teardown: TeardownIndicator<'subFeatureType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
         let featureName, _ = getNames ()
-        Sub.Ignore (featureName, setup, teardown, fileFullName, lineNumber)
+        Sub.Ignore (featureName, TestTags [], setup, teardown, fileFullName, lineNumber)
+        
+    static member Ignore (featureTags, setup: SetupIndicator<'featureType, 'subFeatureType>, teardown: TeardownIndicator<'subFeatureType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+        let featureName, _ = getNames ()
+        Sub.Ignore (featureName, featureTags, setup, teardown, fileFullName, lineNumber)
         
     static member Feature (setup: SetupIndicator<'featureType, 'subFeatureType>) =
         let featureName, _ = getNames ()
-        Sub.Feature (featureName, setup, emptyTeardown)
+        Sub.Feature (featureName, TestTags [], setup, emptyTeardown)
+        
+    static member Feature (featureTags, setup: SetupIndicator<'featureType, 'subFeatureType>) =
+        let featureName, _ = getNames ()
+        Sub.Feature (featureName, featureTags, setup, emptyTeardown)
         
     static member Ignore (setup: SetupIndicator<'featureType, 'subFeatureType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
         let featureName, _ = getNames ()
-        Sub.Ignore (featureName, setup, emptyTeardown, fileFullName, lineNumber)
+        Sub.Ignore (featureName, TestTags [], setup, emptyTeardown, fileFullName, lineNumber)
+        
+    static member Ignore (featureTags, setup: SetupIndicator<'featureType, 'subFeatureType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+        let featureName, _ = getNames ()
+        Sub.Ignore (featureName, featureTags, setup, emptyTeardown, fileFullName, lineNumber)
         
     static member Feature (teardown: TeardownIndicator<unit>) =
         let featureName, _ = getNames ()
-        Sub.Feature (featureName, Setup (fun _ -> Ok ()), teardown)
+        Sub.Feature (featureName, TestTags [], Setup Ok, teardown)
+        
+    static member Feature (featureTags, teardown: TeardownIndicator<unit>) =
+        let featureName, _ = getNames ()
+        Sub.Feature (featureName, featureTags, Setup Ok, teardown)
         
     static member Ignore (teardown: TeardownIndicator<unit>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
         let featureName, _ = getNames ()
-        Sub.Ignore (featureName, Setup (fun _ -> Ok ()), teardown, fileFullName, lineNumber)
+        Sub.Ignore (featureName, TestTags [], Setup Ok, teardown, fileFullName, lineNumber)
+        
+    static member Ignore (featureTags, teardown: TeardownIndicator<unit>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+        let featureName, _ = getNames ()
+        Sub.Ignore (featureName, featureTags, Setup Ok, teardown, fileFullName, lineNumber)
         
     static member Feature () =
         let featureName, _ = getNames ()
-        Sub.Feature (featureName, Setup (fun _ -> Ok ()), emptyTeardown)
+        Sub.Feature (featureName, TestTags [], Setup Ok, emptyTeardown)
+        
+    static member Feature featureTags =
+        let featureName, _ = getNames ()
+        Sub.Feature (featureName, featureTags, Setup Ok, emptyTeardown)
         
     static member Ignore ([<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
         let featureName, _ = getNames ()
-        Sub.Ignore (featureName, Setup (fun _ -> Ok ()), emptyTeardown, fileFullName, lineNumber)
+        Sub.Ignore (featureName, TestTags [], Setup Ok, emptyTeardown, fileFullName, lineNumber)
         
-    static member Feature (subFeatureName, setup: SetupIndicator<'featureType, 'subFeatureType>, teardown: TeardownIndicator<'subFeatureType>, testBuilder: IScriptFeature<'subFeatureType> -> unit) =
+    static member Ignore (featureTags, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+        let featureName, _ = getNames ()
+        Sub.Ignore (featureName, featureTags, Setup Ok, emptyTeardown, fileFullName, lineNumber)
+        
+    static member Feature (subFeatureName, TestTags featureTags, setup: SetupIndicator<'featureType, 'subFeatureType>, teardown: TeardownIndicator<'subFeatureType>, testBuilder: IScriptFeature<'subFeatureType> -> unit) =
         let buildIt (feature: IScriptFeature<'featureType>) =
             let builder =
                 match feature with
@@ -104,13 +154,13 @@ type Sub =
                 (internals, (WrappedTeardownExecutor (setup, teardown, executor) :> ISetupTeardownExecutor<'featureType>))
                 |> builder.Add
             
-            let subFeature = Feature<'subFeatureType> (feature.ToString (), subFeatureName, [], transformer)
+            let subFeature = Feature<'subFeatureType> (feature.ToString (), subFeatureName, [feature.FeatureTags; featureTags] |> List.concat, transformer)
             
             subFeature :> IScriptFeature<'subFeatureType> |> testBuilder
             
         buildIt
         
-    static member Ignore (subFeatureName, setup: SetupIndicator<'featureType, 'subFeatureType>, teardown: TeardownIndicator<'subFeatureType>, testBuilder: IScriptFeature<'subFeatureType> -> unit, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+    static member Ignore (subFeatureName, TestTags featureTags, setup: SetupIndicator<'featureType, 'subFeatureType>, teardown: TeardownIndicator<'subFeatureType>, testBuilder: IScriptFeature<'subFeatureType> -> unit, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
         let buildIt (feature: IScriptFeature<'featureType>) =
             let builder =
                 match feature with
@@ -124,27 +174,45 @@ type Sub =
                 |> builder.Add
                 
             let location = getLocation fileFullName lineNumber
-            let subFeature = IgnoreFeature<'subFeatureType> (feature.ToString (), subFeatureName, [], transformer, location)
+            let subFeature = IgnoreFeature<'subFeatureType> (feature.ToString (), subFeatureName, [feature.FeatureTags; featureTags] |> List.concat, transformer, location)
             
             subFeature :> IScriptFeature<'subFeatureType> |> testBuilder
             
         buildIt
         
     static member Feature (subFeatureName, setup: SetupIndicator<'featureType, 'subFeatureType>, testBuilder: IScriptFeature<'subFeatureType> -> unit) =
-        Sub.Feature (subFeatureName, setup, emptyTeardown, testBuilder)
+        Sub.Feature (subFeatureName, TestTags [], setup, emptyTeardown, testBuilder)
+        
+    static member Feature (subFeatureName, featureTags, setup: SetupIndicator<'featureType, 'subFeatureType>, testBuilder: IScriptFeature<'subFeatureType> -> unit) =
+        Sub.Feature (subFeatureName, featureTags, setup, emptyTeardown, testBuilder)
         
     static member Ignore (subFeatureName, setup: SetupIndicator<'featureType, 'subFeatureType>, testBuilder: IScriptFeature<'subFeatureType> -> unit, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
-        Sub.Ignore (subFeatureName, setup, emptyTeardown, testBuilder, fileFullName, lineNumber)
+        Sub.Ignore (subFeatureName, TestTags [], setup, emptyTeardown, testBuilder, fileFullName, lineNumber)
+        
+    static member Ignore (subFeatureName, featureTags, setup: SetupIndicator<'featureType, 'subFeatureType>, testBuilder: IScriptFeature<'subFeatureType> -> unit, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+        Sub.Ignore (subFeatureName, featureTags, setup, emptyTeardown, testBuilder, fileFullName, lineNumber)
         
     static member Feature (subFeatureName, teardown: TeardownIndicator<unit>, testBuilder: IScriptFeature<unit> -> unit) =
-        Sub.Feature (subFeatureName, Setup (fun _ -> Ok ()), teardown, testBuilder)
+        Sub.Feature (subFeatureName, TestTags [], Setup Ok, teardown, testBuilder)
+        
+    static member Feature (subFeatureName, featureTags, teardown: TeardownIndicator<unit>, testBuilder: IScriptFeature<unit> -> unit) =
+        Sub.Feature (subFeatureName, featureTags, Setup Ok, teardown, testBuilder)
         
     static member Ignore (subFeatureName, teardown: TeardownIndicator<unit>, testBuilder: IScriptFeature<unit> -> unit, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
-        Sub.Ignore (subFeatureName, Setup (fun _ -> Ok ()), teardown, testBuilder, fileFullName, lineNumber)
+        Sub.Ignore (subFeatureName, TestTags [], Setup Ok, teardown, testBuilder, fileFullName, lineNumber)
+        
+    static member Ignore (subFeatureName, featureTags, teardown: TeardownIndicator<unit>, testBuilder: IScriptFeature<unit> -> unit, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+        Sub.Ignore (subFeatureName, featureTags, Setup Ok, teardown, testBuilder, fileFullName, lineNumber)
         
     static member Feature (subFeatureName, testBuilder: IScriptFeature<unit> -> unit) =
-        Sub.Feature (subFeatureName, Setup (fun _ -> Ok ()), emptyTeardown, testBuilder)
+        Sub.Feature (subFeatureName, TestTags [], Setup Ok, emptyTeardown, testBuilder)
+        
+    static member Feature (subFeatureName, featureTags, testBuilder: IScriptFeature<unit> -> unit) =
+        Sub.Feature (subFeatureName, featureTags, Setup Ok, emptyTeardown, testBuilder)
         
     static member Ignore (subFeatureName, testBuilder: IScriptFeature<unit> -> unit, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
-        Sub.Ignore (subFeatureName, Setup (fun _ -> Ok ()), emptyTeardown, testBuilder, fileFullName, lineNumber)
+        Sub.Ignore (subFeatureName, TestTags [], Setup Ok, emptyTeardown, testBuilder, fileFullName, lineNumber)
+        
+    static member Ignore (subFeatureName, featureTags, testBuilder: IScriptFeature<unit> -> unit, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
+        Sub.Ignore (subFeatureName, featureTags, Setup Ok, emptyTeardown, testBuilder, fileFullName, lineNumber)
         
