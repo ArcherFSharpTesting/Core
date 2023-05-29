@@ -18,8 +18,9 @@
     <Compile Include="RawTestObjects\TestCaseExecutor Execute Should.fs" />
     <Compile Include="RawTestObjects\TestCaseExecutor Events Should.fs" />
     <Compile Include="RawTestObjects\TestCaseExecutor Event Cancellation Should.fs" />
-    <Compile Include="Test\Feature Test with test name, tags, setup, data, test body indicator three parameters, teardown should.fs" />
-    <Compile Include="Test\Feature Test with test name, tags, setup, data, test body indicator two parameters, teardown should.fs" />
+    <Compile Include="Test\01 - Feature Test with test name, tags, setup, data, test body indicator three parameters, teardown should.fs" />
+    <Compile Include="Test\02 - Feature Test with test name, tags, setup, data, test body indicator two parameters, teardown should.fs" />
+    <Compile Include="Test\03 - Feature Test with test name, tags, setup, data, test body indicator three parameters should.fs" />
     <Compile Include="Test\Feature Test with test name, tags, setup, data, test body indicator three parameters should.fs" />
     <Compile Include="Test\Feature Test with tags, setup, data, test body indicator three parameters should.fs" />
     <Compile Include="Test\Feature Test with tags, setup, test body indicator two parameters, teardown should.fs" />

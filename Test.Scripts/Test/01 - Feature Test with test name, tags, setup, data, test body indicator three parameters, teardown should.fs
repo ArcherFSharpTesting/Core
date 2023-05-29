@@ -1,4 +1,4 @@
-module Archer.Arrows.Tests.Test.``Feature Test with test name, tags, setup, data, test body indicator three parameters, teardown should``
+module Archer.Arrows.Tests.Test.``01 - Feature Test with test name, tags, setup, data, test body indicator three parameters, teardown should``
 
 open System
 open Archer
@@ -24,7 +24,8 @@ let ``Create a valid ITest`` =
     feature.Test (
         Setup setupFeatureUnderTest,
         TestBody (fun (testFeature: IFeature<unit>) ->
-            let (_monitor, tests), (tags, _setupValue, data, testNameBase), (path, fileName, lineNumber) = TestBuilder.BuildTestWithTestNameTagsSetupDataTestBodyThreeParametersTeardownNameHints testFeature
+            let (_monitor, tests), (tags, _setupValue, data, testNameBase), (path, fileName, lineNumber) =
+                TestBuilder.BuildTestWithTestNameTagsSetupDataTestBodyThreeParametersTeardownNameHints testFeature
                 
             let name1, name2, name3 = TestBuilder.GetTestNames (fun _ -> sprintf "%s %s" testNameBase) data
             
@@ -60,7 +61,8 @@ let ``Create a test name with name hints and repeating data`` =
     feature.Test (
         Setup setupFeatureUnderTest,
         TestBody (fun (testFeature: IFeature<unit>) ->
-            let (_monitor, tests), (_tags, _setupValue, data, testNameBase), _ = TestBuilder.BuildTestWithTestNameTagsSetupDataTestBodyThreeParametersTeardownNameHints (testFeature, true)
+            let (_monitor, tests), (_tags, _setupValue, data, testNameBase), _ =
+                TestBuilder.BuildTestWithTestNameTagsSetupDataTestBodyThreeParametersTeardownNameHints (testFeature, true)
             
             let name1, name2, name3 = TestBuilder.GetTestNames (fun i v -> sprintf "%s %s%s" testNameBase v (if 0 = i then "" else $"^%i{i}")) data
 
@@ -77,7 +79,8 @@ let ``Create a test name with no name hints`` =
     feature.Test (
         Setup setupFeatureUnderTest,
         TestBody (fun (testFeature: IFeature<unit>) ->
-            let (_monitor, tests), (_tags, _setupValue, data, testName), _ = TestBuilder.BuildTestWithTestNameTagsSetupDataTestBodyThreeParametersTeardown testFeature
+            let (_monitor, tests), (_tags, _setupValue, data, testName), _ =
+                TestBuilder.BuildTestWithTestNameTagsSetupDataTestBodyThreeParametersTeardown testFeature
             
             let name1, name2, name3 = TestBuilder.GetTestNames (fun _ -> sprintf "%s (%A)" testName) data
 
@@ -94,7 +97,8 @@ let ``Create a test name with no name hints same data repeated`` =
     feature.Test (
         Setup setupFeatureUnderTest,
         TestBody (fun (testFeature: IFeature<unit>) ->
-            let (_monitor, tests), (_tags, _setupValue, data, testName), _ = TestBuilder.BuildTestWithTestNameTagsSetupDataTestBodyThreeParametersTeardown (testFeature, true)
+            let (_monitor, tests), (_tags, _setupValue, data, testName), _ =
+                TestBuilder.BuildTestWithTestNameTagsSetupDataTestBodyThreeParametersTeardown (testFeature, true)
             
             let name1, name2, name3 = TestBuilder.GetTestNames (fun i v -> sprintf "%s (%A)%s" testName v (if 0 = i then "" else $"^%i{i}")) data
 
