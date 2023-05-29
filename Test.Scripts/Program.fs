@@ -47,6 +47,7 @@ runner
     ``04 - Feature Test with test name, tags, setup, data, test body indicator two parameters should``.``Test Cases``
     ``05 - Feature Test with test name, tags, setup, test body indicator two parameters, teardown should``.``Test Cases``
     ``06 - Feature Test with test name, tags, setup, test body indicator one parameter, teardown should``.``Test Cases``
+    ``07 - Feature Test with test name, tags, setup, test body indicator two parameters should``.``Test Cases``
     
     ``Arrow Ignore``.``Test Cases``
 ]

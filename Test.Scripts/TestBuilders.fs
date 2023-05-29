@@ -519,4 +519,19 @@ type TestBuilder =
             )
     
         (monitor, test), (tags, setupValue, testName), (path, fileName, lineNumber)
-        
+
+    //test name, tags, setup, test body indicator        
+    static member BuildTestWithTestNameTagsSetupTestBodyTwoParameters (testFeature: IFeature<unit>) =
+        let monitor, (testName, tags, setupValue), (path, fileName, fullPath, lineNumber) = getTestParts ()
+    
+        let test =
+            testFeature.Test (
+                testName,
+                TestTags tags,
+                Setup monitor.CallSetup,
+                TestBody monitor.CallTestActionWithSetupEnvironment,
+                fullPath,
+                lineNumber
+            )
+    
+        (monitor, test), (tags, setupValue, testName), (path, fileName, lineNumber)
