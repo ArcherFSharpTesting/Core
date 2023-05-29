@@ -12,7 +12,6 @@
     <Compile Include="TestBuilders.fs" />
     <Compile Include="ExecuteHelper.fs" />
     <Compile Include="RawTestObjects\Feature Should.fs" />
-    <Compile Include="RawTestObjects\Feature Ignore Should.fs" />
     <Compile Include="RawTestObjects\TestCase Should.fs" />
     <Compile Include="RawTestObjects\TestCaseExecutor Should.fs" />
     <Compile Include="RawTestObjects\TestCaseExecutor Execute Should.fs" />
@@ -21,19 +20,11 @@
     <Compile Include="Test\01 - Feature Test with test name, tags, setup, data, test body indicator three parameters, teardown should.fs" />
     <Compile Include="Test\02 - Feature Test with test name, tags, setup, data, test body indicator two parameters, teardown should.fs" />
     <Compile Include="Test\03 - Feature Test with test name, tags, setup, data, test body indicator three parameters should.fs" />
+    <Compile Include="Test\04 - Feature Test with test name, tags, setup, data, test body indicator two parameters should.fs" />
     <Compile Include="Arrow NewFeature.fs" />
     <Compile Include="Arrow Ignorefs.fs" />
     <Compile Include="Arrow NewFeature With Setup.fs" />
     <Compile Include="Arrow NewFeature With Teardown.fs" />
-    <Compile Include="Feature.Test Data Method without environment should.fs" />
-    <Compile Include="Feature.Test Data Method name first without environment should.fs" />
-    <Compile Include="Feature.Test Data Method with environment should.fs" />
-    <Compile Include="Feature.Test Data Method name first with environment should.fs" />
-    <Compile Include="Feature.Ignore Data Method without environment should.fs" />
-    <Compile Include="Feature.Ignore Method name first without environment should.fs" />
-    <Compile Include="Feature.Ignore Data Method name first without environment should.fs" />
-    <Compile Include="Feature.Ignore Method with environment should.fs" />
-    <Compile Include="Feature.Ignore Data Method with environment should.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 

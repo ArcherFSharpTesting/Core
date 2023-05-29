@@ -1,6 +1,5 @@
 ﻿open Archer
 open Archer.Arrows.Tests
-open Archer.Arrows.Tests.Feature
 open Archer.Arrows.Tests.Test
 open Archer.Arrows.Tests.RawTestObjects
 open Archer.Bow
@@ -45,17 +44,8 @@ runner
     ``01 - Feature Test with test name, tags, setup, data, test body indicator three parameters, teardown should``.``Test Cases``
     ``02 - Feature Test with test name, tags, setup, data, test body indicator two parameters, teardown should``.``Test Cases``
     ``03 - Feature Test with test name, tags, setup, data, test body indicator three parameters should``.``Test Cases``
+    ``04 - Feature Test with test name, tags, setup, data, test body indicator two parameters should``.``Test Cases``
     
-    ``Feature Ignore Should``.``Test Cases``
-    ``Ignore Method with environment should``.``Test Cases``
     ``Arrow Ignore``.``Test Cases``
-    ``Ignore Method name first without environment should``.``Test Cases``
-    ``Test Data Method without environment should``.``Test Cases``
-    ``Test Data Method name first without environment should``.``Test Cases``
-    ``Test Data Method with environment should``.``Test Cases``
-    ``Test Data Method name first with environment should``.``Test Cases``
-    ``Ignore Data Method without environment should``.``Test Cases``
-    ``Ignore Data Method name first without environment should``.``Test Cases``
-    ``Ignore Data Method with environment should``.``Test Cases``
 ]
 |> runAndReport

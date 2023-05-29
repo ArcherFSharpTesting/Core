@@ -444,4 +444,38 @@ type TestBuilder =
             )
     
         (monitor, tests), (tags, setupValue, data, testName), (path, fileName, lineNumber)
+        
+    //test name, tags, setup, data, test body indicator two parameters
+    static member BuildTestWithTestNameTagsSetupDataTestBodyTwoParametersNameHints (testFeature: IFeature<unit>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
+        let monitor, (testNameBase, testName), (tags, setupValue, data), (path, fileName, fullPath, lineNumber) =
+            getDataTestPartsNameHints repeatDataValue
+    
+        let tests =
+            testFeature.Test (
+                testName,
+                TestTags tags,
+                Setup monitor.CallSetup,
+                Data data,
+                TestBody monitor.CallTestActionWithDataSetup,
+                fullPath,
+                lineNumber
+            )
+    
+        (monitor, tests), (tags, setupValue, data, testNameBase), (path, fileName, lineNumber)
+        
+    static member BuildTestWithTestNameTagsSetupDataTestBodyTwoParameters (testFeature: IFeature<unit>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
+        let monitor, (testName, tags, setupValue, data), (path, fileName, fullPath, lineNumber) = getDataTestParts  repeatDataValue
+    
+        let tests =
+            testFeature.Test (
+                testName,
+                TestTags tags,
+                Setup monitor.CallSetup,
+                Data data,
+                TestBody monitor.CallTestActionWithDataSetup,
+                fullPath,
+                lineNumber
+            )
+    
+        (monitor, tests), (tags, setupValue, data, testName), (path, fileName, lineNumber)
     
