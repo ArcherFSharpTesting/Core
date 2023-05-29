@@ -503,3 +503,20 @@ type TestBuilder =
     
         (monitor, test), (tags, setupValue, testName), (path, fileName, lineNumber)
         
+    //test name, tags, setup, test body indicator one parameter, teardown
+    static member BuildTestWithTestNameTagsSetupTestBodyOneParameterTeardown (testFeature: IFeature<unit>) =
+        let monitor, (testName, tags, setupValue), (path, fileName, fullPath, lineNumber) = getTestParts ()
+    
+        let test =
+            testFeature.Test (
+                testName,
+                TestTags tags,
+                Setup monitor.CallSetup,
+                TestBody monitor.CallTestActionWithSetup,
+                Teardown monitor.CallTeardown,
+                fullPath,
+                lineNumber
+            )
+    
+        (monitor, test), (tags, setupValue, testName), (path, fileName, lineNumber)
+        
