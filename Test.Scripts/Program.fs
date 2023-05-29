@@ -45,12 +45,6 @@ runner
     ``01 - Feature Test with test name, tags, setup, data, test body indicator three parameters, teardown should``.``Test Cases``
     ``02 - Feature Test with test name, tags, setup, data, test body indicator two parameters, teardown should``.``Test Cases``
     ``03 - Feature Test with test name, tags, setup, data, test body indicator three parameters should``.``Test Cases``
-    ``Feature Test with test name, tags, setup, data, test body indicator three parameters should``.``Test Cases``
-    ``Feature Test with tags, setup, test body indicator two parameters, teardown should``.``Test Cases``
-    ``Feature Test with tags, setup, test body indicator, teardown should``.``Test Cases``
-    ``Feature Test with tags, setup, test body indicator two parameters should``.``Test Cases``
-    ``Feature Test with tags, setup, test body indicator should``.``Test Cases``
-    ``Feature Test with tags, setup, data, test body indicator three parameters should``.``Test Cases``
     
     ``Feature Ignore Should``.``Test Cases``
     ``Ignore Method with environment should``.``Test Cases``
