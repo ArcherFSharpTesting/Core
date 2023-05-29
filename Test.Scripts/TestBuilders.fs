@@ -332,6 +332,13 @@ let private getDataTestPartsNoSetup repeat =
 
     monitor, (testName, tags, data), (path, fileName, fullPath, lineNumber)
     
+let private getTestParts () =
+    let testName = $"My %s{randomWord 5} Test"
+    
+    let monitor, (tags, setupValue), (path, fileName, fullPath, lineNumber) = getMonitorWithSetupBaseTestParts ()
+
+    monitor, (testName, tags, setupValue), (path, fileName, fullPath, lineNumber)
+    
 type TestBuilder =
     static member GetTestNames (f: int -> 'a -> string) data =
         let [a; b; c] =
@@ -479,3 +486,20 @@ type TestBuilder =
     
         (monitor, tests), (tags, setupValue, data, testName), (path, fileName, lineNumber)
     
+    //test name, tags, setup, test body indicator two parameters, teardown
+    static member BuildTestWithTestNameTagsSetupTestBodyTwoParametersTeardown (testFeature: IFeature<unit>) =
+        let monitor, (testName, tags, setupValue), (path, fileName, fullPath, lineNumber) = getTestParts ()
+    
+        let test =
+            testFeature.Test (
+                testName,
+                TestTags tags,
+                Setup monitor.CallSetup,
+                TestBody monitor.CallTestActionWithSetupEnvironment,
+                Teardown monitor.CallTeardown,
+                fullPath,
+                lineNumber
+            )
+    
+        (monitor, test), (tags, setupValue, testName), (path, fileName, lineNumber)
+        
