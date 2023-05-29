@@ -51,8 +51,6 @@ runner
     ``Feature Test with tags, setup, test body indicator should``.``Test Cases``
     ``Feature Test with tags, setup, data, test body indicator three parameters should``.``Test Cases``
     
-    ``Arrow Tests``.``Test Cases``
-    ``Arrow Tests With Setup``.``Test Cases``
     ``Feature Ignore Should``.``Test Cases``
     ``Ignore Method with environment should``.``Test Cases``
     ``Arrow Ignore``.``Test Cases``
