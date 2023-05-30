@@ -486,7 +486,7 @@ type TestBuilder =
     
         (monitor, tests), (tags, setupValue, data, testName), (path, fileName, lineNumber)
     
-    //test name, tags, setup, test body indicator two parameters, teardown
+    //test name, tags, setup, test body indicator, teardown
     static member BuildTestWithTestNameTagsSetupTestBodyTwoParametersTeardown (testFeature: IFeature<unit>) =
         let monitor, (testName, tags, setupValue), (path, fileName, fullPath, lineNumber) = getTestParts ()
     
@@ -503,7 +503,6 @@ type TestBuilder =
     
         (monitor, test), (tags, setupValue, testName), (path, fileName, lineNumber)
         
-    //test name, tags, setup, test body indicator one parameter, teardown
     static member BuildTestWithTestNameTagsSetupTestBodyOneParameterTeardown (testFeature: IFeature<unit>) =
         let monitor, (testName, tags, setupValue), (path, fileName, fullPath, lineNumber) = getTestParts ()
     
@@ -530,6 +529,21 @@ type TestBuilder =
                 TestTags tags,
                 Setup monitor.CallSetup,
                 TestBody monitor.CallTestActionWithSetupEnvironment,
+                fullPath,
+                lineNumber
+            )
+    
+        (monitor, test), (tags, setupValue, testName), (path, fileName, lineNumber)
+
+    static member BuildTestWithTestNameTagsSetupTestBodyOneParameter (testFeature: IFeature<unit>) =
+        let monitor, (testName, tags, setupValue), (path, fileName, fullPath, lineNumber) = getTestParts ()
+    
+        let test =
+            testFeature.Test (
+                testName,
+                TestTags tags,
+                Setup monitor.CallSetup,
+                TestBody monitor.CallTestActionWithSetup,
                 fullPath,
                 lineNumber
             )
