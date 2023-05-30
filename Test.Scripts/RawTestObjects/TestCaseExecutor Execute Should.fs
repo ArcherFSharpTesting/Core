@@ -1,5 +1,6 @@
 ﻿module Archer.Arrows.Tests.RawTestObjects.``TestCaseExecutor Execute Should``
 
+open System.Threading
 open Archer
 open Archer.Arrows
 open Archer.Arrows.Tests
@@ -18,14 +19,14 @@ let ``Run the setup action supplied to feature.Test when called`` =
         Setup setupBuildExecutorWithSetupAction,
         
         TestBody (fun testBuilder ->
-            let monitor = Monitor (Ok ())
+            let monitor = TestMonitor((), TestSuccess).Interface
                 
-            let executor: ITestExecutor = testBuilder monitor.CallSetup
+            let executor: ITestExecutor = testBuilder monitor.FunctionSetup
             
             executor
             |> silentlyRunExecutor
                 
-            monitor.SetupWasCalled
+            monitor.HasSetupFunctionBeenCalled
             |> Should.BeTrue
             |> withMessage "Setup did not run"
         )
@@ -34,17 +35,17 @@ let ``Run the setup action supplied to feature.Test when called`` =
 let ``Run the setup action supplied to feature with called`` =
     feature.Test (
         fun _ ->
-            let monitor = Monitor<unit, unit, unit> (Ok ())
+            let monitor = buildTestMonitorOfTypeWithSetup<unit, unit> ()
             let testFeature = Arrow.NewFeature (
                 ignoreString (),
                 ignoreString (),
-                Setup monitor.CallSetup
+                Setup monitor.FunctionSetup
             )
             
-            testFeature.Test(fun () -> TestSuccess)
+            testFeature.Test(fun _ -> TestSuccess)
             |> silentlyRunTest
             
-            monitor.SetupWasCalled
+            monitor.HasSetupFunctionBeenCalled
             |> Should.BeTrue
             |> withMessage "Setup was not called"
     )
@@ -54,14 +55,14 @@ let ``Run the test body when called`` =
         Setup setupBuildExecutorWithTestBody,
         
         TestBody (fun testBuilder ->
-            let monitor = Monitor (Ok ())
+            let monitor = buildTestMonitorOfTypeWithSetup<unit, unit> ()
             
-            let executor: ITestExecutor = testBuilder monitor.CallTestActionWithSetupEnvironment
+            let executor: ITestExecutor = testBuilder () monitor.FunctionTestTwoParameters
             
             executor
             |> silentlyRunExecutor
             
-            monitor.TestWasCalled
+            monitor.HasTestFunctionBeenCalled
             |> Should.BeTrue
             |> withMessage "Test did not run"
         )
@@ -73,15 +74,16 @@ let ``Pass the result of the setup supplied to feature.Test to the test action``
         
         TestBody (fun testBuilder ->
             let expected = "a value to pass to the test"
-            let monitor = Monitor<unit, unit, string> (Ok expected)
+            let monitor = buildTestMonitorOfTypeWithSetup<unit, string> expected
                 
             let executor: ITestExecutor = testBuilder monitor
             
             executor
             |> silentlyRunExecutor
             
-            monitor.TestInputSetupWas
-            |> Should.BeEqualTo [expected]
+            monitor.TestFunctionWasCalledWith
+            |> List.map (fun (a, b, c) -> a, b)
+            |> Should.BeEqualTo [None, Some ((), expected)]
         )
     )
     
@@ -90,13 +92,16 @@ let ``Pass the result of the setup supplied to the feature to the setup supplied
         let expectedValue = "Hello from feature setup"
         let testFeature = Arrow.NewFeature (Setup (fun () -> Ok expectedValue))
         
-        let monitor = Monitor<unit, string, unit> (Ok ())
+        let monitor = buildTestMonitorOfTypeWithSetup<string, unit> ()
         
-        testFeature.Test(Setup monitor.CallSetup, TestBody monitor.CallTestActionWithSetup)
+        let t = monitor.FunctionSetup
+        
+        testFeature.Test(Setup monitor.FunctionSetup, TestBody monitor.FunctionTestOneParameter)
         |> silentlyRunTest
         
-        monitor.TestSetupInputWas
-        |> Should.BeEqualTo [expectedValue]
+        monitor.TestFunctionWasCalledWith
+        |> List.map (fun (a, b, _) -> a, b)
+        |> Should.BeEqualTo [(None , Some (expectedValue, ()))]
     )
     
 let ``Not throw an exception if the setup supplied to feature.Test fails`` =
@@ -104,9 +109,9 @@ let ``Not throw an exception if the setup supplied to feature.Test fails`` =
         Setup setupBuildExecutorWithSetupAction,
         
         TestBody (fun testBuilder ->
-            let monitor = Monitor<unit, unit, unit> ("failed setup" |> newFailure.With.SetupTeardownGeneralFailure |> Error)
+            let monitor = buildTestMonitorOfTypWithSetupError<unit> ("failed setup" |> newFailure.With.SetupTeardownGeneralFailure)
                 
-            let executor: ITestExecutor = testBuilder monitor.CallSetup
+            let executor: ITestExecutor = testBuilder monitor.FunctionSetup
             
             try
                 executor
@@ -121,12 +126,12 @@ let ``Not throw an exception if the setup supplied to feature.Test fails`` =
     
 let ``Not throw an exception if the setup supplied to the feature fails`` =
     feature.Test (fun _ ->
-        let monitor = Monitor<unit, unit, unit> ("failed feature setup" |> newFailure.With.SetupTeardownGeneralFailure |> Error)
+        let monitor = buildTestMonitorOfTypWithSetupError<unit> ("failed feature setup" |> newFailure.With.SetupTeardownGeneralFailure)
         
-        let testFeature = Arrow.NewFeature (Setup monitor.CallSetup)
+        let testFeature = Arrow.NewFeature (Setup monitor.FunctionSetup)
 
         try        
-            testFeature.Test(fun () -> TestSuccess)
+            testFeature.Test(fun _ -> TestSuccess)
             |> silentlyRunTest
             
             TestSuccess
@@ -141,9 +146,9 @@ let ``Return the setup error if the setup passed to feature.Test fails`` =
         
         TestBody (fun testBuilder ->
             let expectedFailure = newFailure.With.SetupTeardownGeneralFailure "failed setup"
-            let monitor = Monitor<unit, unit, string> (Error expectedFailure)
+            let monitor = buildTestMonitorOfTypWithSetupError<unit> expectedFailure
             
-            let executor: ITestExecutor = testBuilder monitor.CallSetup
+            let executor: ITestExecutor = testBuilder monitor.FunctionSetup
             
             let result =
                 executor
@@ -156,14 +161,14 @@ let ``Return the setup error if the setup passed to feature.Test fails`` =
     
 let ``Should not run the setup provided to feature.Test if the setup provided to the feature fails`` =
     feature.Test (fun _ ->
-        let monitor = Monitor<unit, unit, unit> (Ok ())
+        let monitor = buildTestMonitorOfTypeWithSetup<obj, unit> ()
         
         let testFeature = Arrow.NewFeature (Setup (fun () -> "failed setup" |> newFailure.With.SetupTeardownGeneralFailure |> Error))
         
-        testFeature.Test(Setup monitor.CallSetup, TestBody (fun () -> TestSuccess))
+        testFeature.Test(Setup monitor.FunctionSetup, TestBody (fun _ -> TestSuccess))
         |> silentlyRunTest
         
-        monitor.SetupWasCalled
+        monitor.HasSetupFunctionBeenCalled
         |> Should.BeFalse
         |> withMessage "Setup should not have be called"
     )
@@ -176,10 +181,10 @@ let ``Return the result of a failing test body when executed`` =
             let expectedFailure = 
                 "A failing test"
                 |> newFailure.As.TestExecutionResultOf.OtherExpectationFailure
+                 
+            let monitor = buildTestMonitorOfTypeWithTestResult<unit, unit> ((), expectedFailure)
                 
-            let monitor = newMonitorWithTestResult expectedFailure
-                
-            let executor: ITestExecutor = testBuilder monitor.CallTestActionWithSetupEnvironment
+            let executor: ITestExecutor = testBuilder () monitor.FunctionTestTwoParameters
             
             let result =
                 executor
@@ -199,9 +204,9 @@ let ``Not throw when the setup passed to feature.Test throws`` =
         
         TestBody (fun buildTest ->
             let expectedErrorMessage = "A really bad setup"
-            let monitor = Monitor<unit, unit, unit> (fun () -> failwith expectedErrorMessage)
+            let monitor = TestMonitor<unit, unit, unit> ((), TestSuccess)
                 
-            let executor: ITestExecutor = buildTest monitor.CallSetup
+            let executor: ITestExecutor = buildTest (monitor.FunctionSetupFailsWith expectedErrorMessage)
             
             try
                 let result =
@@ -223,9 +228,9 @@ let ``Not throw when the setup passed to feature.Test throws`` =
 let ``Not throw when the setup passed to the feature throws`` =
     feature.Test (fun _ ->
         let expectedErrorMessage = "Boom goes the feature"
-        let monitor = Monitor<unit, unit, unit> (fun () -> failwith expectedErrorMessage)
+        let monitor = TestMonitor<unit, unit, unit> (())
         
-        let testFeature = Arrow.NewFeature (Setup monitor.CallSetup)
+        let testFeature = Arrow.NewFeature (Setup (monitor.FunctionSetupFailsWith expectedErrorMessage))
         
         try
             testFeature.Test(fun () -> TestSuccess)
@@ -242,9 +247,10 @@ let ``Not throw when test action throws`` =
         
         TestBody (fun testBuilder ->
             let expectedErrorMessage = "Really bad test body"
-            let monitor = newMonitorWithTestAction (fun () -> failwith expectedErrorMessage)
+            let monitor = TestMonitor<unit, unit, unit> (())
+            let testFunction = monitor.FunctionTestTwoParametersFailWith expectedErrorMessage
                 
-            let executor: ITestExecutor = testBuilder monitor.CallTestActionWithSetupEnvironment
+            let executor: ITestExecutor = testBuilder () testFunction
             
             try
                 let result =
@@ -266,28 +272,28 @@ let ``Run the teardown passed to feature.Test`` =
         Setup setupBuildExecutorWithTeardownAction,
         
         TestBody (fun testBuilder ->
-            let monitor = Monitor<unit, unit, unit> (Ok ())
+            let monitor = TestMonitor<unit, unit, unit> (())
                 
-            let executor: ITestExecutor = testBuilder monitor.CallTeardown
+            let executor: ITestExecutor = testBuilder monitor.FunctionTeardownFromFeature
             
             executor
             |> silentlyRunExecutor
             
-            monitor.TeardownWasCalled
+            monitor.HasTeardownBeenCalled
             |> Should.BeTrue
             |> withMessage "Teardown was not called")
     )
    
 let ``Run the teardown passed to the feature`` =
     feature.Test (fun _ ->
-        let monitor = Monitor<unit, uint, unit> (Ok ())
+        let monitor = TestMonitor<unit, unit, unit> (())
         
-        let testFeature = Arrow.NewFeature (Teardown monitor.CallTeardown)
+        let testFeature = Arrow.NewFeature (Teardown monitor.FunctionTeardownFromFeature)
         
         testFeature.Test(fun () -> TestSuccess)
         |> silentlyRunTest
         
-        monitor.TeardownWasCalled
+        monitor.HasTeardownBeenCalled
         |> Should.BeTrue
         |> withMessage "Teardown was not called"
     )
@@ -297,58 +303,62 @@ let ``Calls the teardown that was passed to feature.Test with the successful res
         Setup setupBuildExecutorWithSetupAndTeardownActions,
         
         TestBody (fun testBuilder ->
-            let expectedSetupValue = Ok "Hello from setup"
-            let monitor = Monitor<unit, unit, string> expectedSetupValue
+            let expectedSetupValue = "Hello from setup"
+            let monitor = TestMonitor<unit, string, unit> expectedSetupValue
             
-            let executor: ITestExecutor = testBuilder monitor.CallSetup monitor.CallTeardown
+            let executor: ITestExecutor = testBuilder monitor.FunctionSetup monitor.FunctionTeardownFromSetup
             
             executor
             |> silentlyRunExecutor
             
-            monitor.TeardownWasCalledWith
-            |> fst
-            |> Should.BeEqualTo [expectedSetupValue]
+            monitor.TeardownFunctionCalledWith
+            |> List.map fst
+            |> Should.BeEqualTo [Ok ((), Some expectedSetupValue)]
         )
     )
    
 let ``Calls the teardown that was passed to the feature with the successful result of the setup passed to the feature `` =
     feature.Test (fun _ ->
-        let setupResult = Ok 1099
-        let monitor = Monitor<unit, unit, int> setupResult
+        let setupResult = 1099
+        let monitor = TestMonitor<unit, int, unit> setupResult
         
-        let testFeature = Arrow.NewFeature (Setup monitor.CallSetup, Teardown monitor.CallTeardown)
+        let testFeature = Arrow.NewFeature (Setup monitor.FunctionSetup, Teardown monitor.FunctionTeardownFromSetup)
         
-        testFeature.Test(fun (_: int) -> TestSuccess)
+        testFeature.Test(fun _ -> TestSuccess)
         |> silentlyRunTest
         
-        monitor.TeardownWasCalledWith
-        |> fst
-        |> Should.BeEqualTo [setupResult]
+        monitor.TeardownFunctionCalledWith
+        |> List.map fst
+        |> Should.BeEqualTo [Ok ((), Some setupResult)]
     )
     
 let ``Each teardown should be called with the corresponding successful setup`` =
     feature.Test (fun _ ->
-        let featureResult = Ok "feature setup result"
-        let testResult = Ok 3355
+        let featureSetupResult = "feature setup result"
+        let setupResult = 3355
         
-        let featureMonitor = Monitor<unit, unit, string> featureResult
-        let testMonitor = Monitor<unit, string, int> testResult
+        let featureMonitor = TestMonitor<unit, string, unit> featureSetupResult
+        let testMonitor = TestMonitor<unit * string, int, unit> setupResult
         
-        let testFeature = Arrow.NewFeature (Setup featureMonitor.CallSetup, Teardown featureMonitor.CallTeardown)
+        let testFeature = Arrow.NewFeature (Setup featureMonitor.FunctionSetup, Teardown featureMonitor.FunctionTeardownFromSetup)
         
-        testFeature.Test(Setup testMonitor.CallSetup, TestBody (fun (_: int) -> TestSuccess), Teardown testMonitor.CallTeardown)
+        let setup = Setup testMonitor.FunctionSetup
+        let testBody = TestBody testMonitor.FunctionTestOneParameter
+        let teardown = Teardown testMonitor.FunctionTeardownFromSetup
+        
+        testFeature.Test(setup, testBody, teardown)
         |> silentlyRunTest
         
         let featureResult =
-            featureMonitor.TeardownWasCalledWith
-            |> fst
-            |> Should.BeEqualTo [featureResult]
+            featureMonitor.TeardownFunctionCalledWith
+            |> List.map fst
+            |> Should.BeEqualTo [Ok ((), Some featureSetupResult)]
             
         featureResult
         |> andResult (
-            testMonitor.TeardownWasCalledWith
-            |> fst
-            |> Should.BeEqualTo [testResult]
+            testMonitor.TeardownFunctionCalledWith
+            |> List.map fst
+            |> Should.BeEqualTo [Ok (((), featureSetupResult), Some setupResult)]
         )
     )
     
@@ -360,18 +370,17 @@ let ``Calls the teardown that was passed to feature.Test with the unsuccessful r
             let expectedSetupValue =
                 "Bad setup, bad"
                 |> newFailure.With.SetupTeardownGeneralFailure
-                |> Error
                 
-            let monitor = Monitor<unit, unit, unit> expectedSetupValue
+            let monitor = TestMonitor<unit, unit, unit> expectedSetupValue
                 
-            let executor: ITestExecutor = testBuilder monitor.CallSetup monitor.CallTeardown
+            let executor: ITestExecutor = testBuilder monitor.FunctionSetup monitor.FunctionTeardownFromSetup
             
             executor
             |> silentlyRunExecutor
             
-            monitor.TeardownWasCalledWith
-            |> fst
-            |> Should.BeEqualTo [expectedSetupValue]
+            monitor.TeardownFunctionCalledWith
+            |> List.map fst
+            |> Should.BeEqualTo [Error expectedSetupValue]
         )
     )
     
@@ -380,18 +389,17 @@ let ``Calls the teardown that was passed to the feature with the unsuccessful re
         let expectedResult =
             "Bad feature setup"
             |> newFailure.With.SetupTeardownGeneralFailure
-            |> Error
             
-        let monitor = Monitor<unit, unit, unit> expectedResult
+        let monitor = TestMonitor<unit, unit, unit> expectedResult
         
-        let testFeature = Arrow.NewFeature(Setup monitor.CallSetup, Teardown monitor.CallTeardown)
+        let testFeature = Arrow.NewFeature(Setup monitor.FunctionSetup, Teardown monitor.FunctionTeardownFromSetup)
             
-        testFeature.Test(fun () -> TestSuccess)
+        testFeature.Test(fun _ -> TestSuccess)
         |> silentlyRunTest
         
-        monitor.TeardownWasCalledWith
-        |> fst
-        |> Should.BeEqualTo [expectedResult]
+        monitor.TeardownFunctionCalledWith
+        |> List.map fst
+        |> Should.BeEqualTo [Error expectedResult]
     )
 
 let ``Calls the teardown that was passed to feature.Test with the TestSuccess if test is successful`` =
@@ -406,8 +414,8 @@ let ``Calls the teardown that was passed to feature.Test with the TestSuccess if
             executor
             |> silentlyRunExecutor
             
-            monitor.TeardownWasCalledWith
-            |> snd
+            monitor.TeardownFunctionCalledWith
+            |> List.map snd
             |> Should.BeEqualTo [Some TestSuccess]
         )
     )
@@ -416,13 +424,13 @@ let ``Calls the teardown that was passed to the feature with the TestSuccess if 
     feature.Test (fun _ ->
         let monitor = newMonitorWithTestResult TestSuccess
         
-        let testFeature = Arrow.NewFeature (Teardown monitor.CallTeardown)
+        let testFeature = Arrow.NewFeature (Teardown monitor.FunctionTeardownFromFeature)
         
         testFeature.Test(fun () -> TestSuccess)
         |> silentlyRunTest
         
-        monitor.TeardownWasCalledWith
-        |> snd
+        monitor.TeardownFunctionCalledWith
+        |> List.map snd
         |> Should.BeEqualTo [Some TestSuccess]
     )
 
@@ -442,8 +450,8 @@ let ``Calls the teardown that was passed to feature.Test with the TestFailure if
             executor
             |> silentlyRunExecutor
             
-            monitor.TeardownWasCalledWith
-            |> snd
+            monitor.TeardownFunctionCalledWith
+            |> List.map snd
             |> Should.BeEqualTo [Some expectedFailure]
         )
     )
@@ -456,13 +464,13 @@ let ``Calls the teardown that was passed to the feature with the TestFailure if 
         
         let monitor = newMonitorWithTestResult expectedFailure
         
-        let testFeature = Arrow.NewFeature (Teardown monitor.CallTeardown)
+        let testFeature = Arrow.NewFeature (Teardown monitor.FunctionTeardownFromFeature)
         
-        testFeature.Test(monitor.CallTestActionWithSetup)
+        testFeature.Test(Setup (fun a -> Ok (a, ())), TestBody monitor.FunctionTestOneParameter)
         |> silentlyRunTest
         
-        monitor.TeardownWasCalledWith
-        |> snd
+        monitor.TeardownFunctionCalledWith
+        |> List.map snd
         |> Should.BeEqualTo [Some expectedFailure]
     )
 
@@ -477,7 +485,7 @@ let ``Return the failure if the teardown that was passed to feature.Test fails``
                 
             let monitor = newMonitorWithTeardownResult (Error teardownFailure)
             
-            let executor: ITestExecutor = testBuilder monitor.CallTeardown
+            let executor: ITestExecutor = testBuilder monitor.FunctionTeardownFromFeature
             
             executor
             |> runExecutor
@@ -494,9 +502,9 @@ let ``Returns the failure if the teardown given to the feature fails`` =
             "failed feature teardown"
             |> newFailure.With.SetupTeardownGeneralFailure
             
-        let monitor = newMonitorWithTeardownAction (fun _ _ -> Error expectedError)
+        let monitor = TestMonitor<unit, unit, unit> ((), TestSuccess, expectedError)
         
-        let testFeature = Arrow.NewFeature(Teardown monitor.CallTeardown)
+        let testFeature = Arrow.NewFeature(Teardown monitor.FunctionTeardownFromFeature)
         
         let result =
             testFeature.Test(fun () -> TestSuccess)
@@ -556,7 +564,7 @@ let ``Return failure if teardown that was passed to the feature throws exception
     
 let ``Not have a test result passed to the teardown given to the feature if the teardown given to feature.Test fails`` =
     feature.Test (fun _ ->
-        let monitor = Monitor<unit, unit, unit> (Ok ())
+        let monitor = TestMonitor<unit, unit, unit> (Ok ())
         
         let expectedFailure =
             "Bad test teardown"

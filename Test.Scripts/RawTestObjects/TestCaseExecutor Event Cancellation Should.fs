@@ -42,7 +42,7 @@ let ``Not call any methods when canceled in TestExecutionStart`` =
     feature.Test (
         Setup setupBuildExecutorWithMonitorAtTheFeature,
         
-        TestBody (fun (monitor: Monitor<unit, unit, unit>, executor: ITestExecutor) ->
+        TestBody (fun (monitor: TestMonitor<unit, unit, unit>, executor: ITestExecutor) ->
             executor.TestLifecycleEvent
             |> Event.add (fun args ->
                 match args with
@@ -90,7 +90,7 @@ let ``Call Teardown if canceled on TestEndSetup`` =
     feature.Test (
         Setup setupBuildExecutorWithMonitorAtTheFeature,
         
-        TestBody (fun (monitor: Monitor<unit, unit, unit>, executor: ITestExecutor) ->
+        TestBody (fun (monitor: TestMonitor<unit, unit, unit>, executor: ITestExecutor) ->
             executor.TestLifecycleEvent
             |> Event.add (fun args ->
                 match args with
@@ -137,7 +137,7 @@ let ``Call Teardown if canceled on TestStart`` =
     feature.Test (
         Setup setupBuildExecutorWithMonitorAtTheFeature,
         
-        TestBody (fun (monitor: Monitor<unit, unit, unit>, executor: ITestExecutor) ->
+        TestBody (fun (monitor: TestMonitor<unit, unit, unit>, executor: ITestExecutor) ->
             executor.TestLifecycleEvent
             |> Event.add (fun args ->
                 match args with
@@ -209,7 +209,7 @@ let ``Should not call the test action if canceled at TestStart`` =
     feature.Test (
         Setup setupBuildExecutorWithMonitorAtTheFeature,
         
-        TestBody (fun (monitor: Monitor<unit, unit, unit>, executor: ITestExecutor) ->
+        TestBody (fun (monitor: TestMonitor<unit, unit, unit>, executor: ITestExecutor) ->
             executor.TestLifecycleEvent
             |> Event.add (fun args ->
                 match args with

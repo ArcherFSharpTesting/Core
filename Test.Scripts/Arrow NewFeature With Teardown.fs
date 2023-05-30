@@ -14,7 +14,7 @@ let private feature = Arrow.NewFeature (
 let ``Should call teardown when it is the only thing specified`` =
     feature.Test (
         fun _ ->
-            let monitor = Monitor (Ok ())
+            let monitor = TestMonitor (Ok ())
                 
             let testFeature = Arrow.NewFeature (
                 Teardown monitor.CallTeardown
@@ -33,7 +33,7 @@ let ``Should call teardown when it is the only thing specified`` =
 let ``Should call name, and teardown when are specified`` =
     feature.Test (
         fun _ ->
-            let monitor = Monitor (Ok ())
+            let monitor = TestMonitor (Ok ())
                 
             let testFeature = Arrow.NewFeature (
                 "A feature",
@@ -53,7 +53,7 @@ let ``Should call name, and teardown when are specified`` =
 let ``Should call path, name, and teardown when are specified`` =
     feature.Test (
         fun _ ->
-            let monitor = Monitor (Ok ())
+            let monitor = TestMonitor (Ok ())
                 
             let testFeature = Arrow.NewFeature (
                 "Path out",
@@ -74,7 +74,7 @@ let ``Should call path, name, and teardown when are specified`` =
 let ``Should call teardown when setup, and teardown are specified`` =
     feature.Test (
         fun _ ->
-            let monitor = Monitor (Ok ())
+            let monitor = TestMonitor (Ok ())
                 
             let testFeature = Arrow.NewFeature (
                 Setup (fun () -> Ok ()),
@@ -94,7 +94,7 @@ let ``Should call teardown when setup, and teardown are specified`` =
 let ``Should call teardown when name, setup, and teardown are specified`` =
     feature.Test (
         fun _ ->
-            let monitor = Monitor (Ok ())
+            let monitor = TestMonitor (Ok ())
                 
             let testFeature = Arrow.NewFeature (
                 "My Feat Ure",
@@ -115,7 +115,7 @@ let ``Should call teardown when name, setup, and teardown are specified`` =
 let ``Should call teardown when path, name, setup, and teardown are specified`` =
     feature.Test (
         fun _ ->
-            let monitor = Monitor (Ok ())
+            let monitor = TestMonitor (Ok ())
                 
             let testFeature = Arrow.NewFeature (
                 "The root of",

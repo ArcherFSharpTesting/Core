@@ -17,7 +17,7 @@ let private feature = Arrow.NewFeature (
 let ``Should call setup when it is the only thing passed to it`` =
     feature.Test (
         fun _ ->
-            let monitor = Monitor (Ok ())
+            let monitor = TestMonitor (Ok ())
                 
             let testFeature = Arrow.NewFeature (
                 Setup monitor.CallSetup
@@ -36,7 +36,7 @@ let ``Should call setup when it is the only thing passed to it`` =
 let ``Should call setup when name and setup are specified`` =
     feature.Test (
         fun _ ->
-            let monitor = Monitor (Ok ())
+            let monitor = TestMonitor (Ok ())
                 
             let testFeature = Arrow.NewFeature (
                 "My magic feature",
@@ -56,7 +56,7 @@ let ``Should call setup when name and setup are specified`` =
 let ``Should call setup when path, name, and setup are specified`` =
     feature.Test (
         fun _ ->
-            let monitor = Monitor (Ok ())
+            let monitor = TestMonitor (Ok ())
                 
             let testFeature = Arrow.NewFeature (
                 "A Path",
@@ -77,7 +77,7 @@ let ``Should call setup when path, name, and setup are specified`` =
 let ``Should call setup when it is passed with a teardown`` =
     feature.Test (
         fun _ ->
-            let monitor = Monitor (Ok ())
+            let monitor = TestMonitor (Ok ())
             
             let testFeature = Arrow.NewFeature (
                 Setup monitor.CallSetup,
@@ -97,7 +97,7 @@ let ``Should call setup when it is passed with a teardown`` =
 let ``Should call setup when name, setup, and teardown are specified`` =
     feature.Test (
         fun _ ->
-            let monitor = Monitor (Ok ())
+            let monitor = TestMonitor (Ok ())
             
             let testFeature = Arrow.NewFeature (
                 "Hello Feature",
@@ -118,7 +118,7 @@ let ``Should call setup when name, setup, and teardown are specified`` =
 let ``Should call setup when path, name, setup, and teardown are specified`` =
     feature.Test (
         fun _ ->
-            let monitor = Monitor (Ok ())
+            let monitor = TestMonitor (Ok ())
             
             let testFeature = Arrow.NewFeature (
                 "Hello Path",
