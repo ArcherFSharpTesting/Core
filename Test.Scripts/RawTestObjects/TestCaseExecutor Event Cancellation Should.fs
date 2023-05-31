@@ -42,7 +42,7 @@ let ``Not call any methods when canceled in TestExecutionStart`` =
     feature.Test (
         Setup setupBuildExecutorWithMonitorAtTheFeature,
         
-        TestBody (fun (monitor: TestMonitor<unit, unit, unit>, executor: ITestExecutor) ->
+        TestBody (fun (featureMonitor: IFeatureMonitor<unit>, _, executor: ITestExecutor) ->
             executor.TestLifecycleEvent
             |> Event.add (fun args ->
                 match args with
@@ -54,7 +54,7 @@ let ``Not call any methods when canceled in TestExecutionStart`` =
             executor
             |> silentlyRunExecutor
             
-            monitor.SetupWasCalled
+            featureMonitor.HasSetupFunctionBeenCalled
             |> expects.ToBeFalse
             |> withMessage "Setup method was called"
         )
@@ -90,7 +90,7 @@ let ``Call Teardown if canceled on TestEndSetup`` =
     feature.Test (
         Setup setupBuildExecutorWithMonitorAtTheFeature,
         
-        TestBody (fun (monitor: TestMonitor<unit, unit, unit>, executor: ITestExecutor) ->
+        TestBody (fun (featureMonitor: IFeatureMonitor<unit>, _, executor: ITestExecutor) ->
             executor.TestLifecycleEvent
             |> Event.add (fun args ->
                 match args with
@@ -102,7 +102,7 @@ let ``Call Teardown if canceled on TestEndSetup`` =
             executor
             |> silentlyRunExecutor
             
-            monitor.TeardownWasCalled
+            featureMonitor.HasTeardownBeenCalled
             |> expects.ToBeTrue
             |> withMessage "Teardown was not called"
         )
@@ -137,7 +137,7 @@ let ``Call Teardown if canceled on TestStart`` =
     feature.Test (
         Setup setupBuildExecutorWithMonitorAtTheFeature,
         
-        TestBody (fun (monitor: TestMonitor<unit, unit, unit>, executor: ITestExecutor) ->
+        TestBody (fun (featureMonitor: IFeatureMonitor<unit>, _, executor: ITestExecutor) ->
             executor.TestLifecycleEvent
             |> Event.add (fun args ->
                 match args with
@@ -149,7 +149,7 @@ let ``Call Teardown if canceled on TestStart`` =
             executor
             |> silentlyRunExecutor
             
-            monitor.TeardownWasCalled
+            featureMonitor.HasTeardownBeenCalled
             |> expects.ToBeTrue
             |> withMessage "Teardown was not called"
         )
@@ -209,7 +209,7 @@ let ``Should not call the test action if canceled at TestStart`` =
     feature.Test (
         Setup setupBuildExecutorWithMonitorAtTheFeature,
         
-        TestBody (fun (monitor: TestMonitor<unit, unit, unit>, executor: ITestExecutor) ->
+        TestBody (fun (_, testMonitor: ITestMonitor<unit, unit, unit>, executor: ITestExecutor) ->
             executor.TestLifecycleEvent
             |> Event.add (fun args ->
                 match args with
@@ -221,7 +221,7 @@ let ``Should not call the test action if canceled at TestStart`` =
             executor
             |> silentlyRunExecutor
             
-            monitor.TestWasCalled
+            testMonitor.HasTestFunctionBeenCalled
             |> expects.ToBeFalse
             |> withMessage "The test action was run"
         )
