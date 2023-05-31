@@ -7,7 +7,6 @@ open Archer.Arrows.Internal.Types
 open Archer.Arrows.Tests
 open Archer.CoreTypes.InternalTypes
 open Archer.MicroLang.Verification
-open Archer.ShouldList
 
 let private feature = Arrow.NewFeature (
     TestTags [
@@ -23,7 +22,7 @@ let private getContainerName (test: ITest) =
     $"%s{test.ContainerPath}.%s{test.ContainerName}"
     
 let ``Create a valid ITest`` =
-    feature.Test (fun (featureSetupValue, testFeature: IFeature<string>) ->
+    feature.Test (fun (_, testFeature: IFeature<string>) ->
         let (_monitor, tests), (tags, _setupValue, data, testNameBase), (path, fileName, lineNumber) =
             TestBuilder.BuildTestWithTestNameTagsSetupDataTestBodyTwoParametersNameHints testFeature
             
@@ -57,7 +56,7 @@ let ``Create a valid ITest`` =
     ) 
 
 let ``Create a test name with name hints and repeating data`` =
-    feature.Test (fun (featureSetupValue, testFeature: IFeature<string>) ->
+    feature.Test (fun (_, testFeature: IFeature<string>) ->
         let (_monitor, tests), (_tags, _setupValue, data, testNameBase), _ =
             TestBuilder.BuildTestWithTestNameTagsSetupDataTestBodyTwoParametersNameHints (testFeature, true)
         
@@ -72,7 +71,7 @@ let ``Create a test name with name hints and repeating data`` =
     ) 
 
 let ``Create a test name with no name hints`` =
-    feature.Test (fun (featureSetupValue, testFeature: IFeature<string>) ->
+    feature.Test (fun (_, testFeature: IFeature<string>) ->
         let (_monitor, tests), (_tags, _setupValue, data, testName), _ =
             TestBuilder.BuildTestWithTestNameTagsSetupDataTestBodyTwoParameters testFeature
         
@@ -87,7 +86,7 @@ let ``Create a test name with no name hints`` =
     ) 
 
 let ``Create a test name with no name hints same data repeated`` =
-    feature.Test (fun (featureSetupValue, testFeature: IFeature<string>) ->
+    feature.Test (fun (_, testFeature: IFeature<string>) ->
         let (_monitor, tests), (_tags, _setupValue, data, testName), _ = TestBuilder.BuildTestWithTestNameTagsSetupDataTestBodyTwoParameters (testFeature, true)
         
         let name1, name2, name3 = TestBuilder.GetTestNames (fun i v -> sprintf "%s (%A)%s" testName v (if 0 = i then "" else $"^%i{i}")) data
@@ -102,7 +101,7 @@ let ``Create a test name with no name hints same data repeated`` =
 
 let ``Call setup when executed`` =
     feature.Test (fun (featureSetupValue, testFeature: IFeature<string>) ->
-        let (monitor, tests), (tags, setupValue, data, testName), _ = TestBuilder.BuildTestWithTestNameTagsSetupDataTestBodyTwoParameters testFeature
+        let (monitor, tests), _, _ = TestBuilder.BuildTestWithTestNameTagsSetupDataTestBodyTwoParameters testFeature
 
         tests
         |> silentlyRunAllTests
@@ -114,7 +113,7 @@ let ``Call setup when executed`` =
 
 let ``Call Test when executed`` =
     feature.Test (fun (featureSetupValue, testFeature: IFeature<string>) ->
-        let (monitor, tests), (tags, setupValue, data, testName), _ = TestBuilder.BuildTestWithTestNameTagsSetupDataTestBodyTwoParameters testFeature
+        let (monitor, tests), (_, setupValue, data, _), _ = TestBuilder.BuildTestWithTestNameTagsSetupDataTestBodyTwoParameters testFeature
 
         tests
         |> silentlyRunAllTests
@@ -134,7 +133,7 @@ let ``Call Test when executed`` =
     )
 
 let ``Call Test with test environment when executed`` =
-    feature.Test (fun (featureSetupValue, testFeature: IFeature<string>) ->
+    feature.Test (fun (_, testFeature: IFeature<string>) ->
         let (monitor, tests), _, _ = TestBuilder.BuildTestWithTestNameTagsSetupDataTestBodyTwoParameters testFeature
             
         tests

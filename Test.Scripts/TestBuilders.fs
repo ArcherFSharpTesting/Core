@@ -958,7 +958,7 @@ type TestBuilder =
         let monitor, (testName, tags, setupValue, data), (path, fileName, fullPath, lineNumber) = getDataTestParts  repeatDataValue
     
         let setup = monitor.FunctionSetupFeatureWith setupValue
-        let testBody = monitor.FunctionTestFeatureDataThreeParametersSuccess
+        let testBody = monitor.FunctionTestFeatureDataTwoParametersSuccess
         let teardown = monitor.FunctionTeardownFeatureFromSetup
         
         let tests =

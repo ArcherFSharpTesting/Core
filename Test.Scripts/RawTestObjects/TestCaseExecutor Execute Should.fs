@@ -86,7 +86,7 @@ let ``Pass the result of the setup supplied to feature.Test to the test action``
             
             monitor.TestFunctionWasCalledWith
             |> List.map (fun (_, a, _) -> a)
-            |> Should.BeEqualTo [Some (Some (), expected)]
+            |> Should.BeEqualTo [Some (None, expected)]
         )
     )
     
@@ -321,7 +321,7 @@ let ``Calls the teardown that was passed to feature.Test with the successful res
             
             monitor.TeardownFunctionCalledWith
             |> List.map fst
-            |> Should.BeEqualTo [Ok (Some (), Some expectedSetupValue)]
+            |> Should.BeEqualTo [Ok (None, Some expectedSetupValue)]
         )
     )
    
@@ -337,7 +337,7 @@ let ``Calls the teardown that was passed to the feature with the successful resu
         
         monitor.TeardownFunctionCalledWith
         |> List.map fst
-        |> Should.BeEqualTo [Ok (Some (), Some setupResult)]
+        |> Should.BeEqualTo [Ok (None, Some setupResult)]
     )
     
 let ``Each teardown should be called with the corresponding successful setup`` =

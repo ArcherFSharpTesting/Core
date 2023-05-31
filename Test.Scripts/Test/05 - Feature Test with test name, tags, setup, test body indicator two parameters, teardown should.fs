@@ -12,7 +12,8 @@ let private feature = Arrow.NewFeature (
     TestTags [
         Category "Feature"
         Category "Test"
-    ]
+    ],
+    Setup setupFeatureUnderTest
 )
 
 let private rand = Random ()
@@ -22,8 +23,7 @@ let private getContainerName (test: ITest) =
     
 let ``Create a valid ITest`` =
     feature.Test (
-        Setup setupFeatureUnderTest,
-        TestBody (fun (testFeature: IFeature<unit>) ->
+        TestBody (fun (featureSetupValue, testFeature: IFeature<string>) ->
             let (_monitor, test), (tags, _setupValue, testName), (path, fileName, lineNumber) =
                 TestBuilder.BuildTestWithTestNameTagsSetupTestBodyTwoParametersTeardown testFeature
                 
@@ -41,46 +41,34 @@ let ``Create a valid ITest`` =
 
 let ``Call setup when executed`` =
     feature.Test (
-        Setup setupFeatureUnderTest,
-        TestBody (fun (testFeature: IFeature<unit>) ->
+        TestBody (fun (featureSetupValue, testFeature: IFeature<string>) ->
             let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameTagsSetupTestBodyTwoParametersTeardown testFeature
 
             test
             |> silentlyRunTest
             
-            monitor.NumberOfTimesSetupWasCalled
-            |> Should.BeEqualTo 1
+            monitor.SetupFunctionWasCalledWith
+            |> Should.BeEqualTo [featureSetupValue]
             |> withMessage "Setup was not called"
         ) 
     )
 
 let ``Call Test when executed`` =
     feature.Test (
-        Setup setupFeatureUnderTest,
-        TestBody (fun (testFeature: IFeature<unit>) ->
-            let (monitor, tests), _, _ = TestBuilder.BuildTestWithTestNameTagsSetupTestBodyTwoParametersTeardown testFeature
+        TestBody (fun (featureSetupValue, testFeature: IFeature<string>) ->
+            let (monitor, tests), (_, setupValue, _), _ = TestBuilder.BuildTestWithTestNameTagsSetupTestBodyTwoParametersTeardown testFeature
 
             tests
             |> silentlyRunTest
             
-            monitor.NumberOfTimesTestWasCalled
-            |> Should.BeEqualTo 1
-            |> withMessage "Test was not called"
-        ) 
-    )
-
-let ``Call Test with return value of setup when executed`` =
-    feature.Test (
-        Setup setupFeatureUnderTest,
-        TestBody (fun (testFeature: IFeature<unit>) ->
-            let (monitor, test), (_, setupValue, _), _ =
-                TestBuilder.BuildTestWithTestNameTagsSetupTestBodyTwoParametersTeardown testFeature
-
-            test
-            |> silentlyRunTest
-            
-            monitor.TestInputSetupWas
-            |> Should.BeEqualTo [ setupValue ]
+            monitor.TestFunctionWasCalledWith
+            |> Should.PassAllOf [
+                ListShould.HaveLengthOf 1
+                List.map (fun (a, _, _) -> a) >> Should.BeEqualTo [ None ]
+                List.map (fun (_, b, _) -> b) >> Should.BeEqualTo [
+                    Some (Some featureSetupValue, setupValue)
+                ]
+            ]
             |> withMessage "Test was not called"
         ) 
     )
@@ -88,46 +76,38 @@ let ``Call Test with return value of setup when executed`` =
 let ``Call Test with test environment when executed`` =
     feature.Test (
         Setup setupFeatureUnderTest,
-        TestBody (fun (testFeature: IFeature<unit>) ->
+        TestBody (fun (featureSetupValue, testFeature: IFeature<string>) ->
             let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameTagsSetupTestBodyTwoParametersTeardown testFeature
                 
             test
             |> silentlyRunTest
             
-            monitor.TestEnvironmentWas
+            let getValue v =
+                match v with
+                | Some value -> value
+                | _ -> failwith "No Value"
+            
+            monitor.TestFunctionWasCalledWith
+            |> List.map (fun (_, _, c) -> c)
             |> Should.PassAllOf [
                 ListShould.HaveLengthOf 1 >> withMessage "Incorrect number of calls to test"
+                ListShould.HaveAllValuesPassTestOf <@fun v -> match v with | Some _ -> true | _ -> false@>
                 
-                List.head >> (fun env -> env.ApiEnvironment.ApiName) >> Should.BeEqualTo "Archer.Arrows"
-                List.head >> (fun env -> env.TestInfo) >> Should.BeEqualTo test
+                List.head >> getValue >> (fun env -> env.ApiEnvironment.ApiName) >> Should.BeEqualTo "Archer.Arrows"
+                List.head >> getValue >> (fun env -> env.TestInfo) >> Should.BeEqualTo test
             ]
-        ) 
-    )
-
-let ``Call Test with test data when executed`` =
-    feature.Test (
-        Setup setupFeatureUnderTest,
-        TestBody (fun (testFeature: IFeature<unit>) ->
-            let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameTagsSetupTestBodyTwoParametersTeardown testFeature
-                
-            test
-            |> silentlyRunTest
-            
-            monitor.TestDataWas
-            |> Should.BeEqualTo []
         ) 
     )
     
 let ``Call teardown when executed`` =
     feature.Test (
-        Setup setupFeatureUnderTest,
-        TestBody (fun (testFeature: IFeature<unit>) ->
+        TestBody (fun (featureSetupValue, testFeature: IFeature<string>) ->
             let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameTagsSetupTestBodyTwoParametersTeardown testFeature
                 
             test
             |> silentlyRunTest
             
-            monitor.TeardownWasCalled
+            monitor.HasTeardownBeenCalled
             |> Should.BeTrue
             |> withMessage "Teardown was not called"
         ) 
