@@ -61,7 +61,7 @@ let ``Create a test name with name hints and repeating data`` =
     feature.Test (
         TestBody (fun (_, testFeature: IFeature<string>) ->
             let (_, tests), (_, data, testNameBase), _ =
-                TestBuilder.BuildTestWithTestNameTagsDataTestBodyTwoParametersTeardownNameHints (testFeature, true)
+                TestBuilder.BuildTestWithTestNameTagsDataTestBodyThreeParametersNameHints (testFeature, true)
             
             let name1, name2, name3 = TestBuilder.GetTestNames (fun i v -> sprintf "%s %s%s" testNameBase v (if 0 = i then "" else $"^%i{i}")) data
 
@@ -78,7 +78,7 @@ let ``Create a test name with no name hints`` =
     feature.Test (
         TestBody (fun (_, testFeature: IFeature<string>) ->
             let (_, tests), (_, data, testName), _ =
-                TestBuilder.BuildTestWithTestNameTagsDataTestBodyTwoParametersTeardown testFeature
+                TestBuilder.BuildTestWithTestNameTagsDataTestBodyThreeParameters testFeature
             
             let name1, name2, name3 = TestBuilder.GetTestNames (fun _ -> sprintf "%s (%A)" testName) data
 
@@ -95,7 +95,7 @@ let ``Create a test name with no name hints same data repeated`` =
     feature.Test (
         TestBody (fun (_, testFeature: IFeature<string>) ->
             let (_, tests), (_, data, testName), _ =
-                TestBuilder.BuildTestWithTestNameTagsDataTestBodyTwoParametersTeardown (testFeature, true)
+                TestBuilder.BuildTestWithTestNameTagsDataTestBodyThreeParameters (testFeature, true)
             
             let name1, name2, name3 = TestBuilder.GetTestNames (fun i v -> sprintf "%s (%A)%s" testName v (if 0 = i then "" else $"^%i{i}")) data
 
@@ -111,7 +111,7 @@ let ``Create a test name with no name hints same data repeated`` =
 let ``Call setup when executed`` =
     feature.Test (
         TestBody (fun (_, testFeature: IFeature<string>) ->
-            let (monitor, tests), _, _ = TestBuilder.BuildTestWithTestNameTagsDataTestBodyTwoParametersTeardown testFeature
+            let (monitor, tests), _, _ = TestBuilder.BuildTestWithTestNameTagsDataTestBodyThreeParameters testFeature
 
             tests
             |> silentlyRunAllTests
@@ -125,7 +125,7 @@ let ``Call setup when executed`` =
 let ``Call Test when executed`` =
     feature.Test (
         TestBody (fun (featureSetupValue, testFeature: IFeature<string>) ->
-            let (monitor, tests), (_, data, _), _ = TestBuilder.BuildTestWithTestNameTagsDataTestBodyTwoParametersTeardown testFeature
+            let (monitor, tests), (_, data, _), _ = TestBuilder.BuildTestWithTestNameTagsDataTestBodyThreeParameters testFeature
 
             tests
             |> silentlyRunAllTests
@@ -147,28 +147,46 @@ let ``Call Test when executed`` =
 let ``Call Test with test environment when executed`` =
     feature.Test (
         TestBody (fun (_, testFeature: IFeature<string>) ->
-            let (monitor, tests), _, _ = TestBuilder.BuildTestWithTestNameTagsDataTestBodyTwoParametersTeardown testFeature
+            let (monitor, tests), _, _ = TestBuilder.BuildTestWithTestNameTagsDataTestBodyThreeParameters testFeature
                 
             tests
             |> silentlyRunAllTests
             
+            let getValue v =
+                match v with
+                | Some value -> value
+                | _ -> failwith "No value"
+            
             monitor.TestFunctionWasCalledWith
             |> List.map (fun (_, _, c) -> c)
-            |> Should.BeEqualTo [None; None; None]
+            |> Should.PassAllOf [
+               ListShould.HaveLengthOf 3 >> withMessage "Incorrect number of calls to test"
+                
+               ListShould.HaveAllValuesPassTestOf <@fun v -> match v with | Some _ -> true | _ -> false@>
+                
+               List.head >> getValue >> (fun env -> env.ApiEnvironment.ApiName) >> Should.BeEqualTo "Archer.Arrows"
+               List.head >> getValue >> (fun env -> env.TestInfo) >> Should.BeEqualTo (tests |> List.head :> ITestInfo)
+                
+               List.skip 1 >> List.head >> getValue >> (fun env -> env.ApiEnvironment.ApiName) >> Should.BeEqualTo "Archer.Arrows"
+               List.skip 1 >> List.head >> getValue >> (fun env -> env.TestInfo) >> Should.BeEqualTo (tests |> List.skip 1 |> List.head :> ITestInfo)
+                
+               List.last >> getValue >> (fun env -> env.ApiEnvironment.ApiName) >> Should.BeEqualTo "Archer.Arrows"
+               List.last >> getValue >> (fun env -> env.TestInfo) >> Should.BeEqualTo (tests |> List.last :> ITestInfo)
+           ]
         ) 
     )
     
 let ``Call teardown when executed`` =
     feature.Test (
         TestBody (fun (_, testFeature: IFeature<string>) ->
-            let (monitor, tests), _, _ = TestBuilder.BuildTestWithTestNameTagsDataTestBodyTwoParametersTeardown testFeature
+            let (monitor, tests), _, _ = TestBuilder.BuildTestWithTestNameTagsDataTestBodyThreeParameters testFeature
                 
             tests
             |> silentlyRunAllTests
             
             monitor.HasTeardownBeenCalled
-            |> Should.BeTrue
-            |> withMessage "Teardown was not called"
+            |> Should.BeFalse
+            |> withMessage "Teardown was called"
         ) 
     )
 
