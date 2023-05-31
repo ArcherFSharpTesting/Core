@@ -63,6 +63,7 @@ runner
     
     ``015 - Feature Test with test name, tags, data, test function three parameters should``.``Test Cases``
     ``016 - Feature Test with test name, tags, data, test function two parameters should``.``Test Cases``
+    ``017 - Feature Test with test name, tags, data, test function one parameter should``.``Test Cases``
     
     ``Arrow Ignore``.``Test Cases``
 ]

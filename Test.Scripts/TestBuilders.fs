@@ -1514,3 +1514,40 @@ type TestBuilder =
             )
 
         (monitor, tests), (tags, data, testName), (path, fileName, lineNumber)
+        
+    static member BuildTestWithTestNameTagsDataTestFunctionOneParameterNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
+        let monitor, (testNameBase, testName), (tags, data), (path, fileName, fullPath, lineNumber) =
+            getDataTestPartsNoSetupNameHints repeatDataValue
+
+        let testBody = monitor.FunctionTestDataOneParameterSuccess
+        
+        let tests =
+            testFeature.Test (
+                testName,
+                TestTags tags,
+                Data data,
+                testBody,
+                fullPath,
+                lineNumber
+            )
+
+        (monitor, tests), (tags, data, testNameBase), (path, fileName, lineNumber)
+
+
+    static member BuildTestWithTestNameTagsDataTestFunctionOneParameter (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
+        let monitor, (testName, tags, data), (path, fileName, fullPath, lineNumber) =
+            getDataTestPartsNoSetup repeatDataValue
+
+        let testBody = monitor.FunctionTestDataOneParameterSuccess
+        
+        let tests =
+            testFeature.Test (
+                testName,
+                TestTags tags,
+                Data data,
+                testBody,
+                fullPath,
+                lineNumber
+            )
+
+        (monitor, tests), (tags, data, testName), (path, fileName, lineNumber)
