@@ -1292,3 +1292,43 @@ type TestBuilder =
             )
 
         (monitor, tests), (tags, data, testName), (path, fileName, lineNumber)
+        
+    static member BuildTestWithTestNameTagsDataTestBodyOneParameterTeardownNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
+        let monitor, (testNameBase, testName), (tags, data), (path, fileName, fullPath, lineNumber) =
+            getDataTestPartsNoSetupNameHints repeatDataValue
+
+        let testBody = monitor.FunctionTestDataOneParameterSuccess
+        let teardown = monitor.FunctionTeardownPassThrough
+        
+        let tests =
+            testFeature.Test (
+                testName,
+                TestTags tags,
+                Data data,
+                TestBody testBody,
+                Teardown teardown,
+                fullPath,
+                lineNumber
+            )
+
+        (monitor, tests), (tags, data, testNameBase), (path, fileName, lineNumber)
+        
+    static member BuildTestWithTestNameTagsDataTestBodyOneParameterTeardown (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
+        let monitor, (testName, tags, data), (path, fileName, fullPath, lineNumber) =
+            getDataTestPartsNoSetup repeatDataValue
+
+        let testBody = monitor.FunctionTestDataOneParameterSuccess
+        let teardown = monitor.FunctionTeardownPassThrough
+        
+        let tests =
+            testFeature.Test (
+                testName,
+                TestTags tags,
+                Data data,
+                TestBody testBody,
+                Teardown teardown,
+                fullPath,
+                lineNumber
+            )
+
+        (monitor, tests), (tags, data, testName), (path, fileName, lineNumber)

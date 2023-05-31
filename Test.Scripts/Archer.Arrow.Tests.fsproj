@@ -27,6 +27,7 @@
     <Compile Include="Test\008 - Feature Test with test name, tags, setup, test body indicator one parameter should.fs" />
     <Compile Include="Test\009 - Feature Test with test name, tags, data, test body indicator three parameters, teardown should.fs" />
     <Compile Include="Test\010 - Feature Test with test name, tags, data, test body indicator two parameters, teardown should.fs" />
+    <Compile Include="Test\011 - Feature Test with test name, tags, data, test body indicator one parameter, teardown should.fs" />
     <Compile Include="Arrow NewFeature.fs" />
     <Compile Include="Arrow Ignorefs.fs" />
     <Compile Include="Arrow NewFeature With Setup.fs" />
