@@ -53,6 +53,7 @@ runner
     ``010 - Feature Test with test name, tags, data, test body indicator two parameters, teardown should``.``Test Cases``
     ``011 - Feature Test with test name, tags, data, test body indicator one parameter, teardown should``.``Test Cases``
     ``012 - Feature Test with test name, tags, data, test body indicator three parameters should``.``Test Cases``
+    ``014 - Feature Test with test name, tags, data, test body indicator one parameter should``.``Test Cases``
     
     ``Arrow Ignore``.``Test Cases``
 ]
