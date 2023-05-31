@@ -123,9 +123,9 @@ let ``Call Test when executed`` =
             ListShould.HaveLengthOf 3
             List.map (fun (a, _, _) -> a) >> Should.BeEqualTo (data |> List.map Some)
             List.map (fun (_, b, _) -> b) >> Should.BeEqualTo [
-                Some (Some featureSetupValue, setupValue)
-                Some (Some featureSetupValue, setupValue)
-                Some (Some featureSetupValue, setupValue)
+                Some (Some featureSetupValue, Some setupValue)
+                Some (Some featureSetupValue, Some setupValue)
+                Some (Some featureSetupValue, Some setupValue)
             ]
         ]
         |> withMessage "Test was not called"

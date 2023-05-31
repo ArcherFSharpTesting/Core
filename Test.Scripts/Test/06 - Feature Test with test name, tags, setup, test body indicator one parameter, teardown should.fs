@@ -61,7 +61,7 @@ let ``Call Test when executed`` =
            ListShould.HaveLengthOf 1
            List.map (fun (a, _, _) -> a) >> Should.BeEqualTo [ None ]
            List.map (fun (_, b, _) -> b) >> Should.BeEqualTo [
-               Some (Some featureSetupValue, setupValue)
+               Some (Some featureSetupValue, Some setupValue)
            ]
        ]
        |> withMessage "Test was not called"

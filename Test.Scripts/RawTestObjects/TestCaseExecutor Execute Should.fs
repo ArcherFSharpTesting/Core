@@ -86,7 +86,7 @@ let ``Pass the result of the setup supplied to feature.Test to the test action``
             
             monitor.TestFunctionWasCalledWith
             |> List.map (fun (_, a, _) -> a)
-            |> Should.BeEqualTo [Some (None, expected)]
+            |> Should.BeEqualTo [Some (None, Some expected)]
         )
     )
     
@@ -106,7 +106,7 @@ let ``Pass the result of the setup supplied to the feature to the setup supplied
         
         monitor.TestFunctionWasCalledWith
         |> List.map (fun (_, a, _) -> a)
-        |> Should.BeEqualTo [Some (Some expectedValue, ())]
+        |> Should.BeEqualTo [Some (Some expectedValue, Some ())]
     )
     
 let ``Not throw an exception if the setup supplied to feature.Test fails`` =
@@ -282,7 +282,7 @@ let ``Run the teardown passed to feature.Test`` =
         TestBody (fun testBuilder ->
             let monitor = getUnitTestMonitor ()
                 
-            let executor: ITestExecutor = testBuilder monitor.FunctionTeardownFromFeature
+            let executor: ITestExecutor = testBuilder monitor.FunctionTeardownPassthrough
             
             executor
             |> silentlyRunExecutor
@@ -296,7 +296,7 @@ let ``Run the teardown passed to the feature`` =
     feature.Test (fun _ ->
         let monitor = getUnitTestMonitor ()
         
-        let testFeature = Arrow.NewFeature (Teardown monitor.FunctionTeardownFromFeature)
+        let testFeature = Arrow.NewFeature (Teardown monitor.FunctionTeardownPassthrough)
         
         testFeature.Test(fun () -> TestSuccess)
         |> silentlyRunTest
@@ -496,7 +496,7 @@ let ``Return the failure if the teardown that was passed to feature.Test fails``
                 
             let monitor = getUnitTestMonitor ()
             
-            let executor: ITestExecutor = testBuilder (monitor.FunctionTeardownFromFeatureWith teardownFailure)
+            let executor: ITestExecutor = testBuilder (monitor.FunctionTeardownPassthroughWith teardownFailure)
             
             executor
             |> runExecutor
@@ -513,9 +513,9 @@ let ``Returns the failure if the teardown given to the feature fails`` =
             "failed feature teardown"
             |> newFailure.With.SetupTeardownGeneralFailure
             
-        let monitor = getUnitTestMonitor ()
+        let monitor = getFeatureMonitor<unit> ()
         
-        let testFeature = Arrow.NewFeature(Teardown (monitor.FunctionTeardownFromFeatureWith expectedError))
+        let testFeature = Arrow.NewFeature(Teardown (monitor.FunctionTeardownWith expectedError))
         
         let result =
             testFeature.Test(fun () -> TestSuccess)
@@ -533,7 +533,7 @@ let ``Return failure if teardown that was passed to feature.Test throws exceptio
             let expectedErrorMessage = "Boom goes the teardown"
             let monitor = getUnitTestMonitor ()
             
-            let executor: ITestExecutor = testBuilder (monitor.FunctionTeardownFromFeatureFailWith expectedErrorMessage)
+            let executor: ITestExecutor = testBuilder (monitor.FunctionTeardownPassthroughFailsWith expectedErrorMessage)
             
             try
                 let result =
