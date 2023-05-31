@@ -1,4 +1,4 @@
-module Archer.Arrows.Tests.Test.``08 - Feature Test with test name, tags, setup, test body indicator one parameter should``
+﻿module Archer.Arrows.Tests.Test.``005 - Feature Test with test name, tags, setup, test body indicator two parameters, teardown should``
 
 open System
 open Archer
@@ -24,7 +24,7 @@ let private getContainerName (test: ITest) =
 let ``Create a valid ITest`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
        let (_monitor, test), (tags, _setupValue, testName), (path, fileName, lineNumber) =
-           TestBuilder.BuildTestWithTestNameTagsSetupTestBodyOneParameter testFeature
+           TestBuilder.BuildTestWithTestNameTagsSetupTestBodyTwoParametersTeardown testFeature
             
        test
        |> Should.PassAllOf [
@@ -39,7 +39,7 @@ let ``Create a valid ITest`` =
 
 let ``Call setup when executed`` =
     feature.Test (fun (featureSetupValue, testFeature: IFeature<string>) ->
-       let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameTagsSetupTestBodyOneParameter testFeature
+       let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameTagsSetupTestBodyTwoParametersTeardown testFeature
 
        test
        |> silentlyRunTest
@@ -51,7 +51,7 @@ let ``Call setup when executed`` =
 
 let ``Call Test when executed`` =
     feature.Test (fun (featureSetupValue, testFeature: IFeature<string>) ->
-       let (monitor, tests), (_, setupValue, _), _ = TestBuilder.BuildTestWithTestNameTagsSetupTestBodyOneParameter testFeature
+       let (monitor, tests), (_, setupValue, _), _ = TestBuilder.BuildTestWithTestNameTagsSetupTestBodyTwoParametersTeardown testFeature
 
        tests
        |> silentlyRunTest
@@ -59,7 +59,7 @@ let ``Call Test when executed`` =
        monitor.TestFunctionWasCalledWith
        |> Should.PassAllOf [
            ListShould.HaveLengthOf 1
-           List.map (fun (a, _, _) -> a) >> Should.BeEqualTo [None]
+           List.map (fun (a, _, _) -> a) >> Should.BeEqualTo [ None ]
            List.map (fun (_, b, _) -> b) >> Should.BeEqualTo [
                Some (Some featureSetupValue, Some setupValue)
            ]
@@ -69,26 +69,37 @@ let ``Call Test when executed`` =
 
 let ``Call Test with test environment when executed`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
-       let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameTagsSetupTestBodyOneParameter testFeature
+       let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameTagsSetupTestBodyTwoParametersTeardown testFeature
             
        test
        |> silentlyRunTest
         
+       let getValue v =
+           match v with
+           | Some value -> value
+           | _ -> failwith "No Value"
+        
        monitor.TestFunctionWasCalledWith
        |> List.map (fun (_, _, c) -> c)
-       |> Should.BeEqualTo [None]
+       |> Should.PassAllOf [
+           ListShould.HaveLengthOf 1 >> withMessage "Incorrect number of calls to test"
+           ListShould.HaveAllValuesPassTestOf <@fun v -> match v with | Some _ -> true | _ -> false@>
+            
+           List.head >> getValue >> (fun env -> env.ApiEnvironment.ApiName) >> Should.BeEqualTo "Archer.Arrows"
+           List.head >> getValue >> (fun env -> env.TestInfo) >> Should.BeEqualTo test
+       ]
    )
     
 let ``Call teardown when executed`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
-       let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameTagsSetupTestBodyOneParameter testFeature
+       let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameTagsSetupTestBodyTwoParametersTeardown testFeature
             
        test
        |> silentlyRunTest
         
        monitor.HasTeardownBeenCalled
-       |> Should.BeFalse
-       |> withMessage "Teardown was called"
+       |> Should.BeTrue
+       |> withMessage "Teardown was not called"
    )
     
 let ``Test Cases`` = feature.GetTests ()
