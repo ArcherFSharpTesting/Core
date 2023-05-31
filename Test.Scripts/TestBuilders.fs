@@ -1232,3 +1232,23 @@ type TestBuilder =
             )
     
         (monitor, tests), (tags, data, testNameBase), (path, fileName, lineNumber)
+        
+    static member BuildTestWithTestNameTagsDataTestBodyThreeParametersTeardown (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
+        let monitor, (testName, tags, data), (path, fileName, fullPath, lineNumber) =
+            getDataTestPartsNoSetup repeatDataValue
+    
+        let testBody = monitor.FunctionTestPassThroughDataThreeParametersSuccess
+        let teardown = monitor.FunctionTeardownPassthrough
+        
+        let tests =
+            testFeature.Test (
+                testName,
+                TestTags tags,
+                Data data,
+                TestBody testBody,
+                Teardown teardown,
+                fullPath,
+                lineNumber
+            )
+    
+        (monitor, tests), (tags, data, testName), (path, fileName, lineNumber)
