@@ -257,9 +257,9 @@ type ITestMonitor<'dataType, 'featureType, 'setupType> =
     abstract member FunctionTestDataTwoParametersSuccess: 'dataType -> 'setupType -> TestResult
     abstract member FunctionTestDataTwoParametersFailsWith: message: string -> ('dataType -> 'setupType -> TestResult)
 
-    abstract member FunctionTestPassthroughDataTwoParametersWith: testResult: TestResult -> ('dataType -> 'featureType -> TestResult)
-    abstract member FunctionTestPassthroughDataTwoParametersSuccess: 'dataType -> 'featureType -> TestResult
-    abstract member FunctionTestPassthroughDataTwoParametersFailsWith: message: string -> ('dataType -> 'featureType -> TestResult)
+    abstract member FunctionTestPassThroughDataTwoParametersWith: testResult: TestResult -> ('dataType -> 'featureType -> TestResult)
+    abstract member FunctionTestPassThroughDataTwoParametersSuccess: 'dataType -> 'featureType -> TestResult
+    abstract member FunctionTestPassThroughDataTwoParametersFailsWith: message: string -> ('dataType -> 'featureType -> TestResult)
     
     // -- -- Data One Param
     abstract member FunctionTestDataOneParameterWith: testResult: TestResult -> ('dataType -> TestResult)
@@ -275,9 +275,9 @@ type ITestMonitor<'dataType, 'featureType, 'setupType> =
     abstract member FunctionTestTwoParametersSuccess: 'setupType -> TestEnvironment -> TestResult
     abstract member FunctionTestTwoParametersFailWith: message: string -> ('setupType -> TestEnvironment -> TestResult)
     
-    abstract member FunctionTestPassthroughTwoParametersWith: testResult: TestResult -> ('featureType -> TestEnvironment -> TestResult)
-    abstract member FunctionTestPassthroughTwoParametersSuccess: 'featureType -> TestEnvironment -> TestResult
-    abstract member FunctionTestPassthroughTwoParametersFailsWith: message: string -> ('featureType -> TestEnvironment -> TestResult)
+    abstract member FunctionTestPassThroughTwoParametersWith: testResult: TestResult -> ('featureType -> TestEnvironment -> TestResult)
+    abstract member FunctionTestPassThroughTwoParametersSuccess: 'featureType -> TestEnvironment -> TestResult
+    abstract member FunctionTestPassThroughTwoParametersFailsWith: message: string -> ('featureType -> TestEnvironment -> TestResult)
     
     // -- -- One Param
     abstract member FunctionTestFeatureOneParameterWith: testResult: TestResult -> (('featureType * 'setupType) -> TestResult)
@@ -288,18 +288,18 @@ type ITestMonitor<'dataType, 'featureType, 'setupType> =
     abstract member FunctionTestOneParameterSuccess: 'setupType -> TestResult
     abstract member FunctionTestOneParameterFailWith: message: string -> ('setupType -> TestResult)
     
-    abstract member FunctionTestPassthroughOneParameterWith: testResult: TestResult -> ('featureType -> TestResult)
-    abstract member FunctionTestPassthroughOneParameterSuccess: 'featureType -> TestResult
-    abstract member FunctionTestPassthroughOneParameterFailsWith: message: string -> ('featureType -> TestResult)
+    abstract member FunctionTestPassThroughOneParameterWith: testResult: TestResult -> ('featureType -> TestResult)
+    abstract member FunctionTestPassThroughOneParameterSuccess: 'featureType -> TestResult
+    abstract member FunctionTestPassThroughOneParameterFailsWith: message: string -> ('featureType -> TestResult)
     
     // -- Teardown
     abstract member FunctionTeardownFeatureFromSetup: Result<'featureType * 'setupType, SetupTeardownFailure> -> TestResult option -> Result<unit, SetupTeardownFailure>
     abstract member FunctionTeardownFeatureFromSetupWith: failure: SetupTeardownFailure -> (Result<'featureType * 'setupType, SetupTeardownFailure> -> TestResult option -> Result<unit, SetupTeardownFailure>)
     abstract member FunctionTeardownFeatureFromSetupFailsWith: message: string -> (Result<'featureType * 'setupType, SetupTeardownFailure> -> TestResult option -> Result<unit, SetupTeardownFailure>)
     
-    abstract member FunctionTeardownPassthrough: Result<unit, SetupTeardownFailure> -> TestResult option -> Result<unit, SetupTeardownFailure>
-    abstract member FunctionTeardownPassthroughWith: failure: SetupTeardownFailure -> (Result<unit, SetupTeardownFailure> -> TestResult option -> Result<unit, SetupTeardownFailure>)
-    abstract member FunctionTeardownPassthroughFailsWith: message: string -> (Result<unit, SetupTeardownFailure> -> TestResult option -> Result<unit, SetupTeardownFailure>)
+    abstract member FunctionTeardownPassThrough: Result<unit, SetupTeardownFailure> -> TestResult option -> Result<unit, SetupTeardownFailure>
+    abstract member FunctionTeardownPassThroughWith: failure: SetupTeardownFailure -> (Result<unit, SetupTeardownFailure> -> TestResult option -> Result<unit, SetupTeardownFailure>)
+    abstract member FunctionTeardownPassThroughFailsWith: message: string -> (Result<unit, SetupTeardownFailure> -> TestResult option -> Result<unit, SetupTeardownFailure>)
     
     abstract member FunctionTeardownFromSetup: Result<'setupType, SetupTeardownFailure> -> TestResult option -> Result<unit, SetupTeardownFailure>
     abstract member FunctionTeardownFromSetupWith: failure: SetupTeardownFailure -> (Result<'setupType, SetupTeardownFailure> -> TestResult option -> Result<unit, SetupTeardownFailure>)
@@ -458,18 +458,18 @@ type TestMonitor<'dataType, 'featureType, 'setupType> () =
             
         testFunction
         
-    member _.FunctionTestPassthroughDataTwoParametersWith (testResult: TestResult) =
+    member _.FunctionTestPassThroughDataTwoParametersWith (testResult: TestResult) =
         let testFunction (data: 'dataType) (featureValue: 'featureType) =
             testParams <- (Some data, Some (Some featureValue, None), None)::testParams
             testResult
             
         testFunction
         
-    member _.FunctionTestPassthroughDataTwoParametersSuccess (data: 'dataType) (featureValue: 'featureType) =
+    member _.FunctionTestPassThroughDataTwoParametersSuccess (data: 'dataType) (featureValue: 'featureType) =
         testParams <- (Some data, Some (Some featureValue, None), None)::testParams
         TestSuccess
         
-    member _.FunctionTestPassthroughDataTwoParametersFailsWith (message: string) =
+    member _.FunctionTestPassThroughDataTwoParametersFailsWith (message: string) =
         let testFunction (data: 'dataType) (featureValue: 'featureType) =
             testParams <- (Some data, Some (Some featureValue, None), None)::testParams
             failwith message
@@ -532,18 +532,18 @@ type TestMonitor<'dataType, 'featureType, 'setupType> () =
             
         testFunction
         
-    member _.FunctionTestPassthroughTwoParametersWith (testResult: TestResult) =
+    member _.FunctionTestPassThroughTwoParametersWith (testResult: TestResult) =
         let testFunction (featureValue: 'featureType) (environment: TestEnvironment) =
             testParams <- (None, Some (Some featureValue, None), Some environment)::testParams
             testResult
             
         testFunction
         
-    member _.FunctionTestPassthroughTwoParametersSuccess (featureValue: 'featureType) (environment: TestEnvironment) =
+    member _.FunctionTestPassThroughTwoParametersSuccess (featureValue: 'featureType) (environment: TestEnvironment) =
         testParams <- (None, Some (Some featureValue, None), Some environment)::testParams
         TestSuccess
         
-    member _.FunctionTestPassthroughTwoParametersFailsWith (message: string) =
+    member _.FunctionTestPassThroughTwoParametersFailsWith (message: string) =
         let testFunction (featureValue: 'featureType) (environment: TestEnvironment) =
             testParams <- (None, Some (Some featureValue, None), Some environment)::testParams
             failwith message
@@ -587,18 +587,18 @@ type TestMonitor<'dataType, 'featureType, 'setupType> () =
             
         testFunction
         
-    member _.FunctionTestPassthroughOneParameterWith (testResult: TestResult) =
+    member _.FunctionTestPassThroughOneParameterWith (testResult: TestResult) =
         let testFunction (featureValue: 'featureType) =
             testParams <- (None, Some (Some featureValue, None), None)::testParams
             testResult
             
         testFunction
         
-    member _.FunctionTestPassthroughOneParameterSuccess (featureValue: 'featureType) =
+    member _.FunctionTestPassThroughOneParameterSuccess (featureValue: 'featureType) =
         testParams <- (None, Some (Some featureValue, None), None)::testParams
         TestSuccess
         
-    member _.FunctionTestPassthroughOneParameterFailsWith (message: string) =
+    member _.FunctionTestPassThroughOneParameterFailsWith (message: string) =
         let testFunction (featureValue: 'featureType) =
             testParams <- (None, Some (Some featureValue, None), None)::testParams
             failwith message
@@ -640,7 +640,7 @@ type TestMonitor<'dataType, 'featureType, 'setupType> () =
             
         teardownFunction
     
-    member _.FunctionTeardownPassthrough (setupResult: Result<unit, SetupTeardownFailure>) (testResult: TestResult option): Result<unit, SetupTeardownFailure> =
+    member _.FunctionTeardownPassThrough (setupResult: Result<unit, SetupTeardownFailure>) (testResult: TestResult option): Result<unit, SetupTeardownFailure> =
         match setupResult with
         | Ok _ ->
             teardownParams <- (Ok (None, None), testResult)::teardownParams
@@ -649,7 +649,7 @@ type TestMonitor<'dataType, 'featureType, 'setupType> () =
         
         Ok ()
         
-    member _.FunctionTeardownPassthroughWith  (failure: SetupTeardownFailure) =
+    member _.FunctionTeardownPassThroughWith  (failure: SetupTeardownFailure) =
         let teardownFunction (setupResult: Result<unit, SetupTeardownFailure>) (testResult: TestResult option): Result<unit, SetupTeardownFailure> =
             match setupResult with
             | Ok _ ->
@@ -661,7 +661,7 @@ type TestMonitor<'dataType, 'featureType, 'setupType> () =
         
         teardownFunction
         
-    member _.FunctionTeardownPassthroughFailsWith (message: string) =
+    member _.FunctionTeardownPassThroughFailsWith (message: string) =
         let teardownFunction (setupResult: Result<unit, SetupTeardownFailure>) (testResult: TestResult option): Result<unit, SetupTeardownFailure> =
             match setupResult with
             | Ok _ ->
@@ -749,9 +749,9 @@ type TestMonitor<'dataType, 'featureType, 'setupType> () =
         member this.FunctionTestDataTwoParametersSuccess (dataValue: 'dataType) (setupValue: 'setupType) = this.FunctionTestDataTwoParametersSuccess dataValue setupValue
         member this.FunctionTestDataTwoParametersFailsWith message = this.FunctionTestDataTwoParametersFailsWith message
         
-        member this.FunctionTestPassthroughDataTwoParametersWith testResult = this.FunctionTestPassthroughDataTwoParametersWith testResult
-        member this.FunctionTestPassthroughDataTwoParametersSuccess data featureValue = this.FunctionTestPassthroughDataTwoParametersSuccess data featureValue
-        member this.FunctionTestPassthroughDataTwoParametersFailsWith message = this.FunctionTestPassthroughDataTwoParametersFailsWith message
+        member this.FunctionTestPassThroughDataTwoParametersWith testResult = this.FunctionTestPassThroughDataTwoParametersWith testResult
+        member this.FunctionTestPassThroughDataTwoParametersSuccess data featureValue = this.FunctionTestPassThroughDataTwoParametersSuccess data featureValue
+        member this.FunctionTestPassThroughDataTwoParametersFailsWith message = this.FunctionTestPassThroughDataTwoParametersFailsWith message
         
         // -- -- Data One Param
         member this.FunctionTestDataOneParameterWith testResult = this.FunctionTestDataOneParameterWith testResult
@@ -767,9 +767,9 @@ type TestMonitor<'dataType, 'featureType, 'setupType> () =
         member this.FunctionTestTwoParametersSuccess (setupValue: 'setupType) (environment: TestEnvironment)  = this.FunctionTestTwoParametersSuccess setupValue environment
         member this.FunctionTestTwoParametersFailWith message = this.FunctionTestTwoParametersFailWith message
         
-        member this.FunctionTestPassthroughTwoParametersWith testResult = this.FunctionTestPassthroughTwoParametersWith testResult
-        member this.FunctionTestPassthroughTwoParametersSuccess featureValue environment = this.FunctionTestPassthroughTwoParametersSuccess featureValue environment
-        member this.FunctionTestPassthroughTwoParametersFailsWith message = this.FunctionTestPassthroughTwoParametersFailsWith message
+        member this.FunctionTestPassThroughTwoParametersWith testResult = this.FunctionTestPassThroughTwoParametersWith testResult
+        member this.FunctionTestPassThroughTwoParametersSuccess featureValue environment = this.FunctionTestPassThroughTwoParametersSuccess featureValue environment
+        member this.FunctionTestPassThroughTwoParametersFailsWith message = this.FunctionTestPassThroughTwoParametersFailsWith message
         
          // -- -- One Param
         member this.FunctionTestFeatureOneParameterWith testResult = this.FunctionTestFeatureOneParameterWith testResult
@@ -780,18 +780,18 @@ type TestMonitor<'dataType, 'featureType, 'setupType> () =
         member this.FunctionTestOneParameterSuccess (setupValue: 'setupType) = this.FunctionTestOneParameterSuccess setupValue
         member this.FunctionTestOneParameterFailWith message = this.FunctionTestOneParameterFailWith message
         
-        member this.FunctionTestPassthroughOneParameterWith testResult = this.FunctionTestPassthroughOneParameterWith testResult
-        member this.FunctionTestPassthroughOneParameterSuccess featureValue = this.FunctionTestPassthroughOneParameterSuccess featureValue
-        member this.FunctionTestPassthroughOneParameterFailsWith message = this.FunctionTestPassthroughOneParameterFailsWith message
+        member this.FunctionTestPassThroughOneParameterWith testResult = this.FunctionTestPassThroughOneParameterWith testResult
+        member this.FunctionTestPassThroughOneParameterSuccess featureValue = this.FunctionTestPassThroughOneParameterSuccess featureValue
+        member this.FunctionTestPassThroughOneParameterFailsWith message = this.FunctionTestPassThroughOneParameterFailsWith message
         
          // -- Teardown
         member this.FunctionTeardownFeatureFromSetup (setupResult: Result<'featureType * 'setupType, SetupTeardownFailure>)  (testResult: TestResult option) = this.FunctionTeardownFeatureFromSetup setupResult testResult
         member this.FunctionTeardownFeatureFromSetupWith (failure: SetupTeardownFailure) = this.FunctionTeardownFeatureFromSetupWith failure
         member this.FunctionTeardownFeatureFromSetupFailsWith message = this.FunctionTeardownFeatureFromSetupFailWith message
         
-        member this.FunctionTeardownPassthrough (setupResult: Result<unit, SetupTeardownFailure>)  (testResult: TestResult option) = this.FunctionTeardownPassthrough setupResult testResult
-        member this.FunctionTeardownPassthroughWith failure = this.FunctionTeardownPassthroughWith failure
-        member this.FunctionTeardownPassthroughFailsWith message = this.FunctionTeardownPassthroughFailsWith message
+        member this.FunctionTeardownPassThrough (setupResult: Result<unit, SetupTeardownFailure>)  (testResult: TestResult option) = this.FunctionTeardownPassThrough setupResult testResult
+        member this.FunctionTeardownPassThroughWith failure = this.FunctionTeardownPassThroughWith failure
+        member this.FunctionTeardownPassThroughFailsWith message = this.FunctionTeardownPassThroughFailsWith message
         
         member this.FunctionTeardownFromSetup (setupResult: Result<'setupType, SetupTeardownFailure>) (testResult: TestResult option) = this.FunctionTeardownFromSetup setupResult testResult
         member this.FunctionTeardownFromSetupWith failure = this.FunctionTeardownFromSetupWith failure
@@ -1218,7 +1218,7 @@ type TestBuilder =
             getDataTestPartsNoSetupNameHints repeatDataValue
     
         let testBody = monitor.FunctionTestPassThroughDataThreeParametersSuccess
-        let teardown = monitor.FunctionTeardownPassthrough
+        let teardown = monitor.FunctionTeardownPassThrough
         
         let tests =
             testFeature.Test (
@@ -1238,7 +1238,7 @@ type TestBuilder =
             getDataTestPartsNoSetup repeatDataValue
     
         let testBody = monitor.FunctionTestPassThroughDataThreeParametersSuccess
-        let teardown = monitor.FunctionTeardownPassthrough
+        let teardown = monitor.FunctionTeardownPassThrough
         
         let tests =
             testFeature.Test (
@@ -1251,4 +1251,44 @@ type TestBuilder =
                 lineNumber
             )
     
+        (monitor, tests), (tags, data, testName), (path, fileName, lineNumber)
+        
+    static member BuildTestWithTestNameTagsDataTestBodyTwoParametersTeardownNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
+        let monitor, (testNameBase, testName), (tags, data), (path, fileName, fullPath, lineNumber) =
+            getDataTestPartsNoSetupNameHints repeatDataValue
+
+        let testBody = monitor.FunctionTestPassThroughDataTwoParametersSuccess
+        let teardown = monitor.FunctionTeardownPassThrough
+        
+        let tests =
+            testFeature.Test (
+                testName,
+                TestTags tags,
+                Data data,
+                TestBody testBody,
+                Teardown teardown,
+                fullPath,
+                lineNumber
+            )
+
+        (monitor, tests), (tags, data, testNameBase), (path, fileName, lineNumber)
+        
+    static member BuildTestWithTestNameTagsDataTestBodyTwoParametersTeardown (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
+        let monitor, (testName, tags, data), (path, fileName, fullPath, lineNumber) =
+            getDataTestPartsNoSetup repeatDataValue
+
+        let testBody = monitor.FunctionTestPassThroughDataTwoParametersSuccess
+        let teardown = monitor.FunctionTeardownPassThrough
+        
+        let tests =
+            testFeature.Test (
+                testName,
+                TestTags tags,
+                Data data,
+                TestBody testBody,
+                Teardown teardown,
+                fullPath,
+                lineNumber
+            )
+
         (monitor, tests), (tags, data, testName), (path, fileName, lineNumber)

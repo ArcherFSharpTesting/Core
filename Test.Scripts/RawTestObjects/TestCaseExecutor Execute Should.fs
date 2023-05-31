@@ -282,7 +282,7 @@ let ``Run the teardown passed to feature.Test`` =
         TestBody (fun testBuilder ->
             let monitor = getUnitTestMonitor ()
                 
-            let executor: ITestExecutor = testBuilder monitor.FunctionTeardownPassthrough
+            let executor: ITestExecutor = testBuilder monitor.FunctionTeardownPassThrough
             
             executor
             |> silentlyRunExecutor
@@ -296,7 +296,7 @@ let ``Run the teardown passed to the feature`` =
     feature.Test (fun _ ->
         let monitor = getUnitTestMonitor ()
         
-        let testFeature = Arrow.NewFeature (Teardown monitor.FunctionTeardownPassthrough)
+        let testFeature = Arrow.NewFeature (Teardown monitor.FunctionTeardownPassThrough)
         
         testFeature.Test(fun () -> TestSuccess)
         |> silentlyRunTest
@@ -496,7 +496,7 @@ let ``Return the failure if the teardown that was passed to feature.Test fails``
                 
             let monitor = getUnitTestMonitor ()
             
-            let executor: ITestExecutor = testBuilder (monitor.FunctionTeardownPassthroughWith teardownFailure)
+            let executor: ITestExecutor = testBuilder (monitor.FunctionTeardownPassThroughWith teardownFailure)
             
             executor
             |> runExecutor
@@ -533,7 +533,7 @@ let ``Return failure if teardown that was passed to feature.Test throws exceptio
             let expectedErrorMessage = "Boom goes the teardown"
             let monitor = getUnitTestMonitor ()
             
-            let executor: ITestExecutor = testBuilder (monitor.FunctionTeardownPassthroughFailsWith expectedErrorMessage)
+            let executor: ITestExecutor = testBuilder (monitor.FunctionTeardownPassThroughFailsWith expectedErrorMessage)
             
             try
                 let result =
