@@ -65,6 +65,8 @@ runner
     ``016 - Feature Test with test name, tags, data, test function two parameters should``.``Test Cases``
     ``017 - Feature Test with test name, tags, data, test function one parameter should``.``Test Cases``
     
+    ``018 - Feature Test with test name, tags, test body indicator two parameter, teardown should``.``Test Cases``
+    
     ``Arrow Ignore``.``Test Cases``
 ]
 |> runAndReport

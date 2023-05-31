@@ -959,6 +959,13 @@ let private getTestParts () =
 
     monitor, (testName, tags, setupValue), (path, fileName, fullPath, lineNumber)
     
+let private getTestPartsNoSetup () =
+    let testName = $"My %s{randomWord 5} Test"
+    
+    let monitor, tags, (path, fileName, fullPath, lineNumber) = getMonitorWithoutSetupBaseTestParts ()
+
+    monitor, (testName, tags), (path, fileName, fullPath, lineNumber)
+    
 type TestBuilder =
     static member GetTestNames (f: int -> 'a -> string) data =
         let [a; b; c] =
@@ -1551,3 +1558,23 @@ type TestBuilder =
             )
 
         (monitor, tests), (tags, data, testName), (path, fileName, lineNumber)
+        
+    // test name, tags, test body indicator, teardown
+    static member BuildTestWithTestNameTagsTestBodyTwoParameterTeardown (testFeature: IFeature<string>) =
+        let monitor, (testName, tags), (path, fileName, fullPath, lineNumber) =
+            getTestPartsNoSetup ()
+
+        let testBody = monitor.FunctionTestPassThroughTwoParametersSuccess
+        let teardown = monitor.FunctionTeardownPassThrough
+        
+        let test =
+            testFeature.Test (
+                testName,
+                TestTags tags,
+                TestBody testBody,
+                Teardown teardown,
+                fullPath,
+                lineNumber
+            )
+
+        (monitor, test), (tags, testName), (path, fileName, lineNumber)
