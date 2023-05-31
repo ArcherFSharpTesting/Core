@@ -31,6 +31,7 @@
     <Compile Include="Test\012 - Feature Test with test name, tags, data, test body indicator three parameters should.fs" />
     <Compile Include="Test\013 - Feature Test with test name, tags, data, test body indicator two parameters should.fs" />
     <Compile Include="Test\014 - Feature Test with test name, tags, data, test body indicator one parameter should.fs" />
+    <Compile Include="Test\015 - Feature Test with test name, tags, data, test function three parameters should.fs" />
     <Compile Include="Arrow NewFeature.fs" />
     <Compile Include="Arrow Ignorefs.fs" />
     <Compile Include="Arrow NewFeature With Setup.fs" />
@@ -44,7 +45,7 @@
 
   <ItemGroup>
     <PackageReference Include="Archer.Bow.Lib" Version="0.0.9.37" />
-    <PackageReference Include="Archer.Fletching.Lib" Version="0.0.0.30" />
+    <PackageReference Include="Archer.Fletching.Lib" Version="0.0.0.31" />
     <PackageReference Include="MicroLang.Lib" Version="0.0.12.54" />
     <PackageReference Update="FSharp.Core" Version="7.0.300" />
   </ItemGroup>

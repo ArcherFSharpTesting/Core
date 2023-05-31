@@ -1442,4 +1442,39 @@ type TestBuilder =
 
         (monitor, tests), (tags, data, testName), (path, fileName, lineNumber)
         
-        //test name, tags, data, test function
+    //test name, tags, data, test function
+    static member BuildTestWithTestNameTagsDataTestFunctionThreeParametersNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
+        let monitor, (testNameBase, testName), (tags, data), (path, fileName, fullPath, lineNumber) =
+            getDataTestPartsNoSetupNameHints repeatDataValue
+
+        let testBody = monitor.FunctionTestPassThroughDataThreeParametersSuccess
+        
+        let tests =
+            testFeature.Test (
+                testName,
+                TestTags tags,
+                Data data,
+                testBody,
+                fullPath,
+                lineNumber
+            )
+
+        (monitor, tests), (tags, data, testNameBase), (path, fileName, lineNumber)
+        
+    static member BuildTestWithTestNameTagsDataTestFunctionThreeParameters (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
+        let monitor, (testName, tags, data), (path, fileName, fullPath, lineNumber) =
+            getDataTestPartsNoSetup repeatDataValue
+
+        let testBody = monitor.FunctionTestPassThroughDataThreeParametersSuccess
+        
+        let tests =
+            testFeature.Test (
+                testName,
+                TestTags tags,
+                Data data,
+                testBody,
+                fullPath,
+                lineNumber
+            )
+
+        (monitor, tests), (tags, data, testName), (path, fileName, lineNumber)
