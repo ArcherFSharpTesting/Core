@@ -7,7 +7,6 @@ open Archer.Arrows.Internal.Types
 open Archer.Arrows.Tests
 open Archer.CoreTypes.InternalTypes
 open Archer.MicroLang.Verification
-open Archer.ShouldList
 
 let private feature = Arrow.NewFeature (
     TestTags [
@@ -153,7 +152,7 @@ let ``Call Test when executed`` =
 let ``Call Test with test environment when executed`` =
     feature.Test (
         Setup setupFeatureUnderTest,
-        TestBody (fun (featureSetupValue, testFeature: IFeature<string>) ->
+        TestBody (fun (_, testFeature: IFeature<string>) ->
             let (monitor, tests), _, _ = TestBuilder.BuildTestWithTestNameTagsSetupDataTestBodyTwoParametersTeardown testFeature
                 
             tests
@@ -168,7 +167,7 @@ let ``Call Test with test environment when executed`` =
 let ``Call teardown when executed`` =
     feature.Test (
         Setup setupFeatureUnderTest,
-        TestBody (fun (featureSetupValue, testFeature: IFeature<string>) ->
+        TestBody (fun (_, testFeature: IFeature<string>) ->
             let (monitor, tests), _, _ = TestBuilder.BuildTestWithTestNameTagsSetupDataTestBodyTwoParametersTeardown testFeature
                 
             tests
