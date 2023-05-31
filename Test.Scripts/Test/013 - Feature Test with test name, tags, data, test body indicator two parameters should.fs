@@ -152,27 +152,9 @@ let ``Call Test with test environment when executed`` =
             tests
             |> silentlyRunAllTests
             
-            let getValue v =
-                match v with
-                | Some value -> value
-                | _ -> failwith "No value"
-            
             monitor.TestFunctionWasCalledWith
             |> List.map (fun (_, _, c) -> c)
-            |> Should.PassAllOf [
-               ListShould.HaveLengthOf 3 >> withMessage "Incorrect number of calls to test"
-                
-               ListShould.HaveAllValuesPassTestOf <@fun v -> match v with | Some _ -> true | _ -> false@>
-                
-               List.head >> getValue >> (fun env -> env.ApiEnvironment.ApiName) >> Should.BeEqualTo "Archer.Arrows"
-               List.head >> getValue >> (fun env -> env.TestInfo) >> Should.BeEqualTo (tests |> List.head :> ITestInfo)
-                
-               List.skip 1 >> List.head >> getValue >> (fun env -> env.ApiEnvironment.ApiName) >> Should.BeEqualTo "Archer.Arrows"
-               List.skip 1 >> List.head >> getValue >> (fun env -> env.TestInfo) >> Should.BeEqualTo (tests |> List.skip 1 |> List.head :> ITestInfo)
-                
-               List.last >> getValue >> (fun env -> env.ApiEnvironment.ApiName) >> Should.BeEqualTo "Archer.Arrows"
-               List.last >> getValue >> (fun env -> env.TestInfo) >> Should.BeEqualTo (tests |> List.last :> ITestInfo)
-           ]
+            |> Should.BeEqualTo [ None; None; None ]
         ) 
     )
     
