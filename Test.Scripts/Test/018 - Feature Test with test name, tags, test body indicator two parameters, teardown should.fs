@@ -1,4 +1,4 @@
-module Archer.Arrows.Tests.Test.``018 - Feature Test with test name, tags, test body indicator two parameter, teardown should``
+module Archer.Arrows.Tests.Test.``018 - Feature Test with test name, tags, test body indicator two parameters, teardown should``
 
 open System
 open Archer
