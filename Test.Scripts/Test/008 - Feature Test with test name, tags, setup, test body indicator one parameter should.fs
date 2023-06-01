@@ -44,7 +44,7 @@ let ``Call setup when executed`` =
        test
        |> silentlyRunTest
         
-       monitor.SetupFunctionWasCalledWith
+       monitor.SetupFunctionParameterValues
        |> Should.BeEqualTo [featureSetupValue]
        |> withMessage "Setup was not called"
    )
@@ -56,13 +56,15 @@ let ``Call Test when executed`` =
        tests
        |> silentlyRunTest
         
-       monitor.TestFunctionWasCalledWith
+       monitor
        |> Should.PassAllOf [
-           ListShould.HaveLengthOf 1
-           List.map (fun (a, _, _) -> a) >> Should.BeEqualTo [None]
-           List.map (fun (_, b, _) -> b) >> Should.BeEqualTo [
-               Some (Some featureSetupValue, Some setupValue)
-           ]
+           numberOfTimesTestFunctionWasCalled >> Should.BeEqualTo 1
+           
+           noTestWasCalledWithData
+           
+           allTestFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf featureSetupValue
+           
+           allTestFunctionShouldHaveBeenCalledWithTestSetupValueOf setupValue
        ]
        |> withMessage "Test was not called"
    )
@@ -74,9 +76,10 @@ let ``Not call Test with test environment when executed`` =
        test
        |> silentlyRunTest
         
-       monitor.TestFunctionWasCalledWith
-       |> List.map (fun (_, _, c) -> c)
-       |> Should.BeEqualTo [None]
+       monitor
+       |> hasTestFunctionBeenCalledWithEnvironmentParameter
+       |> Should.BeFalse
+       |> withFailureComment "Test called with environment"
    )
     
 let ``Call teardown when executed`` =

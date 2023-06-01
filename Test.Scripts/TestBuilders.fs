@@ -11,6 +11,16 @@ open Microsoft.FSharp.Core
 
 let private rand = System.Random ()
 
+let hasValue item =
+    match item with
+    | Some _ -> true
+    | _ -> false
+    
+let getValue item =
+    match item with
+    | Some v -> v
+    | _ -> failwith "No Value"
+
 let randomLetter () =
     let letters = seq { seq{'A'..'Z'}; seq{'a'..'z'} } |> Seq.concat |> Seq.map (sprintf "%c") |> Array.ofSeq
     let max = letters.Length - 1
@@ -210,19 +220,30 @@ type FeatureMonitor<'featureType> () =
         member this.FunctionTeardownWith () = this.FunctionTeardownWith ()
         member this.FunctionTeardownWith failure = this.FunctionTeardownWith failure
         member this.FunctionTeardownFailsWith message = this.FunctionTeardownFailsWith message
-
-    
     
 type ITestMonitor<'dataType, 'featureType, 'setupType> =
     // Verify Calls
     abstract member HasSetupFunctionBeenCalled: bool with get
-    abstract member SetupFunctionWasCalledWith: 'featureType list with get
+    abstract member SetupFunctionParameterValues: 'featureType list with get
+    abstract member NumberOfTimesSetupFunctionWasCalled: int
     
     abstract member HasTestFunctionBeenCalled: bool with get
-    abstract member TestFunctionWasCalledWith: ('dataType option * ('featureType option * 'setupType option) option * TestEnvironment option) list with get
+    abstract member NumberOfTimesTestFunctionWasCalled: int with get
+    
+    abstract member HasTestFunctionBeenCalledWithDataParameter: bool
+    abstract member TestFunctionDataParameterValues: 'dataType option list with get
+    
+    abstract member HasTestFunctionBeenCalledWithFeatureSetupParameter: bool
+    abstract member TestFunctionFeatureSetupParameterValues: 'featureType option list with get
+    
+    abstract member HasTestFunctionBeenCalledWithTestSetupParameter: bool with get
+    abstract member TestFunctionTestSetupParameterValues: 'setupType option list with get
+    
+    abstract member HasTestFunctionBeenCalledWithEnvironmentParameter: bool with get
+    abstract member TestFunctionEnvironmentParameterValues: TestEnvironment option list with get
     
     abstract member HasTeardownBeenCalled: bool with get
-    abstract member TeardownFunctionCalledWith:  (Result<'featureType option * 'setupType option, SetupTeardownFailure> * TestResult option) list with get
+    abstract member TeardownFunctionParameterValues:  (Result<'featureType option * 'setupType option, SetupTeardownFailure> * TestResult option) list with get
     
     // Functions
     // -- Setup
@@ -304,7 +325,88 @@ type ITestMonitor<'dataType, 'featureType, 'setupType> =
     abstract member FunctionTeardownFromSetup: Result<'setupType, SetupTeardownFailure> -> TestResult option -> Result<unit, SetupTeardownFailure>
     abstract member FunctionTeardownFromSetupWith: failure: SetupTeardownFailure -> (Result<'setupType, SetupTeardownFailure> -> TestResult option -> Result<unit, SetupTeardownFailure>)
     abstract member FunctionTeardownFromSetupFailsWith: message: string -> (Result<'setupType, SetupTeardownFailure> -> TestResult option -> Result<unit, SetupTeardownFailure>)
-
+    
+let hasSetupFunctionBeenCalled (monitor: ITestMonitor<_, _, _>) =
+    monitor.HasSetupFunctionBeenCalled
+    
+let setupFunctionParameterValues (monitor: ITestMonitor<_, _, _>) =
+    monitor.SetupFunctionParameterValues
+    
+let numberOfTimesSetupFunctionWasCalled (monitor: ITestMonitor<_, _, _>) =
+    monitor.NumberOfTimesSetupFunctionWasCalled
+    
+let hasTestFunctionBeenCalled (monitor: ITestMonitor<_, _, _>) =
+    monitor.HasTestFunctionBeenCalled
+    
+let numberOfTimesTestFunctionWasCalled (monitor: ITestMonitor<_, _, _>) =
+    monitor.NumberOfTimesTestFunctionWasCalled
+    
+let hasTestFunctionBeenCalledWithDataParameter (monitor: ITestMonitor<_, _, _>) =
+    monitor.HasTestFunctionBeenCalledWithDataParameter
+    
+let hasTestFunctionBeenCalledWithFeatureSetupParameter (monitor: ITestMonitor<_, _, _>) =
+    monitor.HasTestFunctionBeenCalledWithFeatureSetupParameter
+    
+let hasTestFunctionBeenCalledWithTestSetupParameter (monitor: ITestMonitor<_, _, _>) =
+    monitor.HasTestFunctionBeenCalledWithTestSetupParameter
+    
+let testFunctionDataParameterValues (monitor: ITestMonitor<_, _, _>) =
+    monitor.TestFunctionDataParameterValues
+    
+let testFunctionFeatureSetupParameterValues (monitor: ITestMonitor<_, _, _>) =
+    monitor.TestFunctionFeatureSetupParameterValues
+    
+let testFunctionTestSetupParameterValues (monitor: ITestMonitor<_, _, _>) =
+    monitor.TestFunctionTestSetupParameterValues
+    
+let testFunctionEnvironmentParameterValues (monitor: ITestMonitor<_, _, _>) =
+    monitor.TestFunctionEnvironmentParameterValues
+    
+let hasTestFunctionBeenCalledWithEnvironmentParameter (monitor: ITestMonitor<_, _, _>) =
+    monitor.HasTestFunctionBeenCalledWithEnvironmentParameter
+    
+let hasTeardownBeenCalled (monitor: ITestMonitor<_, _, _>) =
+    monitor.HasTeardownBeenCalled
+    
+let teardownFunctionParameterValues (monitor: ITestMonitor<_, _, _>) =
+    monitor.TeardownFunctionParameterValues
+    
+let allTestFunctionShouldHaveBeenCalledWithDataOf (data: 'dataType list) (monitor: ITestMonitor<'dataType, _, _>) =
+    let data = data |> List.map Some
+    
+    monitor.TestFunctionDataParameterValues
+    |> Should.BeEqualTo data
+    
+let allTestFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf (featureSetupValue: 'featureType) (monitor: ITestMonitor<_, 'featureType, _>) =
+    monitor
+    |> testFunctionFeatureSetupParameterValues
+    |> ListShould.HaveAllValuesBe (Some featureSetupValue)
+    
+let allTestFunctionShouldHaveBeenCalledWithTestSetupValueOf (setupValue: 'setupType) (monitor: ITestMonitor<_, _, 'setupType>) =
+    monitor
+    |> testFunctionTestSetupParameterValues
+    |> ListShould.HaveAllValuesBe (Some setupValue)
+    
+let noTestWasCalledWithData (monitor: ITestMonitor<_, _, _>) =
+    monitor
+    |> testFunctionDataParameterValues
+    |> List.filter hasValue
+    |> ListShould.HaveLengthOf 0
+    |> withFailureComment "Test was called with data"
+    
+let noTestWasCalledWithAFeatureSetupValue (monitor: ITestMonitor<_, _, _>) =
+    monitor
+    |> testFunctionFeatureSetupParameterValues
+    |> List.filter hasValue
+    |> ListShould.HaveLengthOf 0
+    |> withFailureComment "Test was called with feature setup value"
+    
+let noTestWasCalledWithATestSetupValue (monitor: ITestMonitor<_, _, _>) =
+    monitor
+    |> testFunctionTestSetupParameterValues
+    |> List.filter hasValue
+    |> ListShould.HaveLengthOf 0
+    |> withFailureComment "test was called with test setup value"
 
 type TestMonitor<'dataType, 'featureType, 'setupType> () =
     let mutable setupParams: 'featureType list = []
@@ -314,10 +416,67 @@ type TestMonitor<'dataType, 'featureType, 'setupType> () =
     // Verify Calls
     member _.HasSetupFunctionBeenCalled with get () = 0 < setupParams.Length
     member _.SetupFunctionWasCalledWith with get () = setupParams |> List.rev
+    member _.NumberOfTimesSetupFunctionWasCalled with get () = setupParams.Length
     
-    member _.HasTestFunctionBeenCalled with get () = 0 < testParams.Length 
-    member _.TestFunctionWasCalledWith with get () = testParams |> List.rev
+    member _.HasTestFunctionBeenCalled with get () = 0 < testParams.Length
+    member _.NumberOfTimesTestFunctionWasCalled with get () = testParams.Length
     
+    member this.HasTestFunctionBeenCalledWithDataParameter with get () =
+        let length =
+            this.TestFunctionDataParameterValues
+            |> List.filter hasValue
+            |> List.length
+            
+        0 < length
+        
+    member this.HasTestFunctionBeenCalledWithFeatureSetupParameter with get () =
+        let length =
+            this.TestFunctionFeatureSetupParameterValues
+            |> List.filter hasValue
+            |> List.length
+            
+        0 < length
+        
+    member this.HasTestFunctionBeenCalledWithTestSetupParameter with get () =
+        let length =
+            this.TestFunctionTestSetupParameterValues
+            |> List.filter hasValue
+            |> List.length
+        
+        0 < length
+            
+    member _.TestFunctionDataParameterValues with get () =
+        testParams
+        |> List.map (fun (a, _, _) -> a)
+        |> List.rev
+        
+    member _.TestFunctionFeatureSetupParameterValues with get () =
+         testParams
+        |> List.map (fun (_, b, _) -> b)
+        |> List.filter hasValue
+        |> List.map (getValue >> fst)
+        |> List.rev
+        
+    member _.TestFunctionTestSetupParameterValues with get () =
+        testParams
+        |> List.map (fun (_, b, _) -> b)
+        |> List.filter hasValue
+        |> List.map (getValue >> snd)
+        |> List.rev
+        
+    member _.TestFunctionEnvironmentParameterValues with get () =
+        testParams
+        |> List.map (fun (_, _, c) -> c)
+        |> List.rev
+        
+    member this.HasTestFunctionBeenCalledWithEnvironmentParameter with get () =
+        let length = 
+            this.TestFunctionEnvironmentParameterValues
+            |> List.filter hasValue
+            |> List.length
+            
+        0 < length
+        
     member _.HasTeardownBeenCalled with get () = 0 < teardownParams.Length
     member _.TeardownFunctionCalledWith with get () = teardownParams |> List.rev
     
@@ -709,13 +868,22 @@ type TestMonitor<'dataType, 'featureType, 'setupType> () =
     interface ITestMonitor<'dataType, 'featureType, 'setupType> with
         // Verify Calls
         member this.HasSetupFunctionBeenCalled with get () = this.HasSetupFunctionBeenCalled
-        member this.SetupFunctionWasCalledWith with get () = this.SetupFunctionWasCalledWith
+        member this.SetupFunctionParameterValues with get () = this.SetupFunctionWasCalledWith
+        member this.NumberOfTimesSetupFunctionWasCalled with get () = this.NumberOfTimesSetupFunctionWasCalled
         
         member this.HasTestFunctionBeenCalled with get () = this.HasTestFunctionBeenCalled
-        member this.TestFunctionWasCalledWith with get () = this.TestFunctionWasCalledWith
+        member this.NumberOfTimesTestFunctionWasCalled with get () = this.NumberOfTimesTestFunctionWasCalled
+        member this.HasTestFunctionBeenCalledWithDataParameter with get () = this.HasTestFunctionBeenCalledWithDataParameter
+        member this.HasTestFunctionBeenCalledWithFeatureSetupParameter with get () = this.HasTestFunctionBeenCalledWithFeatureSetupParameter
+        member this.HasTestFunctionBeenCalledWithTestSetupParameter with get () = this.HasTestFunctionBeenCalledWithTestSetupParameter
+        member this.TestFunctionDataParameterValues with get () = this.TestFunctionDataParameterValues
+        member this.TestFunctionFeatureSetupParameterValues with get () = this.TestFunctionFeatureSetupParameterValues
+        member this.TestFunctionTestSetupParameterValues with get () = this.TestFunctionTestSetupParameterValues
+        member this.TestFunctionEnvironmentParameterValues with get () = this.TestFunctionEnvironmentParameterValues
+        member this.HasTestFunctionBeenCalledWithEnvironmentParameter with get () = this.HasTestFunctionBeenCalledWithEnvironmentParameter
         
         member this.HasTeardownBeenCalled with get () = this.HasTeardownBeenCalled
-        member this.TeardownFunctionCalledWith with get ()  = this.TeardownFunctionCalledWith
+        member this.TeardownFunctionParameterValues with get ()  = this.TeardownFunctionCalledWith
         
         // Functions
         // -- Setup

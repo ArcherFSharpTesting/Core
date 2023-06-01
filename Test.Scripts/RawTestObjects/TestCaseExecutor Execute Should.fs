@@ -84,9 +84,8 @@ let ``Pass the result of the setup supplied to feature.Test to the test action``
             executor
             |> silentlyRunExecutor
             
-            monitor.TestFunctionWasCalledWith
-            |> List.map (fun (_, a, _) -> a)
-            |> Should.BeEqualTo [Some (None, Some expected)]
+            monitor
+            |> allTestFunctionShouldHaveBeenCalledWithTestSetupValueOf expected
         )
     )
     
@@ -104,9 +103,10 @@ let ``Pass the result of the setup supplied to the feature to the setup supplied
         testFeature.Test(Setup setup, TestBody testBody)
         |> silentlyRunTest
         
-        monitor.TestFunctionWasCalledWith
-        |> List.map (fun (_, a, _) -> a)
-        |> Should.BeEqualTo [Some (Some expectedValue, Some ())]
+        monitor
+        |> Should.PassAllOf [
+            allTestFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf expectedValue
+        ]
     )
     
 let ``Not throw an exception if the setup supplied to feature.Test fails`` =
@@ -319,7 +319,7 @@ let ``Calls the teardown that was passed to feature.Test with the successful res
             executor
             |> silentlyRunExecutor
             
-            monitor.TeardownFunctionCalledWith
+            monitor.TeardownFunctionParameterValues
             |> List.map fst
             |> Should.BeEqualTo [Ok (None, Some expectedSetupValue)]
         )
@@ -335,7 +335,7 @@ let ``Calls the teardown that was passed to the feature with the successful resu
         testFeature.Test(fun _ -> TestSuccess)
         |> silentlyRunTest
         
-        monitor.TeardownFunctionCalledWith
+        monitor.TeardownFunctionParameterValues
         |> List.map fst
         |> Should.BeEqualTo [Ok (None, Some setupResult)]
     )
@@ -367,7 +367,7 @@ let ``Each teardown should be called with the corresponding successful setup`` =
             
         featureResult
         |> andResult (
-            testMonitor.TeardownFunctionCalledWith
+            testMonitor.TeardownFunctionParameterValues
             |> List.map fst
             |> Should.BeEqualTo [Ok (Some featureSetupResult, Some testSetupResult)]
         )
@@ -389,7 +389,7 @@ let ``Calls the teardown that was passed to feature.Test with the unsuccessful r
             executor
             |> silentlyRunExecutor
             
-            monitor.TeardownFunctionCalledWith
+            monitor.TeardownFunctionParameterValues
             |> List.map fst
             |> Should.BeEqualTo [Error expectedSetupValue]
         )
@@ -408,7 +408,7 @@ let ``Calls the teardown that was passed to the feature with the unsuccessful re
         testFeature.Test(fun _ -> TestSuccess)
         |> silentlyRunTest
         
-        monitor.TeardownFunctionCalledWith
+        monitor.TeardownFunctionParameterValues
         |> List.map fst
         |> Should.BeEqualTo [Error expectedResult]
     )
@@ -425,7 +425,7 @@ let ``Calls the teardown that was passed to feature.Test with the TestSuccess if
             executor
             |> silentlyRunExecutor
             
-            monitor.TeardownFunctionCalledWith
+            monitor.TeardownFunctionParameterValues
             |> List.map snd
             |> Should.BeEqualTo [Some TestSuccess]
         )
@@ -461,7 +461,7 @@ let ``Calls the teardown that was passed to feature.Test with the TestFailure if
             executor
             |> silentlyRunExecutor
             
-            monitor.TeardownFunctionCalledWith
+            monitor.TeardownFunctionParameterValues
             |> List.map snd
             |> Should.BeEqualTo [Some expectedFailure]
         )

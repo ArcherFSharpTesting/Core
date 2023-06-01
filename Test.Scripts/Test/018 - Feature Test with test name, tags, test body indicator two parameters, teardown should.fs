@@ -47,7 +47,7 @@ let ``Call setup when executed`` =
             test
             |> silentlyRunTest
             
-            monitor.SetupFunctionWasCalledWith
+            monitor.SetupFunctionParameterValues
             |> Should.BeEqualTo []
             |> withMessage "Setup was not called"
         ) 
@@ -61,11 +61,15 @@ let ``Call Test when executed`` =
             test
             |> silentlyRunTest
             
-            monitor.TestFunctionWasCalledWith
+            monitor
             |> Should.PassAllOf [
-                ListShould.HaveLengthOf 1
-                List.map (fun (a, _, _) -> a) >> Should.BeEqualTo [ None ] // Not called with data
-                List.map (fun (_, b, _) -> b) >> Should.BeEqualTo [ Some (Some featureSetupValue, None) ]
+                numberOfTimesTestFunctionWasCalled >> Should.BeEqualTo 1 >> withFailureComment "Incorrect number of test calls"
+                
+                noTestWasCalledWithData
+                
+                allTestFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf featureSetupValue
+                
+                noTestWasCalledWithATestSetupValue
             ]
             |> withMessage "Test was not called"
         ) 
@@ -84,14 +88,17 @@ let ``Call Test with test environment when executed`` =
                 | Some value -> value
                 | _ -> failwith "No Value"
             
-            monitor.TestFunctionWasCalledWith
-            |> List.map (fun (_, _, c) -> c)
+            monitor
+            |> testFunctionEnvironmentParameterValues
             |> Should.PassAllOf [
                ListShould.HaveLengthOf 1 >> withMessage "Incorrect number of calls to test"
-               ListShould.HaveAllValuesPassTestOf <@fun v -> match v with | Some _ -> true | _ -> false@>
-                
-               List.head >> getValue >> (fun env -> env.ApiEnvironment.ApiName) >> Should.BeEqualTo "Archer.Arrows"
-               List.head >> getValue >> (fun env -> env.TestInfo) >> Should.BeEqualTo test
+               
+               ListShould.HaveAllValuesPassTestOf <@hasValue@>
+               
+               ListShould.HaveAllValuesPassAllOf [
+                   getValue >> (fun env -> env.ApiEnvironment.ApiName) >> Should.BeEqualTo "Archer.Arrows"
+                   getValue >> (fun env -> env.TestInfo) >> Should.BeEqualTo test
+               ] 
            ]
         ) 
     )

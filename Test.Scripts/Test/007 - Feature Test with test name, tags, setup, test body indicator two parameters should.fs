@@ -44,7 +44,7 @@ let ``Call setup when executed`` =
        test
        |> silentlyRunTest
         
-       monitor.SetupFunctionWasCalledWith
+       monitor.SetupFunctionParameterValues
        |> Should.BeEqualTo [featureSetupValue]
        |> withMessage "Setup was not called"
    )
@@ -56,13 +56,15 @@ let ``Call Test when executed`` =
        tests
        |> silentlyRunTest
         
-       monitor.TestFunctionWasCalledWith
+       monitor//.TestFunctionWasCalledWith
        |> Should.PassAllOf [
-           ListShould.HaveLengthOf 1
-           List.map (fun (a, _, _) -> a) >> Should.BeEqualTo [None]
-           List.map (fun (_, b, _) -> b) >> Should.BeEqualTo [
-               Some (Some featureSetupValue, Some setupValue)
-           ]
+           numberOfTimesTestFunctionWasCalled >> Should.BeEqualTo 1
+           
+           noTestWasCalledWithData
+           
+           allTestFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf featureSetupValue
+           
+           allTestFunctionShouldHaveBeenCalledWithTestSetupValueOf setupValue
        ]
        |> withMessage "Test was not called"
    )
@@ -79,14 +81,16 @@ let ``Call Test with test environment when executed`` =
            | Some value -> value
            | _ -> failwith "No value"
         
-       monitor.TestFunctionWasCalledWith
-       |> List.map (fun (_, _, c) -> c)
+       monitor//.TestFunctionWasCalledWith
+       |> testFunctionEnvironmentParameterValues
        |> Should.PassAllOf [
            ListShould.HaveLengthOf 1 >> withMessage "Incorrect number of calls to test"
-           ListShould.HaveAllValuesPassTestOf <@fun v -> match v with | Some _ -> true | _ -> false@>
-            
-           List.head >> getValue >> (fun env -> env.ApiEnvironment.ApiName) >> Should.BeEqualTo "Archer.Arrows"
-           List.head >> getValue >> (fun env -> env.TestInfo) >> Should.BeEqualTo test
+           ListShould.HaveAllValuesPassTestOf <@hasValue@>
+           
+           ListShould.HaveAllValuesPassAllOf [
+               getValue >> (fun env -> env.ApiEnvironment.ApiName) >> Should.BeEqualTo "Archer.Arrows"
+               getValue >> (fun env -> env.TestInfo) >> Should.BeEqualTo test
+           ]
        ]
    )
     

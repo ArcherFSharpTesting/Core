@@ -107,7 +107,7 @@ let ``Call setup when executed`` =
        tests
        |> silentlyRunAllTests
         
-       monitor.SetupFunctionWasCalledWith
+       monitor.SetupFunctionParameterValues
        |> Should.BeEqualTo [featureSetupValue; featureSetupValue; featureSetupValue]
        |> withMessage "Setup was not called"
    )
@@ -119,15 +119,15 @@ let ``Call Test when executed`` =
        tests
        |> silentlyRunAllTests
         
-       monitor.TestFunctionWasCalledWith
+       monitor
        |> Should.PassAllOf [
-           ListShould.HaveLengthOf 3
-           List.map (fun (a, _, _) -> a) >> Should.BeEqualTo (data |> List.map Some)
-           List.map (fun (_, b, _) -> b) >> Should.BeEqualTo [
-               Some (Some featureSetupValue, Some setupValue)
-               Some (Some featureSetupValue, Some setupValue)
-               Some (Some featureSetupValue, Some setupValue)
-           ]
+           numberOfTimesTestFunctionWasCalled >> Should.BeEqualTo 3
+           
+           testFunctionDataParameterValues >> Should.BeEqualTo (data |> List.map Some)
+           
+           allTestFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf featureSetupValue
+           
+           allTestFunctionShouldHaveBeenCalledWithTestSetupValueOf setupValue
        ]
        |> withMessage "Test was not called"
    )
@@ -139,9 +139,9 @@ let ``Not call Test with test environment when executed`` =
        tests
        |> silentlyRunAllTests
         
-       monitor.TestFunctionWasCalledWith
-       |> List.map (fun (_, _, c) -> c)
-       |> Should.BeEqualTo [None; None; None]
+       monitor.HasTestFunctionBeenCalledWithEnvironmentParameter
+       |> Should.BeFalse
+       |> withFailureComment "Environment passed to test function"
    )
     
 let ``Call teardown when executed`` =

@@ -116,7 +116,7 @@ let ``Call setup when executed`` =
             tests
             |> silentlyRunAllTests
             
-            monitor.SetupFunctionWasCalledWith
+            monitor.SetupFunctionParameterValues
             |> Should.BeEqualTo []
             |> withMessage "Setup was not called"
         ) 
@@ -130,15 +130,15 @@ let ``Call Test when executed`` =
             tests
             |> silentlyRunAllTests
             
-            monitor.TestFunctionWasCalledWith
+            monitor
             |> Should.PassAllOf [
-                ListShould.HaveLengthOf 3
-                List.map (fun (a, _, _) -> a) >> Should.BeEqualTo (data |> List.map Some)
-                List.map (fun (_, b, _) -> b) >> Should.BeEqualTo [
-                    Some (Some featureSetupValue, None)
-                    Some (Some featureSetupValue, None)
-                    Some (Some featureSetupValue, None)
-                ]
+                numberOfTimesTestFunctionWasCalled >> Should.BeEqualTo 3 >> withFailureComment "Incorrect number of calls"
+                
+                allTestFunctionShouldHaveBeenCalledWithDataOf data
+                
+                allTestFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf featureSetupValue
+                
+                noTestWasCalledWithATestSetupValue
             ]
             |> withMessage "Test was not called"
         ) 
@@ -152,9 +152,9 @@ let ``Not call Test with test environment when executed`` =
             tests
             |> silentlyRunAllTests
             
-            monitor.TestFunctionWasCalledWith
-            |> List.map (fun (_, _, c) -> c)
-            |> Should.BeEqualTo [ None; None; None ]
+            monitor.HasTestFunctionBeenCalledWithEnvironmentParameter
+            |> Should.BeFalse
+            |> withFailureComment "Test called with environment"
         ) 
     )
     

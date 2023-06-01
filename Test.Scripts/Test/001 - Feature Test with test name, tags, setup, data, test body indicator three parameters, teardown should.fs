@@ -107,29 +107,31 @@ let ``Call setup when executed`` =
        tests
        |> silentlyRunAllTests
         
-       monitor.SetupFunctionWasCalledWith
+       monitor.SetupFunctionParameterValues
        |> Should.BeEqualTo [featureSetupValue; featureSetupValue; featureSetupValue]
        |> withMessage "Setup was not called"
    )
 
 let ``Call Test when executed`` =
     feature.Test (fun (featureSetupValue, testFeature: IFeature<string>) ->
-       let (monitor, tests), (_tags, setupValue, data, _testName), _ = TestBuilder.BuildTestWithTestNameTagsSetupDataTestBodyThreeParametersTeardown testFeature
+        let (monitor, tests), (_tags, setupValue, data, _testName), _ = TestBuilder.BuildTestWithTestNameTagsSetupDataTestBodyThreeParametersTeardown testFeature
 
-       tests
-       |> silentlyRunAllTests
-        
-       monitor.TestFunctionWasCalledWith
-       |> Should.PassAllOf [
-           List.map (fun (a, _, _) -> a) >> Should.BeEqualTo (data |> List.map Some)
-           List.map (fun (_, b, _) -> b) >> Should.BeEqualTo [
-               Some (Some featureSetupValue, Some setupValue)
-               Some (Some featureSetupValue, Some setupValue)
-               Some (Some featureSetupValue, Some setupValue)
-           ]
-       ]
-       |> withMessage "Test was not called"
-   )
+        tests
+        |> silentlyRunAllTests
+
+
+        monitor
+        |> Should.PassAllOf [
+            numberOfTimesTestFunctionWasCalled >> Should.BeEqualTo 3
+            
+            testFunctionDataParameterValues >> Should.BeEqualTo (data |> List.map Some)
+            
+            allTestFunctionShouldHaveBeenCalledWithTestSetupValueOf setupValue
+            
+            allTestFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf featureSetupValue
+        ]
+        |> withMessage "Test was not called"
+    )
 
 let ``Call Test with return value of setup when executed`` =
     feature.Test (fun (featureSetupValue, testFeature: IFeature<string>) ->
@@ -138,14 +140,15 @@ let ``Call Test with return value of setup when executed`` =
        tests
        |> silentlyRunAllTests
         
-       monitor.TestFunctionWasCalledWith
+       monitor
        |> Should.PassAllOf [
-           List.map (fun (a, _, _) -> a) >> Should.BeEqualTo (data |> List.map Some)
-           List.map (fun (_, b, _) -> b) >> Should.BeEqualTo [
-               Some (Some featureSetupValue, Some setupValue)
-               Some (Some featureSetupValue, Some setupValue)
-               Some (Some featureSetupValue, Some setupValue)
-           ]
+           numberOfTimesTestFunctionWasCalled >> Should.BeEqualTo 3
+           
+           testFunctionDataParameterValues >> Should.BeEqualTo (data |> List.map Some)
+           
+           allTestFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf featureSetupValue
+           
+           allTestFunctionShouldHaveBeenCalledWithTestSetupValueOf setupValue
        ]
        |> withMessage "Test was not called"
    )
@@ -162,8 +165,7 @@ let ``Call Test with test environment when executed`` =
            | Some value -> value
            | _ -> failwith "No value found"
         
-       monitor.TestFunctionWasCalledWith
-       |> List.map (fun (_, _, c) -> c)
+       monitor.TestFunctionEnvironmentParameterValues
        |> Should.PassAllOf [
            ListShould.HaveLengthOf 3 >> withMessage "Incorrect number of calls to test"
             
