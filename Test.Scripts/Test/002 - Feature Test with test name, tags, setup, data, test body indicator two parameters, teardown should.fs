@@ -132,7 +132,7 @@ let ``Call Test when executed`` =
        |> withMessage "Test was not called"
    )
 
-let ``Call Test with test environment when executed`` =
+let ``Not call Test with test environment when executed`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
        let (monitor, tests), _, _ = TestBuilder.BuildTestWithTestNameTagsSetupDataTestBodyTwoParametersTeardown testFeature
             

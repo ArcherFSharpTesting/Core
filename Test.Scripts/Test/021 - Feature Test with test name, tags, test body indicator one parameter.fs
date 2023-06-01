@@ -1,4 +1,4 @@
-module Archer.Arrows.Tests.Test.``019 - Feature Test with test name, tags, test body indicator one parameter, teardown should``
+module Archer.Arrows.Tests.Test.``021 - Feature Test with test name, tags, test body indicator one parameter``
 
 open System
 open Archer
@@ -25,7 +25,7 @@ let ``Create a valid ITest`` =
     feature.Test (
         TestBody (fun (_, testFeature: IFeature<string>) ->
             let (_, test), (tags, testName), (path, fileName, lineNumber) =
-                TestBuilder.BuildTestWithTestNameTagsTestBodyOneParameterTeardown testFeature
+                TestBuilder.BuildTestWithTestNameTagsTestBodyOneParameter testFeature
                 
             test
             |> Should.PassAllOf [
@@ -42,7 +42,7 @@ let ``Create a valid ITest`` =
 let ``Call setup when executed`` =
     feature.Test (
         TestBody (fun (_, testFeature: IFeature<string>) ->
-            let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameTagsTestBodyOneParameterTeardown testFeature
+            let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameTagsTestBodyOneParameter testFeature
 
             test
             |> silentlyRunTest
@@ -56,7 +56,7 @@ let ``Call setup when executed`` =
 let ``Call Test when executed`` =
     feature.Test (
         TestBody (fun (featureSetupValue, testFeature: IFeature<string>) ->
-            let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameTagsTestBodyOneParameterTeardown testFeature
+            let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameTagsTestBodyOneParameter testFeature
 
             test
             |> silentlyRunTest
@@ -74,7 +74,7 @@ let ``Call Test when executed`` =
 let ``Not call Test with test environment when executed`` =
     feature.Test (
         TestBody (fun (_, testFeature: IFeature<string>) ->
-            let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameTagsTestBodyOneParameterTeardown testFeature
+            let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameTagsTestBodyOneParameter testFeature
                 
             test
             |> silentlyRunTest
@@ -93,14 +93,14 @@ let ``Not call Test with test environment when executed`` =
 let ``Call teardown when executed`` =
     feature.Test (
         TestBody (fun (_, testFeature: IFeature<string>) ->
-            let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameTagsTestBodyOneParameterTeardown testFeature
+            let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameTagsTestBodyOneParameter testFeature
                 
             test
             |> silentlyRunTest
             
             monitor.HasTeardownBeenCalled
-            |> Should.BeTrue
-            |> withMessage "Teardown was not called"
+            |> Should.BeFalse
+            |> withMessage "Teardown was called"
         ) 
     )
 

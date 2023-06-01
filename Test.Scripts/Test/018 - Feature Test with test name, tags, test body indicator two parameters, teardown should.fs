@@ -25,7 +25,7 @@ let ``Create a valid ITest`` =
     feature.Test (
         TestBody (fun (_, testFeature: IFeature<string>) ->
             let (_, test), (tags, testName), (path, fileName, lineNumber) =
-                TestBuilder.BuildTestWithTestNameTagsTestBodyTwoParameterTeardown testFeature
+                TestBuilder.BuildTestWithTestNameTagsTestBodyTwoParametersTeardown testFeature
                 
             test
             |> Should.PassAllOf [
@@ -42,7 +42,7 @@ let ``Create a valid ITest`` =
 let ``Call setup when executed`` =
     feature.Test (
         TestBody (fun (_, testFeature: IFeature<string>) ->
-            let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameTagsTestBodyTwoParameterTeardown testFeature
+            let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameTagsTestBodyTwoParametersTeardown testFeature
 
             test
             |> silentlyRunTest
@@ -56,7 +56,7 @@ let ``Call setup when executed`` =
 let ``Call Test when executed`` =
     feature.Test (
         TestBody (fun (featureSetupValue, testFeature: IFeature<string>) ->
-            let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameTagsTestBodyTwoParameterTeardown testFeature
+            let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameTagsTestBodyTwoParametersTeardown testFeature
 
             test
             |> silentlyRunTest
@@ -64,7 +64,7 @@ let ``Call Test when executed`` =
             monitor.TestFunctionWasCalledWith
             |> Should.PassAllOf [
                 ListShould.HaveLengthOf 1
-                List.map (fun (a, _, _) -> a) >> Should.BeEqualTo [ None ]
+                List.map (fun (a, _, _) -> a) >> Should.BeEqualTo [ None ] // Not called with data
                 List.map (fun (_, b, _) -> b) >> Should.BeEqualTo [ Some (Some featureSetupValue, None) ]
             ]
             |> withMessage "Test was not called"
@@ -74,7 +74,7 @@ let ``Call Test when executed`` =
 let ``Call Test with test environment when executed`` =
     feature.Test (
         TestBody (fun (_, testFeature: IFeature<string>) ->
-            let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameTagsTestBodyTwoParameterTeardown testFeature
+            let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameTagsTestBodyTwoParametersTeardown testFeature
                 
             test
             |> silentlyRunTest
@@ -99,7 +99,7 @@ let ``Call Test with test environment when executed`` =
 let ``Call teardown when executed`` =
     feature.Test (
         TestBody (fun (_, testFeature: IFeature<string>) ->
-            let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameTagsTestBodyTwoParameterTeardown testFeature
+            let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameTagsTestBodyTwoParametersTeardown testFeature
                 
             test
             |> silentlyRunTest

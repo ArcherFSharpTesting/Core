@@ -59,7 +59,7 @@ let ``Call Test when executed`` =
        monitor.TestFunctionWasCalledWith
        |> Should.PassAllOf [
            ListShould.HaveLengthOf 1
-           List.map (fun (a, _, _) -> a) >> Should.BeEqualTo [ None ]
+           List.map (fun (a, _, _) -> a) >> Should.BeEqualTo [ None ] // No data being passed
            List.map (fun (_, b, _) -> b) >> Should.BeEqualTo [
                Some (Some featureSetupValue, Some setupValue)
            ]
@@ -67,7 +67,7 @@ let ``Call Test when executed`` =
        |> withMessage "Test was not called"
    )
 
-let ``Call Test with test environment when executed`` =
+let ``Not call Test with test environment when executed`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
        let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameTagsSetupTestBodyOneParameterTeardown testFeature
         

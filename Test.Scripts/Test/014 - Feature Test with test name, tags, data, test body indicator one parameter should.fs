@@ -134,13 +134,13 @@ let ``Call Test when executed`` =
             |> Should.PassAllOf [
                 ListShould.HaveLengthOf 3
                 List.map (fun (a, _, _) -> a) >> Should.BeEqualTo (data |> List.map Some)
-                List.map (fun (_, b, _) -> b) >> Should.BeEqualTo [ None; None; None ]
+                List.map (fun (_, b, _) -> b) >> Should.BeEqualTo [ None; None; None ] // Not called with setup
             ]
             |> withMessage "Test was not called"
         ) 
     )
 
-let ``Call Test with test environment when executed`` =
+let ``Not call Test with test environment when executed`` =
     feature.Test (
         TestBody (fun (_, testFeature: IFeature<string>) ->
             let (monitor, tests), _, _ = TestBuilder.BuildTestWithTestNameTagsDataTestBodyOneParameter testFeature
