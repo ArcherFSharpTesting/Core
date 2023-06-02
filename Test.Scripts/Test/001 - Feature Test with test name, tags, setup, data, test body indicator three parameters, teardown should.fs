@@ -184,14 +184,14 @@ let ``Call Test with test environment when executed`` =
     
 let ``Call teardown when executed`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
-       let (monitor, tests), _, _ = TestBuilder.BuildTestWithTestNameTagsSetupDataTestBodyThreeParametersTeardown testFeature
-            
-       tests
-       |> silentlyRunAllTests
-        
-       monitor.HasTeardownBeenCalled
-       |> Should.BeTrue
-       |> withMessage "Teardown was not called"
-   )
+        let (monitor, tests), _, _ = TestBuilder.BuildTestWithTestNameTagsSetupDataTestBodyThreeParametersTeardown testFeature
+
+        tests
+        |> silentlyRunAllTests
+
+        monitor.NumberOfTimesSetupFunctionWasCalled
+        |> Should.BeEqualTo 3
+        |> withMessage "Teardown was called an incorrect number of times"
+    )
     
 let ``Test Cases`` = feature.GetTests ()

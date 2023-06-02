@@ -187,9 +187,9 @@ let ``Call teardown when executed`` =
         tests
         |> silentlyRunAllTests
 
-        monitor.HasTeardownBeenCalled
-        |> Should.BeTrue
-        |> withMessage "Teardown was not called"
+        monitor.NumberOfTimesTeardownFunctionWasCalled
+        |> Should.BeEqualTo 3
+        |> withMessage "Teardown was called an incorrect number of times"
     )
 
 let ``Test Cases`` = feature.GetTests ()

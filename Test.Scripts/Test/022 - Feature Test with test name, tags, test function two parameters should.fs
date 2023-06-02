@@ -22,83 +22,73 @@ let private getContainerName (test: ITest) =
     $"%s{test.ContainerPath}.%s{test.ContainerName}"
 
 let ``Create a valid ITest`` =
-    feature.Test (
-        TestBody (fun (_, testFeature: IFeature<string>) ->
-            let (_, test), (tags, testName), (path, fileName, lineNumber) =
-                TestBuilder.BuildTestWithTestNameTagsTestFunctionTwoParameters testFeature
-                
-            test
-            |> Should.PassAllOf [
-                getTags >> Should.BeEqualTo tags >> withMessage "Test Tags"
-                getTestName >> Should.BeEqualTo testName >> withMessage "Test Name"
-                getFilePath >> Should.BeEqualTo path >> withMessage "File Path"
-                getFileName >> Should.BeEqualTo fileName >> withMessage "File Name"
-                getLineNumber >> Should.BeEqualTo lineNumber >> withMessage "Line Number"
-                getContainerName >> Should.BeEqualTo (testFeature.ToString ()) >> withMessage "Container Name"
-            ]
-        )
+    feature.Test (fun (_, testFeature: IFeature<string>) ->
+        let (_, test), (tags, testName), (path, fileName, lineNumber) =
+            TestBuilder.BuildTestWithTestNameTagsTestFunctionTwoParameters testFeature
+
+        test
+        |> Should.PassAllOf [
+            getTags >> Should.BeEqualTo tags >> withMessage "Test Tags"
+            getTestName >> Should.BeEqualTo testName >> withMessage "Test Name"
+            getFilePath >> Should.BeEqualTo path >> withMessage "File Path"
+            getFileName >> Should.BeEqualTo fileName >> withMessage "File Name"
+            getLineNumber >> Should.BeEqualTo lineNumber >> withMessage "Line Number"
+            getContainerName >> Should.BeEqualTo (testFeature.ToString ()) >> withMessage "Container Name"
+        ]
     )
 
 let ``Not call setup when executed`` =
-    feature.Test (
-        TestBody (fun (_, testFeature: IFeature<string>) ->
-            let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameTagsTestFunctionTwoParameters testFeature
+    feature.Test (fun (_, testFeature: IFeature<string>) ->
+        let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameTagsTestFunctionTwoParameters testFeature
 
-            test
-            |> silentlyRunTest
-            
-            monitor.HasSetupFunctionBeenCalled
-            |> Should.BeFalse
-            |> withFailureComment "Setup was called"
-        ) 
+        test
+        |> silentlyRunTest
+
+        monitor.HasSetupFunctionBeenCalled
+        |> Should.BeFalse
+        |> withFailureComment "Setup was called"
     )
 
 let ``Call Test when executed`` =
-    feature.Test (
-        TestBody (fun (featureSetupValue, testFeature: IFeature<string>) ->
-            let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameTagsTestFunctionTwoParameters testFeature
+    feature.Test (fun (featureSetupValue, testFeature: IFeature<string>) ->
+        let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameTagsTestFunctionTwoParameters testFeature
 
-            test
-            |> silentlyRunTest
-            
-            monitor
-            |> Should.PassAllOf [
-                hasTestFunctionBeenCalled >> Should.BeTrue >> withFailureComment "Test function not called"
-                
-                allTestFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf featureSetupValue
-                
-                noTestWasCalledWithATestSetupValue
-            ]
-            |> withMessage "Test was not called"
-        ) 
+        test
+        |> silentlyRunTest
+
+        monitor
+        |> Should.PassAllOf [
+            hasTestFunctionBeenCalled >> Should.BeTrue >> withFailureComment "Test function not called"
+
+            allTestFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf featureSetupValue
+
+            noTestWasCalledWithATestSetupValue
+        ]
+        |> withMessage "Test was not called"
     )
 
 let ``Not call Test with test environment when executed`` =
-    feature.Test (
-        TestBody (fun (_, testFeature: IFeature<string>) ->
-            let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameTagsTestFunctionTwoParameters testFeature
-                
-            test
-            |> silentlyRunTest
-            
-            monitor.HasTestFunctionBeenCalledWithEnvironmentParameter
-            |> Should.BeTrue
-            |> withFailureComment "Test not called with environment"
-        ) 
+    feature.Test (fun (_, testFeature: IFeature<string>) ->
+        let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameTagsTestFunctionTwoParameters testFeature
+
+        test
+        |> silentlyRunTest
+
+        monitor.HasTestFunctionBeenCalledWithEnvironmentParameter
+        |> Should.BeTrue
+        |> withFailureComment "Test not called with environment"
     )
     
 let ``Call teardown when executed`` =
-    feature.Test (
-        TestBody (fun (_, testFeature: IFeature<string>) ->
-            let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameTagsTestFunctionTwoParameters testFeature
-                
-            test
-            |> silentlyRunTest
-            
-            monitor.HasTeardownBeenCalled
-            |> Should.BeFalse
-            |> withMessage "Teardown was called"
-        ) 
+    feature.Test (fun (_, testFeature: IFeature<string>) ->
+        let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameTagsTestFunctionTwoParameters testFeature
+
+        test
+        |> silentlyRunTest
+
+        monitor.HasTeardownBeenCalled
+        |> Should.BeFalse
+        |> withMessage "Teardown was called"
     )
 
 let ``Test Cases`` = feature.GetTests ()

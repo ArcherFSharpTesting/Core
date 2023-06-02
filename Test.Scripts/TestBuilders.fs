@@ -244,6 +244,7 @@ type ITestMonitor<'dataType, 'featureType, 'setupType> =
     
     abstract member HasTeardownBeenCalled: bool with get
     abstract member TeardownFunctionParameterValues:  (Result<'featureType option * 'setupType option, SetupTeardownFailure> * TestResult option) list with get
+    abstract member NumberOfTimesTeardownFunctionWasCalled: int with get
     
     // Functions
     // -- Setup
@@ -371,21 +372,34 @@ let hasTeardownBeenCalled (monitor: ITestMonitor<_, _, _>) =
 let teardownFunctionParameterValues (monitor: ITestMonitor<_, _, _>) =
     monitor.TeardownFunctionParameterValues
     
+let numberOfTimesTearDownFunctionWasCalled (monitor: ITestMonitor<_, _, _>) =
+    monitor.NumberOfTimesTeardownFunctionWasCalled
+    
 let allTestFunctionShouldHaveBeenCalledWithDataOf (data: 'dataType list) (monitor: ITestMonitor<'dataType, _, _>) =
     let data = data |> List.map Some
     
     monitor.TestFunctionDataParameterValues
     |> Should.BeEqualTo data
+    |> withFailureComment "Incorrect test function data parameters"
+    
+let allSetupFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf (featureSetupValue: 'featureType) (monitor: ITestMonitor<_, 'featureType, _>) =
+    let values = List.init monitor.NumberOfTimesTestFunctionWasCalled (fun _ -> featureSetupValue)
+    
+    monitor.SetupFunctionParameterValues
+    |> Should.BeEqualTo values
+    |> withFailureComment "Incorrect setup parameters"
     
 let allTestFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf (featureSetupValue: 'featureType) (monitor: ITestMonitor<_, 'featureType, _>) =
     monitor
     |> testFunctionFeatureSetupParameterValues
     |> ListShould.HaveAllValuesBe (Some featureSetupValue)
+    |> withFailureComment "Incorrect test function feature setup parameters"
     
 let allTestFunctionShouldHaveBeenCalledWithTestSetupValueOf (setupValue: 'setupType) (monitor: ITestMonitor<_, _, 'setupType>) =
     monitor
     |> testFunctionTestSetupParameterValues
     |> ListShould.HaveAllValuesBe (Some setupValue)
+    |> withFailureComment "Incorrect test function test setup parameters"
     
 let noTestWasCalledWithData (monitor: ITestMonitor<_, _, _>) =
     monitor
@@ -478,7 +492,9 @@ type TestMonitor<'dataType, 'featureType, 'setupType> () =
         0 < length
         
     member _.HasTeardownBeenCalled with get () = 0 < teardownParams.Length
-    member _.TeardownFunctionCalledWith with get () = teardownParams |> List.rev
+    member _.TeardownFunctionParameterValues with get () = teardownParams |> List.rev
+    
+    member _.NumberOfTimesTeardownFunctionWasCalled with get () = teardownParams.Length
     
     // Functions
     // -- Setup
@@ -883,7 +899,8 @@ type TestMonitor<'dataType, 'featureType, 'setupType> () =
         member this.HasTestFunctionBeenCalledWithEnvironmentParameter with get () = this.HasTestFunctionBeenCalledWithEnvironmentParameter
         
         member this.HasTeardownBeenCalled with get () = this.HasTeardownBeenCalled
-        member this.TeardownFunctionParameterValues with get ()  = this.TeardownFunctionCalledWith
+        member this.TeardownFunctionParameterValues with get ()  = this.TeardownFunctionParameterValues
+        member this.NumberOfTimesTeardownFunctionWasCalled with get () = this.NumberOfTimesTeardownFunctionWasCalled
         
         // Functions
         // -- Setup
@@ -1835,3 +1852,46 @@ type TestBuilder =
             )
 
         (monitor, test), (tags, testName), (path, fileName, lineNumber)
+
+    // test name, setup, data, test body indicator, teardown
+    static member BuildTestWithTestNameSetupDataTestBodyThreeParametersTeardownNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
+        let monitor, (testNameBase, testName), (_, setupValue, data), (path, fileName, fullPath, lineNumber) =
+            getDataTestPartsNameHints repeatDataValue
+
+        let setup = monitor.FunctionSetupFeatureWith  setupValue
+        let testBody = monitor.FunctionTestFeatureDataThreeParametersSuccess
+        let teardown = monitor.FunctionTeardownFeatureFromSetup
+        
+        let tests =
+            testFeature.Test (
+                testName,
+                Setup setup,
+                Data data,
+                TestBody testBody,
+                Teardown teardown,
+                fullPath,
+                lineNumber
+            )
+
+        (monitor, tests), (setupValue, data, testNameBase), (path, fileName, lineNumber)
+        
+    static member BuildTestWithTestNameSetupDataTestBodyThreeParametersTeardown (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
+        let monitor, (testName, _, setupValue, data), (path, fileName, fullPath, lineNumber) =
+            getDataTestParts repeatDataValue
+
+        let setup = monitor.FunctionSetupFeatureWith  setupValue
+        let testBody = monitor.FunctionTestFeatureDataThreeParametersSuccess
+        let teardown = monitor.FunctionTeardownFeatureFromSetup
+        
+        let tests =
+            testFeature.Test (
+                testName,
+                Setup setup,
+                Data data,
+                TestBody testBody,
+                Teardown teardown,
+                fullPath,
+                lineNumber
+            )
+
+        (monitor, tests), (setupValue, data, testName), (path, fileName, lineNumber)

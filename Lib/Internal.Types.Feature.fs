@@ -25,7 +25,11 @@ type Feature<'featureType> (featurePath, featureName, featureTags: TestTag list,
         
     let wrapTeardown teardown =
         let (Teardown teardown) = teardown
-        Teardown (fun _ -> teardown (Ok ()))
+        Teardown (fun input ->
+            match input with
+            | Ok _ -> teardown (Ok ())
+            | Error error -> teardown (Error error)
+        )
         
     let buildDataTests (converter: 'dataType -> 'testBodyTypeA -> 'testBodyTypeB) (ctor: TagsIndicator * SetupIndicator<'featureType,'setupType> * 'testBodyTypeB * TeardownIndicator<'setupType> * string * string * int -> ITest) (tags: TagsIndicator) (setup: SetupIndicator<'featureType, 'setupType>) (data: DataIndicator<'dataType>) (testBody: 'testBodyTypeA) (teardown: TeardownIndicator<'setupType>) (testName: string) (fileFullName: string) (lineNumber: int) =
         let names = System.Collections.Generic.Dictionary<string, int>()
