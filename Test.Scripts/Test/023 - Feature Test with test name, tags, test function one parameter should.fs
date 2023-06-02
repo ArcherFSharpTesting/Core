@@ -1,4 +1,4 @@
-module Archer.Arrows.Tests.Test.``022 - Feature Test with test name, tags, test function two parameters should``
+module Archer.Arrows.Tests.Test.``023 - Feature Test with test name, tags, test function one parameter should``
 
 open System
 open Archer
@@ -25,7 +25,7 @@ let ``Create a valid ITest`` =
     feature.Test (
         TestBody (fun (_, testFeature: IFeature<string>) ->
             let (_, test), (tags, testName), (path, fileName, lineNumber) =
-                TestBuilder.BuildTestWithTestNameTagsTestFunctionTwoParameters testFeature
+                TestBuilder.BuildTestWithTestNameTagsTestFunctionOneParameter testFeature
                 
             test
             |> Should.PassAllOf [
@@ -42,7 +42,7 @@ let ``Create a valid ITest`` =
 let ``Not call setup when executed`` =
     feature.Test (
         TestBody (fun (_, testFeature: IFeature<string>) ->
-            let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameTagsTestFunctionTwoParameters testFeature
+            let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameTagsTestFunctionOneParameter testFeature
 
             test
             |> silentlyRunTest
@@ -56,7 +56,7 @@ let ``Not call setup when executed`` =
 let ``Call Test when executed`` =
     feature.Test (
         TestBody (fun (featureSetupValue, testFeature: IFeature<string>) ->
-            let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameTagsTestFunctionTwoParameters testFeature
+            let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameTagsTestFunctionOneParameter testFeature
 
             test
             |> silentlyRunTest
@@ -76,21 +76,21 @@ let ``Call Test when executed`` =
 let ``Not call Test with test environment when executed`` =
     feature.Test (
         TestBody (fun (_, testFeature: IFeature<string>) ->
-            let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameTagsTestFunctionTwoParameters testFeature
+            let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameTagsTestFunctionOneParameter testFeature
                 
             test
             |> silentlyRunTest
             
             monitor.HasTestFunctionBeenCalledWithEnvironmentParameter
-            |> Should.BeTrue
-            |> withFailureComment "Test not called with environment"
+            |> Should.BeFalse
+            |> withFailureComment "Test called with environment"
         ) 
     )
     
 let ``Call teardown when executed`` =
     feature.Test (
         TestBody (fun (_, testFeature: IFeature<string>) ->
-            let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameTagsTestFunctionTwoParameters testFeature
+            let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameTagsTestFunctionOneParameter testFeature
                 
             test
             |> silentlyRunTest

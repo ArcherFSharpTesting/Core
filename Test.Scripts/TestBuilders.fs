@@ -1806,6 +1806,23 @@ type TestBuilder =
         let monitor, (testName, tags), (path, fileName, fullPath, lineNumber) =
             getTestPartsNoSetup ()
 
+        let testBody = monitor.FunctionTestPassThroughTwoParametersSuccess
+        
+        let test =
+            testFeature.Test (
+                testName,
+                TestTags tags,
+                testBody,
+                fullPath,
+                lineNumber
+            )
+
+        (monitor, test), (tags, testName), (path, fileName, lineNumber)
+        
+    static member BuildTestWithTestNameTagsTestFunctionOneParameter (testFeature: IFeature<string>) =
+        let monitor, (testName, tags), (path, fileName, fullPath, lineNumber) =
+            getTestPartsNoSetup ()
+
         let testBody = monitor.FunctionTestPassThroughOneParameterSuccess
         
         let test =

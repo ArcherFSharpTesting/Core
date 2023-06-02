@@ -72,6 +72,7 @@ runner
     ``021 - Feature Test with test name, tags, test body indicator one parameter``.``Test Cases``
     
     ``022 - Feature Test with test name, tags, test function two parameters should``.``Test Cases``
+    ``023 - Feature Test with test name, tags, test function one parameter should``.``Test Cases``
     
     ``Arrow Ignore``.``Test Cases``
 ]
