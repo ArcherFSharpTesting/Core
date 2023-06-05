@@ -90,6 +90,8 @@ runner
     ``033 - Feature Test with test name, data, test body indicator two parameters, teardown should``.``Test Cases``
     ``034 - Feature Test with test name, data, test body indicator one parameter, teardown should``.``Test Cases``
     
+    ``035 - Feature Test with test name, data, test body indicator three parameters should``.``Test Cases``
+    
     ``Arrow Ignore``.``Test Cases``
 ]
 |> runAndReport

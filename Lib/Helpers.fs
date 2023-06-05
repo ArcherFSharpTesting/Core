@@ -44,12 +44,15 @@ let baseTransformer<'featureType, 'a> (featureSetup: SetupIndicator<unit, 'featu
         
     let executor = WrappedTeardownExecutor<unit,'featureType> (setup, teardown, inner)
     TestCase (internals.ContainerPath, internals.ContainerName, internals.TestName, executor, internals.Tags, internals.FilePath, internals.FileName, internals.LineNumber) :> ITest
+    
+let removeEscapes (value: string) =
+    value.Replace ("\\", "")
 
 let getNamesAt frame = 
     let trace = StackTrace ()
     let method = trace.GetFrame(frame).GetMethod ()
-    let containerName = method.ReflectedType.Name
-    let containerPath = method.ReflectedType.Namespace |> fun s -> s.Split ([|"$"|], StringSplitOptions.RemoveEmptyEntries) |> Array.last
+    let containerName = method.ReflectedType.Name |> removeEscapes
+    let containerPath = method.ReflectedType.Namespace |> fun s -> s.Split ([|"$"|], StringSplitOptions.RemoveEmptyEntries) |> Array.last |> removeEscapes
             
     containerName, containerPath
 
