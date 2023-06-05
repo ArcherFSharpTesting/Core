@@ -44,6 +44,7 @@
     <Compile Include="Test\025 - Feature Test with test name, setup, data, test body indicator two parameters, teardown should.fs" />
     <Compile Include="Test\026 - Feature Test with test name, setup, data, test body indicator three parameters.fs" />
     <Compile Include="Test\027 - Feature Test with test name, setup, data, test body indicator two parameters.fs" />
+    <Compile Include="Test\028 - Feature Test with test name, setup, test body indicator two parameters, teardown should.fs" />
     <Compile Include="Arrow NewFeature.fs" />
     <Compile Include="Arrow Ignorefs.fs" />
     <Compile Include="Arrow NewFeature With Setup.fs" />

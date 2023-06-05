@@ -64,10 +64,10 @@ let buildFeatureUnderTest _ =
     buildFeatureUnderTestWithSetupAndTeardown (Setup Ok) emptyTeardown
     
 let setupFeatureUnderTest _ =
-    let setupValue = randomWord (rand.Next (3, 10))
+    let testSetupValue = randomWord (rand.Next (3, 10))
     let setup () =
-        setupValue |> Ok
-    (setupValue, buildFeatureUnderTestWithSetupAndTeardown (Setup setup) emptyTeardown)
+        testSetupValue |> Ok
+    (testSetupValue, buildFeatureUnderTestWithSetupAndTeardown (Setup setup) emptyTeardown)
     |> Ok
 
 let setupExecutor _ =
@@ -252,7 +252,7 @@ type ITestMonitor<'dataType, 'featureType, 'setupType> =
     abstract member FunctionSetupFeatureWith: SetupTeardownFailure -> ('featureType -> Result<'featureType * 'setupType, SetupTeardownFailure>)
     abstract member FunctionSetupWith: 'setupType -> ('featureType -> Result<'setupType, SetupTeardownFailure>)
     abstract member FunctionSetupWith: SetupTeardownFailure -> ('featureType -> Result<'setupType, SetupTeardownFailure>)
-    abstract member FunctionFeatureSetupFailsWith: message: string -> ('featureType -> Result<'featureType * 'setupType, SetupTeardownFailure>)
+    abstract member FunctionSetupFeatureFailsWith: message: string -> ('featureType -> Result<'featureType * 'setupType, SetupTeardownFailure>)
     abstract member FunctionSetupFailsWith: message: string -> ('featureType -> Result<'setupType, SetupTeardownFailure>)
     
     // -- Test
@@ -395,10 +395,10 @@ let allTestFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf (featureSetupVal
     |> ListShould.HaveAllValuesBe (Some featureSetupValue)
     |> withFailureComment "Incorrect test function feature setup parameters"
     
-let allTestFunctionShouldHaveBeenCalledWithTestSetupValueOf (setupValue: 'setupType) (monitor: ITestMonitor<_, _, 'setupType>) =
+let allTestFunctionShouldHaveBeenCalledWithTestSetupValueOf (testSetupValue: 'setupType) (monitor: ITestMonitor<_, _, 'setupType>) =
     monitor
     |> testFunctionTestSetupParameterValues
-    |> ListShould.HaveAllValuesBe (Some setupValue)
+    |> ListShould.HaveAllValuesBe (Some testSetupValue)
     |> withFailureComment "Incorrect test function test setup parameters"
     
 let noTestWasCalledWithData (monitor: ITestMonitor<_, _, _>) =
@@ -504,10 +504,10 @@ type TestMonitor<'dataType, 'featureType, 'setupType> () =
     
     // Functions
     // -- Setup
-    member _.FunctionSetupFeatureWith (setupValue: 'setupType): ('featureType -> Result<'featureType * 'setupType, SetupTeardownFailure>) =
+    member _.FunctionSetupFeatureWith (testSetupValue: 'setupType): ('featureType -> Result<'featureType * 'setupType, SetupTeardownFailure>) =
         let setupFunction (featureValue: 'featureType) =
             setupParams <- featureValue:: setupParams
-            Ok (featureValue, setupValue)
+            Ok (featureValue, testSetupValue)
             
         setupFunction
     
@@ -518,10 +518,10 @@ type TestMonitor<'dataType, 'featureType, 'setupType> () =
             
         setupFunction
     
-    member _.FunctionSetupWith (setupValue: 'setupType): ('featureType -> Result<'setupType, SetupTeardownFailure>) =
+    member _.FunctionSetupWith (testSetupValue: 'setupType): ('featureType -> Result<'setupType, SetupTeardownFailure>) =
         let setupFunction (featureValue: 'featureType) =
             setupParams <- featureValue:: setupParams
-            Ok setupValue
+            Ok testSetupValue
             
         setupFunction
         
@@ -549,37 +549,37 @@ type TestMonitor<'dataType, 'featureType, 'setupType> () =
     // -- Test
     // -- -- Data Three Params
     member _.FunctionTestFeatureDataThreeParametersWith (testResult: TestResult) =
-        let testFunction (data: 'dataType) (featureValue: 'featureType, setupValue: 'setupType) (environment: TestEnvironment) =
-            testParams <- (Some data, Some (Some featureValue, Some setupValue), Some environment)::testParams
+        let testFunction (data: 'dataType) (featureValue: 'featureType, testSetupValue: 'setupType) (environment: TestEnvironment) =
+            testParams <- (Some data, Some (Some featureValue, Some testSetupValue), Some environment)::testParams
             testResult
             
         testFunction
             
-    member _.FunctionTestFeatureDataThreeParametersSuccess (data: 'dataType) (featureValue: 'featureType, setupValue: 'setupType) (environment: TestEnvironment) =
-        testParams <- (Some data, Some (Some featureValue, Some setupValue), Some environment)::testParams
+    member _.FunctionTestFeatureDataThreeParametersSuccess (data: 'dataType) (featureValue: 'featureType, testSetupValue: 'setupType) (environment: TestEnvironment) =
+        testParams <- (Some data, Some (Some featureValue, Some testSetupValue), Some environment)::testParams
         TestSuccess
         
     member _.FunctionTestFeatureDataThreeParametersFailsWith message =
-        let testFunction (data: 'dataType) (featureValue: 'featureType, setupValue: 'setupType) (environment: TestEnvironment) =
-            testParams <- (Some data, Some (Some featureValue, Some setupValue), Some environment)::testParams
+        let testFunction (data: 'dataType) (featureValue: 'featureType, testSetupValue: 'setupType) (environment: TestEnvironment) =
+            testParams <- (Some data, Some (Some featureValue, Some testSetupValue), Some environment)::testParams
             failwith message
             
         testFunction
     
     member _.FunctionTestDataThreeParametersWith testResult =
-        let testFunction (data: 'dataType) (setupValue: 'setupType) (environment: TestEnvironment) =
-            testParams <- (Some data, Some (None, Some setupValue), Some environment)::testParams
+        let testFunction (data: 'dataType) (testSetupValue: 'setupType) (environment: TestEnvironment) =
+            testParams <- (Some data, Some (None, Some testSetupValue), Some environment)::testParams
             testResult
             
         testFunction
             
-    member _.FunctionTestDataThreeParametersSuccess (data: 'dataType) (setupValue: 'setupType) (environment: TestEnvironment) =
-        testParams <- (Some data, Some (None, Some setupValue), Some environment)::testParams
+    member _.FunctionTestDataThreeParametersSuccess (data: 'dataType) (testSetupValue: 'setupType) (environment: TestEnvironment) =
+        testParams <- (Some data, Some (None, Some testSetupValue), Some environment)::testParams
         TestSuccess
         
     member _.FunctionTestDataThreeParametersFailsWith message = 
-        let testFunction (data: 'dataType) (setupValue: 'setupType) (environment: TestEnvironment) =
-            testParams <- (Some data, Some (None, Some setupValue), Some environment)::testParams
+        let testFunction (data: 'dataType) (testSetupValue: 'setupType) (environment: TestEnvironment) =
+            testParams <- (Some data, Some (None, Some testSetupValue), Some environment)::testParams
             failwith message
             
         testFunction
@@ -604,37 +604,37 @@ type TestMonitor<'dataType, 'featureType, 'setupType> () =
     
     // -- -- Data Two Params
     member _.FunctionTestFeatureDataTwoParametersWith (testResult: TestResult) =
-        let testFunction (data: 'dataType) (featureValue: 'featureType, setupValue: 'setupType) =
-            testParams <- (Some data, Some (Some featureValue, Some setupValue), None)::testParams
+        let testFunction (data: 'dataType) (featureValue: 'featureType, testSetupValue: 'setupType) =
+            testParams <- (Some data, Some (Some featureValue, Some testSetupValue), None)::testParams
             testResult
             
         testFunction
         
-    member _.FunctionTestFeatureDataTwoParametersSuccess (data: 'dataType) (featureValue: 'featureType, setupValue: 'setupType) =
-        testParams <- (Some data, Some (Some featureValue, Some setupValue), None)::testParams
+    member _.FunctionTestFeatureDataTwoParametersSuccess (data: 'dataType) (featureValue: 'featureType, testSetupValue: 'setupType) =
+        testParams <- (Some data, Some (Some featureValue, Some testSetupValue), None)::testParams
         TestSuccess
         
     member _.FunctionTestFeatureDataTwoParametersFailsWith message =
-        let testFunction (data: 'dataType) (featureValue: 'featureType, setupValue: 'setupType) =
-            testParams <- (Some data, Some (Some featureValue, Some setupValue), None)::testParams
+        let testFunction (data: 'dataType) (featureValue: 'featureType, testSetupValue: 'setupType) =
+            testParams <- (Some data, Some (Some featureValue, Some testSetupValue), None)::testParams
             failwith message
             
         testFunction
     
     member _.FunctionTestDataTwoParametersWith (testResult: TestResult) =
-        let testFunction (data: 'dataType) (setupValue: 'setupType) =
-            testParams <- (Some data, Some (None, Some setupValue), None)::testParams
+        let testFunction (data: 'dataType) (testSetupValue: 'setupType) =
+            testParams <- (Some data, Some (None, Some testSetupValue), None)::testParams
             testResult
             
         testFunction
         
-    member _.FunctionTestDataTwoParametersSuccess (data: 'dataType) (setupValue: 'setupType) =
-        testParams <- (Some data, Some (None, Some setupValue), None)::testParams
+    member _.FunctionTestDataTwoParametersSuccess (data: 'dataType) (testSetupValue: 'setupType) =
+        testParams <- (Some data, Some (None, Some testSetupValue), None)::testParams
         TestSuccess
         
     member _.FunctionTestDataTwoParametersFailsWith message =
-        let testFunction (data: 'dataType) (setupValue: 'setupType) =
-            testParams <- (Some data, Some (None, Some setupValue), None)::testParams
+        let testFunction (data: 'dataType) (testSetupValue: 'setupType) =
+            testParams <- (Some data, Some (None, Some testSetupValue), None)::testParams
             failwith message
             
         testFunction
@@ -678,37 +678,37 @@ type TestMonitor<'dataType, 'featureType, 'setupType> () =
     
     // -- -- Two Params
     member _.FunctionTestFeatureTwoParametersWith (testResult: TestResult) =
-        let testFunction (featureValue: 'featureType, setupValue: 'setupType) (environment: TestEnvironment) =
-            testParams <- (None, Some (Some featureValue, Some setupValue), Some environment)::testParams
+        let testFunction (featureValue: 'featureType, testSetupValue: 'setupType) (environment: TestEnvironment) =
+            testParams <- (None, Some (Some featureValue, Some testSetupValue), Some environment)::testParams
             testResult
             
         testFunction
         
-    member _.FunctionTestFeatureTwoParametersSuccess (featureValue: 'featureType, setupValue: 'setupType) (environment: TestEnvironment) =
-        testParams <- (None, Some (Some featureValue, Some setupValue), Some environment)::testParams
+    member _.FunctionTestFeatureTwoParametersSuccess (featureValue: 'featureType, testSetupValue: 'setupType) (environment: TestEnvironment) =
+        testParams <- (None, Some (Some featureValue, Some testSetupValue), Some environment)::testParams
         TestSuccess
         
     member _.FunctionTestFeatureTwoParametersFailWith message =
-        let testFunction (featureValue: 'featureType, setupValue: 'setupType) (environment: TestEnvironment) =
-            testParams <- (None, Some (Some featureValue, Some setupValue), Some environment)::testParams
+        let testFunction (featureValue: 'featureType, testSetupValue: 'setupType) (environment: TestEnvironment) =
+            testParams <- (None, Some (Some featureValue, Some testSetupValue), Some environment)::testParams
             failwith message
             
         testFunction
     
     member _.FunctionTestTwoParametersWith (testResult: TestResult) =
-        let testFunction (setupValue: 'setupType) (environment: TestEnvironment) =
-            testParams <- (None, Some (None, Some setupValue), Some environment)::testParams
+        let testFunction (testSetupValue: 'setupType) (environment: TestEnvironment) =
+            testParams <- (None, Some (None, Some testSetupValue), Some environment)::testParams
             testResult
             
         testFunction
         
-    member _.FunctionTestTwoParametersSuccess (setupValue: 'setupType) (environment: TestEnvironment) =
-        testParams <- (None, Some (None, Some setupValue), Some environment)::testParams
+    member _.FunctionTestTwoParametersSuccess (testSetupValue: 'setupType) (environment: TestEnvironment) =
+        testParams <- (None, Some (None, Some testSetupValue), Some environment)::testParams
         TestSuccess
         
     member _.FunctionTestTwoParametersFailWith message =
-        let testFunction (setupValue: 'setupType) (environment: TestEnvironment) =
-            testParams <- (None, Some (None, Some setupValue), Some environment)::testParams
+        let testFunction (testSetupValue: 'setupType) (environment: TestEnvironment) =
+            testParams <- (None, Some (None, Some testSetupValue), Some environment)::testParams
             failwith message
             
         testFunction
@@ -733,37 +733,37 @@ type TestMonitor<'dataType, 'featureType, 'setupType> () =
     
     // -- -- One Param
     member _.FunctionTestFeatureOneParameterWith (testResult: TestResult) =
-        let testFunction (featureValue: 'featureType, setupValue: 'setupType) =
-            testParams <- (None, Some (Some featureValue, Some setupValue), None)::testParams
+        let testFunction (featureValue: 'featureType, testSetupValue: 'setupType) =
+            testParams <- (None, Some (Some featureValue, Some testSetupValue), None)::testParams
             testResult
             
         testFunction
         
-    member _.FunctionTestFeatureOneParameterSuccess (featureValue: 'featureType, setupValue: 'setupType) =
-        testParams <- (None, Some (Some featureValue, Some setupValue), None)::testParams
+    member _.FunctionTestFeatureOneParameterSuccess (featureValue: 'featureType, testSetupValue: 'setupType) =
+        testParams <- (None, Some (Some featureValue, Some testSetupValue), None)::testParams
         TestSuccess
         
     member _.FunctionTestFeatureOneParameterFailWith message =
-        let testFunction (featureValue: 'featureType, setupValue: 'setupType) =
-            testParams <- (None, Some (Some featureValue, Some setupValue), None)::testParams
+        let testFunction (featureValue: 'featureType, testSetupValue: 'setupType) =
+            testParams <- (None, Some (Some featureValue, Some testSetupValue), None)::testParams
             failwith message
             
         testFunction
     
     member _.FunctionTestOneParameterWith (testResult: TestResult) =
-        let testFunction (setupValue: 'setupType) =
-            testParams <- (None, Some (None, Some setupValue), None)::testParams
+        let testFunction (testSetupValue: 'setupType) =
+            testParams <- (None, Some (None, Some testSetupValue), None)::testParams
             testResult
             
         testFunction
             
-    member _.FunctionTestOneParameterSuccess (setupValue: 'setupType) =
-        testParams <- (None, Some (None, Some setupValue), None)::testParams
+    member _.FunctionTestOneParameterSuccess (testSetupValue: 'setupType) =
+        testParams <- (None, Some (None, Some testSetupValue), None)::testParams
         TestSuccess
         
     member _.FunctionTestOneParameterFailWith message =
-        let testFunction (setupValue: 'setupType) =
-            testParams <- (None, Some (None, Some setupValue), None)::testParams
+        let testFunction (testSetupValue: 'setupType) =
+            testParams <- (None, Some (None, Some testSetupValue), None)::testParams
             failwith message
             
         testFunction
@@ -790,8 +790,8 @@ type TestMonitor<'dataType, 'featureType, 'setupType> () =
     // -- Teardown
     member _.FunctionTeardownFeatureFromSetup (setupResult: Result<'featureType * 'setupType, SetupTeardownFailure>) (testResult: TestResult option): Result<unit, SetupTeardownFailure> =
         match setupResult with
-        | Ok (featureValue, setupValue) ->
-            teardownParams <- (Ok (Some featureValue, Some setupValue), testResult)::teardownParams
+        | Ok (featureValue, testSetupValue) ->
+            teardownParams <- (Ok (Some featureValue, Some testSetupValue), testResult)::teardownParams
         | Error errorValue ->
             teardownParams <- (Error errorValue, testResult)::teardownParams
             
@@ -800,8 +800,8 @@ type TestMonitor<'dataType, 'featureType, 'setupType> () =
     member _.FunctionTeardownFeatureFromSetupWith (failure: SetupTeardownFailure) =
         let teardownFunction (setupResult: Result<'featureType * 'setupType, SetupTeardownFailure>) (testResult: TestResult option): Result<unit, SetupTeardownFailure> =
             match setupResult with
-            | Ok (featureValue, setupValue) ->
-                teardownParams <- (Ok (Some featureValue, Some setupValue), testResult)::teardownParams
+            | Ok (featureValue, testSetupValue) ->
+                teardownParams <- (Ok (Some featureValue, Some testSetupValue), testResult)::teardownParams
             | Error errorValue ->
                 teardownParams <- (Error errorValue, testResult)::teardownParams
                 
@@ -812,8 +812,8 @@ type TestMonitor<'dataType, 'featureType, 'setupType> () =
     member _.FunctionTeardownFeatureFromSetupFailWith message =
         let teardownFunction (setupResult: Result<'featureType * 'setupType, SetupTeardownFailure>) (testResult: TestResult option): Result<unit, SetupTeardownFailure> =
             match setupResult with
-            | Ok (featureValue, setupValue) ->
-                teardownParams <- (Ok (Some featureValue, Some setupValue), testResult)::teardownParams
+            | Ok (featureValue, testSetupValue) ->
+                teardownParams <- (Ok (Some featureValue, Some testSetupValue), testResult)::teardownParams
             | Error errorValue ->
                 teardownParams <- (Error errorValue, testResult)::teardownParams
                 
@@ -856,8 +856,8 @@ type TestMonitor<'dataType, 'featureType, 'setupType> () =
     
     member _.FunctionTeardownFromSetup (setupResult: Result<'setupType, SetupTeardownFailure>) (testResult: TestResult option): Result<unit, SetupTeardownFailure> =
         match setupResult with
-        | Ok setupValue ->
-            teardownParams <- (Ok (None, Some setupValue), testResult)::teardownParams
+        | Ok testSetupValue ->
+            teardownParams <- (Ok (None, Some testSetupValue), testResult)::teardownParams
         | Error errorValue ->
             teardownParams <- (Error errorValue, testResult)::teardownParams
         
@@ -866,8 +866,8 @@ type TestMonitor<'dataType, 'featureType, 'setupType> () =
     member _.FunctionTeardownFromSetupWith (failure: SetupTeardownFailure) =
         let teardownFunction (setupResult: Result<'setupType, SetupTeardownFailure>) (testResult: TestResult option): Result<unit, SetupTeardownFailure> =
             match setupResult with
-            | Ok setupValue ->
-                teardownParams <- (Ok (None, Some setupValue), testResult)::teardownParams
+            | Ok testSetupValue ->
+                teardownParams <- (Ok (None, Some testSetupValue), testResult)::teardownParams
             | Error errorValue ->
                 teardownParams <- (Error errorValue, testResult)::teardownParams
             
@@ -878,8 +878,8 @@ type TestMonitor<'dataType, 'featureType, 'setupType> () =
     member _.FunctionTeardownFromSetupFailWith (message: string) = 
         let teardownFunction (setupResult: Result<'setupType, SetupTeardownFailure>) (testResult: TestResult option): Result<unit, SetupTeardownFailure> =
             match setupResult with
-            | Ok setupValue ->
-                teardownParams <- (Ok (None, Some setupValue), testResult)::teardownParams
+            | Ok testSetupValue ->
+                teardownParams <- (Ok (None, Some testSetupValue), testResult)::teardownParams
             | Error errorValue ->
                 teardownParams <- (Error errorValue, testResult)::teardownParams
             
@@ -910,21 +910,21 @@ type TestMonitor<'dataType, 'featureType, 'setupType> () =
         
         // Functions
         // -- Setup
-        member this.FunctionSetupFeatureWith (setupValue: 'setupType) = this.FunctionSetupFeatureWith setupValue
+        member this.FunctionSetupFeatureWith (testSetupValue: 'setupType) = this.FunctionSetupFeatureWith testSetupValue
         member this.FunctionSetupFeatureWith (failure: SetupTeardownFailure) = this.FunctionSetupFeatureWith failure
-        member this.FunctionSetupWith (setupValue: 'setupType) = this.FunctionSetupWith setupValue
+        member this.FunctionSetupWith (testSetupValue: 'setupType) = this.FunctionSetupWith testSetupValue
         member this.FunctionSetupWith (failure: SetupTeardownFailure) = this.FunctionSetupWith failure
-        member this.FunctionFeatureSetupFailsWith message = this.FunctionFeatureSetupFailsWith message
+        member this.FunctionSetupFeatureFailsWith message = this.FunctionFeatureSetupFailsWith message
         member this.FunctionSetupFailsWith message = this.FunctionSetupFailsWith message
         
         // -- Test
         // -- -- Data Three Params
         member this.FunctionTestFeatureDataThreeParametersWith testResult = this.FunctionTestFeatureDataThreeParametersWith testResult
-        member this.FunctionTestFeatureDataThreeParametersSuccess (dataValue: 'dataType) (featureValue: 'featureType, setupValue: 'setupType) (environment: TestEnvironment) = this.FunctionTestFeatureDataThreeParametersSuccess dataValue (featureValue, setupValue) environment
+        member this.FunctionTestFeatureDataThreeParametersSuccess (dataValue: 'dataType) (featureValue: 'featureType, testSetupValue: 'setupType) (environment: TestEnvironment) = this.FunctionTestFeatureDataThreeParametersSuccess dataValue (featureValue, testSetupValue) environment
         member this.FunctionTestFeatureDataThreeParametersFailsWith message = this.FunctionTestFeatureDataThreeParametersFailsWith message
         
         member this.FunctionTestDataThreeParametersWith testResult = this.FunctionTestDataThreeParametersWith testResult
-        member this.FunctionTestDataThreeParametersSuccess (data: 'dataType) (setupValue: 'setupType) (environment: TestEnvironment) = this.FunctionTestDataThreeParametersSuccess data setupValue environment
+        member this.FunctionTestDataThreeParametersSuccess (data: 'dataType) (testSetupValue: 'setupType) (environment: TestEnvironment) = this.FunctionTestDataThreeParametersSuccess data testSetupValue environment
         member this.FunctionTestDataThreeParametersFailsWith message = this.FunctionTestDataThreeParametersFailsWith message
         
         member this.FunctionTestPassThroughDataThreeParametersWith testResult = this.FunctionTestPassThroughDataThreeParametersWith testResult
@@ -933,11 +933,11 @@ type TestMonitor<'dataType, 'featureType, 'setupType> () =
         
         // // -- -- Data Two Params
         member this.FunctionTestFeatureDataTwoParametersWith testResult = this.FunctionTestFeatureDataTwoParametersWith testResult
-        member this.FunctionTestFeatureDataTwoParametersSuccess (dataValue: 'dataType) (featureValue: 'featureType, setupValue: 'setupType) = this.FunctionTestFeatureDataTwoParametersSuccess dataValue (featureValue, setupValue)
+        member this.FunctionTestFeatureDataTwoParametersSuccess (dataValue: 'dataType) (featureValue: 'featureType, testSetupValue: 'setupType) = this.FunctionTestFeatureDataTwoParametersSuccess dataValue (featureValue, testSetupValue)
         member this.FunctionTestFeatureDataTwoParametersFailsWith message = this.FunctionTestFeatureDataTwoParametersFailsWith message
         
         member this.FunctionTestDataTwoParametersWith (testResult: TestResult) = this.FunctionTestDataTwoParametersWith testResult
-        member this.FunctionTestDataTwoParametersSuccess (dataValue: 'dataType) (setupValue: 'setupType) = this.FunctionTestDataTwoParametersSuccess dataValue setupValue
+        member this.FunctionTestDataTwoParametersSuccess (dataValue: 'dataType) (testSetupValue: 'setupType) = this.FunctionTestDataTwoParametersSuccess dataValue testSetupValue
         member this.FunctionTestDataTwoParametersFailsWith message = this.FunctionTestDataTwoParametersFailsWith message
         
         member this.FunctionTestPassThroughDataTwoParametersWith testResult = this.FunctionTestPassThroughDataTwoParametersWith testResult
@@ -955,7 +955,7 @@ type TestMonitor<'dataType, 'featureType, 'setupType> () =
         member this.FunctionTestFeatureTwoParametersFailWith message = this.FunctionTestFeatureTwoParametersFailWith message
         
         member this.FunctionTestTwoParametersWith testResult = this.FunctionTestTwoParametersWith testResult
-        member this.FunctionTestTwoParametersSuccess (setupValue: 'setupType) (environment: TestEnvironment)  = this.FunctionTestTwoParametersSuccess setupValue environment
+        member this.FunctionTestTwoParametersSuccess (testSetupValue: 'setupType) (environment: TestEnvironment)  = this.FunctionTestTwoParametersSuccess testSetupValue environment
         member this.FunctionTestTwoParametersFailWith message = this.FunctionTestTwoParametersFailWith message
         
         member this.FunctionTestPassThroughTwoParametersWith testResult = this.FunctionTestPassThroughTwoParametersWith testResult
@@ -968,7 +968,7 @@ type TestMonitor<'dataType, 'featureType, 'setupType> () =
         member this.FunctionTestFeatureOneParameterFailWith message = this.FunctionTestFeatureOneParameterFailWith message
         
         member this.FunctionTestOneParameterWith testResult = this.FunctionTestOneParameterWith testResult
-        member this.FunctionTestOneParameterSuccess (setupValue: 'setupType) = this.FunctionTestOneParameterSuccess setupValue
+        member this.FunctionTestOneParameterSuccess (testSetupValue: 'setupType) = this.FunctionTestOneParameterSuccess testSetupValue
         member this.FunctionTestOneParameterFailWith message = this.FunctionTestOneParameterFailWith message
         
         member this.FunctionTestPassThroughOneParameterWith testResult = this.FunctionTestPassThroughOneParameterWith testResult
@@ -1002,12 +1002,12 @@ let getFeatureMonitor<'featureType> () =
 let setupBuildExecutorWithMonitorAtTheFeature _ =
     let featureMonitor = getFeatureMonitor<unit>()
     let testMonitor = getTestMonitor<unit, unit, unit> ()
-    let setupValue = ()
+    let testSetupValue = ()
     
     let feature = Arrow.NewFeature (
         ignoreString (),
         ignoreString (),
-        Setup (featureMonitor.FunctionSetupWith setupValue),
+        Setup (featureMonitor.FunctionSetupWith testSetupValue),
         Teardown (featureMonitor.FunctionTeardownWith ())
     )
     
@@ -1024,8 +1024,8 @@ let setupBuildExecutorWithMonitor _ =
         
         let test =
             match setupResult with
-            | Ok setupValue ->
-                let setup = monitor.FunctionSetupWith setupValue
+            | Ok testSetupValue ->
+                let setup = monitor.FunctionSetupWith testSetupValue
                 let testBody = monitor.FunctionTestTwoParametersSuccess
                 let teardown = monitor.FunctionTeardownFromSetup
                 feature.Test (Setup setup, TestBody testBody, Teardown teardown)
@@ -1048,8 +1048,8 @@ let setupBuildExecutorWithMonitorAndTestResult _ =
         
         
         let test =
-            let setupValue = ()
-            let setup = monitor.FunctionSetupWith setupValue
+            let testSetupValue = ()
+            let setup = monitor.FunctionSetupWith testSetupValue
             let testBody = monitor.FunctionTestTwoParametersWith testResult
             let teardown = monitor.FunctionTeardownFromSetup
             feature.Test (Setup setup, TestBody testBody, Teardown teardown)
@@ -1074,10 +1074,10 @@ let private getBaseTestParts () =
     
 let private getMonitorWithSetupBaseTestParts () =
     let tags, (path, fileName, fullPath, lineNumber) = getBaseTestParts ()
-    let setupValue = rand.Next ()
+    let testSetupValue = rand.Next ()
     let monitor = getTestMonitor<string, string, int> ()
     
-    monitor, (tags, setupValue), (path, fileName, fullPath, lineNumber)
+    monitor, (tags, testSetupValue), (path, fileName, fullPath, lineNumber)
     
 let private getMonitorWithoutSetupBaseTestParts () = 
     let tags, (path, fileName, fullPath, lineNumber) = getBaseTestParts ()
@@ -1089,7 +1089,7 @@ let private getDataTestPartsNameHints repeat =
     let testNameBase = $"My %s{randomWord 5} Test"
     let testName = $"%s{testNameBase} %%s"
     
-    let monitor, (tags, setupValue), (path, fileName, fullPath, lineNumber) = getMonitorWithSetupBaseTestParts ()
+    let monitor, (tags, testSetupValue), (path, fileName, fullPath, lineNumber) = getMonitorWithSetupBaseTestParts ()
 
     let data =
         if repeat then
@@ -1098,7 +1098,7 @@ let private getDataTestPartsNameHints repeat =
         else
             randomDistinctLetters 3
 
-    monitor, (testNameBase, testName), (tags, setupValue, data), (path, fileName, fullPath, lineNumber)
+    monitor, (testNameBase, testName), (tags, testSetupValue, data), (path, fileName, fullPath, lineNumber)
     
 let private getDataTestPartsNoSetupNameHints repeat =
     let testNameBase = $"My %s{randomWord 5} Test"
@@ -1118,7 +1118,7 @@ let private getDataTestPartsNoSetupNameHints repeat =
 let private getDataTestParts repeat =
     let testName = $"My %s{randomWord 5} Test"
     
-    let monitor, (tags, setupValue), (path, fileName, fullPath, lineNumber) = getMonitorWithSetupBaseTestParts ()
+    let monitor, (tags, testSetupValue), (path, fileName, fullPath, lineNumber) = getMonitorWithSetupBaseTestParts ()
 
     let data =
         if repeat then
@@ -1127,7 +1127,7 @@ let private getDataTestParts repeat =
         else
             randomDistinctLetters 3
 
-    monitor, (testName, tags, setupValue, data), (path, fileName, fullPath, lineNumber)
+    monitor, (testName, tags, testSetupValue, data), (path, fileName, fullPath, lineNumber)
     
 let private getDataTestPartsNoSetup repeat =
     let testName = $"My %s{randomWord 5} Test"
@@ -1146,9 +1146,9 @@ let private getDataTestPartsNoSetup repeat =
 let private getTestParts () =
     let testName = $"My %s{randomWord 5} Test"
     
-    let monitor, (tags, setupValue), (path, fileName, fullPath, lineNumber) = getMonitorWithSetupBaseTestParts ()
+    let monitor, (tags, testSetupValue), (path, fileName, fullPath, lineNumber) = getMonitorWithSetupBaseTestParts ()
 
-    monitor, (testName, tags, setupValue), (path, fileName, fullPath, lineNumber)
+    monitor, (testName, tags, testSetupValue), (path, fileName, fullPath, lineNumber)
     
 let private getTestPartsNoSetup () =
     let testName = $"My %s{randomWord 5} Test"
@@ -1167,10 +1167,10 @@ type TestBuilder =
         
     //test name, tags, setup, data, test body indicator three parameters, teardown
     static member BuildTestWithTestNameTagsSetupDataTestBodyThreeParametersTeardownNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
-        let monitor, (testNameBase, testName), (tags, setupValue, data), (path, fileName, fullPath, lineNumber) =
+        let monitor, (testNameBase, testName), (tags, testSetupValue, data), (path, fileName, fullPath, lineNumber) =
             getDataTestPartsNameHints repeatDataValue
     
-        let setup = monitor.FunctionSetupFeatureWith setupValue
+        let setup = monitor.FunctionSetupFeatureWith testSetupValue
         let testBody = monitor.FunctionTestFeatureDataThreeParametersSuccess
         let teardown = monitor.FunctionTeardownFeatureFromSetup
         
@@ -1186,12 +1186,12 @@ type TestBuilder =
                 lineNumber
             )
     
-        (monitor, tests), (tags, setupValue, data, testNameBase), (path, fileName, lineNumber)
+        (monitor, tests), (tags, testSetupValue, data, testNameBase), (path, fileName, lineNumber)
         
     static member BuildTestWithTestNameTagsSetupDataTestBodyThreeParametersTeardown (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
-        let monitor, (testName, tags, setupValue, data), (path, fileName, fullPath, lineNumber) = getDataTestParts  repeatDataValue
+        let monitor, (testName, tags, testSetupValue, data), (path, fileName, fullPath, lineNumber) = getDataTestParts  repeatDataValue
     
-        let setup = monitor.FunctionSetupFeatureWith setupValue
+        let setup = monitor.FunctionSetupFeatureWith testSetupValue
         let testBody = monitor.FunctionTestFeatureDataThreeParametersSuccess
         let teardown = monitor.FunctionTeardownFeatureFromSetup
         
@@ -1207,13 +1207,13 @@ type TestBuilder =
                 lineNumber
             )
     
-        (monitor, tests), (tags, setupValue, data, testName), (path, fileName, lineNumber)
+        (monitor, tests), (tags, testSetupValue, data, testName), (path, fileName, lineNumber)
         
     //test name, tags, setup, data, test body indicator three parameters
     static member BuildTestWithTestNameTagsSetupDataTestBodyThreeParametersNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
-        let monitor, (testNameBase, testName), (tags, setupValue, data), (path, fileName, fullPath, lineNumber) = getDataTestPartsNameHints  repeatDataValue
+        let monitor, (testNameBase, testName), (tags, testSetupValue, data), (path, fileName, fullPath, lineNumber) = getDataTestPartsNameHints  repeatDataValue
     
-        let setup = monitor.FunctionSetupFeatureWith setupValue
+        let setup = monitor.FunctionSetupFeatureWith testSetupValue
         let testBody = monitor.FunctionTestFeatureDataThreeParametersSuccess
         
         let tests =
@@ -1227,12 +1227,12 @@ type TestBuilder =
                 lineNumber
             )
     
-        (monitor, tests), (tags, setupValue, data, testNameBase), (path, fileName, lineNumber)
+        (monitor, tests), (tags, testSetupValue, data, testNameBase), (path, fileName, lineNumber)
         
     static member BuildTestWithTestNameTagsSetupDataTestBodyThreeParameters (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
-        let monitor, (testName, tags, setupValue, data), (path, fileName, fullPath, lineNumber) = getDataTestParts  repeatDataValue
+        let monitor, (testName, tags, testSetupValue, data), (path, fileName, fullPath, lineNumber) = getDataTestParts  repeatDataValue
     
-        let setup = monitor.FunctionSetupFeatureWith setupValue
+        let setup = monitor.FunctionSetupFeatureWith testSetupValue
         let testBody = monitor.FunctionTestFeatureDataThreeParametersSuccess
         
         let tests =
@@ -1246,14 +1246,14 @@ type TestBuilder =
                 lineNumber
             )
     
-        (monitor, tests), (tags, setupValue, data, testName), (path, fileName, lineNumber)
+        (monitor, tests), (tags, testSetupValue, data, testName), (path, fileName, lineNumber)
         
     //test name, tags, setup, data, test body indicator two parameters, teardown
     static member BuildTestWithTestNameTagsSetupDataTestBodyTwoParametersTeardownNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
-        let monitor, (testNameBase, testName), (tags, setupValue, data), (path, fileName, fullPath, lineNumber) =
+        let monitor, (testNameBase, testName), (tags, testSetupValue, data), (path, fileName, fullPath, lineNumber) =
             getDataTestPartsNameHints repeatDataValue
     
-        let setup = monitor.FunctionSetupFeatureWith setupValue
+        let setup = monitor.FunctionSetupFeatureWith testSetupValue
         let testBody = monitor.FunctionTestFeatureDataTwoParametersSuccess
         let teardown = monitor.FunctionTeardownFeatureFromSetup
         
@@ -1269,12 +1269,12 @@ type TestBuilder =
                 lineNumber
             )
     
-        (monitor, tests), (tags, setupValue, data, testNameBase), (path, fileName, lineNumber)
+        (monitor, tests), (tags, testSetupValue, data, testNameBase), (path, fileName, lineNumber)
         
     static member BuildTestWithTestNameTagsSetupDataTestBodyTwoParametersTeardown (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
-        let monitor, (testName, tags, setupValue, data), (path, fileName, fullPath, lineNumber) = getDataTestParts  repeatDataValue
+        let monitor, (testName, tags, testSetupValue, data), (path, fileName, fullPath, lineNumber) = getDataTestParts  repeatDataValue
     
-        let setup = monitor.FunctionSetupFeatureWith setupValue
+        let setup = monitor.FunctionSetupFeatureWith testSetupValue
         let testBody = monitor.FunctionTestFeatureDataTwoParametersSuccess
         let teardown = monitor.FunctionTeardownFeatureFromSetup
         
@@ -1290,14 +1290,14 @@ type TestBuilder =
                 lineNumber
             )
     
-        (monitor, tests), (tags, setupValue, data, testName), (path, fileName, lineNumber)
+        (monitor, tests), (tags, testSetupValue, data, testName), (path, fileName, lineNumber)
         
     //test name, tags, setup, data, test body indicator two parameters
     static member BuildTestWithTestNameTagsSetupDataTestBodyTwoParametersNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
-        let monitor, (testNameBase, testName), (tags, setupValue, data), (path, fileName, fullPath, lineNumber) =
+        let monitor, (testNameBase, testName), (tags, testSetupValue, data), (path, fileName, fullPath, lineNumber) =
             getDataTestPartsNameHints repeatDataValue
     
-        let setup = monitor.FunctionSetupFeatureWith setupValue
+        let setup = monitor.FunctionSetupFeatureWith testSetupValue
         let testBody = monitor.FunctionTestFeatureDataTwoParametersSuccess
         
         let tests =
@@ -1311,12 +1311,12 @@ type TestBuilder =
                 lineNumber
             )
     
-        (monitor, tests), (tags, setupValue, data, testNameBase), (path, fileName, lineNumber)
+        (monitor, tests), (tags, testSetupValue, data, testNameBase), (path, fileName, lineNumber)
         
     static member BuildTestWithTestNameTagsSetupDataTestBodyTwoParameters (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
-        let monitor, (testName, tags, setupValue, data), (path, fileName, fullPath, lineNumber) = getDataTestParts  repeatDataValue
+        let monitor, (testName, tags, testSetupValue, data), (path, fileName, fullPath, lineNumber) = getDataTestParts  repeatDataValue
     
-        let setup = monitor.FunctionSetupFeatureWith setupValue
+        let setup = monitor.FunctionSetupFeatureWith testSetupValue
         let testBody = monitor.FunctionTestFeatureDataTwoParametersSuccess
         
         let tests =
@@ -1330,13 +1330,13 @@ type TestBuilder =
                 lineNumber
             )
     
-        (monitor, tests), (tags, setupValue, data, testName), (path, fileName, lineNumber)
+        (monitor, tests), (tags, testSetupValue, data, testName), (path, fileName, lineNumber)
     
     //test name, tags, setup, test body indicator, teardown
     static member BuildTestWithTestNameTagsSetupTestBodyTwoParametersTeardown (testFeature: IFeature<string>) =
-        let monitor, (testName, tags, setupValue), (path, fileName, fullPath, lineNumber) = getTestParts ()
+        let monitor, (testName, tags, testSetupValue), (path, fileName, fullPath, lineNumber) = getTestParts ()
     
-        let setup = monitor.FunctionSetupFeatureWith setupValue
+        let setup = monitor.FunctionSetupFeatureWith testSetupValue
         let testBody = monitor.FunctionTestFeatureTwoParametersSuccess
         let teardown = monitor.FunctionTeardownFeatureFromSetup
         
@@ -1351,12 +1351,12 @@ type TestBuilder =
                 lineNumber
             )
     
-        (monitor, test), (tags, setupValue, testName), (path, fileName, lineNumber)
+        (monitor, test), (tags, testSetupValue, testName), (path, fileName, lineNumber)
         
     static member BuildTestWithTestNameTagsSetupTestBodyOneParameterTeardown (testFeature: IFeature<string>) =
-        let monitor, (testName, tags, setupValue), (path, fileName, fullPath, lineNumber) = getTestParts ()
+        let monitor, (testName, tags, testSetupValue), (path, fileName, fullPath, lineNumber) = getTestParts ()
     
-        let setup = monitor.FunctionSetupFeatureWith setupValue
+        let setup = monitor.FunctionSetupFeatureWith testSetupValue
         let testBody = monitor.FunctionTestFeatureOneParameterSuccess
         let teardown = monitor.FunctionTeardownFeatureFromSetup
         
@@ -1371,13 +1371,13 @@ type TestBuilder =
                 lineNumber
             )
     
-        (monitor, test), (tags, setupValue, testName), (path, fileName, lineNumber)
+        (monitor, test), (tags, testSetupValue, testName), (path, fileName, lineNumber)
 
     //test name, tags, setup, test body indicator        
     static member BuildTestWithTestNameTagsSetupTestBodyTwoParameters (testFeature: IFeature<string>) =
-        let monitor, (testName, tags, setupValue), (path, fileName, fullPath, lineNumber) = getTestParts ()
+        let monitor, (testName, tags, testSetupValue), (path, fileName, fullPath, lineNumber) = getTestParts ()
     
-        let setup = monitor.FunctionSetupFeatureWith setupValue
+        let setup = monitor.FunctionSetupFeatureWith testSetupValue
         let testBody = monitor.FunctionTestFeatureTwoParametersSuccess
         
         let test =
@@ -1390,12 +1390,12 @@ type TestBuilder =
                 lineNumber
             )
     
-        (monitor, test), (tags, setupValue, testName), (path, fileName, lineNumber)
+        (monitor, test), (tags, testSetupValue, testName), (path, fileName, lineNumber)
 
     static member BuildTestWithTestNameTagsSetupTestBodyOneParameter (testFeature: IFeature<string>) =
-        let monitor, (testName, tags, setupValue), (path, fileName, fullPath, lineNumber) = getTestParts ()
+        let monitor, (testName, tags, testSetupValue), (path, fileName, fullPath, lineNumber) = getTestParts ()
     
-        let setup = monitor.FunctionSetupFeatureWith setupValue
+        let setup = monitor.FunctionSetupFeatureWith testSetupValue
         let testBody = monitor.FunctionTestFeatureOneParameterSuccess
         
         let test =
@@ -1408,7 +1408,7 @@ type TestBuilder =
                 lineNumber
             )
     
-        (monitor, test), (tags, setupValue, testName), (path, fileName, lineNumber)
+        (monitor, test), (tags, testSetupValue, testName), (path, fileName, lineNumber)
         
     // test name, tags, data, test body indicator, teardown
     static member BuildTestWithTestNameTagsDataTestBodyThreeParametersTeardownNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
@@ -1861,10 +1861,10 @@ type TestBuilder =
 
     // test name, setup, data, test body indicator, teardown
     static member BuildTestWithTestNameSetupDataTestBodyThreeParametersTeardownNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
-        let monitor, (testNameBase, testName), (_, setupValue, data), (path, fileName, fullPath, lineNumber) =
+        let monitor, (testNameBase, testName), (_, testSetupValue, data), (path, fileName, fullPath, lineNumber) =
             getDataTestPartsNameHints repeatDataValue
 
-        let setup = monitor.FunctionSetupFeatureWith  setupValue
+        let setup = monitor.FunctionSetupFeatureWith  testSetupValue
         let testBody = monitor.FunctionTestFeatureDataThreeParametersSuccess
         let teardown = monitor.FunctionTeardownFeatureFromSetup
         
@@ -1879,13 +1879,13 @@ type TestBuilder =
                 lineNumber
             )
 
-        (monitor, tests), (setupValue, data, testNameBase), (path, fileName, lineNumber)
+        (monitor, tests), (testSetupValue, data, testNameBase), (path, fileName, lineNumber)
         
     static member BuildTestWithTestNameSetupDataTestBodyThreeParametersTeardown (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
-        let monitor, (testName, _, setupValue, data), (path, fileName, fullPath, lineNumber) =
+        let monitor, (testName, _, testSetupValue, data), (path, fileName, fullPath, lineNumber) =
             getDataTestParts repeatDataValue
 
-        let setup = monitor.FunctionSetupFeatureWith  setupValue
+        let setup = monitor.FunctionSetupFeatureWith  testSetupValue
         let testBody = monitor.FunctionTestFeatureDataThreeParametersSuccess
         let teardown = monitor.FunctionTeardownFeatureFromSetup
         
@@ -1900,13 +1900,13 @@ type TestBuilder =
                 lineNumber
             )
 
-        (monitor, tests), (setupValue, data, testName), (path, fileName, lineNumber)
+        (monitor, tests), (testSetupValue, data, testName), (path, fileName, lineNumber)
 
     static member BuildTestWithTestNameSetupDataTestBodyTwoParametersTeardownNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
-        let monitor, (testNameBase, testName), (_, setupValue, data), (path, fileName, fullPath, lineNumber) =
+        let monitor, (testNameBase, testName), (_, testSetupValue, data), (path, fileName, fullPath, lineNumber) =
             getDataTestPartsNameHints repeatDataValue
 
-        let setup = monitor.FunctionSetupFeatureWith  setupValue
+        let setup = monitor.FunctionSetupFeatureWith  testSetupValue
         let testBody = monitor.FunctionTestFeatureDataTwoParametersSuccess
         let teardown = monitor.FunctionTeardownFeatureFromSetup
         
@@ -1921,13 +1921,13 @@ type TestBuilder =
                 lineNumber
             )
 
-        (monitor, tests), (setupValue, data, testNameBase), (path, fileName, lineNumber)
+        (monitor, tests), (testSetupValue, data, testNameBase), (path, fileName, lineNumber)
 
     static member BuildTestWithTestNameSetupDataTestBodyTwoParametersTeardown (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
-        let monitor, (testName, _, setupValue, data), (path, fileName, fullPath, lineNumber) =
+        let monitor, (testName, _, testSetupValue, data), (path, fileName, fullPath, lineNumber) =
             getDataTestParts repeatDataValue
 
-        let setup = monitor.FunctionSetupFeatureWith  setupValue
+        let setup = monitor.FunctionSetupFeatureWith  testSetupValue
         let testBody = monitor.FunctionTestFeatureDataTwoParametersSuccess
         let teardown = monitor.FunctionTeardownFeatureFromSetup
         
@@ -1942,14 +1942,14 @@ type TestBuilder =
                 lineNumber
             )
 
-        (monitor, tests), (setupValue, data, testName), (path, fileName, lineNumber)
+        (monitor, tests), (testSetupValue, data, testName), (path, fileName, lineNumber)
 
     // test name, setup, data, test body indicator
     static member BuildTestWithTestNameSetupDataTestBodyThreeParametersNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
-        let monitor, (testNameBase, testName), (_, setupValue, data), (path, fileName, fullPath, lineNumber) =
+        let monitor, (testNameBase, testName), (_, testSetupValue, data), (path, fileName, fullPath, lineNumber) =
             getDataTestPartsNameHints repeatDataValue
     
-        let setup = monitor.FunctionSetupFeatureWith  setupValue
+        let setup = monitor.FunctionSetupFeatureWith  testSetupValue
         let testBody = monitor.FunctionTestFeatureDataThreeParametersSuccess
         
         let tests =
@@ -1962,13 +1962,13 @@ type TestBuilder =
                 lineNumber
             )
     
-        (monitor, tests), (setupValue, data, testNameBase), (path, fileName, lineNumber)
+        (monitor, tests), (testSetupValue, data, testNameBase), (path, fileName, lineNumber)
         
     static member BuildTestWithTestNameSetupDataTestBodyThreeParameters (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
-        let monitor, (testName, tags, setupValue, data), (path, fileName, fullPath, lineNumber) =
+        let monitor, (testName, tags, testSetupValue, data), (path, fileName, fullPath, lineNumber) =
             getDataTestParts repeatDataValue
     
-        let setup = monitor.FunctionSetupFeatureWith  setupValue
+        let setup = monitor.FunctionSetupFeatureWith  testSetupValue
         let testBody = monitor.FunctionTestFeatureDataThreeParametersSuccess
         
         let tests =
@@ -1981,13 +1981,13 @@ type TestBuilder =
                 lineNumber
             )
     
-        (monitor, tests), (setupValue, data, testName), (path, fileName, lineNumber)
+        (monitor, tests), (testSetupValue, data, testName), (path, fileName, lineNumber)
 
     static member BuildTestWithTestNameSetupDataTestBodyTwoParametersNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
-        let monitor, (testNameBase, testName), (_, setupValue, data), (path, fileName, fullPath, lineNumber) =
+        let monitor, (testNameBase, testName), (_, testSetupValue, data), (path, fileName, fullPath, lineNumber) =
             getDataTestPartsNameHints repeatDataValue
     
-        let setup = monitor.FunctionSetupFeatureWith  setupValue
+        let setup = monitor.FunctionSetupFeatureWith  testSetupValue
         let testBody = monitor.FunctionTestFeatureDataTwoParametersSuccess
         
         let tests =
@@ -2000,14 +2000,14 @@ type TestBuilder =
                 lineNumber
             )
     
-        (monitor, tests), (setupValue, data, testNameBase), (path, fileName, lineNumber)
+        (monitor, tests), (testSetupValue, data, testNameBase), (path, fileName, lineNumber)
 
 
     static member BuildTestWithTestNameSetupDataTestBodyTwoParameters (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
-        let monitor, (testName, tags, setupValue, data), (path, fileName, fullPath, lineNumber) =
+        let monitor, (testName, tags, testSetupValue, data), (path, fileName, fullPath, lineNumber) =
             getDataTestParts repeatDataValue
     
-        let setup = monitor.FunctionSetupFeatureWith  setupValue
+        let setup = monitor.FunctionSetupFeatureWith  testSetupValue
         let testBody = monitor.FunctionTestFeatureDataTwoParametersSuccess
         
         let tests =
@@ -2020,4 +2020,25 @@ type TestBuilder =
                 lineNumber
             )
     
-        (monitor, tests), (setupValue, data, testName), (path, fileName, lineNumber)
+        (monitor, tests), (testSetupValue, data, testName), (path, fileName, lineNumber)
+
+    // test name, setup, test body indicator, teardown
+    static member BuildTestWithTestNameSetupTestBodyTwoParametersTeardown (testFeature: IFeature<string>) =
+        let monitor, (testName, _, testSetupValue), (path, fileName, fullPath, lineNumber) =
+            getTestParts ()
+
+        let setup = monitor.FunctionSetupFeatureWith testSetupValue
+        let testBody = monitor.FunctionTestFeatureTwoParametersSuccess
+        let teardown = monitor.FunctionTeardownFeatureFromSetup
+        
+        let test =
+            testFeature.Test (
+                testName,
+                Setup setup,
+                TestBody testBody,
+                Teardown teardown,
+                fullPath,
+                lineNumber
+            )
+
+        (monitor, test), (testSetupValue, testName), (path, fileName, lineNumber)
