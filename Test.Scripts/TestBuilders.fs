@@ -2099,3 +2099,46 @@ type TestBuilder =
             )
 
         (monitor, test), (testSetupValue, testName), (path, fileName, lineNumber)
+
+    //test name, data, test body indicator, teardown
+    static member BuildTestWithTestNameDataTestBodyThreeParametersTeardownNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
+        let monitor, (testNameBase, testName), (_, testSetupValue, data), (path, fileName, fullPath, lineNumber) =
+            getDataTestPartsNameHints repeatDataValue
+    
+        let setup = monitor.FunctionSetupFeatureWith  testSetupValue
+        let testBody = monitor.FunctionTestFeatureDataThreeParametersSuccess
+        let teardown = monitor.FunctionTeardownFeatureFromSetup
+        
+        let tests =
+            testFeature.Test (
+                testName,
+                Setup setup,
+                Data data,
+                TestBody testBody,
+                Teardown teardown,
+                fullPath,
+                lineNumber
+            )
+    
+        (monitor, tests), (testSetupValue, data, testNameBase), (path, fileName, lineNumber)
+        
+    static member BuildTestWithTestNameDataTestBodyThreeParametersTeardown (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
+        let monitor, (testName, tags, testSetupValue, data), (path, fileName, fullPath, lineNumber) =
+            getDataTestParts repeatDataValue
+    
+        let setup = monitor.FunctionSetupFeatureWith  testSetupValue
+        let testBody = monitor.FunctionTestFeatureDataThreeParametersSuccess
+        let teardown = monitor.FunctionTeardownFeatureFromSetup
+        
+        let tests =
+            testFeature.Test (
+                testName,
+                Setup setup,
+                Data data,
+                TestBody testBody,
+                Teardown teardown,
+                fullPath,
+                lineNumber
+            )
+    
+        (monitor, tests), (testSetupValue, data, testName), (path, fileName, lineNumber)
