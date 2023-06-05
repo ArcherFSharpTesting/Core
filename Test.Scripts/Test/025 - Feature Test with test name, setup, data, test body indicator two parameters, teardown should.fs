@@ -23,7 +23,7 @@ let private getContainerName (test: ITest) =
 
 let ``Create a valid ITest`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
-        let (monitor, tests), (setupValue, data, testNameBase), (path, fileName, lineNumber) =
+        let (_, tests), (_, data, testNameBase), (path, fileName, lineNumber) =
             TestBuilder.BuildTestWithTestNameSetupDataTestBodyTwoParametersTeardownNameHints testFeature
 
         let name1, name2, name3 = TestBuilder.GetTestNames (fun _ -> sprintf "%s %s" testNameBase) data
@@ -50,7 +50,7 @@ let ``Create a valid ITest`` =
 
 let ``Create a test name with name hints and repeating data`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
-        let (monitor, tests), (setupValue, data, testNameBase), (path, fileName, lineNumber) =
+        let (_, tests), (_, data, testNameBase), _ =
             TestBuilder.BuildTestWithTestNameSetupDataTestBodyTwoParametersTeardownNameHints (testFeature, true)
 
         let name1, name2, name3 = TestBuilder.GetTestNames (fun i v -> sprintf "%s %s%s" testNameBase v (if 0 = i then "" else $"^%i{i}")) data
@@ -65,7 +65,7 @@ let ``Create a test name with name hints and repeating data`` =
 
 let ``Create a test name with no name hints`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
-        let (monitor, tests), (setupValue, data, testName), (path, fileName, lineNumber) =
+        let (_, tests), (_, data, testName), _ =
             TestBuilder.BuildTestWithTestNameSetupDataTestBodyTwoParametersTeardown testFeature
 
         let name1, name2, name3 = TestBuilder.GetTestNames (fun _ -> sprintf "%s (%A)" testName) data
@@ -80,7 +80,7 @@ let ``Create a test name with no name hints`` =
 
 let ``Create a test name with no name hints same data repeated`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
-        let (monitor, tests), (setupValue, data, testName), (path, fileName, lineNumber) =
+        let (_, tests), (_, data, testName), _ =
             TestBuilder.BuildTestWithTestNameSetupDataTestBodyTwoParametersTeardown (testFeature, true)
 
         let name1, name2, name3 = TestBuilder.GetTestNames (fun i v -> sprintf "%s (%A)%s" testName v (if 0 = i then "" else $"^%i{i}")) data
@@ -109,7 +109,7 @@ let ``Call setup when executed`` =
 
 let ``Call Test when executed`` =
     feature.Test (fun (featureSetupValue, testFeature: IFeature<string>) ->
-        let (monitor, tests), (setupValue, data, testName), (path, fileName, lineNumber) = TestBuilder.BuildTestWithTestNameSetupDataTestBodyTwoParametersTeardown testFeature
+        let (monitor, tests), (setupValue, data, _), _ = TestBuilder.BuildTestWithTestNameSetupDataTestBodyTwoParametersTeardown testFeature
 
         tests
         |> silentlyRunAllTests
