@@ -2081,3 +2081,21 @@ type TestBuilder =
             )
 
         (monitor, test), (testSetupValue, testName), (path, fileName, lineNumber)
+        
+    static member BuildTestWithTestNameSetupTestBodyOneParameter (testFeature: IFeature<string>) =
+        let monitor, (testName, _, testSetupValue), (path, fileName, fullPath, lineNumber) =
+            getTestParts ()
+
+        let setup = monitor.FunctionSetupFeatureWith testSetupValue
+        let testBody = monitor.FunctionTestFeatureOneParameterSuccess
+        
+        let test =
+            testFeature.Test (
+                testName,
+                Setup setup,
+                TestBody testBody,
+                fullPath,
+                lineNumber
+            )
+
+        (monitor, test), (testSetupValue, testName), (path, fileName, lineNumber)
