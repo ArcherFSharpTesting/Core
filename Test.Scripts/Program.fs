@@ -78,6 +78,7 @@ runner
     ``025 - Feature Test with test name, setup, data, test body indicator two parameters, teardown should``.``Test Cases``
     
     ``026 - Feature Test with test name, setup, data, test body indicator three parameters``.``Test Cases``
+    ``027 - Feature Test with test name, setup, data, test body indicator two parameters``.``Test Cases``
     
     ``Arrow Ignore``.``Test Cases``
 ]
