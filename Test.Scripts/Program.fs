@@ -83,6 +83,8 @@ runner
     ``028 - Feature Test with test name, setup, test body indicator two parameters, teardown should``.``Test Cases``
     ``029 - Feature Test with test name, setup, test body indicator one parameter, teardown should``.``Test Cases``
     
+    ``030 - Feature Test with test name, setup, test body indicator two parameters should``.``Test Cases``
+    
     ``Arrow Ignore``.``Test Cases``
 ]
 |> runAndReport
