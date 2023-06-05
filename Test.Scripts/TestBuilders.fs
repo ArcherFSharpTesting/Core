@@ -424,9 +424,8 @@ let noTestWasCalledWithATestSetupValue (monitor: ITestMonitor<_, _, _>) =
     
 let noTestWasCalledWithTestEnvironment (monitor: ITestMonitor<_, _, _>) =
     monitor
-    |> testFunctionEnvironmentParameterValues
-    |> List.filter hasValue
-    |> ListShould.HaveLengthOf 0
+    |> hasTestFunctionBeenCalledWithEnvironmentParameter
+    |> Should.BeFalse
     |> withFailureComment "test was called with environment variable"
 
 type TestMonitor<'dataType, 'featureType, 'setupType> () =

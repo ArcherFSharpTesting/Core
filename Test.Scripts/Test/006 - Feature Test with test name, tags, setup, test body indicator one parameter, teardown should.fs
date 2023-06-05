@@ -76,9 +76,8 @@ let ``Not call Test with test environment when executed`` =
        test
        |> silentlyRunTest
         
-       monitor.HasTestFunctionBeenCalledWithEnvironmentParameter
-       |> Should.BeFalse
-       |> withFailureComment "Test called with environment"
+       monitor
+       |> noTestWasCalledWithTestEnvironment
    )
     
 let ``Call teardown when executed`` =

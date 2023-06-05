@@ -176,7 +176,7 @@ let ``Call Test with test environment when executed`` =
                 getValue >> (fun env -> env.TestInfo) >> (fun testInfo -> tests |> List.map (fun t -> t :> ITestInfo) |> ListShould.Contain testInfo )
             ]
             
-            List.map (getValue >> (fun env -> env.TestInfo)) >> List.distinct >> List.length >> Should.BeEqualTo (tests.Length) >> withFailureComment "Not all tests are distinct" 
+            List.map (getValue >> (fun env -> env.TestInfo)) >> List.distinct >> List.length >> Should.BeEqualTo tests.Length >> withFailureComment "Not all tests are distinct" 
         ]
     )
 
