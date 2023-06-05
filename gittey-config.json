@@ -32,11 +32,11 @@
         },
         {
             "name": "check",
-            "command": "dotnet-coverage collect -f xml -s ./coverage.settings.xml dotnet run --project ./Test.Scripts/"
+            "command": "npx rimraf ./output.xml && dotnet-coverage collect -f xml -s ./coverage.settings.xml dotnet run --project ./Test.Scripts/"
         },
         {
             "name": "cover:convert",
-            "command": "reportgenerator -reports:./output.xml -targetdir:coverage"
+            "command": "npx rimraf ./coverage/ && reportgenerator -reports:./output.xml -targetdir:coverage"
         },
         {
             "name": "push",
