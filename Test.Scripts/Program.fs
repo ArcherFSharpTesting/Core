@@ -87,6 +87,7 @@ runner
     ``031 - Feature Test with test name, setup, test body indicator one parameter should``.``Test Cases``
     
     ``032 - Feature Test with test name, data, test body indicator three parameters, teardown should``.``Test Cases``
+    ``033 - Feature Test with test name, data, test body indicator two parameters, teardown should``.``Test Cases``
     
     ``Arrow Ignore``.``Test Cases``
 ]
