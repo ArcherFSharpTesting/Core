@@ -189,7 +189,7 @@ let ``Call teardown when executed`` =
         tests
         |> silentlyRunAllTests
 
-        monitor.NumberOfTimesSetupFunctionWasCalled
+        monitor.NumberOfTimesTeardownFunctionWasCalled
         |> Should.BeEqualTo 3
         |> withMessage "Teardown was called an incorrect number of times"
     )

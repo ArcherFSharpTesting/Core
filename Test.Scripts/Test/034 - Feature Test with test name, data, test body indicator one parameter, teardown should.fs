@@ -1,4 +1,4 @@
-module Archer.Arrows.Tests.Test.``032 - Feature Test with test name, data, test body indicator three parameters, teardown should``
+module Archer.Arrows.Tests.Test.``034 - Feature Test with test name, data, test body indicator one parameter, teardown should``
 
 open System
 open Archer
@@ -22,9 +22,9 @@ let private getContainerName (test: ITest) =
     $"%s{test.ContainerPath}.%s{test.ContainerName}"
 
 let ``Create a valid ITest`` =
-    feature.Test (fun (_, testFeature: IFeature<string>) ->
+    feature.Ignore (fun (_, testFeature: IFeature<string>) ->
         let (_, tests), (data, testNameBase), (path, fileName, lineNumber) =
-            TestBuilder.BuildTestWithTestNameDataTestBodyThreeParametersTeardownNameHints testFeature
+            TestBuilder.BuildTestWithTestNameDataTestBodyOneParameterTeardownNameHints testFeature
 
         let name1, name2, name3 = TestBuilder.GetTestNames (fun _ -> sprintf "%s %s" testNameBase) data
 
@@ -49,9 +49,9 @@ let ``Create a valid ITest`` =
     )
 
 let ``Create a test name with name hints and repeating data`` =
-    feature.Test (fun (_, testFeature: IFeature<string>) ->
+    feature.Ignore (fun (_, testFeature: IFeature<string>) ->
         let (_, tests), (data, testNameBase), _ =
-            TestBuilder.BuildTestWithTestNameDataTestBodyThreeParametersTeardownNameHints (testFeature, true)
+            TestBuilder.BuildTestWithTestNameDataTestBodyOneParameterTeardownNameHints (testFeature, true)
 
         let name1, name2, name3 = TestBuilder.GetTestNames (fun i v -> sprintf "%s %s%s" testNameBase v (if 0 = i then "" else $"^%i{i}")) data
 
@@ -64,9 +64,9 @@ let ``Create a test name with name hints and repeating data`` =
     )
 
 let ``Create a test name with no name hints`` =
-    feature.Test (fun (_, testFeature: IFeature<string>) ->
+    feature.Ignore (fun (_, testFeature: IFeature<string>) ->
         let (_, tests), (data, testName), _ =
-            TestBuilder.BuildTestWithTestNameDataTestBodyThreeParametersTeardown testFeature
+            TestBuilder.BuildTestWithTestNameDataTestBodyOneParameterTeardown testFeature
 
         let name1, name2, name3 = TestBuilder.GetTestNames (fun _ -> sprintf "%s (%A)" testName) data
 
@@ -79,9 +79,9 @@ let ``Create a test name with no name hints`` =
     )
 
 let ``Create a test name with no name hints same data repeated`` =
-    feature.Test (fun (_, testFeature: IFeature<string>) ->
+    feature.Ignore (fun (_, testFeature: IFeature<string>) ->
         let (_, tests), (data, testName), _ =
-            TestBuilder.BuildTestWithTestNameDataTestBodyThreeParametersTeardown (testFeature, true)
+            TestBuilder.BuildTestWithTestNameDataTestBodyOneParameterTeardown (testFeature, true)
 
         let name1, name2, name3 = TestBuilder.GetTestNames (fun i v -> sprintf "%s (%A)%s" testName v (if 0 = i then "" else $"^%i{i}")) data
 
@@ -93,22 +93,23 @@ let ``Create a test name with no name hints same data repeated`` =
         ]
     )
 
-let ``Not call setup when executed`` =
-    feature.Test (fun (_, testFeature: IFeature<string>) ->
-        let (monitor, tests), _, _ = TestBuilder.BuildTestWithTestNameDataTestBodyThreeParametersTeardown testFeature
+let ``Call setup when executed`` =
+    feature.Ignore (fun (featureSetupValue, testFeature: IFeature<string>) ->
+        let (monitor, tests), _, _ = TestBuilder.BuildTestWithTestNameDataTestBodyOneParameterTeardown testFeature
 
         tests
         |> silentlyRunAllTests
 
         monitor
-        |> hasSetupFunctionBeenCalled
-        |> Should.BeFalse
-        |> withFailureComment "Setup was called"
+        |> Should.PassAllOf [
+            numberOfTimesSetupFunctionWasCalled >> Should.BeEqualTo 3 >> withFailureComment "Setup was called an incorrect number of times"
+            allSetupFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf featureSetupValue
+        ]
     )
 
 let ``Call Test when executed`` =
-    feature.Test (fun (featureSetupValue, testFeature: IFeature<string>) ->
-        let (monitor, tests), (data, _), _ = TestBuilder.BuildTestWithTestNameDataTestBodyThreeParametersTeardown testFeature
+    feature.Ignore (fun (featureSetupValue, testFeature: IFeature<string>) ->
+        let (monitor, tests), (data, _), _ = TestBuilder.BuildTestWithTestNameDataTestBodyOneParameterTeardown testFeature
 
         tests
         |> silentlyRunAllTests
@@ -126,41 +127,23 @@ let ``Call Test when executed`` =
         |> withMessage "Test was not called"
     )
 
-let ``Call Test with test environment when executed`` =
-    feature.Test (fun (_, testFeature: IFeature<string>) ->
-        let (monitor, tests), _, _ = TestBuilder.BuildTestWithTestNameDataTestBodyThreeParametersTeardown testFeature
+let ``Not call Test with test environment when executed`` =
+    feature.Ignore (fun (_, testFeature: IFeature<string>) ->
+        let (monitor, tests), _, _ = TestBuilder.BuildTestWithTestNameDataTestBodyOneParameterTeardown testFeature
 
         tests
         |> silentlyRunAllTests
 
-        let getValue v =
-            match v with
-            | Some value -> value
-            | _ -> failwith "No value"
-
         monitor
-        |> testFunctionEnvironmentParameterValues
-        |> Should.PassAllOf [
-            ListShould.HaveLengthOf 3 >> withMessage "Incorrect number of calls to test"
-
-            ListShould.HaveAllValuesPassTestOf <@hasValue@>
-
-            ListShould.HaveAllValuesPassAllOf [
-                getValue >> (fun env -> env.ApiEnvironment.ApiName) >> Should.BeEqualTo "Archer.Arrows"
-                getValue >> (fun env -> env.TestInfo) >> (fun ti -> tests |> List.map (fun t -> t :> ITestInfo) |> ListShould.Contain ti)
-            ]
-
-            List.map (getValue >> (fun env -> env.TestInfo)) >> List.distinct >> ListShould.HaveLengthOf tests.Length >> withFailureComment "not distinct tests"
-        ]
+        |> noTestWasCalledWithTestEnvironment
     )
     
 let ``Call teardown when executed`` =
-    feature.Test (fun (_, testFeature: IFeature<string>) ->
-        let (monitor, tests), _, _ = TestBuilder.BuildTestWithTestNameDataTestBodyThreeParametersTeardown testFeature
+    feature.Ignore (fun (_, testFeature: IFeature<string>) ->
+        let (monitor, tests), _, _ = TestBuilder.BuildTestWithTestNameDataTestBodyOneParameterTeardown testFeature
             
         tests
         |> silentlyRunAllTests
-
         monitor.NumberOfTimesTeardownFunctionWasCalled
         |> Should.BeEqualTo 3
         |> withMessage "Teardown was called an incorrect number of times"

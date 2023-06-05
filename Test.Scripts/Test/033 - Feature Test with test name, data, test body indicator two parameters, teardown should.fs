@@ -23,7 +23,7 @@ let private getContainerName (test: ITest) =
 
 let ``Create a valid ITest`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
-        let (_, tests), (_, data, testNameBase), (path, fileName, lineNumber) =
+        let (_, tests), (data, testNameBase), (path, fileName, lineNumber) =
             TestBuilder.BuildTestWithTestNameDataTestBodyTwoParametersTeardownNameHints testFeature
 
         let name1, name2, name3 = TestBuilder.GetTestNames (fun _ -> sprintf "%s %s" testNameBase) data
@@ -50,7 +50,7 @@ let ``Create a valid ITest`` =
 
 let ``Create a test name with name hints and repeating data`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
-        let (_, tests), (_, data, testNameBase), _ =
+        let (_, tests), (data, testNameBase), _ =
             TestBuilder.BuildTestWithTestNameDataTestBodyTwoParametersTeardownNameHints (testFeature, true)
 
         let name1, name2, name3 = TestBuilder.GetTestNames (fun i v -> sprintf "%s %s%s" testNameBase v (if 0 = i then "" else $"^%i{i}")) data
@@ -65,7 +65,7 @@ let ``Create a test name with name hints and repeating data`` =
 
 let ``Create a test name with no name hints`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
-        let (_, tests), (_, data, testName), _ =
+        let (_, tests), (data, testName), _ =
             TestBuilder.BuildTestWithTestNameDataTestBodyTwoParametersTeardown testFeature
 
         let name1, name2, name3 = TestBuilder.GetTestNames (fun _ -> sprintf "%s (%A)" testName) data
@@ -80,7 +80,7 @@ let ``Create a test name with no name hints`` =
 
 let ``Create a test name with no name hints same data repeated`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
-        let (_, tests), (_, data, testName), _ =
+        let (_, tests), (data, testName), _ =
             TestBuilder.BuildTestWithTestNameDataTestBodyTwoParametersTeardown (testFeature, true)
 
         let name1, name2, name3 = TestBuilder.GetTestNames (fun i v -> sprintf "%s (%A)%s" testName v (if 0 = i then "" else $"^%i{i}")) data
@@ -93,23 +93,20 @@ let ``Create a test name with no name hints same data repeated`` =
         ]
     )
 
-let ``Call setup when executed`` =
-    feature.Test (fun (featureSetupValue, testFeature: IFeature<string>) ->
+let ``Not call setup when executed`` =
+    feature.Test (fun (_, testFeature: IFeature<string>) ->
         let (monitor, tests), _, _ = TestBuilder.BuildTestWithTestNameDataTestBodyTwoParametersTeardown testFeature
 
         tests
         |> silentlyRunAllTests
 
         monitor
-        |> Should.PassAllOf [
-            numberOfTimesSetupFunctionWasCalled >> Should.BeEqualTo 3 >> withFailureComment "Setup was called an incorrect number of times"
-            allSetupFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf featureSetupValue
-        ]
+        |> noSetupFunctionsShouldHaveBeenCalled
     )
 
 let ``Call Test when executed`` =
     feature.Test (fun (featureSetupValue, testFeature: IFeature<string>) ->
-        let (monitor, tests), (setupValue, data, _), _ = TestBuilder.BuildTestWithTestNameDataTestBodyTwoParametersTeardown testFeature
+        let (monitor, tests), (data, _), _ = TestBuilder.BuildTestWithTestNameDataTestBodyTwoParametersTeardown testFeature
 
         tests
         |> silentlyRunAllTests
@@ -122,7 +119,7 @@ let ``Call Test when executed`` =
 
             allTestFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf featureSetupValue
 
-            allTestFunctionShouldHaveBeenCalledWithTestSetupValueOf setupValue
+            noTestWasCalledWithATestSetupValue
         ]
         |> withMessage "Test was not called"
     )
@@ -145,7 +142,7 @@ let ``Call teardown when executed`` =
         tests
         |> silentlyRunAllTests
 
-        monitor.NumberOfTimesSetupFunctionWasCalled
+        monitor.NumberOfTimesTeardownFunctionWasCalled
         |> Should.BeEqualTo 3
         |> withMessage "Teardown was called an incorrect number of times"
     )
