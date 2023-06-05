@@ -46,7 +46,7 @@ let baseTransformer<'featureType, 'a> (featureSetup: SetupIndicator<unit, 'featu
     TestCase (internals.ContainerPath, internals.ContainerName, internals.TestName, executor, internals.Tags, internals.FilePath, internals.FileName, internals.LineNumber) :> ITest
     
 let removeEscapes (value: string) =
-    value.Replace ("\\", "")
+    value.Replace ("\\,", ",")
 
 let getNamesAt frame = 
     let trace = StackTrace ()
