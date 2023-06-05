@@ -22,7 +22,7 @@ let private getContainerName (test: ITest) =
     $"%s{test.ContainerPath}.%s{test.ContainerName}"
 
 let ``Create a valid ITest`` =
-    feature.Ignore (fun (_, testFeature: IFeature<string>) ->
+    feature.Test (fun (_, testFeature: IFeature<string>) ->
         let (monitor, tests), (setupValue, data, testNameBase), (path, fileName, lineNumber) =
             TestBuilder.BuildTestWithTestNameSetupDataTestBodyTwoParametersTeardownNameHints testFeature
 
@@ -49,7 +49,7 @@ let ``Create a valid ITest`` =
     )
 
 let ``Create a test name with name hints and repeating data`` =
-    feature.Ignore (fun (_, testFeature: IFeature<string>) ->
+    feature.Test (fun (_, testFeature: IFeature<string>) ->
         let (monitor, tests), (setupValue, data, testNameBase), (path, fileName, lineNumber) =
             TestBuilder.BuildTestWithTestNameSetupDataTestBodyTwoParametersTeardownNameHints (testFeature, true)
 
@@ -64,7 +64,7 @@ let ``Create a test name with name hints and repeating data`` =
     )
 
 let ``Create a test name with no name hints`` =
-    feature.Ignore (fun (_, testFeature: IFeature<string>) ->
+    feature.Test (fun (_, testFeature: IFeature<string>) ->
         let (monitor, tests), (setupValue, data, testName), (path, fileName, lineNumber) =
             TestBuilder.BuildTestWithTestNameSetupDataTestBodyTwoParametersTeardown testFeature
 
@@ -79,7 +79,7 @@ let ``Create a test name with no name hints`` =
     )
 
 let ``Create a test name with no name hints same data repeated`` =
-    feature.Ignore (fun (_, testFeature: IFeature<string>) ->
+    feature.Test (fun (_, testFeature: IFeature<string>) ->
         let (monitor, tests), (setupValue, data, testName), (path, fileName, lineNumber) =
             TestBuilder.BuildTestWithTestNameSetupDataTestBodyTwoParametersTeardown (testFeature, true)
 
@@ -94,7 +94,7 @@ let ``Create a test name with no name hints same data repeated`` =
     )
 
 let ``Call setup when executed`` =
-    feature.Ignore (fun (featureSetupValue, testFeature: IFeature<string>) ->
+    feature.Test (fun (featureSetupValue, testFeature: IFeature<string>) ->
         let (monitor, tests), _, _ = TestBuilder.BuildTestWithTestNameSetupDataTestBodyTwoParametersTeardown testFeature
 
         tests
@@ -108,7 +108,7 @@ let ``Call setup when executed`` =
     )
 
 let ``Call Test when executed`` =
-    feature.Ignore (fun (featureSetupValue, testFeature: IFeature<string>) ->
+    feature.Test (fun (featureSetupValue, testFeature: IFeature<string>) ->
         let (monitor, tests), (setupValue, data, testName), (path, fileName, lineNumber) = TestBuilder.BuildTestWithTestNameSetupDataTestBodyTwoParametersTeardown testFeature
 
         tests
@@ -127,36 +127,19 @@ let ``Call Test when executed`` =
         |> withMessage "Test was not called"
     )
 
-let ``Call Test with test environment when executed`` =
-    feature.Ignore (fun (_, testFeature: IFeature<string>) ->
+let ``Not call Test with test environment when executed`` =
+    feature.Test (fun (_, testFeature: IFeature<string>) ->
         let (monitor, tests), _, _ = TestBuilder.BuildTestWithTestNameSetupDataTestBodyTwoParametersTeardown testFeature
 
         tests
         |> silentlyRunAllTests
 
-        let getValue v =
-            match v with
-            | Some value -> value
-            | _ -> failwith "No value"
-
         monitor
-        |> testFunctionEnvironmentParameterValues
-        |> Should.PassAllOf [
-            ListShould.HaveLengthOf 3 >> withMessage "Incorrect number of calls to test"
-
-            ListShould.HaveAllValuesPassTestOf <@hasValue@>
-
-            ListShould.HaveAllValuesPassAllOf [
-                getValue >> (fun env -> env.ApiEnvironment.ApiName) >> Should.BeEqualTo "Archer.Arrows"
-                getValue >> (fun env -> env.TestInfo) >> (fun ti -> tests |> List.map (fun t -> t :> ITestInfo) |> ListShould.Contain ti)
-            ]
-
-            List.map (getValue >> (fun env -> env.TestInfo)) >> List.distinct >> ListShould.HaveLengthOf tests.Length >> withFailureComment "not distinct tests"
-        ]
+        |> noTestWasCalledWithTestEnvironment
     )
     
 let ``Call teardown when executed`` =
-    feature.Ignore (fun (_, testFeature: IFeature<string>) ->
+    feature.Test (fun (_, testFeature: IFeature<string>) ->
         let (monitor, tests), _, _ = TestBuilder.BuildTestWithTestNameSetupDataTestBodyTwoParametersTeardown testFeature
             
         tests

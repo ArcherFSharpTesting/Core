@@ -421,6 +421,13 @@ let noTestWasCalledWithATestSetupValue (monitor: ITestMonitor<_, _, _>) =
     |> List.filter hasValue
     |> ListShould.HaveLengthOf 0
     |> withFailureComment "test was called with test setup value"
+    
+let noTestWasCalledWithTestEnvironment (monitor: ITestMonitor<_, _, _>) =
+    monitor
+    |> testFunctionEnvironmentParameterValues
+    |> List.filter hasValue
+    |> ListShould.HaveLengthOf 0
+    |> withFailureComment "test was called with environment variable"
 
 type TestMonitor<'dataType, 'featureType, 'setupType> () =
     let mutable setupParams: 'featureType list = []
