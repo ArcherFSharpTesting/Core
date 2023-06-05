@@ -23,6 +23,10 @@
     "verboseMode": false,
     "aliases": [
         {
+            "name": "start",
+            "command": "gittey test; ./Archer.Arrow.sln"
+        },
+        {
             "name": "test",
             "command": "cls; gittey check && gittey cover:convert && gittey commit"
         },
