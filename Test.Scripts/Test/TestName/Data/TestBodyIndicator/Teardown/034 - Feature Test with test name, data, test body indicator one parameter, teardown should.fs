@@ -1,4 +1,4 @@
-module Archer.Arrows.Tests.Test.TestName.Data.TestBodyIndicator.``034 - Feature Test with test name, data, test body indicator one parameter, teardown should``
+module Archer.Arrows.Tests.Test.TestName.Data.TestBodyIndicator.Teardown.``034 - Feature Test with test name, data, test body indicator one parameter, teardown should``
 
 open System
 open Archer
