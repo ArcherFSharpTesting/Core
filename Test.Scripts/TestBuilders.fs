@@ -1965,7 +1965,7 @@ type TestBuilder =
         (monitor, tests), (testSetupValue, data, testNameBase), (path, fileName, lineNumber)
         
     static member BuildTestWithTestNameSetupDataTestBodyThreeParameters (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
-        let monitor, (testName, tags, testSetupValue, data), (path, fileName, fullPath, lineNumber) =
+        let monitor, (testName, _, testSetupValue, data), (path, fileName, fullPath, lineNumber) =
             getDataTestParts repeatDataValue
     
         let setup = monitor.FunctionSetupFeatureWith  testSetupValue
@@ -2004,7 +2004,7 @@ type TestBuilder =
 
 
     static member BuildTestWithTestNameSetupDataTestBodyTwoParameters (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
-        let monitor, (testName, tags, testSetupValue, data), (path, fileName, fullPath, lineNumber) =
+        let monitor, (testName, _, testSetupValue, data), (path, fileName, fullPath, lineNumber) =
             getDataTestParts repeatDataValue
     
         let setup = monitor.FunctionSetupFeatureWith  testSetupValue
@@ -2029,6 +2029,26 @@ type TestBuilder =
 
         let setup = monitor.FunctionSetupFeatureWith testSetupValue
         let testBody = monitor.FunctionTestFeatureTwoParametersSuccess
+        let teardown = monitor.FunctionTeardownFeatureFromSetup
+        
+        let test =
+            testFeature.Test (
+                testName,
+                Setup setup,
+                TestBody testBody,
+                Teardown teardown,
+                fullPath,
+                lineNumber
+            )
+
+        (monitor, test), (testSetupValue, testName), (path, fileName, lineNumber)
+        
+    static member BuildTestWithTestNameSetupTestBodyOneParameterTeardown (testFeature: IFeature<string>) =
+        let monitor, (testName, _, testSetupValue), (path, fileName, fullPath, lineNumber) =
+            getTestParts ()
+
+        let setup = monitor.FunctionSetupFeatureWith testSetupValue
+        let testBody = monitor.FunctionTestFeatureOneParameterSuccess
         let teardown = monitor.FunctionTeardownFeatureFromSetup
         
         let test =
