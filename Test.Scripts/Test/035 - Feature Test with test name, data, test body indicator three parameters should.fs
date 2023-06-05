@@ -22,9 +22,9 @@ let private getContainerName (test: ITest) =
     $"%s{test.ContainerPath}.%s{test.ContainerName}"
 
 let ``Create a valid ITest`` =
-    feature.Ignore (fun (_, testFeature: IFeature<string>) ->
+    feature.Test (fun (_, testFeature: IFeature<string>) ->
         let (_, tests), (data, testNameBase), (path, fileName, lineNumber) =
-            TestBuilder.BuildTestWithTestNameDataTestBodyThreeParametersTeardownNameHints testFeature
+            TestBuilder.BuildTestWithTestNameDataTestBodyThreeParametersNameHints testFeature
 
         let name1, name2, name3 = TestBuilder.GetTestNames (fun _ -> sprintf "%s %s" testNameBase) data
 
@@ -49,9 +49,9 @@ let ``Create a valid ITest`` =
     )
 
 let ``Create a test name with name hints and repeating data`` =
-    feature.Ignore (fun (_, testFeature: IFeature<string>) ->
+    feature.Test (fun (_, testFeature: IFeature<string>) ->
         let (_, tests), (data, testNameBase), _ =
-            TestBuilder.BuildTestWithTestNameDataTestBodyThreeParametersTeardownNameHints (testFeature, true)
+            TestBuilder.BuildTestWithTestNameDataTestBodyThreeParametersNameHints (testFeature, true)
 
         let name1, name2, name3 = TestBuilder.GetTestNames (fun i v -> sprintf "%s %s%s" testNameBase v (if 0 = i then "" else $"^%i{i}")) data
 
@@ -64,9 +64,9 @@ let ``Create a test name with name hints and repeating data`` =
     )
 
 let ``Create a test name with no name hints`` =
-    feature.Ignore (fun (_, testFeature: IFeature<string>) ->
+    feature.Test (fun (_, testFeature: IFeature<string>) ->
         let (_, tests), (data, testName), _ =
-            TestBuilder.BuildTestWithTestNameDataTestBodyThreeParametersTeardown testFeature
+            TestBuilder.BuildTestWithTestNameDataTestBodyThreeParameters testFeature
 
         let name1, name2, name3 = TestBuilder.GetTestNames (fun _ -> sprintf "%s (%A)" testName) data
 
@@ -79,9 +79,9 @@ let ``Create a test name with no name hints`` =
     )
 
 let ``Create a test name with no name hints same data repeated`` =
-    feature.Ignore (fun (_, testFeature: IFeature<string>) ->
+    feature.Test (fun (_, testFeature: IFeature<string>) ->
         let (_, tests), (data, testName), _ =
-            TestBuilder.BuildTestWithTestNameDataTestBodyThreeParametersTeardown (testFeature, true)
+            TestBuilder.BuildTestWithTestNameDataTestBodyThreeParameters (testFeature, true)
 
         let name1, name2, name3 = TestBuilder.GetTestNames (fun i v -> sprintf "%s (%A)%s" testName v (if 0 = i then "" else $"^%i{i}")) data
 
@@ -94,8 +94,8 @@ let ``Create a test name with no name hints same data repeated`` =
     )
 
 let ``Not call setup when executed`` =
-    feature.Ignore (fun (_, testFeature: IFeature<string>) ->
-        let (monitor, tests), _, _ = TestBuilder.BuildTestWithTestNameDataTestBodyThreeParametersTeardown testFeature
+    feature.Test (fun (_, testFeature: IFeature<string>) ->
+        let (monitor, tests), _, _ = TestBuilder.BuildTestWithTestNameDataTestBodyThreeParameters testFeature
 
         tests
         |> silentlyRunAllTests
@@ -107,8 +107,8 @@ let ``Not call setup when executed`` =
     )
 
 let ``Call Test when executed`` =
-    feature.Ignore (fun (featureSetupValue, testFeature: IFeature<string>) ->
-        let (monitor, tests), (data, _), _ = TestBuilder.BuildTestWithTestNameDataTestBodyThreeParametersTeardown testFeature
+    feature.Test (fun (featureSetupValue, testFeature: IFeature<string>) ->
+        let (monitor, tests), (data, _), _ = TestBuilder.BuildTestWithTestNameDataTestBodyThreeParameters testFeature
 
         tests
         |> silentlyRunAllTests
@@ -127,8 +127,8 @@ let ``Call Test when executed`` =
     )
 
 let ``Call Test with test environment when executed`` =
-    feature.Ignore (fun (_, testFeature: IFeature<string>) ->
-        let (monitor, tests), _, _ = TestBuilder.BuildTestWithTestNameDataTestBodyThreeParametersTeardown testFeature
+    feature.Test (fun (_, testFeature: IFeature<string>) ->
+        let (monitor, tests), _, _ = TestBuilder.BuildTestWithTestNameDataTestBodyThreeParameters testFeature
 
         tests
         |> silentlyRunAllTests
@@ -154,16 +154,15 @@ let ``Call Test with test environment when executed`` =
         ]
     )
     
-let ``Call teardown when executed`` =
-    feature.Ignore (fun (_, testFeature: IFeature<string>) ->
-        let (monitor, tests), _, _ = TestBuilder.BuildTestWithTestNameDataTestBodyThreeParametersTeardown testFeature
+let ``Not call teardown when executed`` =
+    feature.Test (fun (_, testFeature: IFeature<string>) ->
+        let (monitor, tests), _, _ = TestBuilder.BuildTestWithTestNameDataTestBodyThreeParameters testFeature
             
         tests
         |> silentlyRunAllTests
 
-        monitor.NumberOfTimesTeardownFunctionWasCalled
-        |> Should.BeEqualTo 3
-        |> withMessage "Teardown was called an incorrect number of times"
+        monitor
+        |> noTeardownFunctionsShouldHaveBeenCalled
     )
 
 let ``Test Cases`` = feature.GetTests ()
