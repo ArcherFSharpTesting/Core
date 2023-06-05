@@ -24,7 +24,7 @@
     "aliases": [
         {
             "name": "start",
-            "command": "gittey test; rider ./Archer.Arrow.sln"
+            "command": "gittey test; start ./Archer.Arrow.sln; start ./coverage/index.htm"
         },
         {
             "name": "test",
