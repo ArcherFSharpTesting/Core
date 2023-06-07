@@ -2304,3 +2304,37 @@ type TestBuilder =
             )
     
         (monitor, tests), (data, testName), (path, fileName, lineNumber)
+
+    static member BuildTestWithTestNameDataTestBodyOneParameterNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
+        let monitor, (testNameBase, testName), (_, data), (path, fileName, fullPath, lineNumber) =
+            getDataTestPartsNoSetupNameHints repeatDataValue
+    
+        let testBody = monitor.FunctionTestDataOneParameterSuccess
+        
+        let tests =
+            testFeature.Test (
+                testName,
+                Data data,
+                TestBody testBody,
+                fullPath,
+                lineNumber
+            )
+    
+        (monitor, tests), (data, testNameBase), (path, fileName, lineNumber)
+
+    static member BuildTestWithTestNameDataTestBodyOneParameter (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
+        let monitor, (testName, _, data), (path, fileName, fullPath, lineNumber) =
+            getDataTestPartsNoSetup repeatDataValue
+    
+        let testBody = monitor.FunctionTestDataOneParameterSuccess
+        
+        let tests =
+            testFeature.Test (
+                testName,
+                Data data,
+                TestBody testBody,
+                fullPath,
+                lineNumber
+            )
+    
+        (monitor, tests), (data, testName), (path, fileName, lineNumber)
