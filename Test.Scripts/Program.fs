@@ -111,6 +111,7 @@ runner
     ``037 - Feature Test with test name, data, test body indicator one parameter should``.``Test Cases``
     
     ``038 - Feature Test with test name, data, test function three parameters should``.``Test Cases``
+    ``039 - Feature Test with test name, data, test function two parameters should``.``Test Cases``
     
     ``Arrow Ignore``.``Test Cases``
 ]
