@@ -2460,3 +2460,21 @@ type TestBuilder =
             )
     
         (monitor, test), testName, (path, fileName, lineNumber)
+
+    static member BuildTestWithTestNameTestBodyOneParameterTearDown (testFeature: IFeature<string>) =
+        let monitor, (testName, _tags), (path, fileName, fullPath, lineNumber) =
+            getTestPartsNoSetup ()
+    
+        let testBody = monitor.FunctionTestPassThroughOneParameterSuccess
+        let teardown = monitor.FunctionTeardownPassThrough
+        
+        let test =
+            testFeature.Test (
+                testName,
+                TestBody testBody,
+                Teardown teardown,
+                fullPath,
+                lineNumber
+            )
+    
+        (monitor, test), testName, (path, fileName, lineNumber)
