@@ -56,6 +56,7 @@
     <Compile Include="Test\TestName\Data\TestBodyIndicator\037 - Feature Test with test name, data, test body indicator one parameter should.fs" />
     <Compile Include="Test\TestName\Data\TestFunction\038 - Feature Test with test name, data, test function three parameters should.fs" />
     <Compile Include="Test\TestName\Data\TestFunction\039 - Feature Test with test name, data, test function two parameters should.fs" />
+    <Compile Include="Test\TestName\Data\TestFunction\040 - Feature Test with test name, data, test function one parameter should.fs" />
     <Compile Include="Arrow NewFeature.fs" />
     <Compile Include="Arrow Ignorefs.fs" />
     <Compile Include="Arrow NewFeature With Setup.fs" />
