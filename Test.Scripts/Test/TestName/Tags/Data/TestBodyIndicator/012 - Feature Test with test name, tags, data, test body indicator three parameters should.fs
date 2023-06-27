@@ -23,10 +23,10 @@ let private getContainerName (test: ITest) =
 
 let ``Create a valid ITest`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
-        let (_, tests), (tags, data, testNameBase), (path, fileName, lineNumber) =
+        let (_, tests), (tags, data, testNameRoot), (path, fileName, lineNumber) =
             TestBuilder.BuildTestWithTestNameTagsDataTestBodyThreeParametersNameHints testFeature
 
-        let name1, name2, name3 = TestBuilder.GetTestNames (fun _ -> sprintf "%s %s" testNameBase) data
+        let name1, name2, name3 = TestBuilder.GetTestNames (fun _ -> sprintf "%s %s" testNameRoot) data
 
         tests
         |> Should.PassAllOf [
@@ -48,10 +48,10 @@ let ``Create a valid ITest`` =
 
 let ``Create a test name with name hints and repeating data`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
-        let (_, tests), (_, data, testNameBase), _ =
+        let (_, tests), (_, data, testNameRoot), _ =
             TestBuilder.BuildTestWithTestNameTagsDataTestBodyThreeParametersNameHints (testFeature, true)
 
-        let name1, name2, name3 = TestBuilder.GetTestNames (fun i v -> sprintf "%s %s%s" testNameBase v (if 0 = i then "" else $"^%i{i}")) data
+        let name1, name2, name3 = TestBuilder.GetTestNames (fun i v -> sprintf "%s %s%s" testNameRoot v (if 0 = i then "" else $"^%i{i}")) data
 
         tests
         |> Should.PassAllOf [
