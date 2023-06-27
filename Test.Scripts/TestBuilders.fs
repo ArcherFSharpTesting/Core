@@ -1583,3 +1583,44 @@ type TestBuilder =
             )
     
         (monitor, tests), (tags, testSetupValue, data, testName), (path, fileName, lineNumber)
+    
+    // tags, setup, test body indicator, teardown
+    static member BuildTestWithTagsSetupTestBodyTwoParametersTeardown (testFeature: IFeature<string>) =
+        let monitor, (testName, tags, testSetupValue), (path, fileName, fullPath, lineNumber) = getTestParts ()
+    
+        let setup = monitor.FunctionSetupFeatureWith testSetupValue
+        let testBody = monitor.FunctionTestFeatureTwoParametersSuccess
+        let teardown = monitor.FunctionTeardownFeatureFromSetup
+        
+        let test =
+            testFeature.Test (
+                TestTags tags,
+                Setup setup,
+                TestBody testBody,
+                Teardown teardown,
+                testName,
+                fullPath,
+                lineNumber
+            )
+    
+        (monitor, test), (tags, testSetupValue, testName), (path, fileName, lineNumber)
+        
+    static member BuildTestWithTagsSetupTestBodyOneParameterTeardown (testFeature: IFeature<string>) =
+        let monitor, (testName, tags, testSetupValue), (path, fileName, fullPath, lineNumber) = getTestParts ()
+    
+        let setup = monitor.FunctionSetupFeatureWith testSetupValue
+        let testBody = monitor.FunctionTestFeatureOneParameterSuccess
+        let teardown = monitor.FunctionTeardownFeatureFromSetup
+        
+        let test =
+            testFeature.Test (
+                TestTags tags,
+                Setup setup,
+                TestBody testBody,
+                Teardown teardown,
+                testName,
+                fullPath,
+                lineNumber
+            )
+    
+        (monitor, test), (tags, testSetupValue, testName), (path, fileName, lineNumber)
