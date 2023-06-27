@@ -23,7 +23,7 @@ let private getContainerName (test: ITest) =
     
 let ``Create a valid ITest`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
-       let (_monitor, tests), (tags, _setupValue, data, testNameBase), (path, fileName, lineNumber) =
+       let (_, tests), (tags, _, data, testNameBase), (path, fileName, lineNumber) =
            TestBuilder.BuildTestWithTestNameTagsSetupDataTestBodyThreeParametersTeardownNameHints testFeature
             
        let name1, name2, name3 = TestBuilder.GetTestNames (fun _ -> sprintf "%s %s" testNameBase) data
@@ -57,7 +57,7 @@ let ``Create a valid ITest`` =
 
 let ``Create a test name with name hints and repeating data`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
-       let (_monitor, tests), (_tags, _setupValue, data, testNameBase), _ =
+       let (_, tests), (_, _, data, testNameBase), _ =
            TestBuilder.BuildTestWithTestNameTagsSetupDataTestBodyThreeParametersTeardownNameHints (testFeature, true)
         
        let name1, name2, name3 = TestBuilder.GetTestNames (fun i v -> sprintf "%s %s%s" testNameBase v (if 0 = i then "" else $"^%i{i}")) data
@@ -72,7 +72,7 @@ let ``Create a test name with name hints and repeating data`` =
 
 let ``Create a test name with no name hints`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
-       let (_monitor, tests), (_tags, _setupValue, data, testName), _ =
+       let (_, tests), (_, _, data, testName), _ =
            TestBuilder.BuildTestWithTestNameTagsSetupDataTestBodyThreeParametersTeardown testFeature
         
        let name1, name2, name3 = TestBuilder.GetTestNames (fun _ -> sprintf "%s (%A)" testName) data
@@ -87,7 +87,7 @@ let ``Create a test name with no name hints`` =
 
 let ``Create a test name with no name hints same data repeated`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
-       let (_monitor, tests), (_tags, _setupValue, data, testName), _ =
+       let (_, tests), (_, _, data, testName), _ =
            TestBuilder.BuildTestWithTestNameTagsSetupDataTestBodyThreeParametersTeardown (testFeature, true)
         
        let name1, name2, name3 = TestBuilder.GetTestNames (fun i v -> sprintf "%s (%A)%s" testName v (if 0 = i then "" else $"^%i{i}")) data
@@ -114,7 +114,7 @@ let ``Call setup when executed`` =
 
 let ``Call Test when executed`` =
     feature.Test (fun (featureSetupValue, testFeature: IFeature<string>) ->
-        let (monitor, tests), (_tags, setupValue, data, _testName), _ = TestBuilder.BuildTestWithTestNameTagsSetupDataTestBodyThreeParametersTeardown testFeature
+        let (monitor, tests), (_, setupValue, data, _), _ = TestBuilder.BuildTestWithTestNameTagsSetupDataTestBodyThreeParametersTeardown testFeature
 
         tests
         |> silentlyRunAllTests
@@ -135,7 +135,7 @@ let ``Call Test when executed`` =
 
 let ``Call Test with return value of setup when executed`` =
     feature.Test (fun (featureSetupValue, testFeature: IFeature<string>) ->
-       let (monitor, tests), (_tags, setupValue, data, _testName), _ = TestBuilder.BuildTestWithTestNameTagsSetupDataTestBodyThreeParametersTeardown testFeature
+       let (monitor, tests), (_, setupValue, data, _), _ = TestBuilder.BuildTestWithTestNameTagsSetupDataTestBodyThreeParametersTeardown testFeature
 
        tests
        |> silentlyRunAllTests

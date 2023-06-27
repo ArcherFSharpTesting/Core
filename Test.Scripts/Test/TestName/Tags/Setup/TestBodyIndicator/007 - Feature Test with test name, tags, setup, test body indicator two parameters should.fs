@@ -23,7 +23,7 @@ let private getContainerName (test: ITest) =
     
 let ``Create a valid ITest`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
-       let (_monitor, test), (tags, _setupValue, testName), (path, fileName, lineNumber) =
+       let (_, test), (tags, _, testName), (path, fileName, lineNumber) =
            TestBuilder.BuildTestWithTestNameTagsSetupTestBodyTwoParameters testFeature
             
        test
