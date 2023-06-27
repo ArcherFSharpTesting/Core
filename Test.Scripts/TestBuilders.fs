@@ -630,7 +630,6 @@ type TestBuilder =
 
         (monitor, tests), (tags, data, testNameBase), (path, fileName, lineNumber)
 
-
     static member BuildTestWithTestNameTagsDataTestFunctionOneParameter (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
         let monitor, (testName, _), (tags, _, data), (path, fileName, fullPath, lineNumber) =
             getDataTestParts repeatDataValue
@@ -901,7 +900,6 @@ type TestBuilder =
     
         (monitor, tests), (testSetupValue, data, testNameBase), (path, fileName, lineNumber)
 
-
     static member BuildTestWithTestNameSetupDataTestBodyTwoParameters (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
         let monitor, (testName, _), (_, testSetupValue, data), (path, fileName, fullPath, lineNumber) =
             getDataTestParts repeatDataValue
@@ -1057,7 +1055,6 @@ type TestBuilder =
     
         (monitor, tests), (data, testNameBase), (path, fileName, lineNumber)
 
-
     static member BuildTestWithTestNameDataTestBodyTwoParametersTeardown (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
         let monitor, (testName, _), (_, _, data), (path, fileName, fullPath, lineNumber) =
             getDataTestParts repeatDataValue
@@ -1096,7 +1093,6 @@ type TestBuilder =
     
         (monitor, tests), (data, testNameBase), (path, fileName, lineNumber)
 
-
     static member BuildTestWithTestNameDataTestBodyOneParameterTeardown (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
         let monitor, (testName, _), (_, _, data), (path, fileName, fullPath, lineNumber) =
             getDataTestParts repeatDataValue
@@ -1133,7 +1129,6 @@ type TestBuilder =
             )
     
         (monitor, tests), (data, testNameBase), (path, fileName, lineNumber)
-
 
     static member BuildTestWithTestNameDataTestBodyThreeParameters (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
         let monitor, (testName, _), (_, _, data), (path, fileName, fullPath, lineNumber) =
@@ -1391,4 +1386,37 @@ type TestBuilder =
                 lineNumber
             )
     
+        (monitor, test), testName, (path, fileName, lineNumber)
+
+    // test name, test function
+    static member BuildTestWithTestNameTestFunctionTwoParameters (testFeature: IFeature<string>) =
+        let monitor, (testName, _, _), (path, fileName, fullPath, lineNumber) =
+            getTestParts ()
+
+        let testBody = monitor.FunctionTestPassThroughTwoParametersSuccess
+        
+        let test =
+            testFeature.Test (
+                testName,
+                testBody,
+                fullPath,
+                lineNumber
+            )
+
+        (monitor, test), testName, (path, fileName, lineNumber)
+        
+    static member BuildTestWithTestNameTestFunctionOneParameter (testFeature: IFeature<string>) =
+        let monitor, (testName, _, _), (path, fileName, fullPath, lineNumber) =
+            getTestParts ()
+
+        let testBody = monitor.FunctionTestPassThroughOneParameterSuccess
+        
+        let test =
+            testFeature.Test (
+                testName,
+                testBody,
+                fullPath,
+                lineNumber
+            )
+
         (monitor, test), testName, (path, fileName, lineNumber)

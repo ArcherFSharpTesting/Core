@@ -20,6 +20,7 @@ open Archer.Arrows.Tests.Test.TestName.Tags.TestBodyIndicator.Teardown
 open Archer.Arrows.Tests.Test.TestName.Tags.TestFunction
 open Archer.Arrows.Tests.Test.TestName.TestBodyIndicator
 open Archer.Arrows.Tests.Test.TestName.TestBodyIndicator.Teardown
+open Archer.Arrows.Tests.Test.TestName.TestFunction
 open Archer.Bow
 open Archer.CoreTypes.InternalTypes
 open Archer.CoreTypes.InternalTypes.RunnerTypes
@@ -121,6 +122,8 @@ runner
     
     ``043 - Feature Test with test name, test body indicator two parameters should``.``Test Cases``
     ``044 - Feature Test with test name, test body indicator one parameter should``.``Test Cases``
+    
+    ``045 - Feature Test with test name, test function two parameters should``.``Test Cases``
     
     ``Arrow Ignore``.``Test Cases``
 ]
