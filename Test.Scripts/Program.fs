@@ -124,6 +124,7 @@ runner
     ``044 - Feature Test with test name, test body indicator one parameter should``.``Test Cases``
     
     ``045 - Feature Test with test name, test function two parameters should``.``Test Cases``
+    ``046 - Feature Test with test name, test function one parameter should``.``Test Cases``
     
     ``Arrow Ignore``.``Test Cases``
 ]
