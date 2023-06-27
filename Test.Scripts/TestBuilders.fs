@@ -2478,3 +2478,36 @@ type TestBuilder =
             )
     
         (monitor, test), testName, (path, fileName, lineNumber)
+    
+    // test name, test body indicator
+    static member BuildTestWithTestNameTestBodyTwoParameters (testFeature: IFeature<string>) =
+        let monitor, (testName, _tags), (path, fileName, fullPath, lineNumber) =
+            getTestPartsNoSetup ()
+    
+        let testBody = monitor.FunctionTestPassThroughTwoParametersSuccess
+        
+        let test =
+            testFeature.Test (
+                testName,
+                TestBody testBody,
+                fullPath,
+                lineNumber
+            )
+    
+        (monitor, test), testName, (path, fileName, lineNumber)
+
+    static member BuildTestWithTestNameTestBodyOneParameter (testFeature: IFeature<string>) =
+        let monitor, (testName, _tags), (path, fileName, fullPath, lineNumber) =
+            getTestPartsNoSetup ()
+    
+        let testBody = monitor.FunctionTestPassThroughOneParameterSuccess
+        
+        let test =
+            testFeature.Test (
+                testName,
+                TestBody testBody,
+                fullPath,
+                lineNumber
+            )
+    
+        (monitor, test), testName, (path, fileName, lineNumber)

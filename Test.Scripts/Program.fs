@@ -18,6 +18,7 @@ open Archer.Arrows.Tests.Test.TestName.Tags.Setup.TestBodyIndicator.Teardown
 open Archer.Arrows.Tests.Test.TestName.Tags.TestBodyIndicator
 open Archer.Arrows.Tests.Test.TestName.Tags.TestBodyIndicator.Teardown
 open Archer.Arrows.Tests.Test.TestName.Tags.TestFunction
+open Archer.Arrows.Tests.Test.TestName.TestBodyIndicator
 open Archer.Arrows.Tests.Test.TestName.TestBodyIndicator.Teardown
 open Archer.Bow
 open Archer.CoreTypes.InternalTypes
@@ -117,6 +118,8 @@ runner
     
     ``041 - Feature Test with test name, test body indicator two parameters, teardown should``.``Test Cases``
     ``042 - Feature Test with test name, test body indicator one parameter, teardown should``.``Test Cases``
+    
+    ``043 - Feature Test with test name, test body indicator two parameters should``.``Test Cases``
     
     ``Arrow Ignore``.``Test Cases``
 ]
