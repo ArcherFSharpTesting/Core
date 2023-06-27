@@ -114,11 +114,11 @@ let ``Call Test when executed`` =
         |> Should.PassAllOf [
             numberOfTimesTestFunctionWasCalled >> Should.BeEqualTo 3 >> withFailureComment "Incorrect number of calls"
 
-            allTestFunctionShouldHaveBeenCalledWithDataOf data
+            verifyAllTestFunctionShouldHaveBeenCalledWithDataOf data
 
-            noTestWasCalledWithAFeatureSetupValue
+            verifyNoTestWasCalledWithAFeatureSetupValue
 
-            noTestWasCalledWithATestSetupValue
+            verifyNoTestWasCalledWithATestSetupValue
         ]
         |> withMessage "Test was not called"
     )

@@ -375,72 +375,72 @@ let teardownFunctionParameterValues (monitor: ITestMonitor<_, _, _>) =
 let numberOfTimesTeardownFunctionWasCalled (monitor: ITestMonitor<_, _, _>) =
     monitor.NumberOfTimesTeardownFunctionWasCalled
     
-let allTestFunctionShouldHaveBeenCalledWithDataOf (data: 'dataType list) (monitor: ITestMonitor<'dataType, _, _>) =
+let verifyAllTestFunctionShouldHaveBeenCalledWithDataOf (data: 'dataType list) (monitor: ITestMonitor<'dataType, _, _>) =
     let data = data |> List.map Some
     
     monitor.TestFunctionDataParameterValues
     |> Should.BeEqualTo data
     |> withFailureComment "Incorrect test function data parameters"
     
-let allSetupFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf (featureSetupValue: 'featureType) (monitor: ITestMonitor<_, 'featureType, _>) =
+let verifyAllSetupFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf (featureSetupValue: 'featureType) (monitor: ITestMonitor<_, 'featureType, _>) =
     let values = List.init monitor.NumberOfTimesTestFunctionWasCalled (fun _ -> featureSetupValue)
     
     monitor.SetupFunctionParameterValues
     |> Should.BeEqualTo values
     |> withFailureComment "Incorrect setup parameters"
     
-let allTestFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf (featureSetupValue: 'featureType) (monitor: ITestMonitor<_, 'featureType, _>) =
+let verifyAllTestFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf (featureSetupValue: 'featureType) (monitor: ITestMonitor<_, 'featureType, _>) =
     monitor
     |> testFunctionFeatureSetupParameterValues
     |> ListShould.HaveAllValuesBe (Some featureSetupValue)
     |> withFailureComment "Incorrect test function feature setup parameters"
     
-let allTestFunctionShouldHaveBeenCalledWithTestSetupValueOf (testSetupValue: 'setupType) (monitor: ITestMonitor<_, _, 'setupType>) =
+let verifyAllTestFunctionShouldHaveBeenCalledWithTestSetupValueOf (testSetupValue: 'setupType) (monitor: ITestMonitor<_, _, 'setupType>) =
     monitor
     |> testFunctionTestSetupParameterValues
     |> ListShould.HaveAllValuesBe (Some testSetupValue)
     |> withFailureComment "Incorrect test function test setup parameters"
     
-let noTestWasCalledWithData (monitor: ITestMonitor<_, _, _>) =
+let verifyNoTestWasCalledWithData (monitor: ITestMonitor<_, _, _>) =
     monitor
     |> testFunctionDataParameterValues
     |> List.filter hasValue
     |> ListShould.HaveLengthOf 0
     |> withFailureComment "Test was called with data"
     
-let noTestWasCalledWithAFeatureSetupValue (monitor: ITestMonitor<_, _, _>) =
+let verifyNoTestWasCalledWithAFeatureSetupValue (monitor: ITestMonitor<_, _, _>) =
     monitor
     |> testFunctionFeatureSetupParameterValues
     |> List.filter hasValue
     |> ListShould.HaveLengthOf 0
     |> withFailureComment "Test was called with feature setup value"
     
-let noTestWasCalledWithATestSetupValue (monitor: ITestMonitor<_, _, _>) =
+let verifyNoTestWasCalledWithATestSetupValue (monitor: ITestMonitor<_, _, _>) =
     monitor
     |> testFunctionTestSetupParameterValues
     |> List.filter hasValue
     |> ListShould.HaveLengthOf 0
     |> withFailureComment "test was called with test setup value"
     
-let noTestWasCalledWithTestEnvironment (monitor: ITestMonitor<_, _, _>) =
+let verifyNoTestWasCalledWithTestEnvironment (monitor: ITestMonitor<_, _, _>) =
     monitor
     |> hasTestFunctionBeenCalledWithEnvironmentParameter
     |> Should.BeFalse
     |> withFailureComment "test was called with environment variable"
     
-let noSetupFunctionsShouldHaveBeenCalled (monitor: ITestMonitor<_, _, _>) =
+let verifyNoSetupFunctionsShouldHaveBeenCalled (monitor: ITestMonitor<_, _, _>) =
     monitor
     |> numberOfTimesSetupFunctionWasCalled
     |> Should.BeEqualTo 0
     |> withFailureComment "Setup was called"
     
-let noTeardownFunctionsShouldHaveBeenCalled (monitor: ITestMonitor<_, _, _>) =
+let verifyNoTeardownFunctionsShouldHaveBeenCalled (monitor: ITestMonitor<_, _, _>) =
     monitor
     |> numberOfTimesTeardownFunctionWasCalled
     |> Should.BeEqualTo 0
     |> withFailureComment "Teardown was called"
     
-let teardownShouldHaveBeenCalled (monitor: ITestMonitor<_, _, _>) =
+let verifyTeardownShouldHaveBeenCalled (monitor: ITestMonitor<_, _, _>) =
     monitor
     |> hasTeardownBeenCalled
     |> Should.BeTrue

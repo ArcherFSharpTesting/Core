@@ -120,6 +120,7 @@ runner
     ``042 - Feature Test with test name, test body indicator one parameter, teardown should``.``Test Cases``
     
     ``043 - Feature Test with test name, test body indicator two parameters should``.``Test Cases``
+    ``044 - Feature Test with test name, test body indicator one parameter should``.``Test Cases``
     
     ``Arrow Ignore``.``Test Cases``
 ]

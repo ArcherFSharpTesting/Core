@@ -117,11 +117,11 @@ let ``Call Test when executed`` =
         |> Should.PassAllOf [
             numberOfTimesTestFunctionWasCalled >> Should.BeEqualTo 3 >> withFailureComment "Incorrect number of test calls"
 
-            allTestFunctionShouldHaveBeenCalledWithDataOf data
+            verifyAllTestFunctionShouldHaveBeenCalledWithDataOf data
 
-            noTestWasCalledWithAFeatureSetupValue
+            verifyNoTestWasCalledWithAFeatureSetupValue
 
-            noTestWasCalledWithATestSetupValue
+            verifyNoTestWasCalledWithATestSetupValue
         ]
         |> withMessage "Test was not called"
     )
@@ -134,7 +134,7 @@ let ``Not call Test with test environment when executed`` =
         |> silentlyRunAllTests
 
         monitor
-        |> noTeardownFunctionsShouldHaveBeenCalled
+        |> verifyNoTeardownFunctionsShouldHaveBeenCalled
     )
     
 let ``Not call teardown when executed`` =
@@ -145,7 +145,7 @@ let ``Not call teardown when executed`` =
         |> silentlyRunAllTests
 
         monitor
-        |> noTeardownFunctionsShouldHaveBeenCalled
+        |> verifyNoTeardownFunctionsShouldHaveBeenCalled
     )
 
 let ``Test Cases`` = feature.GetTests ()

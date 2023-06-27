@@ -123,11 +123,11 @@ let ``Call Test when executed`` =
         |> Should.PassAllOf [
             numberOfTimesTestFunctionWasCalled >> Should.BeEqualTo 3
             
-            allTestFunctionShouldHaveBeenCalledWithDataOf data
+            verifyAllTestFunctionShouldHaveBeenCalledWithDataOf data
             
-            allTestFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf featureSetupValue
+            verifyAllTestFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf featureSetupValue
             
-            noTestWasCalledWithATestSetupValue
+            verifyNoTestWasCalledWithATestSetupValue
         ]
         |> withMessage "Test was not called"
     )
@@ -143,11 +143,11 @@ let ``Call Test with return value of setup when executed`` =
         |> Should.PassAllOf [
             numberOfTimesTestFunctionWasCalled >> Should.BeEqualTo 3
             
-            allTestFunctionShouldHaveBeenCalledWithDataOf data
+            verifyAllTestFunctionShouldHaveBeenCalledWithDataOf data
             
-            allTestFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf featureSetupValue
+            verifyAllTestFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf featureSetupValue
         
-            noTestWasCalledWithATestSetupValue
+            verifyNoTestWasCalledWithATestSetupValue
         ]
         |> withMessage "Test was not called"
     )

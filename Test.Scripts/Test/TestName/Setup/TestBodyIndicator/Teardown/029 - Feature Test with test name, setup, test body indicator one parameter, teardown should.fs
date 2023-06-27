@@ -45,7 +45,7 @@ let ``Call setup when executed`` =
         |> silentlyRunTest
 
         monitor
-        |> allSetupFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf featureSetupValue
+        |> verifyAllSetupFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf featureSetupValue
     )
 
 let ``Call Test when executed`` =
@@ -59,11 +59,11 @@ let ``Call Test when executed`` =
         |> Should.PassAllOf [
             numberOfTimesTestFunctionWasCalled >> Should.BeEqualTo 1 >> withFailureComment "Incorrect number of tests"
 
-            noTestWasCalledWithData
+            verifyNoTestWasCalledWithData
 
-            allTestFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf featureSetupValue
+            verifyAllTestFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf featureSetupValue
 
-            allTestFunctionShouldHaveBeenCalledWithTestSetupValueOf testSetupValue
+            verifyAllTestFunctionShouldHaveBeenCalledWithTestSetupValueOf testSetupValue
         ]
         |> withMessage "Test was not called"
     )
@@ -76,7 +76,7 @@ let ``Not call Test with test environment when executed`` =
         |> silentlyRunTest
 
         monitor
-        |> noTestWasCalledWithTestEnvironment
+        |> verifyNoTestWasCalledWithTestEnvironment
     )
     
 let ``Call teardown when executed`` =

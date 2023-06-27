@@ -126,9 +126,9 @@ let ``Call Test when executed`` =
             
             testFunctionDataParameterValues >> Should.BeEqualTo (data |> List.map Some)
             
-            allTestFunctionShouldHaveBeenCalledWithTestSetupValueOf setupValue
+            verifyAllTestFunctionShouldHaveBeenCalledWithTestSetupValueOf setupValue
             
-            allTestFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf featureSetupValue
+            verifyAllTestFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf featureSetupValue
         ]
         |> withMessage "Test was not called"
     )
@@ -146,9 +146,9 @@ let ``Call Test with return value of setup when executed`` =
            
            testFunctionDataParameterValues >> Should.BeEqualTo (data |> List.map Some)
            
-           allTestFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf featureSetupValue
+           verifyAllTestFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf featureSetupValue
            
-           allTestFunctionShouldHaveBeenCalledWithTestSetupValueOf setupValue
+           verifyAllTestFunctionShouldHaveBeenCalledWithTestSetupValueOf setupValue
        ]
        |> withMessage "Test was not called"
    )

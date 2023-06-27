@@ -116,9 +116,9 @@ let ``Call Test when executed`` =
 
             testFunctionDataParameterValues >> Should.BeEqualTo (data |> List.map Some)
 
-            allTestFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf featureSetupValue
+            verifyAllTestFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf featureSetupValue
 
-            allTestFunctionShouldHaveBeenCalledWithTestSetupValueOf setupValue
+            verifyAllTestFunctionShouldHaveBeenCalledWithTestSetupValueOf setupValue
         ]
         |> withMessage "Test was not called"
     )
@@ -131,7 +131,7 @@ let ``Not call Test with test environment when executed`` =
         |> silentlyRunAllTests
 
         monitor
-        |> noTestWasCalledWithTestEnvironment
+        |> verifyNoTestWasCalledWithTestEnvironment
     )
 
 let ``Call teardown when executed`` =

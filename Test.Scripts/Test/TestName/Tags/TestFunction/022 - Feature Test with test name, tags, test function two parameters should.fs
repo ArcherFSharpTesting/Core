@@ -60,9 +60,9 @@ let ``Call Test when executed`` =
         |> Should.PassAllOf [
             hasTestFunctionBeenCalled >> Should.BeTrue >> withFailureComment "Test function not called"
 
-            allTestFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf featureSetupValue
+            verifyAllTestFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf featureSetupValue
 
-            noTestWasCalledWithATestSetupValue
+            verifyNoTestWasCalledWithATestSetupValue
         ]
         |> withMessage "Test was not called"
     )

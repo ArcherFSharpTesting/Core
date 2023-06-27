@@ -85,7 +85,7 @@ let ``Pass the result of the setup supplied to feature.Test to the test action``
             |> silentlyRunExecutor
             
             monitor
-            |> allTestFunctionShouldHaveBeenCalledWithTestSetupValueOf expected
+            |> verifyAllTestFunctionShouldHaveBeenCalledWithTestSetupValueOf expected
         )
     )
     
@@ -105,7 +105,7 @@ let ``Pass the result of the setup supplied to the feature to the setup supplied
         
         monitor
         |> Should.PassAllOf [
-            allTestFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf expectedValue
+            verifyAllTestFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf expectedValue
         ]
     )
     

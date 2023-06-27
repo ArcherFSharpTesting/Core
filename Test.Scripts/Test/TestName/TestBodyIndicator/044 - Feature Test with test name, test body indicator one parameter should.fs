@@ -1,4 +1,4 @@
-module Archer.Arrows.Tests.Test.TestName.TestBodyIndicator.``043 - Feature Test with test name, test body indicator two parameters should``
+module Archer.Arrows.Tests.Test.TestName.TestBodyIndicator.``044 - Feature Test with test name, test body indicator one parameter should``
 
 open System
 open Archer
@@ -24,7 +24,7 @@ let private getContainerName (test: ITest) =
 let ``Create a valid ITest`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
         let (_, test), testName, (path, fileName, lineNumber) =
-            TestBuilder.BuildTestWithTestNameTestBodyTwoParameters testFeature
+            TestBuilder.BuildTestWithTestNameTestBodyOneParameter testFeature
 
         test
         |> Should.PassAllOf [
@@ -39,7 +39,7 @@ let ``Create a valid ITest`` =
 
 let ``Call Test when executed`` =
     feature.Test (fun (featureSetupValue, testFeature: IFeature<string>) ->
-        let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameTestBodyTwoParameters testFeature
+        let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameTestBodyOneParameter testFeature
 
         test
         |> silentlyRunTest
@@ -59,32 +59,18 @@ let ``Call Test when executed`` =
 
 let ``Call Test with test environment when executed`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
-        let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameTestBodyTwoParameters testFeature
+        let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameTestBodyOneParameter testFeature
 
         test
         |> silentlyRunTest
 
-        let getValue v =
-            match v with
-            | Some value -> value
-            | _ -> failwith "No Value"
-
         monitor
-        |> testFunctionEnvironmentParameterValues
-        |> Should.PassAllOf [
-            ListShould.HaveLengthOf 1 >> withMessage "Incorrect number of calls to test"
-            ListShould.HaveAllValuesPassTestOf <@hasValue@>
-
-            ListShould.HaveAllValuesPassAllOf [
-                getValue >> (fun env -> env.ApiEnvironment.ApiName) >> Should.BeEqualTo "Archer.Arrows"
-                getValue >> (fun env -> env.TestInfo) >> Should.BeEqualTo test
-            ]
-        ]
+        |> verifyNoTestWasCalledWithTestEnvironment
     )
     
 let ``Call teardown when executed`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
-        let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameTestBodyTwoParameters testFeature
+        let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameTestBodyOneParameter testFeature
 
         test
         |> silentlyRunTest
