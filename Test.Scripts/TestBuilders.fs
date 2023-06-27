@@ -270,7 +270,7 @@ type TestBuilder =
     
         (monitor, test), (tags, testSetupValue, testName), (path, fileName, lineNumber)
 
-    //test name, tags, setup, test body indicator        
+    //test name, tags, setup, test body indicator
     static member BuildTestWithTestNameTagsSetupTestBodyTwoParameters (testFeature: IFeature<string>) =
         let monitor, (testName, tags, testSetupValue), (path, fileName, fullPath, lineNumber) = getTestParts ()
     
@@ -1618,6 +1618,43 @@ type TestBuilder =
                 Setup setup,
                 TestBody testBody,
                 Teardown teardown,
+                testName,
+                fullPath,
+                lineNumber
+            )
+    
+        (monitor, test), (tags, testSetupValue, testName), (path, fileName, lineNumber)
+        
+    // tags, setup, test body indicator
+    static member BuildTestWithTagsSetupTestBodyTwoParameters (testFeature: IFeature<string>) =
+        let monitor, (testName, tags, testSetupValue), (path, fileName, fullPath, lineNumber) = getTestParts ()
+    
+        let setup = monitor.FunctionSetupFeatureWith testSetupValue
+        let testBody = monitor.FunctionTestFeatureTwoParametersSuccess
+        
+        let test =
+            testFeature.Test (
+                TestTags tags,
+                Setup setup,
+                TestBody testBody,
+                testName,
+                fullPath,
+                lineNumber
+            )
+    
+        (monitor, test), (tags, testSetupValue, testName), (path, fileName, lineNumber)
+
+    static member BuildTestWithTagsSetupTestBodyOneParameter (testFeature: IFeature<string>) =
+        let monitor, (testName, tags, testSetupValue), (path, fileName, fullPath, lineNumber) = getTestParts ()
+    
+        let setup = monitor.FunctionSetupFeatureWith testSetupValue
+        let testBody = monitor.FunctionTestFeatureOneParameterSuccess
+        
+        let test =
+            testFeature.Test (
+                TestTags tags,
+                Setup setup,
+                TestBody testBody,
                 testName,
                 fullPath,
                 lineNumber
