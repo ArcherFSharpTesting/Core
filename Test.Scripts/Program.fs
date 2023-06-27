@@ -128,6 +128,7 @@ runner
     ``046 - Feature Test with test name, test function one parameter should``.``Test Cases``
     
     ``047 - Feature Test with tags, setup, data, test body indicator three parameters, teardown should``.``Test Cases``
+    ``048 - Feature Test with tags, setup, data, test body indicator two parameters, teardown should``.``Test Cases``
     
     ``Arrow Ignore``.``Test Cases``
 ]

@@ -1464,3 +1464,46 @@ type TestBuilder =
             )
     
         (monitor, tests), (tags, testSetupValue, data, testName), (path, fileName, lineNumber)
+    
+    static member BuildTestWithTagsSetupDataTestBodyTwoParametersTeardownNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
+        let monitor, (testNameRoot, testName), (tags, testSetupValue, data), (path, fileName, fullPath, lineNumber) =
+            getDataTestParts repeatDataValue
+    
+        let setup = monitor.FunctionSetupFeatureWith testSetupValue
+        let testBody = monitor.FunctionTestFeatureDataTwoParametersSuccess
+        let teardown = monitor.FunctionTeardownFeatureFromSetup
+        
+        let tests =
+            testFeature.Test (
+                TestTags tags,
+                Setup setup,
+                Data data,
+                TestBody testBody,
+                Teardown teardown,
+                testName,
+                fullPath,
+                lineNumber
+            )
+    
+        (monitor, tests), (tags, testSetupValue, data, testNameRoot), (path, fileName, lineNumber)
+        
+    static member BuildTestWithTagsSetupDataTestBodyTwoParametersTeardown (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
+        let monitor, (testName, _), (tags, testSetupValue, data), (path, fileName, fullPath, lineNumber) = getDataTestParts repeatDataValue
+    
+        let setup = monitor.FunctionSetupFeatureWith testSetupValue
+        let testBody = monitor.FunctionTestFeatureDataTwoParametersSuccess
+        let teardown = monitor.FunctionTeardownFeatureFromSetup
+        
+        let tests =
+            testFeature.Test (
+                TestTags tags,
+                Setup setup,
+                Data data,
+                TestBody testBody,
+                Teardown teardown,
+                testName,
+                fullPath,
+                lineNumber
+            )
+    
+        (monitor, tests), (tags, testSetupValue, data, testName), (path, fileName, lineNumber)
