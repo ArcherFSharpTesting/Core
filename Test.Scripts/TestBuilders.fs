@@ -56,13 +56,6 @@ let private getTestParts () =
 
     monitor, (testName, tags, testSetupValue), (path, fileName, fullPath, lineNumber)
     
-let private getTestPartsNoSetup () =
-    let testName = $"My %s{randomWord 5} Test"
-    
-    let monitor, (tags, _), (path, fileName, fullPath, lineNumber) = getMonitorBaseTestParts ()
-
-    monitor, (testName, tags), (path, fileName, fullPath, lineNumber)
-    
 type TestBuilder =
     static member GetTestNames (f: int -> 'a -> string) data =
         let [a; b; c] =
@@ -658,8 +651,8 @@ type TestBuilder =
         
     // test name, tags, test body indicator, teardown
     static member BuildTestWithTestNameTagsTestBodyTwoParametersTeardown (testFeature: IFeature<string>) =
-        let monitor, (testName, tags), (path, fileName, fullPath, lineNumber) =
-            getTestPartsNoSetup ()
+        let monitor, (testName, tags, _), (path, fileName, fullPath, lineNumber) =
+            getTestParts ()
 
         let testBody = monitor.FunctionTestPassThroughTwoParametersSuccess
         let teardown = monitor.FunctionTeardownPassThrough
@@ -677,8 +670,8 @@ type TestBuilder =
         (monitor, test), (tags, testName), (path, fileName, lineNumber)
         
     static member BuildTestWithTestNameTagsTestBodyOneParameterTeardown (testFeature: IFeature<string>) =
-        let monitor, (testName, tags), (path, fileName, fullPath, lineNumber) =
-            getTestPartsNoSetup ()
+        let monitor, (testName, tags, _), (path, fileName, fullPath, lineNumber) =
+            getTestParts ()
 
         let testBody = monitor.FunctionTestPassThroughOneParameterSuccess
         let teardown = monitor.FunctionTeardownPassThrough
@@ -697,8 +690,8 @@ type TestBuilder =
         
     // test name, tags, test body indicator
     static member BuildTestWithTestNameTagsTestBodyTwoParameters (testFeature: IFeature<string>) =
-        let monitor, (testName, tags), (path, fileName, fullPath, lineNumber) =
-            getTestPartsNoSetup ()
+        let monitor, (testName, tags, _), (path, fileName, fullPath, lineNumber) =
+            getTestParts ()
 
         let testBody = monitor.FunctionTestPassThroughTwoParametersSuccess
         
@@ -714,8 +707,8 @@ type TestBuilder =
         (monitor, test), (tags, testName), (path, fileName, lineNumber)
         
     static member BuildTestWithTestNameTagsTestBodyOneParameter (testFeature: IFeature<string>) =
-        let monitor, (testName, tags), (path, fileName, fullPath, lineNumber) =
-            getTestPartsNoSetup ()
+        let monitor, (testName, tags, _), (path, fileName, fullPath, lineNumber) =
+            getTestParts ()
 
         let testBody = monitor.FunctionTestPassThroughOneParameterSuccess
         
@@ -732,8 +725,8 @@ type TestBuilder =
 
     // test name, tags, test function
     static member BuildTestWithTestNameTagsTestFunctionTwoParameters (testFeature: IFeature<string>) =
-        let monitor, (testName, tags), (path, fileName, fullPath, lineNumber) =
-            getTestPartsNoSetup ()
+        let monitor, (testName, tags, _), (path, fileName, fullPath, lineNumber) =
+            getTestParts ()
 
         let testBody = monitor.FunctionTestPassThroughTwoParametersSuccess
         
@@ -749,8 +742,8 @@ type TestBuilder =
         (monitor, test), (tags, testName), (path, fileName, lineNumber)
         
     static member BuildTestWithTestNameTagsTestFunctionOneParameter (testFeature: IFeature<string>) =
-        let monitor, (testName, tags), (path, fileName, fullPath, lineNumber) =
-            getTestPartsNoSetup ()
+        let monitor, (testName, tags, _), (path, fileName, fullPath, lineNumber) =
+            getTestParts ()
 
         let testBody = monitor.FunctionTestPassThroughOneParameterSuccess
         
@@ -1332,8 +1325,8 @@ type TestBuilder =
     
     // test name, test body indicator, teardown
     static member BuildTestWithTestNameTestBodyTwoParametersTearDown (testFeature: IFeature<string>) =
-        let monitor, (testName, _), (path, fileName, fullPath, lineNumber) =
-            getTestPartsNoSetup ()
+        let monitor, (testName, _, _), (path, fileName, fullPath, lineNumber) =
+            getTestParts ()
     
         let testBody = monitor.FunctionTestPassThroughTwoParametersSuccess
         let teardown = monitor.FunctionTeardownPassThrough
@@ -1350,8 +1343,8 @@ type TestBuilder =
         (monitor, test), testName, (path, fileName, lineNumber)
 
     static member BuildTestWithTestNameTestBodyOneParameterTearDown (testFeature: IFeature<string>) =
-        let monitor, (testName, _), (path, fileName, fullPath, lineNumber) =
-            getTestPartsNoSetup ()
+        let monitor, (testName, _, _), (path, fileName, fullPath, lineNumber) =
+            getTestParts ()
     
         let testBody = monitor.FunctionTestPassThroughOneParameterSuccess
         let teardown = monitor.FunctionTeardownPassThrough
@@ -1369,8 +1362,8 @@ type TestBuilder =
     
     // test name, test body indicator
     static member BuildTestWithTestNameTestBodyTwoParameters (testFeature: IFeature<string>) =
-        let monitor, (testName, _), (path, fileName, fullPath, lineNumber) =
-            getTestPartsNoSetup ()
+        let monitor, (testName, _, _), (path, fileName, fullPath, lineNumber) =
+            getTestParts ()
     
         let testBody = monitor.FunctionTestPassThroughTwoParametersSuccess
         
@@ -1385,8 +1378,8 @@ type TestBuilder =
         (monitor, test), testName, (path, fileName, lineNumber)
 
     static member BuildTestWithTestNameTestBodyOneParameter (testFeature: IFeature<string>) =
-        let monitor, (testName, _), (path, fileName, fullPath, lineNumber) =
-            getTestPartsNoSetup ()
+        let monitor, (testName, _, _), (path, fileName, fullPath, lineNumber) =
+            getTestParts ()
     
         let testBody = monitor.FunctionTestPassThroughOneParameterSuccess
         
