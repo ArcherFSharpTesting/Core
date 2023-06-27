@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <Compile Include="TestDoubles.fs" />
+    <Compile Include="TestMonitor.fs" />
     <Compile Include="TestBuilders.fs" />
     <Compile Include="ExecuteHelper.fs" />
     <Compile Include="RawTestObjects\Feature Should.fs" />
