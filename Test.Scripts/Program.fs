@@ -132,6 +132,7 @@ runner
     ``048 - Feature Test with tags, setup, data, test body indicator two parameters, teardown should``.``Test Cases``
     
     ``049 - Feature Test with tags, setup, data, test body indicator three parameters should``.``Test Cases``
+    ``050 - Feature Test with tags, setup, data, test body indicator two parameters should``.``Test Cases``
     
     ``Arrow Ignore``.``Test Cases``
 ]
