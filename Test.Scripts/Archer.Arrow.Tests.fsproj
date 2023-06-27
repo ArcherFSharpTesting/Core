@@ -72,6 +72,7 @@
     <Compile Include="Test\Tags\Setup\TestBodyIndicator\Teardown\052 - Feature Test with tags, setup, test body indicator one parameter, teardown should.fs" />
     <Compile Include="Test\Tags\Setup\TestBodyIndicator\053 - Feature Test with tags, setup, test body indicator two parameters should.fs" />
     <Compile Include="Test\Tags\Setup\TestBodyIndicator\054 - Feature Test with tags, setup, test body indicator one parameter should.fs" />
+    <Compile Include="Test\Tags\Data\TestBodyIndicator\Teardown\055 - Feature Test with tags, data, test body indicator three parameters, teardown should.fs" />
     <Compile Include="Arrow NewFeature.fs" />
     <Compile Include="Arrow Ignorefs.fs" />
     <Compile Include="Arrow NewFeature With Setup.fs" />
