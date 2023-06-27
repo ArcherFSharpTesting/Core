@@ -40,14 +40,14 @@ let private getMonitorBaseTestParts () =
     monitor, (tags, testSetupValue), (path, fileName, fullPath, lineNumber)
     
 let private getDataTestParts repeat =
-    let testNameBase = $"My %s{randomWord 5} Test"
-    let testName = $"%s{testNameBase} %%s"
+    let testNameRoot = $"My %s{randomWord 5} Test"
+    let testName = $"%s{testNameRoot} %%s"
     
     let monitor, (tags, testSetupValue), (path, fileName, fullPath, lineNumber) = getMonitorBaseTestParts ()
 
     let data = getData repeat
 
-    monitor, (testNameBase, testName), (tags, testSetupValue, data), (path, fileName, fullPath, lineNumber)
+    monitor, (testNameRoot, testName), (tags, testSetupValue, data), (path, fileName, fullPath, lineNumber)
     
 let private getTestParts () =
     let testName = $"My %s{randomWord 5} Test"
@@ -66,7 +66,7 @@ type TestBuilder =
         
     //test name, tags, setup, data, test body indicator three parameters, teardown
     static member BuildTestWithTestNameTagsSetupDataTestBodyThreeParametersTeardownNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
-        let monitor, (testNameBase, testName), (tags, testSetupValue, data), (path, fileName, fullPath, lineNumber) =
+        let monitor, (testNameRoot, testName), (tags, testSetupValue, data), (path, fileName, fullPath, lineNumber) =
             getDataTestParts repeatDataValue
     
         let setup = monitor.FunctionSetupFeatureWith testSetupValue
@@ -85,7 +85,7 @@ type TestBuilder =
                 lineNumber
             )
     
-        (monitor, tests), (tags, testSetupValue, data, testNameBase), (path, fileName, lineNumber)
+        (monitor, tests), (tags, testSetupValue, data, testNameRoot), (path, fileName, lineNumber)
         
     static member BuildTestWithTestNameTagsSetupDataTestBodyThreeParametersTeardown (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
         let monitor, (testName, _), (tags, testSetupValue, data), (path, fileName, fullPath, lineNumber) = getDataTestParts repeatDataValue
@@ -110,7 +110,7 @@ type TestBuilder =
         
     //test name, tags, setup, data, test body indicator three parameters
     static member BuildTestWithTestNameTagsSetupDataTestBodyThreeParametersNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
-        let monitor, (testNameBase, testName), (tags, testSetupValue, data), (path, fileName, fullPath, lineNumber) = getDataTestParts  repeatDataValue
+        let monitor, (testNameRoot, testName), (tags, testSetupValue, data), (path, fileName, fullPath, lineNumber) = getDataTestParts  repeatDataValue
     
         let setup = monitor.FunctionSetupFeatureWith testSetupValue
         let testBody = monitor.FunctionTestFeatureDataThreeParametersSuccess
@@ -126,7 +126,7 @@ type TestBuilder =
                 lineNumber
             )
     
-        (monitor, tests), (tags, testSetupValue, data, testNameBase), (path, fileName, lineNumber)
+        (monitor, tests), (tags, testSetupValue, data, testNameRoot), (path, fileName, lineNumber)
         
     static member BuildTestWithTestNameTagsSetupDataTestBodyThreeParameters (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
         let monitor, (testName, _), (tags, testSetupValue, data), (path, fileName, fullPath, lineNumber) = getDataTestParts repeatDataValue
@@ -147,9 +147,9 @@ type TestBuilder =
     
         (monitor, tests), (tags, testSetupValue, data, testName), (path, fileName, lineNumber)
         
-    //test name, tags, setup, data, test body indicator two parameters, teardown
+    //test name, tags, setup, data, test body indicator, teardown
     static member BuildTestWithTestNameTagsSetupDataTestBodyTwoParametersTeardownNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
-        let monitor, (testNameBase, testName), (tags, testSetupValue, data), (path, fileName, fullPath, lineNumber) =
+        let monitor, (testNameRoot, testName), (tags, testSetupValue, data), (path, fileName, fullPath, lineNumber) =
             getDataTestParts repeatDataValue
     
         let setup = monitor.FunctionSetupFeatureWith testSetupValue
@@ -168,7 +168,7 @@ type TestBuilder =
                 lineNumber
             )
     
-        (monitor, tests), (tags, testSetupValue, data, testNameBase), (path, fileName, lineNumber)
+        (monitor, tests), (tags, testSetupValue, data, testNameRoot), (path, fileName, lineNumber)
         
     static member BuildTestWithTestNameTagsSetupDataTestBodyTwoParametersTeardown (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
         let monitor, (testName, _), (tags, testSetupValue, data), (path, fileName, fullPath, lineNumber) = getDataTestParts repeatDataValue
@@ -193,7 +193,7 @@ type TestBuilder =
         
     //test name, tags, setup, data, test body indicator two parameters
     static member BuildTestWithTestNameTagsSetupDataTestBodyTwoParametersNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
-        let monitor, (testNameBase, testName), (tags, testSetupValue, data), (path, fileName, fullPath, lineNumber) =
+        let monitor, (testNameRoot, testName), (tags, testSetupValue, data), (path, fileName, fullPath, lineNumber) =
             getDataTestParts repeatDataValue
     
         let setup = monitor.FunctionSetupFeatureWith testSetupValue
@@ -210,7 +210,7 @@ type TestBuilder =
                 lineNumber
             )
     
-        (monitor, tests), (tags, testSetupValue, data, testNameBase), (path, fileName, lineNumber)
+        (monitor, tests), (tags, testSetupValue, data, testNameRoot), (path, fileName, lineNumber)
         
     static member BuildTestWithTestNameTagsSetupDataTestBodyTwoParameters (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
         let monitor, (testName, _), (tags, testSetupValue, data), (path, fileName, fullPath, lineNumber) = getDataTestParts repeatDataValue
@@ -311,7 +311,7 @@ type TestBuilder =
         
     // test name, tags, data, test body indicator, teardown
     static member BuildTestWithTestNameTagsDataTestBodyThreeParametersTeardownNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
-        let monitor, (testNameBase, testName), (tags, _, data), (path, fileName, fullPath, lineNumber) =
+        let monitor, (testNameRoot, testName), (tags, _, data), (path, fileName, fullPath, lineNumber) =
             getDataTestParts repeatDataValue
     
         let testBody = monitor.FunctionTestPassThroughDataThreeParametersSuccess
@@ -328,7 +328,7 @@ type TestBuilder =
                 lineNumber
             )
     
-        (monitor, tests), (tags, data, testNameBase), (path, fileName, lineNumber)
+        (monitor, tests), (tags, data, testNameRoot), (path, fileName, lineNumber)
         
     static member BuildTestWithTestNameTagsDataTestBodyThreeParametersTeardown (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
         let monitor, (testName, _), (tags, _, data), (path, fileName, fullPath, lineNumber) =
@@ -351,7 +351,7 @@ type TestBuilder =
         (monitor, tests), (tags, data, testName), (path, fileName, lineNumber)
         
     static member BuildTestWithTestNameTagsDataTestBodyTwoParametersTeardownNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
-        let monitor, (testNameBase, testName), (tags, _, data), (path, fileName, fullPath, lineNumber) =
+        let monitor, (testNameRoot, testName), (tags, _, data), (path, fileName, fullPath, lineNumber) =
             getDataTestParts repeatDataValue
 
         let testBody = monitor.FunctionTestPassThroughDataTwoParametersSuccess
@@ -368,7 +368,7 @@ type TestBuilder =
                 lineNumber
             )
 
-        (monitor, tests), (tags, data, testNameBase), (path, fileName, lineNumber)
+        (monitor, tests), (tags, data, testNameRoot), (path, fileName, lineNumber)
         
     static member BuildTestWithTestNameTagsDataTestBodyTwoParametersTeardown (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
         let monitor, (testName, _), (tags, _, data), (path, fileName, fullPath, lineNumber) =
@@ -391,7 +391,7 @@ type TestBuilder =
         (monitor, tests), (tags, data, testName), (path, fileName, lineNumber)
         
     static member BuildTestWithTestNameTagsDataTestBodyOneParameterTeardownNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
-        let monitor, (testNameBase, testName), (tags, _, data), (path, fileName, fullPath, lineNumber) =
+        let monitor, (testNameRoot, testName), (tags, _, data), (path, fileName, fullPath, lineNumber) =
             getDataTestParts repeatDataValue
 
         let testBody = monitor.FunctionTestDataOneParameterSuccess
@@ -408,7 +408,7 @@ type TestBuilder =
                 lineNumber
             )
 
-        (monitor, tests), (tags, data, testNameBase), (path, fileName, lineNumber)
+        (monitor, tests), (tags, data, testNameRoot), (path, fileName, lineNumber)
         
     static member BuildTestWithTestNameTagsDataTestBodyOneParameterTeardown (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
         let monitor, (testName, _), (tags, _, data), (path, fileName, fullPath, lineNumber) =
@@ -432,7 +432,7 @@ type TestBuilder =
         
     // test name, tags, data, test body indicator
     static member BuildTestWithTestNameTagsDataTestBodyThreeParametersNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
-        let monitor, (testNameBase, testName), (tags, _, data), (path, fileName, fullPath, lineNumber) =
+        let monitor, (testNameRoot, testName), (tags, _, data), (path, fileName, fullPath, lineNumber) =
             getDataTestParts repeatDataValue
 
         let testBody = monitor.FunctionTestPassThroughDataThreeParametersSuccess
@@ -447,7 +447,7 @@ type TestBuilder =
                 lineNumber
             )
 
-        (monitor, tests), (tags, data, testNameBase), (path, fileName, lineNumber)
+        (monitor, tests), (tags, data, testNameRoot), (path, fileName, lineNumber)
     
     static member BuildTestWithTestNameTagsDataTestBodyThreeParameters (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
         let monitor, (testName, _), (tags, _, data), (path, fileName, fullPath, lineNumber) =
@@ -468,7 +468,7 @@ type TestBuilder =
         (monitor, tests), (tags, data, testName), (path, fileName, lineNumber)
         
     static member BuildTestWithTestNameTagsDataTestBodyTwoParametersNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
-        let monitor, (testNameBase, testName), (tags, _, data), (path, fileName, fullPath, lineNumber) =
+        let monitor, (testNameRoot, testName), (tags, _, data), (path, fileName, fullPath, lineNumber) =
             getDataTestParts repeatDataValue
 
         let testBody = monitor.FunctionTestPassThroughDataTwoParametersSuccess
@@ -483,7 +483,7 @@ type TestBuilder =
                 lineNumber
             )
 
-        (monitor, tests), (tags, data, testNameBase), (path, fileName, lineNumber)
+        (monitor, tests), (tags, data, testNameRoot), (path, fileName, lineNumber)
     
     static member BuildTestWithTestNameTagsDataTestBodyTwoParameters (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
         let monitor, (testName, _), (tags, _, data), (path, fileName, fullPath, lineNumber) =
@@ -504,7 +504,7 @@ type TestBuilder =
         (monitor, tests), (tags, data, testName), (path, fileName, lineNumber)
         
     static member BuildTestWithTestNameTagsDataTestBodyOneParameterNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
-        let monitor, (testNameBase, testName), (tags, _, data), (path, fileName, fullPath, lineNumber) =
+        let monitor, (testNameRoot, testName), (tags, _, data), (path, fileName, fullPath, lineNumber) =
             getDataTestParts repeatDataValue
 
         let testBody = monitor.FunctionTestDataOneParameterSuccess
@@ -519,7 +519,7 @@ type TestBuilder =
                 lineNumber
             )
 
-        (monitor, tests), (tags, data, testNameBase), (path, fileName, lineNumber)
+        (monitor, tests), (tags, data, testNameRoot), (path, fileName, lineNumber)
     
     static member BuildTestWithTestNameTagsDataTestBodyOneParameter (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
         let monitor, (testName, _), (tags, _, data), (path, fileName, fullPath, lineNumber) =
@@ -541,7 +541,7 @@ type TestBuilder =
         
     //test name, tags, data, test function
     static member BuildTestWithTestNameTagsDataTestFunctionThreeParametersNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
-        let monitor, (testNameBase, testName), (tags, _, data), (path, fileName, fullPath, lineNumber) =
+        let monitor, (testNameRoot, testName), (tags, _, data), (path, fileName, fullPath, lineNumber) =
             getDataTestParts repeatDataValue
 
         let testBody = monitor.FunctionTestPassThroughDataThreeParametersSuccess
@@ -556,7 +556,7 @@ type TestBuilder =
                 lineNumber
             )
 
-        (monitor, tests), (tags, data, testNameBase), (path, fileName, lineNumber)
+        (monitor, tests), (tags, data, testNameRoot), (path, fileName, lineNumber)
         
     static member BuildTestWithTestNameTagsDataTestFunctionThreeParameters (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
         let monitor, (testName, _), (tags, _, data), (path, fileName, fullPath, lineNumber) =
@@ -577,7 +577,7 @@ type TestBuilder =
         (monitor, tests), (tags, data, testName), (path, fileName, lineNumber)
 
     static member BuildTestWithTestNameTagsDataTestFunctionTwoParametersNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
-        let monitor, (testNameBase, testName), (tags, _, data), (path, fileName, fullPath, lineNumber) =
+        let monitor, (testNameRoot, testName), (tags, _, data), (path, fileName, fullPath, lineNumber) =
             getDataTestParts repeatDataValue
 
         let testBody = monitor.FunctionTestPassThroughDataTwoParametersSuccess
@@ -592,7 +592,7 @@ type TestBuilder =
                 lineNumber
             )
 
-        (monitor, tests), (tags, data, testNameBase), (path, fileName, lineNumber)
+        (monitor, tests), (tags, data, testNameRoot), (path, fileName, lineNumber)
 
     static member BuildTestWithTestNameTagsDataTestFunctionTwoParameters (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
         let monitor, (testName, _), (tags, _, data), (path, fileName, fullPath, lineNumber) =
@@ -613,7 +613,7 @@ type TestBuilder =
         (monitor, tests), (tags, data, testName), (path, fileName, lineNumber)
         
     static member BuildTestWithTestNameTagsDataTestFunctionOneParameterNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
-        let monitor, (testNameBase, testName), (tags, _, data), (path, fileName, fullPath, lineNumber) =
+        let monitor, (testNameRoot, testName), (tags, _, data), (path, fileName, fullPath, lineNumber) =
             getDataTestParts repeatDataValue
 
         let testBody = monitor.FunctionTestDataOneParameterSuccess
@@ -628,7 +628,7 @@ type TestBuilder =
                 lineNumber
             )
 
-        (monitor, tests), (tags, data, testNameBase), (path, fileName, lineNumber)
+        (monitor, tests), (tags, data, testNameRoot), (path, fileName, lineNumber)
 
     static member BuildTestWithTestNameTagsDataTestFunctionOneParameter (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
         let monitor, (testName, _), (tags, _, data), (path, fileName, fullPath, lineNumber) =
@@ -759,7 +759,7 @@ type TestBuilder =
 
     // test name, setup, data, test body indicator, teardown
     static member BuildTestWithTestNameSetupDataTestBodyThreeParametersTeardownNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
-        let monitor, (testNameBase, testName), (_, testSetupValue, data), (path, fileName, fullPath, lineNumber) =
+        let monitor, (testNameRoot, testName), (_, testSetupValue, data), (path, fileName, fullPath, lineNumber) =
             getDataTestParts repeatDataValue
 
         let setup = monitor.FunctionSetupFeatureWith  testSetupValue
@@ -777,7 +777,7 @@ type TestBuilder =
                 lineNumber
             )
 
-        (monitor, tests), (testSetupValue, data, testNameBase), (path, fileName, lineNumber)
+        (monitor, tests), (testSetupValue, data, testNameRoot), (path, fileName, lineNumber)
         
     static member BuildTestWithTestNameSetupDataTestBodyThreeParametersTeardown (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
         let monitor, (testName, _), (_, testSetupValue, data), (path, fileName, fullPath, lineNumber) =
@@ -801,7 +801,7 @@ type TestBuilder =
         (monitor, tests), (testSetupValue, data, testName), (path, fileName, lineNumber)
 
     static member BuildTestWithTestNameSetupDataTestBodyTwoParametersTeardownNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
-        let monitor, (testNameBase, testName), (_, testSetupValue, data), (path, fileName, fullPath, lineNumber) =
+        let monitor, (testNameRoot, testName), (_, testSetupValue, data), (path, fileName, fullPath, lineNumber) =
             getDataTestParts repeatDataValue
 
         let setup = monitor.FunctionSetupFeatureWith  testSetupValue
@@ -819,7 +819,7 @@ type TestBuilder =
                 lineNumber
             )
 
-        (monitor, tests), (testSetupValue, data, testNameBase), (path, fileName, lineNumber)
+        (monitor, tests), (testSetupValue, data, testNameRoot), (path, fileName, lineNumber)
 
     static member BuildTestWithTestNameSetupDataTestBodyTwoParametersTeardown (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
         let monitor, (testName, _), (_, testSetupValue, data), (path, fileName, fullPath, lineNumber) =
@@ -844,7 +844,7 @@ type TestBuilder =
 
     // test name, setup, data, test body indicator
     static member BuildTestWithTestNameSetupDataTestBodyThreeParametersNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
-        let monitor, (testNameBase, testName), (_, testSetupValue, data), (path, fileName, fullPath, lineNumber) =
+        let monitor, (testNameRoot, testName), (_, testSetupValue, data), (path, fileName, fullPath, lineNumber) =
             getDataTestParts repeatDataValue
     
         let setup = monitor.FunctionSetupFeatureWith  testSetupValue
@@ -860,7 +860,7 @@ type TestBuilder =
                 lineNumber
             )
     
-        (monitor, tests), (testSetupValue, data, testNameBase), (path, fileName, lineNumber)
+        (monitor, tests), (testSetupValue, data, testNameRoot), (path, fileName, lineNumber)
         
     static member BuildTestWithTestNameSetupDataTestBodyThreeParameters (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
         let monitor, (testName, _), (_, testSetupValue, data), (path, fileName, fullPath, lineNumber) =
@@ -882,7 +882,7 @@ type TestBuilder =
         (monitor, tests), (testSetupValue, data, testName), (path, fileName, lineNumber)
 
     static member BuildTestWithTestNameSetupDataTestBodyTwoParametersNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
-        let monitor, (testNameBase, testName), (_, testSetupValue, data), (path, fileName, fullPath, lineNumber) =
+        let monitor, (testNameRoot, testName), (_, testSetupValue, data), (path, fileName, fullPath, lineNumber) =
             getDataTestParts repeatDataValue
     
         let setup = monitor.FunctionSetupFeatureWith  testSetupValue
@@ -898,7 +898,7 @@ type TestBuilder =
                 lineNumber
             )
     
-        (monitor, tests), (testSetupValue, data, testNameBase), (path, fileName, lineNumber)
+        (monitor, tests), (testSetupValue, data, testNameRoot), (path, fileName, lineNumber)
 
     static member BuildTestWithTestNameSetupDataTestBodyTwoParameters (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
         let monitor, (testName, _), (_, testSetupValue, data), (path, fileName, fullPath, lineNumber) =
@@ -999,7 +999,7 @@ type TestBuilder =
 
     //test name, data, test body indicator, teardown
     static member BuildTestWithTestNameDataTestBodyThreeParametersTeardownNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
-        let monitor, (testNameBase, testName), (_, _, data), (path, fileName, fullPath, lineNumber) =
+        let monitor, (testNameRoot, testName), (_, _, data), (path, fileName, fullPath, lineNumber) =
             getDataTestParts repeatDataValue
     
         let testBody = monitor.FunctionTestPassThroughDataThreeParametersSuccess
@@ -1015,7 +1015,7 @@ type TestBuilder =
                 lineNumber
             )
     
-        (monitor, tests), (data, testNameBase), (path, fileName, lineNumber)
+        (monitor, tests), (data, testNameRoot), (path, fileName, lineNumber)
         
     static member BuildTestWithTestNameDataTestBodyThreeParametersTeardown (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
         let monitor, (testName, _), (_, _, data), (path, fileName, fullPath, lineNumber) =
@@ -1037,7 +1037,7 @@ type TestBuilder =
         (monitor, tests), (data, testName), (path, fileName, lineNumber)
 
     static member BuildTestWithTestNameDataTestBodyTwoParametersTeardownNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
-        let monitor, (testNameBase, testName), (_, _, data), (path, fileName, fullPath, lineNumber) =
+        let monitor, (testNameRoot, testName), (_, _, data), (path, fileName, fullPath, lineNumber) =
             getDataTestParts repeatDataValue
     
         let testBody = monitor.FunctionTestPassThroughDataThreeParametersSuccess
@@ -1053,7 +1053,7 @@ type TestBuilder =
                 lineNumber
             )
     
-        (monitor, tests), (data, testNameBase), (path, fileName, lineNumber)
+        (monitor, tests), (data, testNameRoot), (path, fileName, lineNumber)
 
     static member BuildTestWithTestNameDataTestBodyTwoParametersTeardown (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
         let monitor, (testName, _), (_, _, data), (path, fileName, fullPath, lineNumber) =
@@ -1075,7 +1075,7 @@ type TestBuilder =
         (monitor, tests), (data, testName), (path, fileName, lineNumber)
 
     static member BuildTestWithTestNameDataTestBodyOneParameterTeardownNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
-        let monitor, (testNameBase, testName), (_, _, data), (path, fileName, fullPath, lineNumber) =
+        let monitor, (testNameRoot, testName), (_, _, data), (path, fileName, fullPath, lineNumber) =
             getDataTestParts repeatDataValue
     
         let testBody = monitor.FunctionTestDataOneParameterSuccess
@@ -1091,7 +1091,7 @@ type TestBuilder =
                 lineNumber
             )
     
-        (monitor, tests), (data, testNameBase), (path, fileName, lineNumber)
+        (monitor, tests), (data, testNameRoot), (path, fileName, lineNumber)
 
     static member BuildTestWithTestNameDataTestBodyOneParameterTeardown (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
         let monitor, (testName, _), (_, _, data), (path, fileName, fullPath, lineNumber) =
@@ -1114,7 +1114,7 @@ type TestBuilder =
         
     // test name, data, test body indicator
     static member BuildTestWithTestNameDataTestBodyThreeParametersNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
-        let monitor, (testNameBase, testName), (_, _, data), (path, fileName, fullPath, lineNumber) =
+        let monitor, (testNameRoot, testName), (_, _, data), (path, fileName, fullPath, lineNumber) =
             getDataTestParts repeatDataValue
     
         let testBody = monitor.FunctionTestPassThroughDataThreeParametersSuccess
@@ -1128,7 +1128,7 @@ type TestBuilder =
                 lineNumber
             )
     
-        (monitor, tests), (data, testNameBase), (path, fileName, lineNumber)
+        (monitor, tests), (data, testNameRoot), (path, fileName, lineNumber)
 
     static member BuildTestWithTestNameDataTestBodyThreeParameters (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
         let monitor, (testName, _), (_, _, data), (path, fileName, fullPath, lineNumber) =
@@ -1148,7 +1148,7 @@ type TestBuilder =
         (monitor, tests), (data, testName), (path, fileName, lineNumber)
 
     static member BuildTestWithTestNameDataTestBodyTwoParametersNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
-        let monitor, (testNameBase, testName), (_, _, data), (path, fileName, fullPath, lineNumber) =
+        let monitor, (testNameRoot, testName), (_, _, data), (path, fileName, fullPath, lineNumber) =
             getDataTestParts repeatDataValue
     
         let testBody = monitor.FunctionTestPassThroughDataTwoParametersSuccess
@@ -1162,7 +1162,7 @@ type TestBuilder =
                 lineNumber
             )
     
-        (monitor, tests), (data, testNameBase), (path, fileName, lineNumber)
+        (monitor, tests), (data, testNameRoot), (path, fileName, lineNumber)
 
     static member BuildTestWithTestNameDataTestBodyTwoParameters (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
         let monitor, (testName, _), (_, _, data), (path, fileName, fullPath, lineNumber) =
@@ -1182,7 +1182,7 @@ type TestBuilder =
         (monitor, tests), (data, testName), (path, fileName, lineNumber)
 
     static member BuildTestWithTestNameDataTestBodyOneParameterNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
-        let monitor, (testNameBase, testName), (_, _, data), (path, fileName, fullPath, lineNumber) =
+        let monitor, (testNameRoot, testName), (_, _, data), (path, fileName, fullPath, lineNumber) =
             getDataTestParts repeatDataValue
     
         let testBody = monitor.FunctionTestDataOneParameterSuccess
@@ -1196,7 +1196,7 @@ type TestBuilder =
                 lineNumber
             )
     
-        (monitor, tests), (data, testNameBase), (path, fileName, lineNumber)
+        (monitor, tests), (data, testNameRoot), (path, fileName, lineNumber)
 
     static member BuildTestWithTestNameDataTestBodyOneParameter (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
         let monitor, (testName, _), (_, _, data), (path, fileName, fullPath, lineNumber) =
@@ -1217,7 +1217,7 @@ type TestBuilder =
         
     // test name, data, test function
     static member BuildTestWithTestNameDataTestFunctionThreeParametersNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
-        let monitor, (testNameBase, testName), (_, _, data), (path, fileName, fullPath, lineNumber) =
+        let monitor, (testNameRoot, testName), (_, _, data), (path, fileName, fullPath, lineNumber) =
             getDataTestParts repeatDataValue
     
         let testBody = monitor.FunctionTestPassThroughDataThreeParametersSuccess
@@ -1231,7 +1231,7 @@ type TestBuilder =
                 lineNumber
             )
     
-        (monitor, tests), (data, testNameBase), (path, fileName, lineNumber)
+        (monitor, tests), (data, testNameRoot), (path, fileName, lineNumber)
         
     static member BuildTestWithTestNameDataTestFunctionThreeParameters (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
         let monitor, (testName, _), (_, _, data), (path, fileName, fullPath, lineNumber) =
@@ -1251,7 +1251,7 @@ type TestBuilder =
         (monitor, tests), (data, testName), (path, fileName, lineNumber)
         
     static member BuildTestWithTestNameDataTestFunctionTwoParametersNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
-        let monitor, (testNameBase, testName), (_, _, data), (path, fileName, fullPath, lineNumber) =
+        let monitor, (testNameRoot, testName), (_, _, data), (path, fileName, fullPath, lineNumber) =
             getDataTestParts repeatDataValue
     
         let testBody = monitor.FunctionTestPassThroughDataTwoParametersSuccess
@@ -1265,7 +1265,7 @@ type TestBuilder =
                 lineNumber
             )
     
-        (monitor, tests), (data, testNameBase), (path, fileName, lineNumber)
+        (monitor, tests), (data, testNameRoot), (path, fileName, lineNumber)
         
     static member BuildTestWithTestNameDataTestFunctionTwoParameters (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
         let monitor, (testName, _), (_, _, data), (path, fileName, fullPath, lineNumber) =
@@ -1285,7 +1285,7 @@ type TestBuilder =
         (monitor, tests), (data, testName), (path, fileName, lineNumber)
         
     static member BuildTestWithTestNameDataTestFunctionOneParameterNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
-        let monitor, (testNameBase, testName), (_, _, data), (path, fileName, fullPath, lineNumber) =
+        let monitor, (testNameRoot, testName), (_, _, data), (path, fileName, fullPath, lineNumber) =
             getDataTestParts repeatDataValue
     
         let testBody = monitor.FunctionTestDataOneParameterSuccess
@@ -1299,7 +1299,7 @@ type TestBuilder =
                 lineNumber
             )
     
-        (monitor, tests), (data, testNameBase), (path, fileName, lineNumber)
+        (monitor, tests), (data, testNameRoot), (path, fileName, lineNumber)
         
     static member BuildTestWithTestNameDataTestFunctionOneParameter (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
         let monitor, (testName, _), (_, _, data), (path, fileName, fullPath, lineNumber) =
@@ -1420,3 +1420,47 @@ type TestBuilder =
             )
 
         (monitor, test), testName, (path, fileName, lineNumber)
+        
+    // tags, setup, data, test body indicator, teardown
+    static member BuildTestWithTagsSetupDataTestBodyThreeParametersTeardownNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
+        let monitor, (testNameRoot, testName), (tags, testSetupValue, data), (path, fileName, fullPath, lineNumber) =
+            getDataTestParts repeatDataValue
+    
+        let setup = monitor.FunctionSetupFeatureWith testSetupValue
+        let testBody = monitor.FunctionTestFeatureDataThreeParametersSuccess
+        let teardown = monitor.FunctionTeardownFeatureFromSetup
+        
+        let tests =
+            testFeature.Test (
+                TestTags tags,
+                Setup setup,
+                Data data,
+                TestBody testBody,
+                Teardown teardown,
+                testName,
+                fullPath,
+                lineNumber
+            )
+    
+        (monitor, tests), (tags, testSetupValue, data, testNameRoot), (path, fileName, lineNumber)
+        
+    static member BuildTestWithTagsSetupDataTestBodyThreeParametersTeardown (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
+        let monitor, (testName, _), (tags, testSetupValue, data), (path, fileName, fullPath, lineNumber) = getDataTestParts repeatDataValue
+    
+        let setup = monitor.FunctionSetupFeatureWith testSetupValue
+        let testBody = monitor.FunctionTestFeatureDataThreeParametersSuccess
+        let teardown = monitor.FunctionTeardownFeatureFromSetup
+        
+        let tests =
+            testFeature.Test (
+                TestTags tags,
+                Setup setup,
+                Data data,
+                TestBody testBody,
+                Teardown teardown,
+                testName,
+                fullPath,
+                lineNumber
+            )
+    
+        (monitor, tests), (tags, testSetupValue, data, testName), (path, fileName, lineNumber)
