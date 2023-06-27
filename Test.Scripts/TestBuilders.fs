@@ -1507,3 +1507,42 @@ type TestBuilder =
             )
     
         (monitor, tests), (tags, testSetupValue, data, testName), (path, fileName, lineNumber)
+        
+    // tags, setup, data, test body indicator
+    static member BuildTestWithTagsSetupDataTestBodyThreeParametersNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
+        let monitor, (testNameRoot, testName), (tags, testSetupValue, data), (path, fileName, fullPath, lineNumber) = getDataTestParts  repeatDataValue
+    
+        let setup = monitor.FunctionSetupFeatureWith testSetupValue
+        let testBody = monitor.FunctionTestFeatureDataThreeParametersSuccess
+        
+        let tests =
+            testFeature.Test (
+                TestTags tags,
+                Setup setup,
+                Data data,
+                TestBody testBody,
+                testName,
+                fullPath,
+                lineNumber
+            )
+    
+        (monitor, tests), (tags, testSetupValue, data, testNameRoot), (path, fileName, lineNumber)
+        
+    static member BuildTestWithTagsSetupDataTestBodyThreeParameters (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
+        let monitor, (testName, _), (tags, testSetupValue, data), (path, fileName, fullPath, lineNumber) = getDataTestParts repeatDataValue
+    
+        let setup = monitor.FunctionSetupFeatureWith testSetupValue
+        let testBody = monitor.FunctionTestFeatureDataThreeParametersSuccess
+        
+        let tests =
+            testFeature.Test (
+                TestTags tags,
+                Setup setup,
+                Data data,
+                TestBody testBody,
+                testName,
+                fullPath,
+                lineNumber
+            )
+    
+        (monitor, tests), (tags, testSetupValue, data, testName), (path, fileName, lineNumber)
