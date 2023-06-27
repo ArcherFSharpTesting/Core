@@ -140,6 +140,7 @@ runner
     ``052 - Feature Test with tags, setup, test body indicator one parameter, teardown should``.``Test Cases``
     
     ``053 - Feature Test with tags, setup, test body indicator two parameters should``.``Test Cases``
+    ``054 - Feature Test with tags, setup, test body indicator one parameter should``.``Test Cases``
     
     ``Arrow Ignore``.``Test Cases``
 ]
