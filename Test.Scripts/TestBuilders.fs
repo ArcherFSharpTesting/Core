@@ -2291,22 +2291,22 @@ type TestBuilder =
     
         (monitor, test), (testSetupValue, testName), (path, fileName, lineNumber)
         
-    // static member BuildTestWithSetupTestBodyOneParameterTeardown (testFeature: IFeature<string>) =
-    //     let monitor, (testName, _, testSetupValue), (path, fileName, fullPath, lineNumber) =
-    //         getTestParts ()
-    //
-    //     let setup = monitor.FunctionSetupFeatureWith testSetupValue
-    //     let testBody = monitor.FunctionTestFeatureOneParameterSuccess
-    //     let teardown = monitor.FunctionTeardownFeatureFromSetup
-    //     
-    //     let test =
-    //         testFeature.Test (
-    //             Setup setup,
-    //             TestBody testBody,
-    //             Teardown teardown,
-    //             testName,
-    //             fullPath,
-    //             lineNumber
-    //         )
-    //
-    //     (monitor, test), (testSetupValue, testName), (path, fileName, lineNumber)
+    static member BuildTestWithSetupTestBodyOneParameterTeardown (testFeature: IFeature<string>) =
+        let monitor, (testName, _, testSetupValue), (path, fileName, fullPath, lineNumber) =
+            getTestParts ()
+    
+        let setup = monitor.FunctionSetupFeatureWith testSetupValue
+        let testBody = monitor.FunctionTestFeatureOneParameterSuccess
+        let teardown = monitor.FunctionTeardownFeatureFromSetup
+        
+        let test =
+            testFeature.Test (
+                Setup setup,
+                TestBody testBody,
+                Teardown teardown,
+                testName,
+                fullPath,
+                lineNumber
+            )
+    
+        (monitor, test), (testSetupValue, testName), (path, fileName, lineNumber)
