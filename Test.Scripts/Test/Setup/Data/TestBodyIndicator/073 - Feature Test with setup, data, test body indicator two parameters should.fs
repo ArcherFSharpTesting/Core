@@ -8,7 +8,7 @@ open Archer.Arrows.Tests
 open Archer.CoreTypes.InternalTypes
 open Archer.MicroLang.Verification
 
-let private feature = Arrow.Ignore (
+let private feature = Arrow.NewFeature (
     TestTags [
         Category "Feature"
         Category "Test"
@@ -24,7 +24,7 @@ let private getContainerName (test: ITest) =
 let ``Create a valid ITest`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
         let (_, tests), (_, data, testNameRoot), (path, fileName, lineNumber) =
-            TestBuilder.BuildTestWithTestNameSetupDataTestBodyTwoParametersNameHints testFeature
+            TestBuilder.BuildTestWithSetupDataTestBodyTwoParametersNameHints testFeature
 
         let name1, name2, name3 = TestBuilder.GetTestNames (fun _ -> sprintf "%s %s" testNameRoot) data
 
@@ -51,7 +51,7 @@ let ``Create a valid ITest`` =
 let ``Create a test name with name hints and repeating data`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
         let (_, tests), (_, data, testNameRoot), _ =
-            TestBuilder.BuildTestWithTestNameSetupDataTestBodyTwoParametersNameHints (testFeature, true)
+            TestBuilder.BuildTestWithSetupDataTestBodyTwoParametersNameHints (testFeature, true)
 
         let name1, name2, name3 = TestBuilder.GetTestNames (fun i v -> sprintf "%s %s%s" testNameRoot v (if 0 = i then "" else $"^%i{i}")) data
 
@@ -66,7 +66,7 @@ let ``Create a test name with name hints and repeating data`` =
 let ``Create a test name with no name hints`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
         let (_, tests), (_, data, testName), _ =
-            TestBuilder.BuildTestWithTestNameSetupDataTestBodyTwoParameters testFeature
+            TestBuilder.BuildTestWithSetupDataTestBodyTwoParameters testFeature
 
         let name1, name2, name3 = TestBuilder.GetTestNames (fun _ -> sprintf "%s (%A)" testName) data
 
@@ -81,7 +81,7 @@ let ``Create a test name with no name hints`` =
 let ``Create a test name with no name hints same data repeated`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
         let (_, tests), (_, data, testName), _ =
-            TestBuilder.BuildTestWithTestNameSetupDataTestBodyTwoParameters (testFeature, true)
+            TestBuilder.BuildTestWithSetupDataTestBodyTwoParameters (testFeature, true)
 
         let name1, name2, name3 = TestBuilder.GetTestNames (fun i v -> sprintf "%s (%A)%s" testName v (if 0 = i then "" else $"^%i{i}")) data
 
@@ -95,7 +95,7 @@ let ``Create a test name with no name hints same data repeated`` =
 
 let ``Call setup when executed`` =
     feature.Test (fun (featureSetupValue, testFeature: IFeature<string>) ->
-        let (monitor, tests), _, _ = TestBuilder.BuildTestWithTestNameSetupDataTestBodyTwoParameters testFeature
+        let (monitor, tests), _, _ = TestBuilder.BuildTestWithSetupDataTestBodyTwoParameters testFeature
 
         tests
         |> silentlyRunAllTests
@@ -109,7 +109,7 @@ let ``Call setup when executed`` =
 
 let ``Call Test when executed`` =
     feature.Test (fun (featureSetupValue, testFeature: IFeature<string>) ->
-        let (monitor, tests), (setupValue, data, _), _ = TestBuilder.BuildTestWithTestNameSetupDataTestBodyTwoParameters testFeature
+        let (monitor, tests), (setupValue, data, _), _ = TestBuilder.BuildTestWithSetupDataTestBodyTwoParameters testFeature
 
         tests
         |> silentlyRunAllTests
@@ -129,7 +129,7 @@ let ``Call Test when executed`` =
 
 let ``Call Test with test environment when executed`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
-        let (monitor, tests), _, _ = TestBuilder.BuildTestWithTestNameSetupDataTestBodyTwoParameters testFeature
+        let (monitor, tests), _, _ = TestBuilder.BuildTestWithSetupDataTestBodyTwoParameters testFeature
 
         tests
         |> silentlyRunAllTests
@@ -140,7 +140,7 @@ let ``Call Test with test environment when executed`` =
     
 let ``Not call teardown when executed`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
-        let (monitor, tests), _, _ = TestBuilder.BuildTestWithTestNameSetupDataTestBodyTwoParameters testFeature
+        let (monitor, tests), _, _ = TestBuilder.BuildTestWithSetupDataTestBodyTwoParameters testFeature
             
         tests
         |> silentlyRunAllTests
