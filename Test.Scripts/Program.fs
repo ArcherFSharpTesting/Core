@@ -39,7 +39,7 @@ open Archer.CoreTypes.InternalTypes.RunnerTypes
 open Archer.Logger.Summaries
 open MicroLang.Lang
 
-let runner = bow.Runner ()
+let private runner = bow.Runner ()
 
 runner.RunnerLifecycleEvent
 |> Event.add (fun args ->
@@ -175,6 +175,7 @@ runner
     ``071 - Test Feature with setup, data, test body indicator two parameters, teardown should``.``Test Cases``
     
     ``072 - Feature Test with setup, data, test body indicator three parameters should``.``Test Cases``
+    ``073 - Feature Test with setup, data, test body indicator two parameters should``.``Test Cases``
     
     ``Arrow Ignore``.``Test Cases``
 ]
