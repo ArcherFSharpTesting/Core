@@ -100,6 +100,7 @@
     <Compile Include="Test\Data\TestBodyIndicator\Teardown\080 - Feature Test with data, test body indicator one parameter, teardown should.fs" />
     <Compile Include="Test\Data\TestBodyIndicator\081 - Feature Test with data, test body indicator three parameters should.fs" />
     <Compile Include="Test\Data\TestBodyIndicator\082 - Feature Test with data, test body indicator two parameters should.fs" />
+    <Compile Include="Test\Data\TestBodyIndicator\083 - Feature Test with data, test body indicator one parameter should.fs" />
     <Compile Include="Arrow NewFeature.fs" />
     <Compile Include="Arrow Ignorefs.fs" />
     <Compile Include="Arrow NewFeature With Setup.fs" />
