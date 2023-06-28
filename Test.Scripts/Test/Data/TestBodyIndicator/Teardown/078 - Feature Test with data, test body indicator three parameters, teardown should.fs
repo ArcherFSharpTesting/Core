@@ -1,4 +1,4 @@
-module Archer.Arrows.Tests.Test.Data.TestBodyIndicator.Teardown.``078 - Test Feature with data, test body indicator three parameters, teardown should``
+module Archer.Arrows.Tests.Test.Data.TestBodyIndicator.Teardown.``078 - Feature Test with data, test body indicator three parameters, teardown should``
 
 open System
 open Archer

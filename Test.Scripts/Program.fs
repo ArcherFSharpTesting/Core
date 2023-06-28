@@ -186,7 +186,7 @@ runner
     ``076 - Feature Test with setup, test body indicator two parameters should``.``Test Cases``
     ``077 - Feature Test with setup, test body indicator one parameter should``.``Test Cases``
     
-    ``078 - Test Feature with data, test body indicator three parameters, teardown should``.``Test Cases``
+    ``078 - Feature Test with data, test body indicator three parameters, teardown should``.``Test Cases``
     ``079 - Feature Test with data, test body indicator two parameters, teardown should``.``Test Cases``
     
     ``Arrow Ignore``.``Test Cases``
