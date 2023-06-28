@@ -198,6 +198,7 @@ runner
     
     ``084 - Feature Test with data, test function three parameters should``.``Test Cases``
     ``085 - Feature Test with data, test function two parameters should``.``Test Cases``
+    ``086 - Feature Test with data, test function one parameter should``.``Test Cases``
     
     ``Arrow Ignore``.``Test Cases``
 ]
