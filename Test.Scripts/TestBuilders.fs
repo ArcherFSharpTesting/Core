@@ -2460,3 +2460,106 @@ type TestBuilder =
             )
     
         (monitor, tests), (data, testName), (path, fileName, lineNumber)
+        
+    // data, test body indicator
+    static member BuildTestWithDataTestBodyThreeParametersNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
+        let monitor, (testNameRoot, testName), (_, _, data), (path, fileName, fullPath, lineNumber) =
+            getDataTestParts repeatDataValue
+    
+        let testBody = monitor.FunctionTestPassThroughDataThreeParametersSuccess
+        
+        let tests =
+            testFeature.Test (
+                Data data,
+                TestBody testBody,
+                testName,
+                fullPath,
+                lineNumber
+            )
+    
+        (monitor, tests), (data, testNameRoot), (path, fileName, lineNumber)
+
+    static member BuildTestWithDataTestBodyThreeParameters (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
+        let monitor, (testName, _), (_, _, data), (path, fileName, fullPath, lineNumber) =
+            getDataTestParts repeatDataValue
+    
+        let testBody = monitor.FunctionTestPassThroughDataThreeParametersSuccess
+        
+        let tests =
+            testFeature.Test (
+                Data data,
+                TestBody testBody,
+                testName,
+                fullPath,
+                lineNumber
+            )
+    
+        (monitor, tests), (data, testName), (path, fileName, lineNumber)
+
+    // static member BuildTestWithDataTestBodyTwoParametersNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
+    //     let monitor, (testNameRoot, testName), (_, _, data), (path, fileName, fullPath, lineNumber) =
+    //         getDataTestParts repeatDataValue
+    //
+    //     let testBody = monitor.FunctionTestPassThroughDataTwoParametersSuccess
+    //     
+    //     let tests =
+    //         testFeature.Test (
+    //             Data data,
+    //             TestBody testBody,
+    //             testName,
+    //             fullPath,
+    //             lineNumber
+    //         )
+    //
+    //     (monitor, tests), (data, testNameRoot), (path, fileName, lineNumber)
+
+    // static member BuildTestWithDataTestBodyTwoParameters (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
+    //     let monitor, (testName, _), (_, _, data), (path, fileName, fullPath, lineNumber) =
+    //         getDataTestParts repeatDataValue
+    //
+    //     let testBody = monitor.FunctionTestPassThroughDataTwoParametersSuccess
+    //     
+    //     let tests =
+    //         testFeature.Test (
+    //             Data data,
+    //             TestBody testBody,
+    //             testName,
+    //             fullPath,
+    //             lineNumber
+    //         )
+    //
+    //     (monitor, tests), (data, testName), (path, fileName, lineNumber)
+
+    // static member BuildTestWithDataTestBodyOneParameterNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
+    //     let monitor, (testNameRoot, testName), (_, _, data), (path, fileName, fullPath, lineNumber) =
+    //         getDataTestParts repeatDataValue
+    //
+    //     let testBody = monitor.FunctionTestDataOneParameterSuccess
+    //     
+    //     let tests =
+    //         testFeature.Test (
+    //             Data data,
+    //             TestBody testBody,
+    //             testName,
+    //             fullPath,
+    //             lineNumber
+    //         )
+    //
+    //     (monitor, tests), (data, testNameRoot), (path, fileName, lineNumber)
+
+    // static member BuildTestWithDataTestBodyOneParameter (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
+    //     let monitor, (testName, _), (_, _, data), (path, fileName, fullPath, lineNumber) =
+    //         getDataTestParts repeatDataValue
+    //
+    //     let testBody = monitor.FunctionTestDataOneParameterSuccess
+    //     
+    //     let tests =
+    //         testFeature.Test (
+    //             Data data,
+    //             TestBody testBody,
+    //             testName,
+    //             fullPath,
+    //             lineNumber
+    //         )
+    //
+    //     (monitor, tests), (data, testName), (path, fileName, lineNumber)

@@ -47,7 +47,14 @@ let randomCapitalLetter () =
     letter.ToUpper ()
     
 let randomWord length =
-    seq{ 0..(length + 1) }
+    let length =
+        let mutable l = length
+        while l <= 0 do
+            l <- rand.Next (1, 5)
+            
+        l
+        
+    seq{ 0..length }
     |> Seq.map (fun _ -> randomLetter ())
     |> fun items -> System.String.Join ("", items)
 
