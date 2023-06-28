@@ -2093,19 +2093,19 @@ type TestBuilder =
 
         (monitor, test), (tags, testName), (path, fileName, lineNumber)
         
-    // static member BuildTestWithTagsTestFunctionOneParameter (testFeature: IFeature<string>) =
-    //     let monitor, (testName, tags, _), (path, fileName, fullPath, lineNumber) =
-    //         getTestParts ()
-    //
-    //     let testBody = monitor.FunctionTestPassThroughOneParameterSuccess
-    //     
-    //     let test =
-    //         testFeature.Test (
-    //             TestTags tags,
-    //             testBody,
-    //             testName,
-    //             fullPath,
-    //             lineNumber
-    //         )
-    //
-    //     (monitor, test), (tags, testName), (path, fileName, lineNumber)
+    static member BuildTestWithTagsTestFunctionOneParameter (testFeature: IFeature<string>) =
+        let monitor, (testName, tags, _), (path, fileName, fullPath, lineNumber) =
+            getTestParts ()
+    
+        let testBody = monitor.FunctionTestPassThroughOneParameterSuccess
+        
+        let test =
+            testFeature.Test (
+                TestTags tags,
+                testBody,
+                testName,
+                fullPath,
+                lineNumber
+            )
+    
+        (monitor, test), (tags, testName), (path, fileName, lineNumber)
