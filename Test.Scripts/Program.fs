@@ -162,6 +162,8 @@ runner
     ``064 - Feature Test with tags, test body indicator two parameters, teardown should``.``Test Cases``
     ``065 - Feature Test with tags, test body indicator one parameter, teardown should``.``Test Cases``
     
+    ``066 - Feature Test with tags, test body indicator two parameters should``.``Test Cases``
+    
     ``Arrow Ignore``.``Test Cases``
 ]
 |> runAndReport
