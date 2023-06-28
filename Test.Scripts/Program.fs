@@ -197,6 +197,7 @@ runner
     ``083 - Feature Test with data, test body indicator one parameter should``.``Test Cases``
     
     ``084 - Feature Test with data, test function three parameters should``.``Test Cases``
+    ``085 - Feature Test with data, test function two parameters should``.``Test Cases``
     
     ``Arrow Ignore``.``Test Cases``
 ]
