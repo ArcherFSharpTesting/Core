@@ -2021,21 +2021,21 @@ type TestBuilder =
     
         (monitor, test), (tags, testName), (path, fileName, lineNumber)
         
-    // static member BuildTestWithTagsTestBodyOneParameterTeardown (testFeature: IFeature<string>) =
-    //     let monitor, (testName, tags, _), (path, fileName, fullPath, lineNumber) =
-    //         getTestParts ()
-    //
-    //     let testBody = monitor.FunctionTestPassThroughOneParameterSuccess
-    //     let teardown = monitor.FunctionTeardownPassThrough
-    //     
-    //     let test =
-    //         testFeature.Test (
-    //             TestTags tags,
-    //             TestBody testBody,
-    //             Teardown teardown,
-    //             testName,
-    //             fullPath,
-    //             lineNumber
-    //         )
-    //
-    //     (monitor, test), (tags, testName), (path, fileName, lineNumber)
+    static member BuildTestWithTagsTestBodyOneParameterTeardown (testFeature: IFeature<string>) =
+        let monitor, (testName, tags, _), (path, fileName, fullPath, lineNumber) =
+            getTestParts ()
+    
+        let testBody = monitor.FunctionTestPassThroughOneParameterSuccess
+        let teardown = monitor.FunctionTeardownPassThrough
+        
+        let test =
+            testFeature.Test (
+                TestTags tags,
+                TestBody testBody,
+                Teardown teardown,
+                testName,
+                fullPath,
+                lineNumber
+            )
+    
+        (monitor, test), (tags, testName), (path, fileName, lineNumber)
