@@ -8,7 +8,7 @@ open Archer.Arrows.Tests
 open Archer.CoreTypes.InternalTypes
 open Archer.MicroLang.Verification
 
-let private feature = Arrow.Ignore (
+let private feature = Arrow.NewFeature (
     TestTags [
         Category "Feature"
         Category "Test"
