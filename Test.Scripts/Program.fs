@@ -144,6 +144,7 @@ runner
     ``054 - Feature Test with tags, setup, test body indicator one parameter should``.``Test Cases``
     
     ``055 - Feature Test with tags, data, test body indicator three parameters, teardown should``.``Test Cases``
+    ``056 - Feature Test with tags, data, test body indicator two parameters, teardown should``.``Test Cases``
     
     ``Arrow Ignore``.``Test Cases``
 ]
