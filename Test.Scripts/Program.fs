@@ -171,6 +171,7 @@ runner
     ``069 - Feature Test with tags, test function one parameter should``.``Test Cases``
     
     ``070 - Feature Test with setup, data, test body indicator three parameters, teardown``.``Test Cases``
+    ``071 - Test Feature with setup, data, test body indicator two parameters, teardown should``.``Test Cases``
     
     ``Arrow Ignore``.``Test Cases``
 ]
