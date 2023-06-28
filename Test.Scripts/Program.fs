@@ -3,6 +3,7 @@ open Archer.Arrows.Tests
 open Archer.Arrows.Tests.RawTestObjects
 open Archer.Arrows.Tests.Test.Setup.Data.TestBodyIndicator
 open Archer.Arrows.Tests.Test.Setup.Data.TestBodyIndicator.Teardown
+open Archer.Arrows.Tests.Test.Setup.TestBodyIndicator
 open Archer.Arrows.Tests.Test.Setup.TestBodyIndicator.Teardown
 open Archer.Arrows.Tests.Test.Tags.Data.TestBodyIndicator
 open Archer.Arrows.Tests.Test.Tags.Data.TestBodyIndicator.Teardown
@@ -180,6 +181,8 @@ runner
     
     ``074 - Feature Test with setup, test body indicator two parameters, teardown should``.``Test Cases``
     ``075 - Feature Test with setup, test body indicator one parameter, teardown should``.``Test Cases``
+    
+    ``076 - Feature Test with setup, test body indicator two parameters should``.``Test Cases``
     
     ``Arrow Ignore``.``Test Cases``
 ]
