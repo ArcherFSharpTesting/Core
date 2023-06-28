@@ -2344,4 +2344,4 @@ type TestBuilder =
                 lineNumber
             )
     
-        (monitor, test), (testSetupValue, testName), (path, fileName, lineNumber) 
+        (monitor, test), (testSetupValue, testName), (path, fileName, lineNumber)

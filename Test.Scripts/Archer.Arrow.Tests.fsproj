@@ -94,6 +94,7 @@
     <Compile Include="Test\Setup\TestBodyIndicator\Teardown\074 - Feature Test with setup, test body indicator two parameters, teardown should.fs" />
     <Compile Include="Test\Setup\TestBodyIndicator\Teardown\075 - Feature Test with setup, test body indicator one parameter, teardown should.fs" />
     <Compile Include="Test\Setup\TestBodyIndicator\076 - Feature Test with setup, test body indicator two parameters should.fs" />
+    <Compile Include="Test\Setup\TestBodyIndicator\077 - Feature Test with setup, test body indicator one parameter should.fs" />
     <Compile Include="Arrow NewFeature.fs" />
     <Compile Include="Arrow Ignorefs.fs" />
     <Compile Include="Arrow NewFeature With Setup.fs" />
