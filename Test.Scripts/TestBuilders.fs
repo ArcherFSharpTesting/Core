@@ -2109,3 +2109,86 @@ type TestBuilder =
             )
     
         (monitor, test), (tags, testName), (path, fileName, lineNumber)
+        
+    // setup, data, test body indicator, teardown
+    static member BuildTestWithSetupDataTestBodyThreeParametersTeardownNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
+        let monitor, (testNameRoot, testName), (_, testSetupValue, data), (path, fileName, fullPath, lineNumber) =
+            getDataTestParts repeatDataValue
+    
+        let setup = monitor.FunctionSetupFeatureWith testSetupValue
+        let testBody = monitor.FunctionTestFeatureDataThreeParametersSuccess
+        let teardown = monitor.FunctionTeardownFeatureFromSetup
+        
+        let tests =
+            testFeature.Test (
+                Setup setup,
+                Data data,
+                TestBody testBody,
+                Teardown teardown,
+                testName,
+                fullPath,
+                lineNumber
+            )
+    
+        (monitor, tests), (testSetupValue, data, testNameRoot), (path, fileName, lineNumber)
+    
+    static member BuildTestWithSetupDataTestBodyThreeParametersTeardown (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
+        let monitor, (testName, _), (_, testSetupValue, data), (path, fileName, fullPath, lineNumber) = getDataTestParts repeatDataValue
+    
+        let setup = monitor.FunctionSetupFeatureWith testSetupValue
+        let testBody = monitor.FunctionTestFeatureDataThreeParametersSuccess
+        let teardown = monitor.FunctionTeardownFeatureFromSetup
+        
+        let tests =
+            testFeature.Test (
+                Setup setup,
+                Data data,
+                TestBody testBody,
+                Teardown teardown,
+                testName,
+                fullPath,
+                lineNumber
+            )
+    
+        (monitor, tests), (testSetupValue, data, testName), (path, fileName, lineNumber)
+    
+    // static member BuildTestWithSetupDataTestBodyTwoParametersTeardownNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
+    //     let monitor, (testNameRoot, testName), (_, testSetupValue, data), (path, fileName, fullPath, lineNumber) =
+    //         getDataTestParts repeatDataValue
+    //
+    //     let setup = monitor.FunctionSetupFeatureWith testSetupValue
+    //     let testBody = monitor.FunctionTestFeatureDataTwoParametersSuccess
+    //     let teardown = monitor.FunctionTeardownFeatureFromSetup
+    //     
+    //     let tests =
+    //         testFeature.Test (
+    //             Setup setup,
+    //             Data data,
+    //             TestBody testBody,
+    //             Teardown teardown,
+    //             testName,
+    //             fullPath,
+    //             lineNumber
+    //         )
+    //
+    //     (monitor, tests), (testSetupValue, data, testNameRoot), (path, fileName, lineNumber)
+    
+    // static member BuildTestWithSetupDataTestBodyTwoParametersTeardown (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
+    //     let monitor, (testName, _), (_, testSetupValue, data), (path, fileName, fullPath, lineNumber) = getDataTestParts repeatDataValue
+    //
+    //     let setup = monitor.FunctionSetupFeatureWith testSetupValue
+    //     let testBody = monitor.FunctionTestFeatureDataTwoParametersSuccess
+    //     let teardown = monitor.FunctionTeardownFeatureFromSetup
+    //     
+    //     let tests =
+    //         testFeature.Test (
+    //             Setup setup,
+    //             Data data,
+    //             TestBody testBody,
+    //             Teardown teardown,
+    //             testName,
+    //             fullPath,
+    //             lineNumber
+    //         )
+    //
+    //     (monitor, tests), (testSetupValue, data, testName), (path, fileName, lineNumber)
