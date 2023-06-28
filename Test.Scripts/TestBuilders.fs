@@ -2000,3 +2000,42 @@ type TestBuilder =
             )
     
         (monitor, tests), (tags, data, testName), (path, fileName, lineNumber)
+        
+    // tags, test body indicator, teardown
+    static member BuildTestWithTagsTestBodyTwoParametersTeardown (testFeature: IFeature<string>) =
+        let monitor, (testName, tags, _), (path, fileName, fullPath, lineNumber) =
+            getTestParts ()
+    
+        let testBody = monitor.FunctionTestPassThroughTwoParametersSuccess
+        let teardown = monitor.FunctionTeardownPassThrough
+        
+        let test =
+            testFeature.Test (
+                TestTags tags,
+                TestBody testBody,
+                Teardown teardown,
+                testName,
+                fullPath,
+                lineNumber
+            )
+    
+        (monitor, test), (tags, testName), (path, fileName, lineNumber)
+        
+    // static member BuildTestWithTagsTestBodyOneParameterTeardown (testFeature: IFeature<string>) =
+    //     let monitor, (testName, tags, _), (path, fileName, fullPath, lineNumber) =
+    //         getTestParts ()
+    //
+    //     let testBody = monitor.FunctionTestPassThroughOneParameterSuccess
+    //     let teardown = monitor.FunctionTeardownPassThrough
+    //     
+    //     let test =
+    //         testFeature.Test (
+    //             TestTags tags,
+    //             TestBody testBody,
+    //             Teardown teardown,
+    //             testName,
+    //             fullPath,
+    //             lineNumber
+    //         )
+    //
+    //     (monitor, test), (tags, testName), (path, fileName, lineNumber)
