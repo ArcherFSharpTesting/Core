@@ -1929,41 +1929,41 @@ type TestBuilder =
     
         (monitor, tests), (tags, data, testName), (path, fileName, lineNumber)
 
-    // static member BuildTestWithTagsDataTestFunctionTwoParametersNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
-    //     let monitor, (testNameRoot, testName), (tags, _, data), (path, fileName, fullPath, lineNumber) =
-    //         getDataTestParts repeatDataValue
-    //
-    //     let testBody = monitor.FunctionTestPassThroughDataTwoParametersSuccess
-    //     
-    //     let tests =
-    //         testFeature.Test (
-    //             TestTags tags,
-    //             Data data,
-    //             testBody,
-    //             testName,
-    //             fullPath,
-    //             lineNumber
-    //         )
-    //
-    //     (monitor, tests), (tags, data, testNameRoot), (path, fileName, lineNumber)
+    static member BuildTestWithTagsDataTestFunctionTwoParametersNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
+        let monitor, (testNameRoot, testName), (tags, _, data), (path, fileName, fullPath, lineNumber) =
+            getDataTestParts repeatDataValue
+    
+        let testBody = monitor.FunctionTestPassThroughDataTwoParametersSuccess
+        
+        let tests =
+            testFeature.Test (
+                TestTags tags,
+                Data data,
+                testBody,
+                testName,
+                fullPath,
+                lineNumber
+            )
+    
+        (monitor, tests), (tags, data, testNameRoot), (path, fileName, lineNumber)
 
-    // static member BuildTestWithTagsDataTestFunctionTwoParameters (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
-    //     let monitor, (testName, _), (tags, _, data), (path, fileName, fullPath, lineNumber) =
-    //         getDataTestParts repeatDataValue
-    //
-    //     let testBody = monitor.FunctionTestPassThroughDataTwoParametersSuccess
-    //     
-    //     let tests =
-    //         testFeature.Test (
-    //             TestTags tags,
-    //             Data data,
-    //             testBody,
-    //             testName,
-    //             fullPath,
-    //             lineNumber
-    //         )
-    //
-    //     (monitor, tests), (tags, data, testName), (path, fileName, lineNumber)
+    static member BuildTestWithTagsDataTestFunctionTwoParameters (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
+        let monitor, (testName, _), (tags, _, data), (path, fileName, fullPath, lineNumber) =
+            getDataTestParts repeatDataValue
+    
+        let testBody = monitor.FunctionTestPassThroughDataTwoParametersSuccess
+        
+        let tests =
+            testFeature.Test (
+                TestTags tags,
+                Data data,
+                testBody,
+                testName,
+                fullPath,
+                lineNumber
+            )
+    
+        (monitor, tests), (tags, data, testName), (path, fileName, lineNumber)
         
     // static member BuildTestWithTagsDataTestFunctionOneParameterNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
     //     let monitor, (testNameRoot, testName), (tags, _, data), (path, fileName, fullPath, lineNumber) =

@@ -154,6 +154,7 @@ runner
     ``060 - Feature Test with tags, data, test body indicator one parameter should``.``Test Cases``
     
     ``061 - Feature Test with tags, data, test function three parameters should``.``Test Cases``
+    ``062 - Feature Test with tags, data, test function two parameters should``.``Test Cases``
     
     ``Arrow Ignore``.``Test Cases``
 ]
