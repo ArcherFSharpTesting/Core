@@ -112,6 +112,7 @@
     <Compile Include="Test\TestFunction\091 - Feature Test with test function two parameters should.fs" />
     <Compile Include="Test\TestFunction\092 - Feature Test with test function one parameter should.fs" />
     <Compile Include="Ignore\TestName\Tags\Setup\Data\TestBody\001 - Feature Ignore with test name, tags, setup, data, test body, teardown should.fs" />
+    <Compile Include="Ignore\TestName\Tags\Setup\Data\TestBody\002 - Feature Ignore with test name, tags, setup, data, test body should.fs" />
     <Compile Include="Arrow NewFeature.fs" />
     <Compile Include="Arrow Ignorefs.fs" />
     <Compile Include="Arrow NewFeature With Setup.fs" />
