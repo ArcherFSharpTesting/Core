@@ -119,7 +119,7 @@ let ``Call Test when executed`` =
         |> silentlyRunAllTests
         
         monitor
-        |> verifyNoTestWasCalled
+        |> verifyNoTestFunctionsShouldHaveBeenCalled
     ) 
     
 let ``Test Cases`` = feature.GetTests ()

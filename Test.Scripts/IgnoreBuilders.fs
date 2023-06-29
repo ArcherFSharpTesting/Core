@@ -146,27 +146,27 @@ type IgnoreBuilder =
     
         (monitor, tests), (tags, data, testName), (path, fileName, lineNumber)
     
-    ////test name, tags, setup, test body indicator, teardown
-    //static member BuildTestWithTestNameTagsSetupTestBodyTeardown (testFeature: IFeature<string>) =
-    //    let monitor, (testName, tags, testSetupValue), (path, fileName, fullPath, lineNumber) = getTestParts ()
-    //
-    //    let setup = monitor.FunctionSetupFeatureWith testSetupValue
-    //    let testBody = monitor.FunctionTestFeatureTwoParametersSuccess
-    //    let teardown = monitor.FunctionTeardownFeatureFromSetup
-    //    
-    //    let test =
-    //        testFeature.Ignore (
-    //            testName,
-    //            TestTags tags,
-    //            Setup setup,
-    //            TestBody testBody,
-    //            Teardown teardown,
-    //            fullPath,
-    //            lineNumber
-    //        )
-    //
-    //    (monitor, test), (tags, testSetupValue, testName), (path, fileName, lineNumber)
-    //
+    //test name, tags, setup, test body indicator, teardown
+    static member BuildTestWithTestNameTagsSetupTestBodyTeardown (testFeature: IFeature<string>) =
+        let monitor, (testName, tags, testSetupValue), (path, fileName, fullPath, lineNumber) = getTestParts ()
+    
+        let setup = monitor.FunctionSetupFeatureWith testSetupValue
+        let testBody = monitor.FunctionTestFeatureTwoParametersSuccess
+        let teardown = monitor.FunctionTeardownFeatureFromSetup
+        
+        let test =
+            testFeature.Ignore (
+                testName,
+                TestTags tags,
+                Setup setup,
+                TestBody testBody,
+                Teardown teardown,
+                fullPath,
+                lineNumber
+            )
+    
+        (monitor, test), (tags, testName), (path, fileName, lineNumber)
+    
     ////test name, tags, setup, test body indicator
     //static member BuildTestWithTestNameTagsSetupTestBody (testFeature: IFeature<string>) =
     //    let monitor, (testName, tags, testSetupValue), (path, fileName, fullPath, lineNumber) = getTestParts ()
