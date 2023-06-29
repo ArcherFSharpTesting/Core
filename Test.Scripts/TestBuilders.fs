@@ -2721,18 +2721,18 @@ type TestBuilder =
     
         (monitor, test), testName, (path, fileName, lineNumber)
 
-    // static member BuildTestWithTestBodyOneParameter (testFeature: IFeature<string>) =
-    //     let monitor, (testName, _, _), (path, fileName, fullPath, lineNumber) =
-    //         getTestParts ()
-    //
-    //     let testBody = monitor.FunctionTestPassThroughOneParameterSuccess
-    //     
-    //     let test =
-    //         testFeature.Test (
-    //             TestBody testBody,
-    //             testName,
-    //             fullPath,
-    //             lineNumber
-    //         )
-    //
-    //     (monitor, test), testName, (path, fileName, lineNumber)
+    static member BuildTestWithTestBodyOneParameter (testFeature: IFeature<string>) =
+        let monitor, (testName, _, _), (path, fileName, fullPath, lineNumber) =
+            getTestParts ()
+    
+        let testBody = monitor.FunctionTestPassThroughOneParameterSuccess
+        
+        let test =
+            testFeature.Test (
+                TestBody testBody,
+                testName,
+                fullPath,
+                lineNumber
+            )
+    
+        (monitor, test), testName, (path, fileName, lineNumber)
