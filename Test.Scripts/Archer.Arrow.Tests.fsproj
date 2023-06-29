@@ -108,6 +108,7 @@
     <Compile Include="Test\TestBodyIndicator\Teardown\088 - Feature Test with test body indicator one parameter, teardown should.fs" />
     <Compile Include="Test\TestBodyIndicator\089 - Feature Test with test body indicator two parameters should.fs" />
     <Compile Include="Test\TestBodyIndicator\090 - Feature Test with test body indicator one parameter should.fs" />
+    <Compile Include="Test\TestFunction\091 - Feature Test with test function two parameters should.fs" />
     <Compile Include="Arrow NewFeature.fs" />
     <Compile Include="Arrow Ignorefs.fs" />
     <Compile Include="Arrow NewFeature With Setup.fs" />
@@ -122,7 +123,7 @@
   <ItemGroup>
     <PackageReference Include="Archer.Bow.Lib" Version="0.0.9.37" />
     <PackageReference Include="Archer.Fletching.Lib" Version="0.0.0.32" />
-    <PackageReference Include="MicroLang.Lib" Version="0.0.12.54" />
+    <PackageReference Include="MicroLang.Lib" Version="0.0.12.55" />
     <PackageReference Update="FSharp.Core" Version="7.0.300" />
   </ItemGroup>
 
