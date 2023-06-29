@@ -1,6 +1,6 @@
 ﻿open Archer
 open Archer.Arrows.Tests
-open Archer.Arrows.Tests.Ignore.TestName.Tags.Setup.Data.TestBody
+open Archer.Arrows.Tests.Ignore.TestName.Tags.Setup.Data
 open Archer.Arrows.Tests.RawTestObjects
 open Archer.Arrows.Tests.Test.Data.TestBodyIndicator
 open Archer.Arrows.Tests.Test.Data.TestBodyIndicator.Teardown
