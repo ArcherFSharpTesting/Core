@@ -5,6 +5,7 @@ open Archer
 open Archer.Arrows
 open Archer.Arrows.Internal.Types
 open Archer.Arrows.Tests
+open Archer.Arrows.Tests.TestBuilders
 open Archer.CoreTypes.InternalTypes
 open Archer.MicroLang.Verification
 

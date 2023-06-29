@@ -1,4 +1,3 @@
-[<AutoOpen>]
 module Archer.Arrows.Tests.TestBuilders
 
 open Archer
