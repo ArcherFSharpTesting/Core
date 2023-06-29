@@ -202,6 +202,7 @@ runner
     ``086 - Feature Test with data, test function one parameter should``.``Test Cases``
     
     ``087 - Feature Test with test body indicator two parameters, teardown should``.``Test Cases``
+    ``088 - Feature Test with test body indicator one parameter, teardown should``.``Test Cases``
     
     ``Arrow Ignore``.``Test Cases``
 ]
