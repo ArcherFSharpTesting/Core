@@ -220,6 +220,7 @@ runner
     ``002 - Feature Ignore with test name, tags, setup, data, test body should``.``Test Cases``
     
     ``003 - Feature Ignore with test name, tags, setup, test body, teardown should``.``Test Cases``
+    ``004 - Feature Ignore with test name, tags, setup, test body should``.``Test Cases``
     
     ``Arrow Ignore``.``Test Cases``
 ]

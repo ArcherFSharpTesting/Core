@@ -1,4 +1,4 @@
-module Archer.Arrows.Tests.Ignore.TestName.Tags.Setup.``003 - Feature Ignore with test name, tags, setup, test body, teardown should``
+module Archer.Arrows.Tests.Ignore.TestName.Tags.Setup.``004 - Feature Ignore with test name, tags, setup, test body should``
 
 open System
 open Archer
@@ -25,7 +25,7 @@ let private getContainerName (test: ITest) =
 let ``Create a valid ITest`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
        let (_, test), (tags, testName), (path, fileName, lineNumber) =
-           IgnoreBuilder.BuildTestWithTestNameTagsSetupTestBodyTeardown testFeature
+           IgnoreBuilder.BuildTestWithTestNameTagsSetupTestBody testFeature
             
        test
        |> Should.PassAllOf [
@@ -40,7 +40,7 @@ let ``Create a valid ITest`` =
 
 let ``Call setup when executed`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
-       let (monitor, test), _, _ = IgnoreBuilder.BuildTestWithTestNameTagsSetupTestBodyTeardown testFeature
+       let (monitor, test), _, _ = IgnoreBuilder.BuildTestWithTestNameTagsSetupTestBody testFeature
 
        test
        |> silentlyRunTest
@@ -51,7 +51,7 @@ let ``Call setup when executed`` =
 
 let ``Call Test when executed`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
-       let (monitor, tests), (_, _), _ = IgnoreBuilder.BuildTestWithTestNameTagsSetupTestBodyTeardown testFeature
+       let (monitor, tests), (_, _), _ = IgnoreBuilder.BuildTestWithTestNameTagsSetupTestBody testFeature
 
        tests
        |> silentlyRunTest
@@ -59,10 +59,10 @@ let ``Call Test when executed`` =
        monitor
        |> verifyNoTestFunctionsShouldHaveBeenCalled
    )
-
+    
 let ``Call teardown when executed`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
-       let (monitor, test), _, _ = IgnoreBuilder.BuildTestWithTestNameTagsSetupTestBodyTeardown testFeature
+       let (monitor, test), _, _ = IgnoreBuilder.BuildTestWithTestNameTagsSetupTestBody testFeature
             
        test
        |> silentlyRunTest
