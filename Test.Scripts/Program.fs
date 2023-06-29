@@ -210,6 +210,7 @@ runner
     ``090 - Feature Test with test body indicator one parameter should``.``Test Cases``
     
     ``091 - Feature Test with test function two parameters should``.``Test Cases``
+    ``092 - Feature Test with test function one parameter should``.``Test Cases``
     
     ``Arrow Ignore``.``Test Cases``
 ]
