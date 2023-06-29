@@ -428,6 +428,12 @@ let verifyNoTestWasCalledWithATestSetupValue (monitor: ITestMonitor<_, _, _>) =
     |> List.filter hasValue
     |> ListShould.HaveLengthOf 0
     |> withFailureComment "test was called with test setup value"
+
+let verifyNoTestWasCalled (monitor: ITestMonitor<_, _, _>) =
+    monitor
+    |> numberOfTimesTestFunctionWasCalled
+    |> Should.BeEqualTo 0
+    |> withFailureComment "test function was called"
     
 let verifyNoTestWasCalledWithTestEnvironment (monitor: ITestMonitor<_, _, _>) =
     monitor

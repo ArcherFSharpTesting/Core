@@ -11,6 +11,7 @@
     <Compile Include="TestDoubles.fs" />
     <Compile Include="TestMonitor.fs" />
     <Compile Include="TestBuilders.fs" />
+    <Compile Include="IgnoreBuilders.fs" />
     <Compile Include="ExecuteHelper.fs" />
     <Compile Include="RawTestObjects\Feature Should.fs" />
     <Compile Include="RawTestObjects\TestCase Should.fs" />
@@ -110,6 +111,7 @@
     <Compile Include="Test\TestBodyIndicator\090 - Feature Test with test body indicator one parameter should.fs" />
     <Compile Include="Test\TestFunction\091 - Feature Test with test function two parameters should.fs" />
     <Compile Include="Test\TestFunction\092 - Feature Test with test function one parameter should.fs" />
+    <Compile Include="Ignore\TestName\Tags\Setup\Data\TestBody\001 - Feature Ignore with test name, tags, setup, data, test body, teardown should.fs" />
     <Compile Include="Arrow NewFeature.fs" />
     <Compile Include="Arrow Ignorefs.fs" />
     <Compile Include="Arrow NewFeature With Setup.fs" />
