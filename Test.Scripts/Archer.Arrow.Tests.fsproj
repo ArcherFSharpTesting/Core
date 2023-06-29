@@ -106,6 +106,7 @@
     <Compile Include="Test\Data\TestFunction\086 - Feature Test with data, test function one parameter should.fs" />
     <Compile Include="Test\TestBodyIndicator\Teardown\087 - Feature Test with test body indicator two parameters, teardown should.fs" />
     <Compile Include="Test\TestBodyIndicator\Teardown\088 - Feature Test with test body indicator one parameter, teardown should.fs" />
+    <Compile Include="Test\TestBodyIndicator\089 - Feature Test with test body indicator two parameters should.fs" />
     <Compile Include="Arrow NewFeature.fs" />
     <Compile Include="Arrow Ignorefs.fs" />
     <Compile Include="Arrow NewFeature With Setup.fs" />
