@@ -1,4 +1,4 @@
-module Archer.Arrows.Tests.Feature.Ignore.TestName.Data.``013 - Feature Ignore with test name, data, test, teardown should``
+module Archer.Arrows.Tests.Feature.Ignore.TestName.Data.``014 - Feature Ignore with test name, data, test should``
 
 open System
 open Archer
@@ -25,7 +25,7 @@ let private getContainerName (test: ITest) =
 let ``Create a valid ITest`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
         let (_, tests), (data, testNameRoot), (path, fileName, lineNumber) =
-            IgnoreBuilder.BuildTestWithTestNameDataTestBodyTeardownNameHints testFeature
+            IgnoreBuilder.BuildTestWithTestNameDataTestBodyNameHints testFeature
 
         let name1, name2, name3 = IgnoreBuilder.GetTestNames (fun _ -> sprintf "%s %s" testNameRoot) data
 
@@ -52,7 +52,7 @@ let ``Create a valid ITest`` =
 let ``Create a test name with name hints and repeating data`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
         let (_, tests), (data, testNameRoot), _ =
-            IgnoreBuilder.BuildTestWithTestNameDataTestBodyTeardownNameHints (testFeature, true)
+            IgnoreBuilder.BuildTestWithTestNameDataTestBodyNameHints (testFeature, true)
 
         let name1, name2, name3 = IgnoreBuilder.GetTestNames (fun i v -> sprintf "%s %s%s" testNameRoot v (if 0 = i then "" else $"^%i{i}")) data
 
@@ -67,7 +67,7 @@ let ``Create a test name with name hints and repeating data`` =
 let ``Create a test name with no name hints`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
         let (_, tests), (data, testName), _ =
-            IgnoreBuilder.BuildTestWithTestNameDataTestBodyTeardown testFeature
+            IgnoreBuilder.BuildTestWithTestNameDataTestBody testFeature
 
         let name1, name2, name3 = IgnoreBuilder.GetTestNames (fun _ -> sprintf "%s (%A)" testName) data
 
@@ -82,7 +82,7 @@ let ``Create a test name with no name hints`` =
 let ``Create a test name with no name hints same data repeated`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
         let (_, tests), (data, testName), _ =
-            IgnoreBuilder.BuildTestWithTestNameDataTestBodyTeardown (testFeature, true)
+            IgnoreBuilder.BuildTestWithTestNameDataTestBody (testFeature, true)
 
         let name1, name2, name3 = IgnoreBuilder.GetTestNames (fun i v -> sprintf "%s (%A)%s" testName v (if 0 = i then "" else $"^%i{i}")) data
 
@@ -96,24 +96,13 @@ let ``Create a test name with no name hints same data repeated`` =
 
 let ``Call Test when executed`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
-        let (monitor, tests), _, _ = IgnoreBuilder.BuildTestWithTestNameDataTestBodyTeardown testFeature
+        let (monitor, tests), _, _ = IgnoreBuilder.BuildTestWithTestNameDataTestBody testFeature
 
         tests
         |> silentlyRunAllTests
 
         monitor
         |> verifyNoTestFunctionsShouldHaveBeenCalled
-    )
-    
-let ``Call teardown when executed`` =
-    feature.Test (fun (_, testFeature: IFeature<string>) ->
-        let (monitor, tests), _, _ = IgnoreBuilder.BuildTestWithTestNameDataTestBodyTeardown testFeature
-            
-        tests
-        |> silentlyRunAllTests
-
-        monitor
-        |> verifyNoTeardownFunctionsShouldHaveBeenCalled
     )
 
 let ``Test Cases`` = feature.GetTests ()
