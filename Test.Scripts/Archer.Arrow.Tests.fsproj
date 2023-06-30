@@ -125,6 +125,7 @@
     <Compile Include="Feature\Ignore\TestName\Setup\012 - Feature Ignore with test name, setup, test should.fs" />
     <Compile Include="Feature\Ignore\TestName\Data\013 - Feature Ignore with test name, data, test, teardown should.fs" />
     <Compile Include="Feature\Ignore\TestName\Data\014 - Feature Ignore with test name, data, test should.fs" />
+    <Compile Include="Feature\Ignore\TestName\015 - Feature Ignore with test name, test, teardown should.fs" />
     <Compile Include="Arrow NewFeature.fs" />
     <Compile Include="Arrow Ignorefs.fs" />
     <Compile Include="Arrow NewFeature With Setup.fs" />
