@@ -386,27 +386,27 @@ type IgnoreBuilder =
     
         (monitor, tests), (data, testName), (path, fileName, lineNumber)
     
-    ////test name, setup, test body indicator, teardown
-    //static member BuildTestWithTestNameSetupTestBodyTeardown (testFeature: IFeature<string>) =
-    //    let monitor, (testName, _, testSetupValue), (path, fileName, fullPath, lineNumber) =
-    //        getTestParts ()
-    //
-    //    let setup = monitor.FunctionSetupFeatureWith testSetupValue
-    //    let testBody = monitor.FunctionTestFeatureTwoParametersSuccess
-    //    let teardown = monitor.FunctionTeardownFeatureFromSetup
-    //    
-    //    let test =
-    //        testFeature.Ignore (
-    //            testName,
-    //            Setup setup,
-    //            TestBody testBody,
-    //            Teardown teardown,
-    //            fullPath,
-    //            lineNumber
-    //        )
-    //
-    //    (monitor, test), (testSetupValue, testName), (path, fileName, lineNumber)
-    //    
+    //test name, setup, test body indicator, teardown
+    static member BuildTestWithTestNameSetupTestBodyTeardown (testFeature: IFeature<string>) =
+        let monitor, (testName, _, testSetupValue), (path, fileName, fullPath, lineNumber) =
+            getTestParts ()
+    
+        let setup = monitor.FunctionSetupFeatureWith testSetupValue
+        let testBody = monitor.FunctionTestFeatureTwoParametersSuccess
+        let teardown = monitor.FunctionTeardownFeatureFromSetup
+        
+        let test =
+            testFeature.Ignore (
+                testName,
+                Setup setup,
+                TestBody testBody,
+                Teardown teardown,
+                fullPath,
+                lineNumber
+            )
+    
+        (monitor, test), testName, (path, fileName, lineNumber)
+        
     ////test name, setup, test body indicator
     //static member BuildTestWithTestNameSetupTestBody (testFeature: IFeature<string>) =
     //    let monitor, (testName, _, testSetupValue), (path, fileName, fullPath, lineNumber) =
