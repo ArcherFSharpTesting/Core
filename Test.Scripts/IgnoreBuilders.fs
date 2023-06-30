@@ -1,67 +1,14 @@
 module Archer.Arrows.Tests.IgnoreBuilders
 
-open Archer
 open Archer.Arrows
 open Archer.Arrows.Internal.Types
-open Archer.Arrows.Tests.TestMonitors
+open Archer.Arrows.Tests.TestBuilders
 open Microsoft.FSharp.Core
 open System.Runtime.InteropServices
 
-let private rand = System.Random ()
-
-let private getBaseTestParts () =
-    let path = $"%s{randomCapitalLetter ()}:\\"
-    let fileName = $"%s{randomWord (rand.Next (1, 5))}.%s{randomLetter ()}"
-    let fullPath = $"%s{path}%s{fileName}"
-    let lineNumber = rand.Next ()
-
-    let tags = [
-        Category $"%s{randomWord (rand.Next (3, 8))}"
-        if rand.Next () % 2 = 0 then Only else (Category $"%s{randomWord (rand.Next (3, 8))}")
-        if rand.Next () % 2 = 0 then Serial else (Category $"%s{randomWord (rand.Next (3, 8))}")
-    ]
-
-    tags, (path, fileName, fullPath, lineNumber)
-    
-let private getData repeatedData =
-    if repeatedData then
-        let l = randomLetter ()
-        [l; l; l]
-    else
-        randomDistinctLetters 3
-    
-let private getMonitorBaseTestParts () =
-    let tags, (path, fileName, fullPath, lineNumber) = getBaseTestParts ()
-    let testSetupValue = rand.Next ()
-    
-    let monitor = getTestMonitor<string, string, int> ()
-    
-    monitor, (tags, testSetupValue), (path, fileName, fullPath, lineNumber)
-    
-let private getDataTestParts repeat =
-    let testNameRoot = $"My %s{randomWord 5} Test"
-    let testName = $"%s{testNameRoot} %%s"
-    
-    let monitor, (tags, testSetupValue), (path, fileName, fullPath, lineNumber) = getMonitorBaseTestParts ()
-
-    let data = getData repeat
-
-    monitor, (testNameRoot, testName), (tags, testSetupValue, data), (path, fileName, fullPath, lineNumber)
-    
-let private getTestParts () =
-    let testName = $"My %s{randomWord 5} Test"
-    
-    let monitor, (tags, testSetupValue), (path, fileName, fullPath, lineNumber) = getMonitorBaseTestParts ()
-
-    monitor, (testName, tags, testSetupValue), (path, fileName, fullPath, lineNumber)
-    
 type IgnoreBuilder =
     static member GetTestNames (f: int -> 'a -> string) data =
-        let [a; b; c] =
-            data
-            |> List.mapi f
-            
-        (a, b, c)
+        getNamesForThreeTests f data
         
     //test name, tags, setup, data, test body indicator, teardown
     static member BuildTestWithTestNameTagsSetupDataTestBodyTeardownNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =

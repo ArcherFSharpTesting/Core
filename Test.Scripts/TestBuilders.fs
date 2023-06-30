@@ -9,7 +9,7 @@ open System.Runtime.InteropServices
 
 let private rand = System.Random ()
 
-let private getBaseTestParts () =
+let getBaseTestParts () =
     let path = $"%s{randomCapitalLetter ()}:\\"
     let fileName = $"%s{randomWord (rand.Next (1, 5))}.%s{randomLetter ()}"
     let fullPath = $"%s{path}%s{fileName}"
@@ -23,14 +23,14 @@ let private getBaseTestParts () =
 
     tags, (path, fileName, fullPath, lineNumber)
     
-let private getData repeatedData =
+let getData repeatedData =
     if repeatedData then
         let l = randomLetter ()
         [l; l; l]
     else
         randomDistinctLetters 3
     
-let private getMonitorBaseTestParts () =
+let getMonitorBaseTestParts () =
     let tags, (path, fileName, fullPath, lineNumber) = getBaseTestParts ()
     let testSetupValue = rand.Next ()
     
@@ -38,7 +38,7 @@ let private getMonitorBaseTestParts () =
     
     monitor, (tags, testSetupValue), (path, fileName, fullPath, lineNumber)
     
-let private getDataTestParts repeat =
+let getDataTestParts repeat =
     let testNameRoot = $"My %s{randomWord 5} Test"
     let testName = $"%s{testNameRoot} %%s"
     
@@ -48,7 +48,14 @@ let private getDataTestParts repeat =
 
     monitor, (testNameRoot, testName), (tags, testSetupValue, data), (path, fileName, fullPath, lineNumber)
     
-let private getTestParts () =
+let getNamesForThreeTests (f: int -> 'a -> string) data =
+    let [a; b; c] =
+        data
+        |> List.mapi f
+        
+    (a, b, c)
+    
+let getTestParts () =
     let testName = $"My %s{randomWord 5} Test"
     
     let monitor, (tags, testSetupValue), (path, fileName, fullPath, lineNumber) = getMonitorBaseTestParts ()
@@ -57,11 +64,7 @@ let private getTestParts () =
     
 type TestBuilder =
     static member GetTestNames (f: int -> 'a -> string) data =
-        let [a; b; c] =
-            data
-            |> List.mapi f
-            
-        (a, b, c)
+       getNamesForThreeTests f data
         
     //test name, tags, setup, data, test body indicator, teardown
     static member BuildTestWithTestNameTagsSetupDataTestBodyThreeParametersTeardownNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
