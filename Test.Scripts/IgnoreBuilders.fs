@@ -174,43 +174,43 @@ type IgnoreBuilder =
     
         (monitor, tests), (tags, data, testName), (path, fileName, lineNumber)
         
-    ////test name, tags, data, test body indicator
-    //static member BuildTestWithTestNameTagsDataTestBodyNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
-    //    let monitor, (testNameRoot, testName), (tags, _, data), (path, fileName, fullPath, lineNumber) =
-    //        getDataTestParts repeatDataValue
-    //
-    //    let testBody = monitor.FunctionTestPassThroughDataThreeParametersSuccess
-    //    
-    //    let tests =
-    //        testFeature.Ignore (
-    //            testName,
-    //            TestTags tags,
-    //            Data data,
-    //            TestBody testBody,
-    //            fullPath,
-    //            lineNumber
-    //        )
-    //
-    //    (monitor, tests), (tags, data, testNameRoot), (path, fileName, lineNumber)
-    //
-    //static member BuildTestWithTestNameTagsDataTestBody (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
-    //    let monitor, (testName, _), (tags, _, data), (path, fileName, fullPath, lineNumber) =
-    //        getDataTestParts repeatDataValue
-    //
-    //    let testBody = monitor.FunctionTestPassThroughDataThreeParametersSuccess
-    //    
-    //    let tests =
-    //        testFeature.Ignore (
-    //            testName,
-    //            TestTags tags,
-    //            Data data,
-    //            TestBody testBody,
-    //            fullPath,
-    //            lineNumber
-    //        )
-    //
-    //    (monitor, tests), (tags, data, testName), (path, fileName, lineNumber)
-    //    
+    //test name, tags, data, test body indicator
+    static member BuildTestWithTestNameTagsDataTestBodyNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
+        let monitor, (testNameRoot, testName), (tags, _, data), (path, fileName, fullPath, lineNumber) =
+            getDataTestParts repeatDataValue
+    
+        let testBody = monitor.FunctionTestPassThroughDataThreeParametersSuccess
+        
+        let tests =
+            testFeature.Ignore (
+                testName,
+                TestTags tags,
+                Data data,
+                TestBody testBody,
+                fullPath,
+                lineNumber
+            )
+    
+        (monitor, tests), (tags, data, testNameRoot), (path, fileName, lineNumber)
+    
+    static member BuildTestWithTestNameTagsDataTestBody (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
+        let monitor, (testName, _), (tags, _, data), (path, fileName, fullPath, lineNumber) =
+            getDataTestParts repeatDataValue
+    
+        let testBody = monitor.FunctionTestPassThroughDataThreeParametersSuccess
+        
+        let tests =
+            testFeature.Ignore (
+                testName,
+                TestTags tags,
+                Data data,
+                TestBody testBody,
+                fullPath,
+                lineNumber
+            )
+    
+        (monitor, tests), (tags, data, testName), (path, fileName, lineNumber)
+        
     ////test name, tags, data, test function
     //static member BuildTestWithTestNameTagsDataTestFunctionNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
     //    let monitor, (testNameRoot, testName), (tags, _, data), (path, fileName, fullPath, lineNumber) =

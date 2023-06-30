@@ -60,15 +60,4 @@ let ``Call Test when executed`` =
        |> verifyNoTestFunctionsShouldHaveBeenCalled
    )
     
-let ``Call teardown when executed`` =
-    feature.Test (fun (_, testFeature: IFeature<string>) ->
-       let (monitor, test), _, _ = IgnoreBuilder.BuildTestWithTestNameTagsSetupTestBody testFeature
-            
-       test
-       |> silentlyRunTest
-        
-       monitor
-       |> verifyNoTeardownFunctionsShouldHaveBeenCalled
-   )
-    
 let ``Test Cases`` = feature.GetTests ()
