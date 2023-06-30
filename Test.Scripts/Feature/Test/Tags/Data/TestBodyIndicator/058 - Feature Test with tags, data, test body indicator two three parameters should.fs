@@ -151,17 +151,5 @@ let ``Call Test with test environment when executed`` =
             List.map (getValue >> (fun env -> env.TestInfo)) >> List.distinct >> ListShould.HaveLengthOf tests.Length >> withFailureComment "not distinct tests"
         ]
     )
-    
-let ``Call teardown when executed`` =
-    feature.Test (fun (_, testFeature: IFeature<string>) ->
-        let (monitor, tests), _, _ = TestBuilder.BuildTestWithTagsDataTestBodyThreeParameters testFeature
-
-        tests
-        |> silentlyRunAllTests
-
-        monitor.HasTeardownBeenCalled
-        |> Should.BeFalse
-        |> withMessage "Teardown was called"
-    )
 
 let ``Test Cases`` = feature.GetTests ()

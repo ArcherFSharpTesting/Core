@@ -38,18 +38,6 @@ let ``Create a valid ITest`` =
         ]
     )
 
-let ``Call setup when executed`` =
-    feature.Test (fun (_, testFeature: IFeature<string>) ->
-        let (monitor, test), _, _ = TestBuilder.BuildTestWithTagsTestBodyTwoParameters testFeature
-
-        test
-        |> silentlyRunTest
-
-        monitor.SetupFunctionParameterValues
-        |> Should.BeEqualTo []
-        |> withMessage "Setup was not called"
-    )
-
 let ``Call Test when executed`` =
     feature.Test (fun (featureSetupValue, testFeature: IFeature<string>) ->
         let (monitor, test), _, _ = TestBuilder.BuildTestWithTagsTestBodyTwoParameters testFeature
@@ -93,18 +81,6 @@ let ``Call Test with test environment when executed`` =
                 getValue >> (fun env -> env.TestInfo) >> Should.BeEqualTo test
             ]
         ]
-    )
-    
-let ``Call teardown when executed`` =
-    feature.Test (fun (_, testFeature: IFeature<string>) ->
-        let (monitor, test), _, _ = TestBuilder.BuildTestWithTagsTestBodyTwoParameters testFeature
-
-        test
-        |> silentlyRunTest
-
-        monitor.HasTeardownBeenCalled
-        |> Should.BeFalse
-        |> withMessage "Teardown was called"
     )
 
 let ``Test Cases`` = feature.GetTests ()

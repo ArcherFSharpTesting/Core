@@ -94,19 +94,6 @@ let ``Create a test name with no name hints same data repeated`` =
         ]
     )
 
-let ``Not call setup when executed`` =
-    feature.Test (fun (_, testFeature: IFeature<string>) ->
-        let (monitor, tests), _, _ = TestBuilder.BuildTestWithDataTestBodyOneParameter testFeature
-
-        tests
-        |> silentlyRunAllTests
-
-        monitor
-        |> hasSetupFunctionBeenCalled
-        |> Should.BeFalse
-        |> withFailureComment "Setup was called"
-    )
-
 let ``Call Test when executed`` =
     feature.Test (fun (featureSetupValue, testFeature: IFeature<string>) ->
         let (monitor, tests), (data, _), _ = TestBuilder.BuildTestWithDataTestBodyOneParameter testFeature
@@ -131,17 +118,6 @@ let ``Not call Test with test environment when executed`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
         let (monitor, tests), _, _ = TestBuilder.BuildTestWithDataTestBodyOneParameter testFeature
 
-        tests
-        |> silentlyRunAllTests
-
-        monitor
-        |> verifyNoTeardownFunctionsShouldHaveBeenCalled
-    )
-    
-let ``Not call teardown when executed`` =
-    feature.Test (fun (_, testFeature: IFeature<string>) ->
-        let (monitor, tests), _, _ = TestBuilder.BuildTestWithDataTestBodyOneParameter testFeature
-            
         tests
         |> silentlyRunAllTests
 

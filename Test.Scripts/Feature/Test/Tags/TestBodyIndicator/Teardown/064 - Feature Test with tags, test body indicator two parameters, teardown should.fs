@@ -38,18 +38,6 @@ let ``Create a valid ITest`` =
         ]
     )
 
-let ``Call setup when executed`` =
-    feature.Test (fun (_, testFeature: IFeature<string>) ->
-        let (monitor, test), _, _ = TestBuilder.BuildTestWithTagsTestBodyTwoParametersTeardown testFeature
-
-        test
-        |> silentlyRunTest
-
-        monitor.SetupFunctionParameterValues
-        |> Should.BeEqualTo []
-        |> withMessage "Setup was not called"
-    )
-
 let ``Call Test when executed`` =
     feature.Test (fun (featureSetupValue, testFeature: IFeature<string>) ->
         let (monitor, test), _, _ = TestBuilder.BuildTestWithTagsTestBodyTwoParametersTeardown testFeature

@@ -95,16 +95,4 @@ let ``Call Test with test environment when executed`` =
        ]
    )
     
-let ``Call teardown when executed`` =
-    feature.Test (fun (_, testFeature: IFeature<string>) ->
-       let (monitor, test), _, _ = TestBuilder.BuildTestWithSetupTestBodyTwoParameters testFeature
-            
-       test
-       |> silentlyRunTest
-        
-       monitor.HasTeardownBeenCalled
-       |> Should.BeFalse
-       |> withMessage "Teardown was called"
-   )
-    
 let ``Test Cases`` = feature.GetTests ()

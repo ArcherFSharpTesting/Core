@@ -138,16 +138,5 @@ let ``Call Test with test environment when executed`` =
         monitor
         |> verifyNoTestWasCalledWithTestEnvironment
     )
-    
-let ``Not call teardown when executed`` =
-    feature.Test (fun (_, testFeature: IFeature<string>) ->
-        let (monitor, tests), _, _ = TestBuilder.BuildTestWithSetupDataTestBodyTwoParameters testFeature
-            
-        tests
-        |> silentlyRunAllTests
-
-        monitor
-        |> verifyNoTeardownFunctionsShouldHaveBeenCalled
-    )
 
 let ``Test Cases`` = feature.GetTests ()

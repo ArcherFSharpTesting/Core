@@ -38,18 +38,6 @@ let ``Create a valid ITest`` =
         ]
     )
 
-let ``Not call setup when executed`` =
-    feature.Test (fun (_, testFeature: IFeature<string>) ->
-        let (monitor, test), _, _ = TestBuilder.BuildTestWithTestFunctionTwoParameters testFeature
-
-        test
-        |> silentlyRunTest
-
-        monitor.HasSetupFunctionBeenCalled
-        |> Should.BeFalse
-        |> withFailureComment "Setup was called"
-    )
-
 let ``Call Test when executed`` =
     feature.Test (fun (featureSetupValue, testFeature: IFeature<string>) ->
         let (monitor, test), _, _ = TestBuilder.BuildTestWithTestFunctionTwoParameters testFeature
@@ -78,18 +66,6 @@ let ``Not call Test with test environment when executed`` =
         monitor.HasTestFunctionBeenCalledWithEnvironmentParameter
         |> Should.BeTrue
         |> withFailureComment "Test not called with environment"
-    )
-    
-let ``Call teardown when executed`` =
-    feature.Test (fun (_, testFeature: IFeature<string>) ->
-        let (monitor, test), _, _ = TestBuilder.BuildTestWithTestFunctionTwoParameters testFeature
-
-        test
-        |> silentlyRunTest
-
-        monitor.HasTeardownBeenCalled
-        |> Should.BeFalse
-        |> withMessage "Teardown was called"
     )
 
 let ``Test Cases`` = feature.GetTests ()

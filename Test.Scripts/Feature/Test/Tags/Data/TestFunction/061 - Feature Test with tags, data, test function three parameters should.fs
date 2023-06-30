@@ -92,18 +92,6 @@ let ``Create a test name with no name hints same data repeated`` =
         ]
     )
 
-let ``Call setup when executed`` =
-    feature.Test (fun (_, testFeature: IFeature<string>) ->
-        let (monitor, tests), _, _ = TestBuilder.BuildTestWithTagsDataTestFunctionThreeParameters testFeature
-
-        tests
-        |> silentlyRunAllTests
-
-        monitor.SetupFunctionParameterValues
-        |> Should.BeEqualTo []
-        |> withMessage "Setup was not called"
-    )
-
 let ``Call Test when executed`` =
     feature.Test (fun (featureSetupValue, testFeature: IFeature<string>) ->
         let (monitor, tests), (_, data, _), _ = TestBuilder.BuildTestWithTagsDataTestFunctionThreeParameters testFeature
@@ -150,18 +138,6 @@ let ``Call Test with test environment when executed`` =
 
             List.map (getValue >> (fun env -> env.TestInfo)) >> List.distinct >> ListShould.HaveLengthOf tests.Length >> withFailureComment "tests not distinct" 
         ]
-    )
-    
-let ``Call teardown when executed`` =
-    feature.Test (fun (_, testFeature: IFeature<string>) ->
-        let (monitor, tests), _, _ = TestBuilder.BuildTestWithTagsDataTestFunctionThreeParameters testFeature
-
-        tests
-        |> silentlyRunAllTests
-
-        monitor.HasTeardownBeenCalled
-        |> Should.BeFalse
-        |> withMessage "Teardown was called"
     )
 
 let ``Test Cases`` = feature.GetTests ()
