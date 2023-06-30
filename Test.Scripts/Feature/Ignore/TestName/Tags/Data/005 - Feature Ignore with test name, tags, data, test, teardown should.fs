@@ -1,4 +1,4 @@
-module Archer.Arrows.Tests.Feature.Ignore.TestName.Tags.Data.``005 - Feature Ignore with test name, tags, data, test body, teardown should``
+module Archer.Arrows.Tests.Feature.Ignore.TestName.Tags.Data.``005 - Feature Ignore with test name, tags, data, test, teardown should``
 
 open System
 open Archer

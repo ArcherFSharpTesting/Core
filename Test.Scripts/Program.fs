@@ -1,5 +1,6 @@
 ﻿open Archer
 open Archer.Arrows.Tests
+open Archer.Arrows.Tests.Feature.Ignore.TestName.Tags
 open Archer.Arrows.Tests.Feature.Ignore.TestName.Tags.Data
 open Archer.Arrows.Tests.Ignore.TestName.Tags.Setup
 open Archer.Arrows.Tests.Ignore.TestName.Tags.Setup.Data
@@ -217,14 +218,16 @@ runner
     ``092 - Feature Test with test function one parameter should``.``Test Cases``
     
     // Feature.Ignore Tests
-    ``001 - Feature Ignore with test name, tags, setup, data, test body, teardown should``.``Test Cases``
-    ``002 - Feature Ignore with test name, tags, setup, data, test body should``.``Test Cases``
+    ``001 - Feature Ignore with test name, tags, setup, data, test, teardown should``.``Test Cases``
+    ``002 - Feature Ignore with test name, tags, setup, data, test should``.``Test Cases``
     
-    ``003 - Feature Ignore with test name, tags, setup, test body, teardown should``.``Test Cases``
-    ``004 - Feature Ignore with test name, tags, setup, test body should``.``Test Cases``
+    ``003 - Feature Ignore with test name, tags, setup, test, teardown should``.``Test Cases``
+    ``004 - Feature Ignore with test name, tags, setup, test should``.``Test Cases``
     
-    ``005 - Feature Ignore with test name, tags, data, test body, teardown should``.``Test Cases``
-    ``006 - Feature Ignore with test name, tags, data, test body should``.``Test Cases``
+    ``005 - Feature Ignore with test name, tags, data, test, teardown should``.``Test Cases``
+    ``006 - Feature Ignore with test name, tags, data, test should``.``Test Cases``
+    
+    ``007 - Feature Ignore with test name, tags, test, teardown should``.``Test Cases``
     
     ``Arrow Ignore``.``Test Cases``
 ]
