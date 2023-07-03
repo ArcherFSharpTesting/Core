@@ -711,47 +711,47 @@ type IgnoreBuilder =
     
         (monitor, test), (tags, testName), (path, fileName, lineNumber)
         
-    ////tags, data, test body indicator, teardown
-    //static member BuildTestWithTagsDataTestBodyTeardownNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
-    //    let monitor, (testNameRoot, testName), (tags, _, data), (path, fileName, fullPath, lineNumber) =
-    //        getDataTestParts repeatDataValue
-    //
-    //    let testBody = monitor.FunctionTestPassThroughDataThreeParametersSuccess
-    //    let teardown = monitor.FunctionTeardownPassThrough
-    //    
-    //    let tests =
-    //        testFeature.Ignore (
-    //            TestTags tags,
-    //            Data data,
-    //            TestBody testBody,
-    //            Teardown teardown,
-    //            testName,
-    //            fullPath,
-    //            lineNumber
-    //        )
-    //
-    //    (monitor, tests), (tags, data, testNameRoot), (path, fileName, lineNumber)
-    //    
-    //static member BuildTestWithTagsDataTestBodyTeardown (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
-    //    let monitor, (testName, _), (tags, _, data), (path, fileName, fullPath, lineNumber) =
-    //        getDataTestParts repeatDataValue
-    //
-    //    let testBody = monitor.FunctionTestPassThroughDataThreeParametersSuccess
-    //    let teardown = monitor.FunctionTeardownPassThrough
-    //    
-    //    let tests =
-    //        testFeature.Ignore (
-    //            TestTags tags,
-    //            Data data,
-    //            TestBody testBody,
-    //            Teardown teardown,
-    //            testName,
-    //            fullPath,
-    //            lineNumber
-    //        )
-    //
-    //    (monitor, tests), (tags, data, testName), (path, fileName, lineNumber)
-    //
+    //tags, data, test body indicator, teardown
+    static member BuildTestWithTagsDataTestBodyTeardownNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
+        let monitor, (testNameRoot, testName), (tags, _, data), (path, fileName, fullPath, lineNumber) =
+            getDataTestParts repeatDataValue
+    
+        let testBody = monitor.FunctionTestPassThroughDataThreeParametersSuccess
+        let teardown = monitor.FunctionTeardownPassThrough
+        
+        let tests =
+            testFeature.Ignore (
+                TestTags tags,
+                Data data,
+                TestBody testBody,
+                Teardown teardown,
+                testName,
+                fullPath,
+                lineNumber
+            )
+    
+        (monitor, tests), (tags, data, testNameRoot), (path, fileName, lineNumber)
+        
+    static member BuildTestWithTagsDataTestBodyTeardown (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
+        let monitor, (testName, _), (tags, _, data), (path, fileName, fullPath, lineNumber) =
+            getDataTestParts repeatDataValue
+    
+        let testBody = monitor.FunctionTestPassThroughDataThreeParametersSuccess
+        let teardown = monitor.FunctionTeardownPassThrough
+        
+        let tests =
+            testFeature.Ignore (
+                TestTags tags,
+                Data data,
+                TestBody testBody,
+                Teardown teardown,
+                testName,
+                fullPath,
+                lineNumber
+            )
+    
+        (monitor, tests), (tags, data, testName), (path, fileName, lineNumber)
+    
     ////tags, data, test body indicator
     //static member BuildTestWithTagsDataTestBodyNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
     //    let monitor, (testNameRoot, testName), (tags, _, data), (path, fileName, fullPath, lineNumber) =
