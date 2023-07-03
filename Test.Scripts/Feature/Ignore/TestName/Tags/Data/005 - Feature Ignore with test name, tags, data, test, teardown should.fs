@@ -109,7 +109,7 @@ let ``Call setup when executed`` =
         |> silentlyRunAllTests
 
         monitor
-        |> verifyNoSetupFunctionsShouldHaveBeenCalled
+        |> verifyNoSetupFunctionsHaveBeenCalled
     )
 
 let ``Call Test when executed`` =
@@ -131,7 +131,7 @@ let ``Call teardown when executed`` =
         |> silentlyRunAllTests
 
         monitor
-        |> verifyNoTeardownFunctionsShouldHaveBeenCalled
+        |> verifyNoTeardownFunctionsHaveBeenCalled
     )
 
 let ``Test Cases`` = feature.GetTests ()

@@ -465,13 +465,13 @@ let verifyAllTestFunctionsWereCalledWithTestEnvironmentContaining (tests: ITest 
         List.map (getValue >> (fun env -> env.TestInfo)) >> List.distinct >> ListShould.HaveLengthOf testCount >> withFailureComment "not distinct tests"
     ]
     
-let verifyNoSetupFunctionsShouldHaveBeenCalled (monitor: ITestMonitor<_, _, _>) =
+let verifyNoSetupFunctionsHaveBeenCalled (monitor: ITestMonitor<_, _, _>) =
     monitor
     |> numberOfTimesSetupFunctionWasCalled
     |> Should.BeEqualTo 0
     |> withFailureComment "Setup was called"
     
-let verifyNoTeardownFunctionsShouldHaveBeenCalled (monitor: ITestMonitor<_, _, _>) =
+let verifyNoTeardownFunctionsHaveBeenCalled (monitor: ITestMonitor<_, _, _>) =
     monitor
     |> numberOfTimesTeardownFunctionWasCalled
     |> Should.BeEqualTo 0

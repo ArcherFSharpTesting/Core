@@ -129,7 +129,7 @@ let ``Call teardown when executed`` =
         |> silentlyRunAllTests
 
         monitor
-        |> verifyNoTeardownFunctionsShouldHaveBeenCalled
+        |> verifyNoTeardownFunctionsHaveBeenCalled
     )
     
 let ``Test Cases`` = feature.GetTests ()

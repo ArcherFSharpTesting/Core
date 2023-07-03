@@ -127,6 +127,7 @@
     <Compile Include="Feature\Ignore\TestName\Data\014 - Feature Ignore with test name, data, test should.fs" />
     <Compile Include="Feature\Ignore\TestName\015 - Feature Ignore with test name, test, teardown should.fs" />
     <Compile Include="Feature\Ignore\TestName\016 - Feature Ignore with test name, test should.fs" />
+    <Compile Include="Feature\Ignore\Tags\Setup\Data\017 - Feature Ignore with tags, setup, data, test, teardown should.fs" />
     <Compile Include="Arrow NewFeature.fs" />
     <Compile Include="Arrow Ignorefs.fs" />
     <Compile Include="Arrow NewFeature With Setup.fs" />

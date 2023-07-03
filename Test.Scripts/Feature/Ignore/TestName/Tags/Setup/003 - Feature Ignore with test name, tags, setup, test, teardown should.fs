@@ -46,7 +46,7 @@ let ``Call setup when executed`` =
        |> silentlyRunTest
         
        monitor
-       |> verifyNoSetupFunctionsShouldHaveBeenCalled
+       |> verifyNoSetupFunctionsHaveBeenCalled
    )
 
 let ``Call Test when executed`` =
@@ -68,7 +68,7 @@ let ``Call teardown when executed`` =
        |> silentlyRunTest
         
        monitor
-       |> verifyNoTeardownFunctionsShouldHaveBeenCalled
+       |> verifyNoTeardownFunctionsHaveBeenCalled
    )
     
 let ``Test Cases`` = feature.GetTests ()

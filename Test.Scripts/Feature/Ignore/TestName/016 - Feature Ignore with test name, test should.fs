@@ -38,7 +38,7 @@ let ``Create a valid ITest`` =
         ]
     )
 
-let ``Call Test when executed`` =
+let ``Not call Test when executed`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
         let (monitor, test), _, _ = IgnoreBuilder.BuildTestWithTestNameTestBody testFeature
 

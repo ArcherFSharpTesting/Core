@@ -1,5 +1,6 @@
 ﻿open Archer
 open Archer.Arrows.Tests
+open Archer.Arrows.Tests.Feature.Ignore.Tags.Setup.Data
 open Archer.Arrows.Tests.Feature.Ignore.TestName
 open Archer.Arrows.Tests.Feature.Ignore.TestName.Data
 open Archer.Arrows.Tests.Feature.Ignore.TestName.Setup
@@ -245,6 +246,8 @@ runner
     
     ``015 - Feature Ignore with test name, test, teardown should``.``Test Cases``
     ``016 - Feature Ignore with test name, test should``.``Test Cases``
+    
+    ``017 - Feature Ignore with tags, setup, data, test, teardown should``.``Test Cases``
     
     ``Arrow Ignore``.``Test Cases``
 ]

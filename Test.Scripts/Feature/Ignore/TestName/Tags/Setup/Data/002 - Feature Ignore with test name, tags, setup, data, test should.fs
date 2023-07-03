@@ -108,7 +108,7 @@ let ``Call setup when executed`` =
         |> silentlyRunAllTests
         
         monitor
-        |> verifyNoSetupFunctionsShouldHaveBeenCalled
+        |> verifyNoSetupFunctionsHaveBeenCalled
     ) 
 
 let ``Call Test when executed`` =
