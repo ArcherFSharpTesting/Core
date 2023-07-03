@@ -76,11 +76,6 @@ let ``Call Test with test environment when executed`` =
         test
         |> silentlyRunTest
 
-        let getValue v =
-            match v with
-            | Some value -> value
-            | _ -> failwith "No Value"
-
         monitor
         |> verifyNoTestWasCalledWithTestEnvironment
     )
