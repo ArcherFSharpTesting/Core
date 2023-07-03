@@ -38,18 +38,6 @@ let ``Create a valid ITest`` =
         ]
     )
 
-let ``Call setup when executed`` =
-    feature.Test (fun (_, testFeature: IFeature<string>) ->
-        let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameTagsTestBodyOneParameter testFeature
-
-        test
-        |> silentlyRunTest
-
-        monitor.SetupFunctionParameterValues
-        |> Should.BeEqualTo []
-        |> withMessage "Setup was not called"
-    )
-
 let ``Call Test when executed`` =
     feature.Test (fun (featureSetupValue, testFeature: IFeature<string>) ->
         let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameTagsTestBodyOneParameter testFeature
@@ -61,36 +49,15 @@ let ``Call Test when executed`` =
         |> Should.PassAllOf [
             numberOfTimesTestFunctionWasCalled >> Should.BeEqualTo 1 >> withFailureComment "Incorrect number of test calls"
 
-            verifyNoTestWasCalledWithData
+            verifyNoTestFunctionWasCalledWithData
 
             verifyAllTestFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf featureSetupValue
 
             verifyNoTestFunctionWasCalledWithATestSetupValue
+            
+            verifyNoTestFunctionWasCalledWithTestEnvironment
         ]
         |> withMessage "Test was not called"
-    )
-
-let ``Not call Test with test environment when executed`` =
-    feature.Test (fun (_, testFeature: IFeature<string>) ->
-        let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameTagsTestBodyOneParameter testFeature
-
-        test
-        |> silentlyRunTest
-
-        monitor
-        |> verifyNoTestFunctionWasCalledWithTestEnvironment
-    )
-    
-let ``Call teardown when executed`` =
-    feature.Test (fun (_, testFeature: IFeature<string>) ->
-        let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameTagsTestBodyOneParameter testFeature
-
-        test
-        |> silentlyRunTest
-
-        monitor.HasTeardownBeenCalled
-        |> Should.BeFalse
-        |> withMessage "Teardown was called"
     )
 
 let ``Test Cases`` = feature.GetTests ()

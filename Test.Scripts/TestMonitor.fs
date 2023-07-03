@@ -409,7 +409,7 @@ let verifyAllTestFunctionShouldHaveBeenCalledWithTestSetupValueOf (testSetupValu
     |> ListShould.HaveAllValuesBe (Some testSetupValue)
     |> withFailureComment "Incorrect test function test setup parameters"
     
-let verifyNoTestWasCalledWithData (monitor: ITestMonitor<_, _, _>) =
+let verifyNoTestFunctionWasCalledWithData (monitor: ITestMonitor<_, _, _>) =
     monitor
     |> testFunctionDataParameterValues
     |> List.filter hasValue
@@ -462,7 +462,7 @@ let verifyAllTestFunctionsWereCalledWithTestEnvironmentContaining (tests: ITest 
             getValue >> (fun env -> env.TestInfo) >> (fun ti -> tests |> ListShould.Contain ti)
         ]
         
-        List.map (getValue >> (fun env -> env.TestInfo)) >> List.distinct >> ListShould.HaveLengthOf tests.Length >> withFailureComment "not distinct tests"
+        List.map (getValue >> (fun env -> env.TestInfo)) >> List.distinct >> ListShould.HaveLengthOf testCount >> withFailureComment "not distinct tests"
     ]
     
 let verifyNoSetupFunctionsShouldHaveBeenCalled (monitor: ITestMonitor<_, _, _>) =

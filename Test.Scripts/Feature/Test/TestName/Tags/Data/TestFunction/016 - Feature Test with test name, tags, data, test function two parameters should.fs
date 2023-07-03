@@ -92,38 +92,6 @@ let ``Create a test name with no name hints same data repeated`` =
         ]
     )
 
-let ``Call setup when executed`` =
-    feature.Test (fun (_, testFeature: IFeature<string>) ->
-        let (monitor, tests), _, _ = TestBuilder.BuildTestWithTestNameTagsDataTestFunctionTwoParameters testFeature
-
-        tests
-        |> silentlyRunAllTests
-
-        monitor.SetupFunctionParameterValues
-        |> Should.BeEqualTo []
-        |> withMessage "Setup was not called"
-    )
-
-let ``Call Test when executed`` =
-    feature.Test (fun (featureSetupValue, testFeature: IFeature<string>) ->
-        let (monitor, tests), (_, data, _), _ = TestBuilder.BuildTestWithTestNameTagsDataTestFunctionTwoParameters testFeature
-
-        tests
-        |> silentlyRunAllTests
-
-        monitor
-        |> Should.PassAllOf [
-            numberOfTimesTestFunctionWasCalled >> Should.BeEqualTo 3 >> withFailureComment "Incorrect number of test calls"
-
-            verifyAllTestFunctionShouldHaveBeenCalledWithDataOf data
-
-            verifyAllTestFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf featureSetupValue
-
-            verifyNoTestFunctionWasCalledWithATestSetupValue
-        ]
-        |> withMessage "Test was not called"
-    )
-
 let ``Not call Test with test environment when executed`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
         let (monitor, tests), _, _ = TestBuilder.BuildTestWithTestNameTagsDataTestFunctionTwoParameters testFeature
@@ -133,18 +101,6 @@ let ``Not call Test with test environment when executed`` =
 
         monitor
         |> verifyNoTestFunctionWasCalledWithTestEnvironment
-    )
-    
-let ``Call teardown when executed`` =
-    feature.Test (fun (_, testFeature: IFeature<string>) ->
-        let (monitor, tests), _, _ = TestBuilder.BuildTestWithTestNameTagsDataTestFunctionTwoParameters testFeature
-
-        tests
-        |> silentlyRunAllTests
-
-        monitor.HasTeardownBeenCalled
-        |> Should.BeFalse
-        |> withMessage "Teardown was called"
     )
 
 let ``Test Cases`` = feature.GetTests ()

@@ -49,7 +49,7 @@ let ``Call Test when executed`` =
         |> Should.PassAllOf [
             numberOfTimesTestFunctionWasCalled >> Should.BeEqualTo 1 >> withFailureComment "Incorrect number of test calls"
 
-            verifyNoTestWasCalledWithData
+            verifyNoTestFunctionWasCalledWithData
 
             verifyAllTestFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf featureSetupValue
 
