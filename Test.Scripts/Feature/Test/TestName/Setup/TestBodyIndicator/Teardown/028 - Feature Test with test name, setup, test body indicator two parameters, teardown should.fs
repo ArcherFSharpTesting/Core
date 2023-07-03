@@ -46,7 +46,11 @@ let ``Call setup when executed`` =
         |> silentlyRunTest
 
         monitor
-        |> verifyAllSetupFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf featureSetupValue
+        |> Should.PassAllOf [
+            numberOfTimesSetupFunctionWasCalled >> Should.BeEqualTo 1 >> withFailureComment "Setup was called an incorrect number of times"
+            
+            verifyAllSetupFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf featureSetupValue
+        ]
     )
 
 let ``Call Test when executed`` =
@@ -65,33 +69,10 @@ let ``Call Test when executed`` =
             verifyAllTestFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf featureSetupValue
 
             verifyAllTestFunctionShouldHaveBeenCalledWithTestSetupValueOf testSetupValue
+            
+            verifyAllTestFunctionsWereCalledWithTestEnvironmentContaining [test]
         ]
         |> withMessage "Test was not called"
-    )
-
-let ``Call Test with test environment when executed`` =
-    feature.Test (fun (_, testFeature: IFeature<string>) ->
-        let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameSetupTestBodyTwoParametersTeardown testFeature
-
-        test
-        |> silentlyRunTest
-
-        let getValue v =
-            match v with
-            | Some value -> value
-            | _ -> failwith "No Value"
-
-        monitor
-        |> testFunctionEnvironmentParameterValues
-        |> Should.PassAllOf [
-            ListShould.HaveLengthOf 1 >> withMessage "Incorrect number of calls to test"
-            ListShould.HaveAllValuesPassTestOf <@hasValue@>
-
-            ListShould.HaveAllValuesPassAllOf [
-                getValue >> (fun env -> env.ApiEnvironment.ApiName) >> Should.BeEqualTo "Archer.Arrows"
-                getValue >> (fun env -> env.TestInfo) >> Should.BeEqualTo test
-            ]
-        ]
     )
     
 let ``Call teardown when executed`` =

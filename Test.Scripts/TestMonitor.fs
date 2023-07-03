@@ -461,6 +461,8 @@ let verifyAllTestFunctionsWereCalledWithTestEnvironmentContaining (tests: ITest 
             getValue >> (fun env -> env.ApiEnvironment.ApiName) >> Should.BeEqualTo "Archer.Arrows"
             getValue >> (fun env -> env.TestInfo) >> (fun ti -> tests |> ListShould.Contain ti)
         ]
+        
+        List.map (getValue >> (fun env -> env.TestInfo)) >> List.distinct >> ListShould.HaveLengthOf tests.Length >> withFailureComment "not distinct tests"
     ]
     
 let verifyNoSetupFunctionsShouldHaveBeenCalled (monitor: ITestMonitor<_, _, _>) =

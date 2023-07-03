@@ -46,7 +46,11 @@ let ``Call setup when executed`` =
         |> silentlyRunTest
 
         monitor
-        |> verifyAllSetupFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf featureSetupValue
+        |> Should.PassAllOf [
+            numberOfTimesSetupFunctionWasCalled >> Should.BeEqualTo 1 >> withFailureComment "Setup was called an incorrect number of times"
+            
+            verifyAllSetupFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf featureSetupValue
+        ]
     )
 
 let ``Call Test when executed`` =
@@ -65,36 +69,10 @@ let ``Call Test when executed`` =
             verifyAllTestFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf featureSetupValue
 
             verifyAllTestFunctionShouldHaveBeenCalledWithTestSetupValueOf testSetupValue
+            
+            verifyNoTestFunctionWasCalledWithTestEnvironment
         ]
         |> withMessage "Test was not called"
-    )
-
-let ``Call Test with test environment when executed`` =
-    feature.Test (fun (_, testFeature: IFeature<string>) ->
-        let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameSetupTestBodyOneParameter testFeature
-
-        test
-        |> silentlyRunTest
-
-        let getValue v =
-            match v with
-            | Some value -> value
-            | _ -> failwith "No Value"
-
-        monitor
-        |> verifyNoTestFunctionWasCalledWithTestEnvironment
-    )
-    
-let ``Call teardown when executed`` =
-    feature.Test (fun (_, testFeature: IFeature<string>) ->
-        let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameSetupTestBodyOneParameter testFeature
-
-        test
-        |> silentlyRunTest
-
-        monitor.HasTeardownBeenCalled
-        |> Should.BeFalse
-        |> withMessage "Teardown was called"
     )
 
 let ``Test Cases`` = feature.GetTests ()

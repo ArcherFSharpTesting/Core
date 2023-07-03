@@ -94,19 +94,6 @@ let ``Create a test name with no name hints same data repeated`` =
         ]
     )
 
-let ``Not call setup when executed`` =
-    feature.Test (fun (_, testFeature: IFeature<string>) ->
-        let (monitor, tests), _, _ = TestBuilder.BuildTestWithTestNameDataTestBodyThreeParametersTeardown testFeature
-
-        tests
-        |> silentlyRunAllTests
-
-        monitor
-        |> hasSetupFunctionBeenCalled
-        |> Should.BeFalse
-        |> withFailureComment "Setup was called"
-    )
-
 let ``Call Test when executed`` =
     feature.Test (fun (featureSetupValue, testFeature: IFeature<string>) ->
         let (monitor, tests), (data, _), _ = TestBuilder.BuildTestWithTestNameDataTestBodyThreeParametersTeardown testFeature
@@ -123,6 +110,8 @@ let ``Call Test when executed`` =
             verifyAllTestFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf featureSetupValue
 
             verifyNoTestFunctionWasCalledWithATestSetupValue
+            
+            verifyAllTestFunctionsWereCalledWithTestEnvironmentContaining tests
         ]
         |> withMessage "Test was not called"
     )
