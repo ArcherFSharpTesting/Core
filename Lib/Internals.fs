@@ -9,6 +9,8 @@ open Archer.CoreTypes.InternalTypes
     
 let getLocation (fileFullName: string) (lineNumber: int) =
     let fileInfo = FileInfo fileFullName
+    if fileInfo = null then failwith $"'%s{fileFullName}' was null file info"
+    if fileInfo.Directory = null then failwith $"'%s{fileFullName}' has no directory"
     let filePath = fileInfo.Directory.FullName
     let fileName = fileInfo.Name
     

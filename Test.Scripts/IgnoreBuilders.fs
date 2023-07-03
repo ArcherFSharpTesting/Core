@@ -846,24 +846,24 @@ type IgnoreBuilder =
     
         (monitor, test), (tags, testName), (path, fileName, lineNumber)
         
-    ////tags, test body indicator
-    //static member BuildTestWithTagsTestBody (testFeature: IFeature<string>) =
-    //    let monitor, (testName, tags, _), (path, fileName, fullPath, lineNumber) =
-    //        getTestParts ()
-    //
-    //    let testBody = monitor.FunctionTestPassThroughTwoParametersSuccess
-    //    
-    //    let test =
-    //        testFeature.Ignore (
-    //            TestTags tags,
-    //            TestBody testBody,
-    //            testName,
-    //            fullPath,
-    //            lineNumber
-    //        )
-    //
-    //    (monitor, test), (tags, testName), (path, fileName, lineNumber)
-    //    
+    //tags, test body indicator
+    static member BuildTestWithTagsTestBody (testFeature: IFeature<string>) =
+        let monitor, (testName, tags, _), (path, fileName, fullPath, lineNumber) =
+            getTestParts ()
+    
+        let testBody = monitor.FunctionTestPassThroughTwoParametersSuccess
+        
+        let test =
+            testFeature.Ignore (
+                TestTags tags,
+                TestBody testBody,
+                testName,
+                fullPath,
+                lineNumber
+            )
+    
+        (monitor, test), (tags, testName), (path, fileName, lineNumber)
+        
     ////tags, test function
     //static member BuildTestWithTagsTestFunction (testFeature: IFeature<string>) =
     //    let monitor, (testName, tags, _), (path, fileName, fullPath, lineNumber) =

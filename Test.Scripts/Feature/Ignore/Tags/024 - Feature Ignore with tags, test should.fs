@@ -1,11 +1,11 @@
-module Archer.Arrows.Tests.Feature.Test.Tags.TestBodyIndicator.``066 - Feature Test with tags, test body indicator two parameters should``
+module Archer.Arrows.Tests.Feature.Ignore.Tags.``024 - Feature Ignore with tags, test should``
 
 open System
 open Archer
 open Archer.Arrows
 open Archer.Arrows.Internal.Types
 open Archer.Arrows.Tests
-open Archer.Arrows.Tests.TestBuilders
+open Archer.Arrows.Tests.IgnoreBuilders
 open Archer.CoreTypes.InternalTypes
 open Archer.MicroLang.Verification
 
@@ -25,7 +25,7 @@ let private getContainerName (test: ITest) =
 let ``Create a valid ITest`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
         let (_, test), (tags, testName), (path, fileName, lineNumber) =
-            TestBuilder.BuildTestWithTagsTestBodyTwoParameters testFeature
+            IgnoreBuilder.BuildTestWithTagsTestBody testFeature
 
         test
         |> Should.PassAllOf [
@@ -38,26 +38,15 @@ let ``Create a valid ITest`` =
         ]
     )
 
-let ``Call Test when executed`` =
-    feature.Test (fun (featureSetupValue, testFeature: IFeature<string>) ->
-        let (monitor, test), _, _ = TestBuilder.BuildTestWithTagsTestBodyTwoParameters testFeature
+let ``Not call Test when executed`` =
+    feature.Test (fun (_, testFeature: IFeature<string>) ->
+        let (monitor, test), _, _ = IgnoreBuilder.BuildTestWithTagsTestBody testFeature
 
         test
         |> silentlyRunTest
 
         monitor
-        |> Should.PassAllOf [
-            numberOfTimesTestFunctionWasCalled >> Should.BeEqualTo 1 >> withFailureComment "Incorrect number of tests"
-
-            verifyNoTestFunctionWasCalledWithData
-
-            verifyAllTestFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf featureSetupValue
-
-            verifyNoTestFunctionWasCalledWithATestSetupValue
-            
-            verifyAllTestFunctionsWereCalledWithTestEnvironmentContaining [test]
-        ]
-        |> withMessage "Test was not called"
+        |> verifyNoTestFunctionsHaveBeenCalled
     )
 
 let ``Test Cases`` = feature.GetTests ()
