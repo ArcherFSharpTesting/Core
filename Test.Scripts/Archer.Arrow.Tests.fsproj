@@ -138,6 +138,7 @@
     <Compile Include="Feature\Ignore\Setup\Data\025 - Ignore Feature with setup, data, test, teardown should.fs" />
     <Compile Include="Feature\Ignore\Setup\Data\026 - Ignore Feature with setup, data, test should.fs" />
     <Compile Include="Feature\Ignore\Setup\027 - Ignore Feature with setup, test, teardown should.fs" />
+    <Compile Include="Feature\Ignore\Setup\028 - Feature Ignore with setup, test should.fs" />
     <Compile Include="Arrow NewFeature.fs" />
     <Compile Include="Arrow Ignorefs.fs" />
     <Compile Include="Arrow NewFeature With Setup.fs" />
