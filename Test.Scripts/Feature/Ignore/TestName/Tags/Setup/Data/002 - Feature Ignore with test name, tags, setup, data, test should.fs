@@ -12,7 +12,7 @@ open Archer.MicroLang.Verification
 let private feature = Arrow.NewFeature (
     TestTags [
         Category "Feature"
-        Category "Test"
+        Category "Ignore"
     ],
     Setup setupFeatureUnderTest
 )
