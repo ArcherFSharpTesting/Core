@@ -103,7 +103,7 @@ let ``Call setup when executed`` =
 
         monitor
         |> Should.PassAllOf [
-            numberOfTimesSetupFunctionWasCalled >> Should.BeEqualTo 3 >> withFailureComment "Setup was called an incorrect number of times"
+            numberOfTimesSetupFunctionWasCalled >> Should.BeEqualTo tests.Length >> withFailureComment "Setup was called an incorrect number of times"
             
             verifyAllSetupFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf featureSetupValue
         ]
