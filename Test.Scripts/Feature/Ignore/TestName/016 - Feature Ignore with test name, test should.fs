@@ -1,4 +1,4 @@
-module Archer.Arrows.Tests.Feature.Ignore.TestName.Setup.``012 - Feature Ignore with test name, setup, test should``
+module Archer.Arrows.Tests.Feature.Ignore.TestName.``016 - Feature Ignore with test name, test should``
 
 open System
 open Archer
@@ -25,7 +25,7 @@ let private getContainerName (test: ITest) =
 let ``Create a valid ITest`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
         let (_, test), testName, (path, fileName, lineNumber) =
-            IgnoreBuilder.BuildTestWithTestNameSetupTestBody testFeature
+            IgnoreBuilder.BuildTestWithTestNameTestBody testFeature
 
         test
         |> Should.PassAllOf [
@@ -38,20 +38,9 @@ let ``Create a valid ITest`` =
         ]
     )
 
-let ``Call setup when executed`` =
-    feature.Test (fun (_, testFeature: IFeature<string>) ->
-        let (monitor, test), _, _ = IgnoreBuilder.BuildTestWithTestNameSetupTestBody testFeature
-
-        test
-        |> silentlyRunTest
-
-        monitor
-        |> verifyNoSetupFunctionsShouldHaveBeenCalled
-    )
-
 let ``Call Test when executed`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
-        let (monitor, test), _, _ = IgnoreBuilder.BuildTestWithTestNameSetupTestBody testFeature
+        let (monitor, test), _, _ = IgnoreBuilder.BuildTestWithTestNameTestBody testFeature
 
         test
         |> silentlyRunTest

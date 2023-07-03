@@ -57,7 +57,7 @@ let ``Call Test when executed`` =
         |> silentlyRunTest
 
         monitor
-        |> verifyNoTestFunctionsShouldHaveBeenCalled
+        |> verifyNoTestFunctionsHaveBeenCalled
     )
 
     

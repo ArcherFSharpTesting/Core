@@ -244,6 +244,7 @@ runner
     ``014 - Feature Ignore with test name, data, test should``.``Test Cases``
     
     ``015 - Feature Ignore with test name, test, teardown should``.``Test Cases``
+    ``016 - Feature Ignore with test name, test should``.``Test Cases``
     
     ``Arrow Ignore``.``Test Cases``
 ]

@@ -429,7 +429,7 @@ let verifyNoTestWasCalledWithATestSetupValue (monitor: ITestMonitor<_, _, _>) =
     |> ListShould.HaveLengthOf 0
     |> withFailureComment "test was called with test setup value"
 
-let verifyNoTestFunctionsShouldHaveBeenCalled (monitor: ITestMonitor<_, _, _>) =
+let verifyNoTestFunctionsHaveBeenCalled (monitor: ITestMonitor<_, _, _>) =
     monitor
     |> numberOfTimesTestFunctionWasCalled
     |> Should.BeEqualTo 0

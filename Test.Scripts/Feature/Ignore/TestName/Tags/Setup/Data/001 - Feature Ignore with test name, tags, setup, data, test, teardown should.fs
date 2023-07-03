@@ -118,7 +118,7 @@ let ``Call Test when executed`` =
         |> silentlyRunAllTests
         
         monitor
-        |> verifyNoTestFunctionsShouldHaveBeenCalled
+        |> verifyNoTestFunctionsHaveBeenCalled
     ) 
     
 let ``Call teardown when executed`` =

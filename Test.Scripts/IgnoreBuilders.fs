@@ -554,23 +554,23 @@ type IgnoreBuilder =
     
         (monitor, test), testName, (path, fileName, lineNumber)
     
-    ////test name, test body indicator
-    //static member BuildTestWithTestNameTestBody (testFeature: IFeature<string>) =
-    //    let monitor, (testName, _, _), (path, fileName, fullPath, lineNumber) =
-    //        getTestParts ()
-    //
-    //    let testBody = monitor.FunctionTestPassThroughTwoParametersSuccess
-    //    
-    //    let test =
-    //        testFeature.Ignore (
-    //            testName,
-    //            TestBody testBody,
-    //            fullPath,
-    //            lineNumber
-    //        )
-    //
-    //    (monitor, test), testName, (path, fileName, lineNumber)
-    //
+    //test name, test body indicator
+    static member BuildTestWithTestNameTestBody (testFeature: IFeature<string>) =
+        let monitor, (testName, _, _), (path, fileName, fullPath, lineNumber) =
+            getTestParts ()
+    
+        let testBody = monitor.FunctionTestPassThroughTwoParametersSuccess
+        
+        let test =
+            testFeature.Ignore (
+                testName,
+                TestBody testBody,
+                fullPath,
+                lineNumber
+            )
+    
+        (monitor, test), testName, (path, fileName, lineNumber)
+    
     ////test name, test function
     //static member BuildTestWithTestNameTestFunction (testFeature: IFeature<string>) =
     //    let monitor, (testName, _, _), (path, fileName, fullPath, lineNumber) =
