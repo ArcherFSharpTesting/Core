@@ -24,7 +24,7 @@ let private getContainerName (test: ITest) =
     
 let ``Create a valid ITest`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
-       let (_, tests), (tags, _, data, testNameRoot), (path, fileName, lineNumber) =
+       let (_, tests), (tags, data, testNameRoot), (path, fileName, lineNumber) =
            IgnoreBuilder.BuildTestWithTagsSetupDataTestBodyTeardownNameHints testFeature
             
        let name1, name2, name3 = IgnoreBuilder.GetTestNames (fun _ -> sprintf "%s %s" testNameRoot) data
@@ -58,7 +58,7 @@ let ``Create a valid ITest`` =
 
 let ``Create a test name with name hints and repeating data`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
-       let (_, tests), (_, _, data, testNameRoot), _ =
+       let (_, tests), (_, data, testNameRoot), _ =
            IgnoreBuilder.BuildTestWithTagsSetupDataTestBodyTeardownNameHints (testFeature, true)
         
        let name1, name2, name3 = IgnoreBuilder.GetTestNames (fun i v -> sprintf "%s %s%s" testNameRoot v (if 0 = i then "" else $"^%i{i}")) data
@@ -73,7 +73,7 @@ let ``Create a test name with name hints and repeating data`` =
 
 let ``Create a test name with no name hints`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
-       let (_, tests), (_, _, data, testName), _ =
+       let (_, tests), (_, data, testName), _ =
            IgnoreBuilder.BuildTestWithTagsSetupDataTestBodyTeardown testFeature
         
        let name1, name2, name3 = IgnoreBuilder.GetTestNames (fun _ -> sprintf "%s (%A)" testName) data
@@ -88,7 +88,7 @@ let ``Create a test name with no name hints`` =
 
 let ``Create a test name with no name hints same data repeated`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
-       let (_, tests), (_, _, data, testName), _ =
+       let (_, tests), (_, data, testName), _ =
            IgnoreBuilder.BuildTestWithTagsSetupDataTestBodyTeardown (testFeature, true)
         
        let name1, name2, name3 = IgnoreBuilder.GetTestNames (fun i v -> sprintf "%s (%A)%s" testName v (if 0 = i then "" else $"^%i{i}")) data
