@@ -107,9 +107,12 @@ let ``Call setup when executed`` =
         tests
         |> silentlyRunAllTests
         
-        monitor.SetupFunctionParameterValues
-        |> Should.BeEqualTo [ featureSetupValue; featureSetupValue; featureSetupValue ]
-        |> withMessage "Setup was not called"
+        monitor
+        |> Should.PassAllOf [
+            numberOfTimesSetupFunctionWasCalled >> Should.BeEqualTo tests.Length >> withFailureComment "Setup was called an incorrect number of times"
+            
+            verifyAllSetupFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf featureSetupValue
+        ]
     ) 
 
 let ``Call Test when executed`` =
@@ -128,6 +131,8 @@ let ``Call Test when executed`` =
             verifyAllTestFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf featureSetupValue
             
             verifyAllTestFunctionShouldHaveBeenCalledWithTestSetupValueOf setupValue
+            
+            verifyAllTestFunctionsWereCalledWithTestEnvironmentContaining tests
         ]
         |> withMessage "Test was not called"
     ) 

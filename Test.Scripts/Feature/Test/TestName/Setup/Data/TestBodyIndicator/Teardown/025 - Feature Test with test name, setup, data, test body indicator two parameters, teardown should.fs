@@ -136,7 +136,7 @@ let ``Not call Test with test environment when executed`` =
         |> silentlyRunAllTests
 
         monitor
-        |> verifyNoTestWasCalledWithTestEnvironment
+        |> verifyNoTestFunctionWasCalledWithTestEnvironment
     )
     
 let ``Call teardown when executed`` =

@@ -82,7 +82,7 @@ let ``Call Test with test environment when executed`` =
             | _ -> failwith "No Value"
 
         monitor
-        |> verifyNoTestWasCalledWithTestEnvironment
+        |> verifyNoTestFunctionWasCalledWithTestEnvironment
     )
     
 let ``Call teardown when executed`` =

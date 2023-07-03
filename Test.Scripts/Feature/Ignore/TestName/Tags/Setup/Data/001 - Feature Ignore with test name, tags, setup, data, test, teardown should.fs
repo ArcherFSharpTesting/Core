@@ -106,7 +106,7 @@ let ``Call setup when executed`` =
         |> silentlyRunAllTests
         
         monitor
-        |> verifyNoTestWasCalledWithATestSetupValue
+        |> verifyNoTestFunctionWasCalledWithATestSetupValue
         |> withMessage "Setup was called"
     ) 
 

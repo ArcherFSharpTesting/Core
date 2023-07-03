@@ -107,7 +107,9 @@ let ``Call Test when executed`` =
 
             verifyAllTestFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf featureSetupValue
 
-            verifyNoTestWasCalledWithATestSetupValue
+            verifyNoTestFunctionWasCalledWithATestSetupValue
+            
+            verifyNoTestFunctionWasCalledWithTestEnvironment
         ]
         |> withMessage "Test was not called"
     )

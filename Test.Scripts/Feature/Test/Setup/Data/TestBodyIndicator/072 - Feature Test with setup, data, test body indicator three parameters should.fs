@@ -124,36 +124,10 @@ let ``Call Test when executed`` =
             verifyAllTestFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf featureSetupValue
 
             verifyAllTestFunctionShouldHaveBeenCalledWithTestSetupValueOf setupValue
+            
+            verifyAllTestFunctionsWereCalledWithTestEnvironmentContaining tests
         ]
         |> withMessage "Test was not called"
-    )
-
-let ``Call Test with test environment when executed`` =
-    feature.Test (fun (_, testFeature: IFeature<string>) ->
-        let (monitor, tests), _, _ = TestBuilder.BuildTestWithSetupDataTestBodyThreeParameters testFeature
-
-        tests
-        |> silentlyRunAllTests
-
-        let getValue v =
-            match v with
-            | Some value -> value
-            | _ -> failwith "No value"
-
-        monitor
-        |> testFunctionEnvironmentParameterValues
-        |> Should.PassAllOf [
-            ListShould.HaveLengthOf 3 >> withMessage "Incorrect number of calls to test"
-
-            ListShould.HaveAllValuesPassTestOf <@hasValue@>
-
-            ListShould.HaveAllValuesPassAllOf [
-                getValue >> (fun env -> env.ApiEnvironment.ApiName) >> Should.BeEqualTo "Archer.Arrows"
-                getValue >> (fun env -> env.TestInfo) >> (fun ti -> tests |> List.map (fun t -> t :> ITestInfo) |> ListShould.Contain ti)
-            ]
-
-            List.map (getValue >> (fun env -> env.TestInfo)) >> List.distinct >> ListShould.HaveLengthOf tests.Length >> withFailureComment "not distinct tests"
-        ]
     )
 
 let ``Test Cases`` = feature.GetTests ()

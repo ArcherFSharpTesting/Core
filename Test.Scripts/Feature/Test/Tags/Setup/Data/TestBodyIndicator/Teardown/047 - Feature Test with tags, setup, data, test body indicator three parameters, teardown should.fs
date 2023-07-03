@@ -108,9 +108,12 @@ let ``Call setup when executed`` =
        tests
        |> silentlyRunAllTests
         
-       monitor.SetupFunctionParameterValues
-       |> Should.BeEqualTo [featureSetupValue; featureSetupValue; featureSetupValue]
-       |> withMessage "Setup was not called"
+       monitor
+        |> Should.PassAllOf [
+            numberOfTimesSetupFunctionWasCalled >> Should.BeEqualTo tests.Length >> withFailureComment "Setup was called an incorrect number of times"
+            
+            verifyAllSetupFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf featureSetupValue
+        ]
    )
 
 let ``Call Test when executed`` =
@@ -130,58 +133,11 @@ let ``Call Test when executed`` =
             verifyAllTestFunctionShouldHaveBeenCalledWithTestSetupValueOf setupValue
             
             verifyAllTestFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf featureSetupValue
+            
+            verifyAllTestFunctionsWereCalledWithTestEnvironmentContaining tests
         ]
         |> withMessage "Test was not called"
     )
-
-let ``Call Test with return value of setup when executed`` =
-    feature.Test (fun (featureSetupValue, testFeature: IFeature<string>) ->
-       let (monitor, tests), (_, setupValue, data, _), _ = TestBuilder.BuildTestWithTagsSetupDataTestBodyThreeParametersTeardown testFeature
-
-       tests
-       |> silentlyRunAllTests
-        
-       monitor
-       |> Should.PassAllOf [
-           numberOfTimesTestFunctionWasCalled >> Should.BeEqualTo 3
-           
-           testFunctionDataParameterValues >> Should.BeEqualTo (data |> List.map Some)
-           
-           verifyAllTestFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf featureSetupValue
-           
-           verifyAllTestFunctionShouldHaveBeenCalledWithTestSetupValueOf setupValue
-       ]
-       |> withMessage "Test was not called"
-   )
-
-let ``Call Test with test environment when executed`` =
-    feature.Test (fun (_, testFeature: IFeature<string>) ->
-       let (monitor, tests), _, _ = TestBuilder.BuildTestWithTagsSetupDataTestBodyThreeParametersTeardown testFeature
-            
-       tests
-       |> silentlyRunAllTests
-        
-       let getValue v =
-           match v with
-           | Some value -> value
-           | _ -> failwith "No value found"
-        
-       monitor.TestFunctionEnvironmentParameterValues
-       |> Should.PassAllOf [
-           ListShould.HaveLengthOf 3 >> withMessage "Incorrect number of calls to test"
-            
-           ListShould.HaveAllValuesPassTestOf <@fun v -> match v with | Some _ -> true | _ -> false@>
-            
-           List.head >> getValue >> (fun env -> env.ApiEnvironment.ApiName) >> Should.BeEqualTo "Archer.Arrows"
-           List.head >> getValue >> (fun env -> env.TestInfo) >> Should.BeEqualTo (tests |> List.head :> ITestInfo)
-            
-           List.skip 1 >> List.head >> getValue >> (fun env -> env.ApiEnvironment.ApiName) >> Should.BeEqualTo "Archer.Arrows"
-           List.skip 1 >> List.head >> getValue >> (fun env -> env.TestInfo) >> Should.BeEqualTo (tests |> List.skip 1 |> List.head :> ITestInfo)
-            
-           List.last >> getValue >> (fun env -> env.ApiEnvironment.ApiName) >> Should.BeEqualTo "Archer.Arrows"
-           List.last >> getValue >> (fun env -> env.TestInfo) >> Should.BeEqualTo (tests |> List.last :> ITestInfo)
-       ]
-   )
     
 let ``Call teardown when executed`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->

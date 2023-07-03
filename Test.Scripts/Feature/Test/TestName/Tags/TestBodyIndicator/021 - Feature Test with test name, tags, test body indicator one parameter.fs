@@ -65,7 +65,7 @@ let ``Call Test when executed`` =
 
             verifyAllTestFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf featureSetupValue
 
-            verifyNoTestWasCalledWithATestSetupValue
+            verifyNoTestFunctionWasCalledWithATestSetupValue
         ]
         |> withMessage "Test was not called"
     )
@@ -78,7 +78,7 @@ let ``Not call Test with test environment when executed`` =
         |> silentlyRunTest
 
         monitor
-        |> verifyNoTestWasCalledWithTestEnvironment
+        |> verifyNoTestFunctionWasCalledWithTestEnvironment
     )
     
 let ``Call teardown when executed`` =

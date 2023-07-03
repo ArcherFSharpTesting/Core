@@ -6,6 +6,7 @@ open Archer
 open Archer.Arrows
 open Archer.Arrows.Internal.Types
 open Archer.Arrows.Internals
+open Archer.CoreTypes.InternalTypes
 open Archer.MicroLang
 open Microsoft.FSharp.Core
 
@@ -422,7 +423,7 @@ let verifyNoTestWasCalledWithAFeatureSetupValue (monitor: ITestMonitor<_, _, _>)
     |> ListShould.HaveLengthOf 0
     |> withFailureComment "Test was called with feature setup value"
     
-let verifyNoTestWasCalledWithATestSetupValue (monitor: ITestMonitor<_, _, _>) =
+let verifyNoTestFunctionWasCalledWithATestSetupValue (monitor: ITestMonitor<_, _, _>) =
     monitor
     |> testFunctionTestSetupParameterValues
     |> List.filter hasValue
@@ -435,11 +436,32 @@ let verifyNoTestFunctionsHaveBeenCalled (monitor: ITestMonitor<_, _, _>) =
     |> Should.BeEqualTo 0
     |> withFailureComment "test function was called"
     
-let verifyNoTestWasCalledWithTestEnvironment (monitor: ITestMonitor<_, _, _>) =
+let verifyNoTestFunctionWasCalledWithTestEnvironment (monitor: ITestMonitor<_, _, _>) =
     monitor
     |> hasTestFunctionBeenCalledWithEnvironmentParameter
     |> Should.BeFalse
     |> withFailureComment "test was called with environment variable"
+    
+let verifyAllTestFunctionsWereCalledWithTestEnvironmentContaining (tests: ITest list) (monitor: ITestMonitor<_, _, _>) =
+    let testCount = monitor.NumberOfTimesTestFunctionWasCalled
+    let tests = tests |> List.map (fun t -> t :> ITestInfo)
+    
+    let getValue v =
+        match v with
+        | Some value -> value
+        | _ -> failwith "No Value"
+    
+    monitor.TestFunctionEnvironmentParameterValues
+    |> Should.PassAllOf [
+        ListShould.HaveLengthOf testCount >> withFailureComment "Incorrect number of environments"
+        
+        ListShould.HaveAllValuesPassTestOf <@hasValue@>
+        
+        ListShould.HaveAllValuesPassAllOf [
+            getValue >> (fun env -> env.ApiEnvironment.ApiName) >> Should.BeEqualTo "Archer.Arrows"
+            getValue >> (fun env -> env.TestInfo) >> (fun ti -> tests |> ListShould.Contain ti)
+        ]
+    ]
     
 let verifyNoSetupFunctionsShouldHaveBeenCalled (monitor: ITestMonitor<_, _, _>) =
     monitor

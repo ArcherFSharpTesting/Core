@@ -128,7 +128,7 @@ let ``Call Test when executed`` =
             
             verifyAllTestFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf featureSetupValue
             
-            verifyNoTestWasCalledWithATestSetupValue
+            verifyNoTestFunctionWasCalledWithATestSetupValue
         ]
         |> withMessage "Test was not called"
     )
@@ -148,7 +148,7 @@ let ``Call Test with return value of setup when executed`` =
             
             verifyAllTestFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf featureSetupValue
         
-            verifyNoTestWasCalledWithATestSetupValue
+            verifyNoTestFunctionWasCalledWithATestSetupValue
         ]
         |> withMessage "Test was not called"
     )

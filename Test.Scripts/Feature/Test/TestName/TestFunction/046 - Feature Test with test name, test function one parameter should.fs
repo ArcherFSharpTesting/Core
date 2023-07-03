@@ -51,21 +51,11 @@ let ``Call Test when executed`` =
 
             verifyAllTestFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf featureSetupValue
 
-            verifyNoTestWasCalledWithATestSetupValue
+            verifyNoTestFunctionWasCalledWithATestSetupValue
+            
+            verifyNoTestFunctionWasCalledWithTestEnvironment
         ]
         |> withMessage "Test was not called"
-    )
-
-let ``Not call Test with test environment when executed`` =
-    feature.Test (fun (_, testFeature: IFeature<string>) ->
-        let (monitor, test), _, _ = TestBuilder.BuildTestWithTestNameTestFunctionOneParameter testFeature
-
-        test
-        |> silentlyRunTest
-
-        monitor.HasTestFunctionBeenCalledWithEnvironmentParameter
-        |> Should.BeFalse
-        |> withFailureComment "Test called with environment"
     )
 
 let ``Test Cases`` = feature.GetTests ()
