@@ -279,5 +279,7 @@ runner
     ``032 - Feature Ignore with test should``.``Test Cases``
     
     ``Arrow Ignore``.``Test Cases``
+    
+    ``Ignore Feature Test should``.``Test Cases``
 ]
 |> runAndReport

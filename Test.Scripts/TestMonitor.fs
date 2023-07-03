@@ -62,6 +62,9 @@ let randomWord length =
 let buildFeatureUnderTestWithSetupAndTeardown setup teardown =
     Arrow.NewFeature (ignoreString (), ignoreString (), setup, teardown)
 
+let buildIgnoreFeatureUnderTestWithSetupAndTeardown (setup: SetupIndicator<_, _>) (teardown: TeardownIndicator<_>) =
+    Arrow.Ignore (ignoreString (), ignoreString (), setup, teardown)
+
 let buildFeatureUnderTestWithSetup setup =
     Arrow.NewFeature (ignoreString (), ignoreString (), setup, emptyTeardown)
 
@@ -76,6 +79,13 @@ let setupFeatureUnderTest _ =
     let setup () =
         testSetupValue |> Ok
     (testSetupValue, buildFeatureUnderTestWithSetupAndTeardown (Setup setup) emptyTeardown)
+    |> Ok
+    
+let setupIgnoreFeatureUnderTest _ =
+    let testSetupValue = randomWord (rand.Next (3, 10))
+    let setup () =
+        testSetupValue |> Ok
+    (testSetupValue, buildIgnoreFeatureUnderTestWithSetupAndTeardown (Setup setup) emptyTeardown)
     |> Ok
 
 let setupExecutor _ =
