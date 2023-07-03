@@ -924,45 +924,45 @@ type IgnoreBuilder =
     
         (monitor, tests), (data, testName), (path, fileName, lineNumber)
     
-    ////setup, data, test body indicator
-    //static member BuildTestWithSetupDataTestBodyNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
-    //    let monitor, (testNameRoot, testName), (_, testSetupValue, data), (path, fileName, fullPath, lineNumber) =
-    //        getDataTestParts repeatDataValue
-    //
-    //    let setup = monitor.FunctionSetupFeatureWith  testSetupValue
-    //    let testBody = monitor.FunctionTestFeatureDataThreeParametersSuccess
-    //    
-    //    let tests =
-    //        testFeature.Ignore (
-    //            Setup setup,
-    //            Data data,
-    //            TestBody testBody,
-    //            testName,
-    //            fullPath,
-    //            lineNumber
-    //        )
-    //
-    //    (monitor, tests), (data, testNameRoot), (path, fileName, lineNumber)
-    //    
-    //static member BuildTestWithSetupDataTestBody (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
-    //    let monitor, (testName, _), (_, testSetupValue, data), (path, fileName, fullPath, lineNumber) =
-    //        getDataTestParts repeatDataValue
-    //
-    //    let setup = monitor.FunctionSetupFeatureWith  testSetupValue
-    //    let testBody = monitor.FunctionTestFeatureDataThreeParametersSuccess
-    //    
-    //    let tests =
-    //        testFeature.Ignore (
-    //            Setup setup,
-    //            Data data,
-    //            TestBody testBody,
-    //            testName,
-    //            fullPath,
-    //            lineNumber
-    //        )
-    //
-    //    (monitor, tests), (data, testName), (path, fileName, lineNumber)
-    //    
+    //setup, data, test body indicator
+    static member BuildTestWithSetupDataTestBodyNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
+        let monitor, (testNameRoot, testName), (_, testSetupValue, data), (path, fileName, fullPath, lineNumber) =
+            getDataTestParts repeatDataValue
+    
+        let setup = monitor.FunctionSetupFeatureWith  testSetupValue
+        let testBody = monitor.FunctionTestFeatureDataThreeParametersSuccess
+        
+        let tests =
+            testFeature.Ignore (
+                Setup setup,
+                Data data,
+                TestBody testBody,
+                testName,
+                fullPath,
+                lineNumber
+            )
+    
+        (monitor, tests), (data, testNameRoot), (path, fileName, lineNumber)
+        
+    static member BuildTestWithSetupDataTestBody (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
+        let monitor, (testName, _), (_, testSetupValue, data), (path, fileName, fullPath, lineNumber) =
+            getDataTestParts repeatDataValue
+    
+        let setup = monitor.FunctionSetupFeatureWith  testSetupValue
+        let testBody = monitor.FunctionTestFeatureDataThreeParametersSuccess
+        
+        let tests =
+            testFeature.Ignore (
+                Setup setup,
+                Data data,
+                TestBody testBody,
+                testName,
+                fullPath,
+                lineNumber
+            )
+    
+        (monitor, tests), (data, testName), (path, fileName, lineNumber)
+        
     ////setup, test body indicator, teardown
     //static member BuildTestWithSetupTestBodyTeardown (testFeature: IFeature<string>) =
     //    let monitor, (testName, _, testSetupValue), (path, fileName, fullPath, lineNumber) =

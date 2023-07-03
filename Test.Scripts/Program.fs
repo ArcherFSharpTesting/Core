@@ -264,6 +264,7 @@ runner
     ``024 - Feature Ignore with tags, test should``.``Test Cases``
     
     ``025 - Ignore Feature with setup, data, test, teardown should``.``Test Cases``
+    ``026 - Ignore Feature with setup, data, test should``.``Test Cases``
     
     ``Arrow Ignore``.``Test Cases``
 ]
