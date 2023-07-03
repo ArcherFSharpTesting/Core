@@ -73,7 +73,7 @@ let ``Create a test name with name hints and repeating data`` =
 
 let ``Create a test name with no name hints`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
-        let (_, tests), (_, _, data, testName), _ =
+        let (_, tests), (_, data, testName), _ =
             IgnoreBuilder.BuildTestWithTagsSetupDataTestBody testFeature
         
         let name1, name2, name3 = IgnoreBuilder.GetTestNames (fun _ -> sprintf "%s (%A)" testName) data
@@ -88,7 +88,7 @@ let ``Create a test name with no name hints`` =
 
 let ``Create a test name with no name hints same data repeated`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
-        let (_, tests), (_, _, data, testName), _ = IgnoreBuilder.BuildTestWithTagsSetupDataTestBody (testFeature, true)
+        let (_, tests), (_, data, testName), _ = IgnoreBuilder.BuildTestWithTagsSetupDataTestBody (testFeature, true)
         
         let name1, name2, name3 = IgnoreBuilder.GetTestNames (fun i v -> sprintf "%s (%A)%s" testName v (if 0 = i then "" else $"^%i{i}")) data
 
