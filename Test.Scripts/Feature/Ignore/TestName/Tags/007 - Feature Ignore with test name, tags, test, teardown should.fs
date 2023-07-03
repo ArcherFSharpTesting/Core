@@ -38,7 +38,7 @@ let ``Create a valid ITest`` =
         ]
     )
 
-let ``Call setup when executed`` =
+let ``Not call setup when executed`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
         let (monitor, test), _, _ = IgnoreBuilder.BuildTestWithTestNameTagsTestBodyTeardown testFeature
 
@@ -49,7 +49,7 @@ let ``Call setup when executed`` =
         |> verifyNoSetupFunctionsHaveBeenCalled
     )
 
-let ``Call Test when executed`` =
+let ``Not call Test when executed`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
         let (monitor, test), _, _ = IgnoreBuilder.BuildTestWithTestNameTagsTestBodyTeardown testFeature
 
@@ -61,7 +61,7 @@ let ``Call Test when executed`` =
     )
 
     
-let ``Call teardown when executed`` =
+let ``Not call teardown when executed`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
         let (monitor, test), _, _ = IgnoreBuilder.BuildTestWithTestNameTagsTestBodyTeardown testFeature
 

@@ -94,7 +94,7 @@ let ``Create a test name with no name hints same data repeated`` =
         ]
     )
 
-let ``Call setup when executed`` =
+let ``Not call setup when executed`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
         let (monitor, tests), _, _ = IgnoreBuilder.BuildTestWithTestNameSetupDataTestBodyTeardown testFeature
 
@@ -105,9 +105,9 @@ let ``Call setup when executed`` =
         |> verifyNoSetupFunctionsHaveBeenCalled
     )
 
-let ``Call Test when executed`` =
-    feature.Test (fun (featureSetupValue, testFeature: IFeature<string>) ->
-        let (monitor, tests), (setupValue, data, _), _ = IgnoreBuilder.BuildTestWithTestNameSetupDataTestBodyTeardown testFeature
+let ``Not call Test when executed`` =
+    feature.Test (fun (_, testFeature: IFeature<string>) ->
+        let (monitor, tests), _, _ = IgnoreBuilder.BuildTestWithTestNameSetupDataTestBodyTeardown testFeature
 
         tests
         |> silentlyRunAllTests
@@ -116,7 +116,7 @@ let ``Call Test when executed`` =
         |> verifyNoTeardownFunctionsHaveBeenCalled
     )
     
-let ``Call teardown when executed`` =
+let ``Not call teardown when executed`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
         let (monitor, tests), _, _ = IgnoreBuilder.BuildTestWithTestNameSetupDataTestBodyTeardown testFeature
             
