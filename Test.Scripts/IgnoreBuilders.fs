@@ -933,20 +933,20 @@ type IgnoreBuilder =
     
         (monitor, test), testName, (path, fileName, lineNumber)
     
-    ////test body indicator
-    //static member BuildTestWithTestBody (testFeature: IFeature<string>) =
-    //    let monitor, (testName, _, _), (path, fileName, fullPath, lineNumber) =
-    //        getTestParts ()
-    //
-    //    let testBody = monitor.FunctionTestPassThroughTwoParametersSuccess
-    //    
-    //    let test =
-    //        testFeature.Ignore (
-    //            TestBody testBody,
-    //            testName,
-    //            fullPath,
-    //            lineNumber
-    //        )
-    //
-    //    (monitor, test), testName, (path, fileName, lineNumber)
-    //
+    //test body indicator
+    static member BuildTestWithTestBody (testFeature: IFeature<string>) =
+        let monitor, (testName, _, _), (path, fileName, fullPath, lineNumber) =
+            getTestParts ()
+    
+        let testBody = monitor.FunctionTestPassThroughTwoParametersSuccess
+        
+        let test =
+            testFeature.Ignore (
+                TestBody testBody,
+                testName,
+                fullPath,
+                lineNumber
+            )
+    
+        (monitor, test), testName, (path, fileName, lineNumber)
+    
