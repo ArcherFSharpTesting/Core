@@ -692,25 +692,25 @@ type IgnoreBuilder =
     
         (monitor, test), (tags, testName), (path, fileName, lineNumber)
         
-    ////tags, setup, test body indicator
-    //static member BuildTestWithTagsSetupTestBody (testFeature: IFeature<string>) =
-    //    let monitor, (testName, tags, testSetupValue), (path, fileName, fullPath, lineNumber) = getTestParts ()
-    //
-    //    let setup = monitor.FunctionSetupFeatureWith testSetupValue
-    //    let testBody = monitor.FunctionTestFeatureTwoParametersSuccess
-    //    
-    //    let test =
-    //        testFeature.Ignore (
-    //            TestTags tags,
-    //            Setup setup,
-    //            TestBody testBody,
-    //            testName,
-    //            fullPath,
-    //            lineNumber
-    //        )
-    //
-    //    (monitor, test), (tags, testSetupValue, testName), (path, fileName, lineNumber)
-    //    
+    //tags, setup, test body indicator
+    static member BuildTestWithTagsSetupTestBody (testFeature: IFeature<string>) =
+        let monitor, (testName, tags, testSetupValue), (path, fileName, fullPath, lineNumber) = getTestParts ()
+    
+        let setup = monitor.FunctionSetupFeatureWith testSetupValue
+        let testBody = monitor.FunctionTestFeatureTwoParametersSuccess
+        
+        let test =
+            testFeature.Ignore (
+                TestTags tags,
+                Setup setup,
+                TestBody testBody,
+                testName,
+                fullPath,
+                lineNumber
+            )
+    
+        (monitor, test), (tags, testName), (path, fileName, lineNumber)
+        
     ////tags, data, test body indicator, teardown
     //static member BuildTestWithTagsDataTestBodyTeardownNameHints (testFeature: IFeature<string>, [<Optional; DefaultParameterValue(false)>] repeatDataValue: bool) =
     //    let monitor, (testNameRoot, testName), (tags, _, data), (path, fileName, fullPath, lineNumber) =
