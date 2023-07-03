@@ -107,9 +107,12 @@ let ``Call setup when executed`` =
         tests
         |> silentlyRunAllTests
         
-        monitor.SetupFunctionParameterValues
-        |> Should.BeEqualTo [ featureSetupValue; featureSetupValue; featureSetupValue ]
-        |> withMessage "Setup was not called"
+        monitor
+        |> Should.PassAllOf [
+            numberOfTimesSetupFunctionWasCalled >> Should.BeEqualTo tests.Length >> withFailureComment "Setup was called an incorrect number of times"
+            
+            verifyAllSetupFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf featureSetupValue
+        ]
     ) 
 
 let ``Call Test when executed`` =
@@ -128,36 +131,10 @@ let ``Call Test when executed`` =
             verifyAllTestFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf featureSetupValue
             
             verifyAllTestFunctionShouldHaveBeenCalledWithTestSetupValueOf setupValue
+            
+            verifyAllTestFunctionsWereCalledWithTestEnvironmentContaining tests
         ]
         |> withMessage "Test was not called"
-    ) 
-
-let ``Call Test with test environment when executed`` =
-    feature.Test (fun (_, testFeature: IFeature<string>) ->
-        let (monitor, tests), _, _ = TestBuilder.BuildTestWithTestNameTagsSetupDataTestBodyThreeParametersNameHints testFeature
-            
-        tests
-        |> silentlyRunAllTests
-        
-        let getValues v =
-            match v with
-            | Some value -> value
-            | _ -> failwith "No value"
-        
-        monitor
-        |> testFunctionEnvironmentParameterValues
-        |> Should.PassAllOf [
-            ListShould.HaveLengthOf 3 >> withMessage "Incorrect number of calls to test"
-            
-            ListShould.HaveAllValuesPassTestOf <@hasValue@>
-            
-            ListShould.HaveAllValuesPassAllOf [
-                getValues >> (fun env -> env.ApiEnvironment.ApiName) >> Should.BeEqualTo "Archer.Arrows"
-                getValues >> (fun item -> tests |> List.map (fun t -> t :> ITestInfo) |> ListShould.Contain item.TestInfo)
-            ]
-            
-            List.map (getValues >> (fun item -> item.TestInfo)) >> List.distinct >> List.length >> Should.BeEqualTo tests.Length
-        ]
     )
     
 let ``Test Cases`` = feature.GetTests ()

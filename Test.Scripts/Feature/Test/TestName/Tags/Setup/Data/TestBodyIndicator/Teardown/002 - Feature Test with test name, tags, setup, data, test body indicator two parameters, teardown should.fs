@@ -99,9 +99,12 @@ let ``Call setup when executed`` =
         tests
         |> silentlyRunAllTests
 
-        monitor.SetupFunctionParameterValues
-        |> Should.BeEqualTo [featureSetupValue; featureSetupValue; featureSetupValue]
-        |> withMessage "Setup was not called"
+        monitor
+        |> Should.PassAllOf [
+            numberOfTimesSetupFunctionWasCalled >> Should.BeEqualTo tests.Length >> withFailureComment "Setup was called an incorrect number of times"
+            
+            verifyAllSetupFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf featureSetupValue
+        ]
     )
 
 let ``Call Test when executed`` =
@@ -120,19 +123,10 @@ let ``Call Test when executed`` =
             verifyAllTestFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf featureSetupValue
 
             verifyAllTestFunctionShouldHaveBeenCalledWithTestSetupValueOf setupValue
+            
+            verifyNoTestFunctionWasCalledWithTestEnvironment
         ]
         |> withMessage "Test was not called"
-    )
-
-let ``Not call Test with test environment when executed`` =
-    feature.Test (fun (_, testFeature: IFeature<string>) ->
-        let (monitor, tests), _, _ = TestBuilder.BuildTestWithTestNameTagsSetupDataTestBodyTwoParametersTeardown testFeature
-
-        tests
-        |> silentlyRunAllTests
-
-        monitor
-        |> verifyNoTestFunctionWasCalledWithTestEnvironment
     )
 
 let ``Call teardown when executed`` =
