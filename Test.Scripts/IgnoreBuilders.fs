@@ -825,27 +825,27 @@ type IgnoreBuilder =
     //        )
     //
     //    (monitor, tests), (tags, data, testName), (path, fileName, lineNumber)
-    //    
-    ////tags, test body indicator, teardown
-    //static member BuildTestWithTagsTestBodyTeardown (testFeature: IFeature<string>) =
-    //    let monitor, (testName, tags, _), (path, fileName, fullPath, lineNumber) =
-    //        getTestParts ()
-    //
-    //    let testBody = monitor.FunctionTestPassThroughTwoParametersSuccess
-    //    let teardown = monitor.FunctionTeardownPassThrough
-    //    
-    //    let test =
-    //        testFeature.Ignore (
-    //            TestTags tags,
-    //            TestBody testBody,
-    //            Teardown teardown,
-    //            testName,
-    //            fullPath,
-    //            lineNumber
-    //        )
-    //
-    //    (monitor, test), (tags, testName), (path, fileName, lineNumber)
-    //    
+        
+    //tags, test body indicator, teardown
+    static member BuildTestWithTagsTestBodyTeardown (testFeature: IFeature<string>) =
+        let monitor, (testName, tags, _), (path, fileName, fullPath, lineNumber) =
+            getTestParts ()
+    
+        let testBody = monitor.FunctionTestPassThroughTwoParametersSuccess
+        let teardown = monitor.FunctionTeardownPassThrough
+        
+        let test =
+            testFeature.Ignore (
+                TestTags tags,
+                TestBody testBody,
+                Teardown teardown,
+                testName,
+                fullPath,
+                lineNumber
+            )
+    
+        (monitor, test), (tags, testName), (path, fileName, lineNumber)
+        
     ////tags, test body indicator
     //static member BuildTestWithTagsTestBody (testFeature: IFeature<string>) =
     //    let monitor, (testName, tags, _), (path, fileName, fullPath, lineNumber) =

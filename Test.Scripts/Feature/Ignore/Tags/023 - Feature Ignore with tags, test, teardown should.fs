@@ -1,11 +1,11 @@
-module Archer.Arrows.Tests.Feature.Test.Tags.TestBodyIndicator.Teardown.``064 - Feature Test with tags, test body indicator two parameters, teardown should``
+module Archer.Arrows.Tests.Feature.Ignore.Tags.``023 - Feature Ignore with tags, test, teardown should``
 
 open System
 open Archer
 open Archer.Arrows
 open Archer.Arrows.Internal.Types
 open Archer.Arrows.Tests
-open Archer.Arrows.Tests.TestBuilders
+open Archer.Arrows.Tests.IgnoreBuilders
 open Archer.CoreTypes.InternalTypes
 open Archer.MicroLang.Verification
 
@@ -25,7 +25,7 @@ let private getContainerName (test: ITest) =
 let ``Create a valid ITest`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
         let (_, test), (tags, testName), (path, fileName, lineNumber) =
-            TestBuilder.BuildTestWithTagsTestBodyTwoParametersTeardown testFeature
+            IgnoreBuilder.BuildTestWithTagsTestBodyTeardown testFeature
 
         test
         |> Should.PassAllOf [
@@ -38,38 +38,26 @@ let ``Create a valid ITest`` =
         ]
     )
 
-let ``Call Test when executed`` =
-    feature.Test (fun (featureSetupValue, testFeature: IFeature<string>) ->
-        let (monitor, test), _, _ = TestBuilder.BuildTestWithTagsTestBodyTwoParametersTeardown testFeature
+let ``Not call Test when executed`` =
+    feature.Test (fun (_, testFeature: IFeature<string>) ->
+        let (monitor, test), _, _ = IgnoreBuilder.BuildTestWithTagsTestBodyTeardown testFeature
 
         test
         |> silentlyRunTest
 
         monitor
-        |> Should.PassAllOf [
-            numberOfTimesTestFunctionWasCalled >> Should.BeEqualTo 1 >> withFailureComment "Incorrect number of test calls"
-
-            verifyNoTestFunctionWasCalledWithData
-
-            verifyAllTestFunctionsShouldHaveBeenCalledWithFeatureSetupValueOf featureSetupValue
-
-            verifyNoTestFunctionWasCalledWithATestSetupValue
-            
-            verifyAllTestFunctionsWereCalledWithTestEnvironmentContaining [test]
-        ]
-        |> withMessage "Test was not called"
+        |> verifyNoTestFunctionsHaveBeenCalled
     )
     
-let ``Call teardown when executed`` =
+let ``Not call teardown when executed`` =
     feature.Test (fun (_, testFeature: IFeature<string>) ->
-        let (monitor, test), _, _ = TestBuilder.BuildTestWithTagsTestBodyTwoParametersTeardown testFeature
+        let (monitor, test), _, _ = IgnoreBuilder.BuildTestWithTagsTestBodyTeardown testFeature
 
         test
         |> silentlyRunTest
 
-        monitor.HasTeardownBeenCalled
-        |> Should.BeTrue
-        |> withMessage "Teardown was not called"
+        monitor
+        |> verifyNoTeardownFunctionsHaveBeenCalled
     )
 
 let ``Test Cases`` = feature.GetTests ()
