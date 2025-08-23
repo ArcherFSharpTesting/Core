@@ -5,6 +5,7 @@
         (Feature ./Arrow.NewFeature.md)
         (Feature ./Arrow.Ignore.md)
         (Feature ./Sub.Feature.md)
+        (Feature ./Sub.Ignore.md)
     )
 )
 
