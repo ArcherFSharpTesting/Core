@@ -6,9 +6,9 @@
 
 # Archer.Arrow F# Testing Language #
 
-1. [Archer Test Framework Overview](#archer-test-framework-overview)
-2. [Using Arrow.NewFeature in Archer.Arrow](#using-arrownewfeature-in-archerarrow)
-3. [Using `Arrow.Ignore` in Archer.Arrow](#using-arrowignore-in-archerarrow)
+1. Overview: [Archer Test Framework Overview](#archer-test-framework-overview)
+2. Feature: [Using Arrow.NewFeature in Archer.Arrow](#using-arrownewfeature-in-archerarrow)
+3. Feature: [Using `Arrow.Ignore` in Archer.Arrow](#using-arrowignore-in-archerarrow)
 
 ## Archer Test Framework Overview ##
 
