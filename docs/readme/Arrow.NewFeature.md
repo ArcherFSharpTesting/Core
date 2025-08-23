@@ -4,9 +4,7 @@
 )
 ) -->
 
-Arrow.NewFeature is the primary entry point for defining features in Archer.Arrow. It allows you to organize tests into logical groups, apply setup/teardown logic, and add tags for filtering. This section covers the most common usage patterns and options for feature creation.
-
-`Arrow.NewFeature` is a flexible function for defining test features in the Archer F# testing framework. It supports a variety of overloads, allowing you to specify feature names, paths, setup and teardown logic, and tags. Below are the most common usage patterns.
+Arrow.NewFeature is the primary entry point for defining features in Archer.Arrow. It lets you organize tests into logical groups, apply setup/teardown logic, and add tags for filtering. This flexible function supports a variety of overloads, allowing you to specify feature names, paths, setup and teardown logic, and tags.
 
 <!-- (dl (# Basic Usage)) -->
 
