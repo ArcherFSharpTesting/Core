@@ -5,8 +5,7 @@
 	)
 ) -->
 
-
-`Arrow.Ignore` allows you to define features or tests that are intentionally skipped or ignored during test execution. This is useful for temporarily disabling tests or marking features as not yet implemented.
+Arrow.Ignore lets you temporarily disable features or tests in Archer.Arrow, keeping them visible and organized in your test suite. Use it to mark work-in-progress, pending, or intentionally skipped tests without deleting them.
 
 <!-- (dl (# Basic Usage)) -->
 
