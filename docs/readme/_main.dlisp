@@ -6,6 +6,7 @@
         (Feature ./Arrow.Ignore.md)
         (Feature ./Sub.Feature.md)
         (Feature ./Sub.Ignore.md)
+        (Feature ./IFeature.Test.md)
     )
 )
 

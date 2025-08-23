@@ -1,9 +1,13 @@
 
-# Using `IFeature.Test` in Archer.Arrow
+<!-- (dl
+    (section-meta
+        (title Using `IFeature.Test` in Archer.Arrow)
+    )
+) -->
 
 The `IFeature<'featureType>.Test` method is the primary way to define tests for a feature in the Archer F# testing framework. It provides a flexible API for specifying test names, tags, setup/teardown logic, test data, and test bodies.
 
-## Automatic Test Naming
+<!-- (dl (# Automatic Test Naming)) -->
 
 The most idiomatic way to use `Test` is to assign its result to an identifier. The name of the identifier (including spaces and punctuation) is automatically used as the test's name. This allows for highly readable and descriptive test names without repeating yourself:
 
@@ -18,7 +22,7 @@ let ``A test of basic functionality`` =
 In this example, the test's name will be "A test of basic functionality".
 
 
-## Basic Usage (Explicit Name)
+<!-- (dl (# Basic Usage \(Explicit Name\))) -->
 
 You can also specify the test name explicitly as the first argument:
 
@@ -35,7 +39,7 @@ feature.Test (
 )
 ```
 
-## Overloads
+<!-- (dl (# Overloads)) -->
 
 `IFeature.Test` is highly overloaded to support many combinations:
 - With or without tags
@@ -68,7 +72,7 @@ feature.Test (
 )
 ```
 
-## Parameters
+<!-- (dl (# Parameters)) -->
 - **testName**: The name of the test (string).
 - **tags**: Optional tags for filtering and organization (`TestTags [...]`).
 - **setup**: Optional setup function to prepare resources before the test.
@@ -76,13 +80,13 @@ feature.Test (
 - **testBody**: The function containing the test logic. Signature depends on overload.
 - **teardown**: Optional teardown function to clean up after the test.
 
-## Writing a Test
+<!-- (dl (# Writing a Test)) -->
 1. Create a feature (e.g., with `Arrow.NewFeature`).
 2. Call `feature.Test` with the desired parameters.
 3. Implement your test logic in the test body function.
 4. Return `TestSuccess` or another result from the test body.
 
-## Example
+<!-- (dl (# Example)) -->
 ```fsharp
 let feature = Arrow.NewFeature "Math Feature"
 
@@ -98,7 +102,7 @@ feature.Test (
 )
 ```
 
-## Notes
+<!-- (dl (# Notes)) -->
 - The test body can access setup values, test data, and the test environment depending on the overload.
 - Use tags and setup/teardown as needed for your scenario.
 - See the `Internal.Types.IFeature.fs` file for all available overloads and signatures.
