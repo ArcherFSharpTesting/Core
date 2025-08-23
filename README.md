@@ -102,9 +102,7 @@ For more details, see the API documentation and example files in the repository.
 
 ## Using Arrow.NewFeature in Archer.Arrow ##
 
-Arrow.NewFeature is the primary entry point for defining features in Archer.Arrow. It allows you to organize tests into logical groups, apply setup/teardown logic, and add tags for filtering. This section covers the most common usage patterns and options for feature creation.
-
-`Arrow.NewFeature` is a flexible function for defining test features in the Archer F# testing framework. It supports a variety of overloads, allowing you to specify feature names, paths, setup and teardown logic, and tags. Below are the most common usage patterns.
+Arrow.NewFeature is the primary entry point for defining features in Archer.Arrow. It lets you organize tests into logical groups, apply setup/teardown logic, and add tags for filtering. This flexible function supports a variety of overloads, allowing you to specify feature names, paths, setup and teardown logic, and tags.
 
 ### Basic Usage ###
 
@@ -310,7 +308,7 @@ For more details, see the test scripts in `Test.Scripts/Arrow Ignore.fs` and rel
 
 ## Using `Sub.Feature` in Archer.Arrow ##
 
-`Sub.Feature` is used to define nested or child features under a root feature in the Archer F# testing framework. This enables hierarchical organization of your tests, making it easier to group related scenarios and manage complex test suites.
+Sub.Feature lets you create nested or child features under a root feature, enabling you to organize your Archer.Arrow tests into a clear hierarchy. Use it to group related scenarios, manage complex test suites, and apply setup, teardown, or tags at different levels of your test structure.
 
 ### Basic Usage ###
 

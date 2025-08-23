@@ -4,7 +4,7 @@
 )
 ) -->
 
-`Sub.Feature` is used to define nested or child features under a root feature in the Archer F# testing framework. This enables hierarchical organization of your tests, making it easier to group related scenarios and manage complex test suites.
+Sub.Feature lets you create nested or child features under a root feature, enabling you to organize your Archer.Arrow tests into a clear hierarchy. Use it to group related scenarios, manage complex test suites, and apply setup, teardown, or tags at different levels of your test structure.
 
 <!-- (dl (# Basic Usage)) -->
 
