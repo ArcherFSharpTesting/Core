@@ -1,8 +1,14 @@
-# Using `Arrow.Ignore` in Archer.Arrow
+
+<!-- (dl
+	(section-meta
+	(title Using `Arrow.Ignore` in Archer.Arrow)
+	)
+) -->
+
 
 `Arrow.Ignore` allows you to define features or tests that are intentionally skipped or ignored during test execution. This is useful for temporarily disabling tests or marking features as not yet implemented.
 
-## Basic Usage
+<!-- (dl (# Basic Usage)) -->
 
 Ignore a feature by name:
 
@@ -10,7 +16,7 @@ Ignore a feature by name:
 let ignoredFeature = Arrow.Ignore "Feature To Ignore"
 ```
 
-## With Path and Name
+<!-- (dl (# With Path and Name)) -->
 
 You can specify both a path and a name:
 
@@ -18,16 +24,16 @@ You can specify both a path and a name:
 let ignoredFeature = Arrow.Ignore ("FeaturePath", "Feature To Ignore")
 ```
 
-## With Setup and/or Teardown
+<!-- (dl (# With Setup and/or Teardown)) -->
 
 You can provide setup and teardown functions, even for ignored features:
 
 ```fsharp
 let ignoredFeature = Arrow.Ignore (
-    "FeaturePath",
-    "Feature To Ignore",
-    Setup (fun () -> Ok ()),
-    Teardown (fun _ -> Ok ())
+	"FeaturePath",
+	"Feature To Ignore",
+	Setup (fun () -> Ok ()),
+	Teardown (fun _ -> Ok ())
 )
 ```
 
@@ -35,9 +41,9 @@ Or just setup:
 
 ```fsharp
 let ignoredFeature = Arrow.Ignore (
-    "FeaturePath",
-    "Feature To Ignore",
-    Setup (fun () -> Ok ())
+	"FeaturePath",
+	"Feature To Ignore",
+	Setup (fun () -> Ok ())
 )
 ```
 
@@ -45,44 +51,44 @@ Or just teardown:
 
 ```fsharp
 let ignoredFeature = Arrow.Ignore (
-    "FeaturePath",
-    "Feature To Ignore",
-    Teardown (fun _ -> Ok ())
+	"FeaturePath",
+	"Feature To Ignore",
+	Teardown (fun _ -> Ok ())
 )
 ```
 
-## With Tags
+<!-- (dl (# With Tags)) -->
 
 Add tags to ignored features for organization:
 
 ```fsharp
 let ignoredFeature = Arrow.Ignore (
-    "FeaturePath",
-    "Feature To Ignore",
-    TestTags [ Category "WIP"; Category "Integration" ]
+	"FeaturePath",
+	"Feature To Ignore",
+	TestTags [ Category "WIP"; Category "Integration" ]
 )
 ```
 
-## Minimal Example
+<!-- (dl (# Minimal Example)) -->
 
 ```fsharp
 let ignoredFeature = Arrow.Ignore "Temporarily Disabled Feature"
 ```
 
-## Advanced Example
+<!-- (dl (# Advanced Example)) -->
 
 ```fsharp
 let ignoredFeature = Arrow.Ignore (
-    "Path",
-    "Ignored Feature",
-    TestTags [ Category "Slow" ],
-    Setup (fun () -> Ok ()),
-    Teardown (fun _ -> Ok ())
+	"Path",
+	"Ignored Feature",
+	TestTags [ Category "Slow" ],
+	Setup (fun () -> Ok ()),
+	Teardown (fun _ -> Ok ())
 )
 ```
 
 
-## Interchangeability with `Arrow.NewFeature`
+<!-- (dl (# Interchangeability with `Arrow.NewFeature`)) -->
 
 `Arrow.Ignore` and `Arrow.NewFeature` share the same call structure and overloads. This means you can swap one for the other with minimal code changes. For example, if you want to temporarily disable a feature, simply replace `Arrow.NewFeature` with `Arrow.Ignore` using the same arguments:
 
