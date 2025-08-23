@@ -7,6 +7,7 @@
         (Feature ./Sub.Feature.md)
         (Feature ./Sub.Ignore.md)
         (Feature ./IFeature.Test.md)
+        (Feature ./IFeature.Ignore.md)
     )
 )
 
