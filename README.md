@@ -7,6 +7,7 @@
 # Archer.Arrow F# Testing Language #
 
 1. [Archer Test Framework Overview](#archer-test-framework-overview)
+2. [Using Arrow.NewFeature in Archer.Arrow](#using-arrownewfeature-in-archerarrow)
 
 ## Archer Test Framework Overview ##
 
@@ -93,6 +94,107 @@ let ``A tagged test`` =
 4. Run your tests with your preferred test runner.
 
 For more details, see the API documentation and example files in the repository.
+
+## Using Arrow.NewFeature in Archer.Arrow ##
+
+`Arrow.NewFeature` is a flexible function for defining test features in the Archer F# testing framework. It supports a variety of overloads, allowing you to specify feature names, paths, setup and teardown logic, and tags. Below are the most common usage patterns.
+
+### Basic Usage ###
+
+Create a feature with just a name:
+
+```fsharp
+let feature = Arrow.NewFeature "My Feature Name"
+```
+
+### With Path and Name ###
+
+Specify both a path and a name for the feature:
+
+```fsharp
+let feature = Arrow.NewFeature ("MyFeaturePath", "My Feature Name")
+```
+
+### With Setup and/or Teardown ###
+
+You can provide setup and teardown functions to run before and after your tests:
+
+```fsharp
+let feature = Arrow.NewFeature (
+    "MyFeaturePath",
+    "My Feature Name",
+    Setup (fun () -> Ok ()),
+    Teardown (fun _ -> Ok ())
+)
+```
+
+Or just setup:
+
+```fsharp
+let feature = Arrow.NewFeature (
+    "MyFeaturePath",
+    "My Feature Name",
+    Setup (fun () -> Ok ())
+)
+```
+
+Or just teardown:
+
+```fsharp
+let feature = Arrow.NewFeature (
+    "MyFeaturePath",
+    "My Feature Name",
+    Teardown (fun _ -> Ok ())
+)
+```
+
+### With Tags ###
+
+You can add tags to your feature for filtering and organization:
+
+```fsharp
+let feature = Arrow.NewFeature (
+    "MyFeaturePath",
+    "My Feature Name",
+    TestTags [ Category "Integration"; Category "Slow" ]
+)
+```
+
+### Minimal Example ###
+
+```fsharp
+let feature = Arrow.NewFeature "Simple Feature"
+
+feature.Test (fun _ ->
+    // Your test code here
+    TestSuccess
+)
+```
+
+### Advanced Example ###
+
+```fsharp
+let feature = Arrow.NewFeature (
+    "Path",
+    "Advanced Feature",
+    TestTags [ Category "Unit" ],
+    Setup (fun () -> Ok ()),
+    Teardown (fun _ -> Ok ())
+)
+
+feature.Test (fun _ ->
+    // Your test code here
+    TestSuccess
+)
+```
+
+### Notes ###
+
+- `Setup` and `Teardown` are helpers for resource management.
+- `TestTags` and `Category` help organize and filter tests.
+- You can use the feature's `Test` method to define individual tests.
+
+For more details, see the test scripts in `Test.Scripts/Arrow NewFeature.fs`, `Arrow NewFeature With Setup.fs`, and `Arrow NewFeature With Teardown.fs`.
 
 <!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->

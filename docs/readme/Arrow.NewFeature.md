@@ -1,8 +1,12 @@
-# Using `Arrow.NewFeature` in Archer.Arrow
+<!-- (dl
+(section-meta
+    (title Using Arrow.NewFeature in Archer.Arrow)
+)
+) -->
 
 `Arrow.NewFeature` is a flexible function for defining test features in the Archer F# testing framework. It supports a variety of overloads, allowing you to specify feature names, paths, setup and teardown logic, and tags. Below are the most common usage patterns.
 
-## Basic Usage
+<!-- (dl (# Basic Usage)) -->
 
 Create a feature with just a name:
 
@@ -10,7 +14,7 @@ Create a feature with just a name:
 let feature = Arrow.NewFeature "My Feature Name"
 ```
 
-## With Path and Name
+<!-- (dl (# With Path and Name)) -->
 
 Specify both a path and a name for the feature:
 
@@ -18,7 +22,7 @@ Specify both a path and a name for the feature:
 let feature = Arrow.NewFeature ("MyFeaturePath", "My Feature Name")
 ```
 
-## With Setup and/or Teardown
+<!-- (dl (# With Setup and/or Teardown)) -->
 
 You can provide setup and teardown functions to run before and after your tests:
 
@@ -51,7 +55,7 @@ let feature = Arrow.NewFeature (
 )
 ```
 
-## With Tags
+<!-- (dl (# With Tags)) -->
 
 You can add tags to your feature for filtering and organization:
 
@@ -63,7 +67,7 @@ let feature = Arrow.NewFeature (
 )
 ```
 
-## Minimal Example
+<!-- (dl (# Minimal Example)) -->
 
 ```fsharp
 let feature = Arrow.NewFeature "Simple Feature"
@@ -74,7 +78,7 @@ feature.Test (fun _ ->
 )
 ```
 
-## Advanced Example
+<!-- (dl (# Advanced Example)) -->
 
 ```fsharp
 let feature = Arrow.NewFeature (
@@ -91,7 +95,7 @@ feature.Test (fun _ ->
 )
 ```
 
-## Notes
+<!-- (dl (# Notes)) -->
 - `Setup` and `Teardown` are helpers for resource management.
 - `TestTags` and `Category` help organize and filter tests.
 - You can use the feature's `Test` method to define individual tests.

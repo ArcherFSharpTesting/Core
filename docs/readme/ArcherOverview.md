@@ -1,8 +1,13 @@
-# Archer Test Framework Overview
+<!-- (dl
+(section-meta
+    (title Archer Test Framework Overview)
+)
+) -->
 
 Archer is a modern, idiomatic F# test framework designed for clarity, composability, and expressiveness. It enables you to write highly readable tests with minimal boilerplate, leveraging F#'s language features for a natural test authoring experience.
 
-## Key Features
+<!-- (dl (# Key Features)) -->
+
 - **Descriptive Test Names**: Test names are automatically inferred from the identifier, allowing for natural language descriptions.
 - **Composable Features**: Organize tests into features and sub-features for clear structure and reuse.
 - **Flexible Setup/Teardown**: Support for setup and teardown logic at any feature or sub-feature level.
@@ -10,7 +15,7 @@ Archer is a modern, idiomatic F# test framework designed for clarity, composabil
 - **Tagging and Filtering**: Use tags to categorize and filter tests.
 - **Ignore Support**: Temporarily skip tests or features with a single keyword.
 
-## Basic Example
+<!-- (dl (# Basic Example)) -->
 ```fsharp
 let feature = Arrow.NewFeature "Math Feature"
 
@@ -21,13 +26,13 @@ let ``Addition should work`` =
     )
 ```
 
-## Organizing Tests
+<!-- (dl (# Organizing Tests)) -->
 - Use `Arrow.NewFeature` to define a feature.
 - Use `Sub.Feature` to create sub-features under a parent feature.
 - Assign tests to identifiers for automatic naming.
 
 
-## Setup and Teardown
+<!-- (dl (# Setup and Teardown)) -->
 
 Setup logic in Archer is run before each test. Instead of relying on global variables, the result of the setup function is passed directly to the test as a parameter. This makes tests more predictable and easier to reason about.
 
@@ -44,12 +49,12 @@ let ``A test using setup`` =
     )
 ```
 
-## Ignoring Tests
+<!-- (dl (# Ignoring Tests)) -->
 ```fsharp
 let ``A test to skip`` = feature.Ignore (fun _ -> ())
 ```
 
-## Data-Driven Tests
+<!-- (dl (# Data-Driven Tests)) -->
 ```fsharp
 let ``Test with data`` =
     feature.Test (
@@ -61,7 +66,7 @@ let ``Test with data`` =
     )
 ```
 
-## Tags and Filtering
+<!-- (dl (# Tags and Filtering)) -->
 ```fsharp
 let ``A tagged test`` =
     feature.Test (
@@ -70,7 +75,7 @@ let ``A tagged test`` =
     )
 ```
 
-## Getting Started
+<!-- (dl (# Getting Started)) -->
 1. Define a feature with `Arrow.NewFeature`.
 2. Add tests using the `Test` method, assigning them to identifiers.
 3. Use setup, teardown, data, and tags as needed.
