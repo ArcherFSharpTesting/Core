@@ -7,6 +7,8 @@
 
 The `IFeature<'featureType>.Test` method is the primary way to define tests for a feature in the Archer F# testing framework. It provides a flexible API for specifying test names, tags, setup/teardown logic, test data, and test bodies.
 
+Every test method returns a `TestExecutionResult`, making it easy to create custom test failures. Because failures do not throw exceptions by default, failing tests tend to run faster and avoid unnecessary stack traces.
+
 <!-- (dl (# Automatic Test Naming)) -->
 
 The most idiomatic way to use `Test` is to assign its result to an identifier. The name of the identifier (including spaces and punctuation) is automatically used as the test's name. This allows for highly readable and descriptive test names without repeating yourself:
