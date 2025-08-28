@@ -8,25 +8,6 @@ open Archer.Arrows.Internals
 
 type Sub with
 
-    //---------- Feature Name ----------
-    static member Feature (subFeatureName, featureTags, setup: SetupIndicator<'featureType, 'subFeatureType>) =
-        Sub.Feature (subFeatureName, featureTags, setup, emptyTeardown)
-
-    static member Ignore (subFeatureName, featureTags, setup: SetupIndicator<'featureType, 'subFeatureType>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
-        Sub.Ignore (subFeatureName, featureTags, setup, emptyTeardown, fileFullName, lineNumber)
-
-    static member Feature (subFeatureName, featureTags, teardown: TeardownIndicator<unit>) =
-        Sub.Feature (subFeatureName, featureTags, Setup Ok, teardown)
-
-    static member Ignore (subFeatureName, featureTags, teardown: TeardownIndicator<unit>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
-        Sub.Ignore (subFeatureName, featureTags, Setup Ok, teardown, fileFullName, lineNumber)
-
-    static member Feature (subFeatureName, featureTags) =
-        Sub.Feature (subFeatureName, featureTags, Setup Ok, emptyTeardown)
-
-    static member Ignore (subFeatureName, featureTags, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
-        Sub.Ignore (subFeatureName, featureTags, Setup Ok, emptyTeardown, fileFullName, lineNumber)
-
     //---------- Feature Tags ----------
     static member Feature (featureTags, setup: SetupIndicator<'featureType, 'subFeatureType>, teardown: TeardownIndicator<'subFeatureType>) =
         let featureName, _ = getNames ()

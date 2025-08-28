@@ -32,6 +32,7 @@
     <Compile Include="Arrow.Tags.NoParam.fs" />
     <Compile Include="Sub.BaseFeature.fs" />
     <Compile Include="Sub.FeatureName.fs" />
+    <Compile Include="Sub.FeatureName.Tags.fs" />
     <Compile Include="Sub.Setup.fs" />
     <Compile Include="Sub.Teardown.fs" />
     <Compile Include="Sub.NoParam.fs" />
