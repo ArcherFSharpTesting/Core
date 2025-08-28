@@ -1,5 +1,5 @@
 [<AutoOpen>]
-module Archer.Arrows.BaseFeature
+module Archer.Arrows.ArrowBaseFeature
 
 open Archer.Arrows
 open System.Runtime.CompilerServices
