@@ -8,7 +8,6 @@ open Archer.Arrows.Internals
 
 type Sub with
 
-    //---------- () ----------
     static member Feature featureTags =
         let featureName, _ = getNames ()
         Sub.Feature (featureName, featureTags, Setup Ok, emptyTeardown)
