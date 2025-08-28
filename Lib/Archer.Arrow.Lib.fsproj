@@ -20,6 +20,8 @@
     <Compile Include="Internal.Types.Feature.fs" />
     <Compile Include="Internal.Types.IgnoreFeature.fs" />
     <Compile Include="Helpers.fs" />
+    <Compile Include="Arrow.BaseFeature.fs" />
+    <Compile Include="Arrow.FeatureName.fs" />
     <Compile Include="Arrow.fs" />
     <Compile Include="Arrow.Tags.fs" />
     <Compile Include="Sub.fs" />
