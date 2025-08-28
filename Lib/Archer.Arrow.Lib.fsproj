@@ -23,6 +23,7 @@
     <Compile Include="Arrow.BaseFeature.fs" />
     <Compile Include="Arrow.FeatureName.fs" />
     <Compile Include="Arrow.Setup.fs" />
+    <Compile Include="Arrow.Teardown.fs" />
     <Compile Include="Arrow.fs" />
     <Compile Include="Arrow.Tags.fs" />
     <Compile Include="Sub.fs" />
