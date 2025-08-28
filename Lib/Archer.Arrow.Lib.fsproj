@@ -24,7 +24,8 @@
     <Compile Include="Arrow.FeatureName.fs" />
     <Compile Include="Arrow.Setup.fs" />
     <Compile Include="Arrow.Teardown.fs" />
-    <Compile Include="Arrow.fs" />
+    <Compile Include="Arrow.NoParam.fs" />
+    <Compile Include="Arrow.Tags.BaseFeature.fs" />
     <Compile Include="Arrow.Tags.fs" />
     <Compile Include="Sub.fs" />
   </ItemGroup>
