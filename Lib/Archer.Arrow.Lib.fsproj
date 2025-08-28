@@ -35,6 +35,7 @@
     <Compile Include="Sub.FeatureName.fs" />
     <Compile Include="Sub.FeatureName.Tags.fs" />
     <Compile Include="Sub.Setup.fs" />
+    <Compile Include="Sub.Setup.Tags.fs" />
     <Compile Include="Sub.Teardown.fs" />
     <Compile Include="Sub.NoParam.fs" />
     <Compile Include="Sub.Tags.fs" />
