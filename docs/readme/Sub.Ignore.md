@@ -12,7 +12,7 @@
 You use `Sub.Ignore` by piping a root feature into it:
 
 ```fsharp
-let rootFeature = Arrow.NewFeature "Root Feature"
+let rootFeature = FeatureBuilder.NewFeature "Root Feature"
 
 let ignoredSubFeature =
     rootFeature

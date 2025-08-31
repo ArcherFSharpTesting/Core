@@ -83,14 +83,14 @@ feature.Test (
 - **teardown**: Optional teardown function to clean up after the test.
 
 <!-- (dl (# Writing a Test)) -->
-1. Create a feature (e.g., with `Arrow.NewFeature`).
+1. Create a feature (e.g., with `FeatureBuilder.NewFeature`).
 2. Call `feature.Test` with the desired parameters.
 3. Implement your test logic in the test body function.
 4. Return `TestSuccess` or another result from the test body.
 
 <!-- (dl (# Example)) -->
 ```fsharp
-let feature = Arrow.NewFeature "Math Feature"
+let feature = FeatureBuilder.NewFeature "Math Feature"
 
 feature.Test (
     "Addition should work",
