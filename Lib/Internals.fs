@@ -5,7 +5,7 @@ open System.ComponentModel
 open System.IO
 open Archer
 open Archer.Core
-open Archer.CoreTypes.InternalTypes
+open Archer.Types.InternalTypes
     
 let getLocation (fileFullName: string) (lineNumber: int) =
     let fileInfo = FileInfo fileFullName

@@ -57,10 +57,10 @@ open Archer.Core.Tests.Feature.Test.TestName.Tags.TestFunction
 open Archer.Core.Tests.Feature.Test.TestName.TestBodyIndicator
 open Archer.Core.Tests.Feature.Test.TestName.TestBodyIndicator.Teardown
 open Archer.Core.Tests.Feature.Test.TestName.TestFunction
-open Archer.Bow
-open Archer.CoreTypes.InternalTypes
-open Archer.CoreTypes.InternalTypes.RunnerTypes
-open Archer.Logger.Summaries
+open Archer.Runner
+open Archer.Types.InternalTypes
+open Archer.Types.InternalTypes.RunnerTypes
+open Archer.Reporting.Summaries
 open MicroLang.Lang
 
 let private runner = bow.Runner ()

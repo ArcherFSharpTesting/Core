@@ -1,7 +1,7 @@
 ﻿[<AutoOpen>]
 module Archer.Core.Tests.ExecuteHelper
 
-open Archer.CoreTypes.InternalTypes
+open Archer.Types.InternalTypes
 
 let executeFunction (executor: ITestExecutor) =
     let run () =

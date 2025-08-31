@@ -6,7 +6,7 @@ open System.Runtime.InteropServices
 open Archer.Core.Helpers
 open Archer.Core.Internal.Types
 open Archer.Core.Internals
-open Archer.CoreTypes.InternalTypes
+open Archer.Types.InternalTypes
 
 /// <summary>
 /// Provides methods for creating sub-features within a test feature.

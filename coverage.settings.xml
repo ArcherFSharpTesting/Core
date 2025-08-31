@@ -21,8 +21,8 @@
         <!-- Match assembly file paths: -->
         <ModulePaths>
             <Include>
-                <ModulePath>Archer.Arrow.Lib.dll</ModulePath>
-                <ModulePath>Archer.Arrow.Lib.*</ModulePath>
+                <ModulePath>Archer.Core.Lib.dll</ModulePath>
+                <ModulePath>Archer.Core.Lib.*</ModulePath>
             </Include>
             <Exclude>
                 <ModulePath>.*CPPUnitTestFramework.*</ModulePath>

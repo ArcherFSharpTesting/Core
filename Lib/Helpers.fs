@@ -8,7 +8,7 @@ open System
 open System.Diagnostics
 open Archer
 open Archer.Core.Internals
-open Archer.CoreTypes.InternalTypes
+open Archer.Types.InternalTypes
 
 /// <summary>
 /// A wrapper executor that manages nested setup/teardown operations and forwards lifecycle events.

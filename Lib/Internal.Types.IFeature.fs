@@ -4,7 +4,7 @@ open System.Runtime.CompilerServices
 open System.Runtime.InteropServices
 open Archer
 open Archer.Core
-open Archer.CoreTypes.InternalTypes
+open Archer.Types.InternalTypes
         
 type IFeature<'featureType> =
     /// <summary>

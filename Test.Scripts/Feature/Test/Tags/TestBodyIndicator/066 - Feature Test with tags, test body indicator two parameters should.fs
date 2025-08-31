@@ -6,7 +6,7 @@ open Archer.Core
 open Archer.Core.Internal.Types
 open Archer.Core.Tests
 open Archer.Core.Tests.TestBuilders
-open Archer.CoreTypes.InternalTypes
+open Archer.Types.InternalTypes
 open Archer.MicroLang.Verification
 
 let private feature = FeatureBuilder.NewFeature (

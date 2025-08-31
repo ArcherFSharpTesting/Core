@@ -6,7 +6,7 @@ open Archer
 open Archer.Core
 open Archer.Core.Internal.Types
 open Archer.Core.Internals
-open Archer.CoreTypes.InternalTypes
+open Archer.Types.InternalTypes
 open Archer.MicroLang
 open Microsoft.FSharp.Core
 

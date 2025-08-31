@@ -3,7 +3,7 @@ module Archer.Core.Tests.TestDoubles
 
 open System
 open Archer
-open Archer.CoreTypes.InternalTypes
+open Archer.Types.InternalTypes
 open Archer.MicroLang.Types.TypeSupport
 open Archer.MicroLang.Lang
     

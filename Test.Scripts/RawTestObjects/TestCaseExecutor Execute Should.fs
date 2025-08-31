@@ -4,7 +4,7 @@ open System.Threading
 open Archer
 open Archer.Core
 open Archer.Core.Tests
-open Archer.CoreTypes.InternalTypes
+open Archer.Types.InternalTypes
 open Archer.MicroLang
 
 let private feature = FeatureBuilder.NewFeature (

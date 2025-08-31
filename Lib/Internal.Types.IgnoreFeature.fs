@@ -3,7 +3,7 @@ namespace Archer.Core.Internal.Types
 open Archer
 open Archer.Core
 open Archer.Core.Internals
-open Archer.CoreTypes.InternalTypes
+open Archer.Types.InternalTypes
 open System.Runtime.CompilerServices
 open System.Runtime.InteropServices
         

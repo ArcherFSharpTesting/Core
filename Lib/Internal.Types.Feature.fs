@@ -6,7 +6,7 @@ open System.Runtime.InteropServices
 open Archer
 open Archer.Core
 open Archer.Core.Internals
-open Archer.CoreTypes.InternalTypes
+open Archer.Types.InternalTypes
 
 type Feature<'featureType> (featurePath, featureName, featureTags: TestTag list, transformer: TestInternals * ISetupTeardownExecutor<'featureType> -> ITest) =
     let mutable tests: ITest list = []
