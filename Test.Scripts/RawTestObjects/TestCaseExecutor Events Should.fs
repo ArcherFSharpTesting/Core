@@ -1,13 +1,13 @@
-﻿module Archer.Arrows.Tests.RawTestObjects.``TestCaseExecutor Events Should``
+﻿module Archer.Core.Tests.RawTestObjects.``TestCaseExecutor Events Should``
 
 open Archer
-open Archer.Arrows
-open Archer.Arrows.Tests
+open Archer.Core
+open Archer.Core.Tests
 open Archer.CoreTypes.InternalTypes
 open Archer.MicroLang
 open Microsoft.FSharp.Control
 
-let private feature = Arrow.NewFeature (
+let private feature = FeatureBuilder.NewFeature (
     TestTags [
         Category "TestCaseExecutor"
         Category "TestLifecycleEvent"
@@ -79,7 +79,7 @@ let ``Trigger all the events in order`` =
 let ``Trigger events with parent`` =
     feature.Test (
         fun _ ->
-            let feature = Arrow.NewFeature ("Events", "ThatTrigger")
+            let feature = FeatureBuilder.NewFeature ("Events", "ThatTrigger")
             let test = feature.Test ((fun _ _ -> TestSuccess), "From a test")
             let executor = test.GetExecutor ()
             

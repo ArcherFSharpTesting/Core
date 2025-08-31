@@ -1,11 +1,11 @@
 ﻿[<AutoOpen>]
-module Archer.Arrows.Tests.TestMonitors
+module Archer.Core.Tests.TestMonitors
 
 open System.Runtime.InteropServices
 open Archer
-open Archer.Arrows
-open Archer.Arrows.Internal.Types
-open Archer.Arrows.Internals
+open Archer.Core
+open Archer.Core.Internal.Types
+open Archer.Core.Internals
 open Archer.CoreTypes.InternalTypes
 open Archer.MicroLang
 open Microsoft.FSharp.Core
@@ -60,16 +60,16 @@ let randomWord length =
     |> fun items -> System.String.Join ("", items)
 
 let buildFeatureUnderTestWithSetupAndTeardown setup teardown =
-    Arrow.NewFeature (ignoreString (), ignoreString (), setup, teardown)
+    FeatureFactory.NewFeature (ignoreString (), ignoreString (), setup, teardown)
 
 let buildIgnoreFeatureUnderTestWithSetupAndTeardown (setup: SetupIndicator<_, _>) (teardown: TeardownIndicator<_>) =
-    Arrow.Ignore (ignoreString (), ignoreString (), setup, teardown)
+    FeatureFactory.Ignore (ignoreString (), ignoreString (), setup, teardown)
 
 let buildFeatureUnderTestWithSetup setup =
-    Arrow.NewFeature (ignoreString (), ignoreString (), setup, emptyTeardown)
+    FeatureFactory.NewFeature (ignoreString (), ignoreString (), setup, emptyTeardown)
 
 let buildFeatureUnderTestWithTeardown teardown =
-    Arrow.NewFeature (ignoreString (), ignoreString (), Setup Ok, teardown)
+    FeatureFactory.NewFeature (ignoreString (), ignoreString (), Setup Ok, teardown)
 
 let buildFeatureUnderTest _ =
     buildFeatureUnderTestWithSetupAndTeardown (Setup Ok) emptyTeardown
@@ -468,7 +468,7 @@ let verifyAllTestFunctionsWereCalledWithTestEnvironmentContaining (tests: ITest 
         ListShould.HaveAllValuesPassTestOf <@hasValue@>
         
         ListShould.HaveAllValuesPassAllOf [
-            getValue >> (fun env -> env.ApiEnvironment.ApiName) >> Should.BeEqualTo "Archer.Arrows"
+            getValue >> (fun env -> env.ApiEnvironment.ApiName) >> Should.BeEqualTo "Archer.Core"
             getValue >> (fun env -> env.TestInfo) >> (fun ti -> tests |> ListShould.Contain ti)
         ]
         
@@ -1069,7 +1069,7 @@ let setupBuildExecutorWithMonitorAtTheFeature _ =
     let testMonitor = getTestMonitor<unit, unit, unit> ()
     let testSetupValue = ()
     
-    let feature = Arrow.NewFeature (
+    let feature = FeatureFactory.NewFeature (
         ignoreString (),
         ignoreString (),
         Setup (featureMonitor.FunctionSetupWith testSetupValue),
@@ -1081,7 +1081,7 @@ let setupBuildExecutorWithMonitorAtTheFeature _ =
 
 let setupBuildExecutorWithMonitor _ =
     let buildIt (monitor: ITestMonitor<unit, unit, 'setupType>) (setupResult: Result<'setupType, SetupTeardownFailure>) =
-        let feature = Arrow.NewFeature (
+        let feature = FeatureFactory.NewFeature (
             ignoreString (),
             ignoreString ()
         )
@@ -1106,7 +1106,7 @@ let setupBuildExecutorWithMonitor _ =
 
 let setupBuildExecutorWithMonitorAndTestResult _ =
     let buildIt (monitor: ITestMonitor<unit, unit, unit>) (testResult: TestResult) =
-        let feature = Arrow.NewFeature (
+        let feature = FeatureFactory.NewFeature (
             ignoreString (),
             ignoreString ()
         )

@@ -1,9 +1,9 @@
-module Archer.Arrows.Tests.TestBuilders
+module Archer.Core.Tests.TestBuilders
 
 open Archer
-open Archer.Arrows
-open Archer.Arrows.Internal.Types
-open Archer.Arrows.Tests.TestMonitors
+open Archer.Core
+open Archer.Core.Internal.Types
+open Archer.Core.Tests.TestMonitors
 open Microsoft.FSharp.Core
 open System.Runtime.InteropServices
 

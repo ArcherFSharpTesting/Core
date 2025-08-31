@@ -1,5 +1,5 @@
 ﻿[<AutoOpen>]
-module Archer.Arrows.Tests.TestDoubles
+module Archer.Core.Tests.TestDoubles
 
 open System
 open Archer

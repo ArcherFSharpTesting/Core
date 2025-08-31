@@ -1,5 +1,5 @@
 ﻿[<AutoOpen>]
-module Archer.Arrows.Tests.ExecuteHelper
+module Archer.Core.Tests.ExecuteHelper
 
 open Archer.CoreTypes.InternalTypes
 

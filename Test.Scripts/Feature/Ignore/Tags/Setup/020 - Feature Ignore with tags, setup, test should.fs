@@ -1,15 +1,15 @@
-module Archer.Arrows.Tests.Feature.Ignore.Tags.Setup.``020 - Feature Ignore with tags, setup, test should``
+module Archer.Core.Tests.Feature.Ignore.Tags.Setup.``020 - Feature Ignore with tags, setup, test should``
 
 open System
 open Archer
-open Archer.Arrows
-open Archer.Arrows.Internal.Types
-open Archer.Arrows.Tests
-open Archer.Arrows.Tests.IgnoreBuilders
+open Archer.Core
+open Archer.Core.Internal.Types
+open Archer.Core.Tests
+open Archer.Core.Tests.IgnoreBuilders
 open Archer.CoreTypes.InternalTypes
 open Archer.MicroLang.Verification
 
-let private feature = Arrow.NewFeature (
+let private feature = FeatureFactory.NewFeature (
     TestTags [
         Category "Feature"
         Category "Ignore"

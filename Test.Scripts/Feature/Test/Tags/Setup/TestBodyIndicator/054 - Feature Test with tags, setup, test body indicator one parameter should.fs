@@ -1,15 +1,15 @@
-module Archer.Arrows.Tests.Feature.Test.Tags.Setup.TestBodyIndicator.``054 - Feature Test with tags, setup, test body indicator one parameter should``
+module Archer.Core.Tests.Feature.Test.Tags.Setup.TestBodyIndicator.``054 - Feature Test with tags, setup, test body indicator one parameter should``
 
 open System
 open Archer
-open Archer.Arrows
-open Archer.Arrows.Internal.Types
-open Archer.Arrows.Tests
-open Archer.Arrows.Tests.TestBuilders
+open Archer.Core
+open Archer.Core.Internal.Types
+open Archer.Core.Tests
+open Archer.Core.Tests.TestBuilders
 open Archer.CoreTypes.InternalTypes
 open Archer.MicroLang.Verification
 
-let private feature = Arrow.NewFeature (
+let private feature = FeatureBuilder.NewFeature (
     TestTags [
         Category "Feature"
         Category "Test"

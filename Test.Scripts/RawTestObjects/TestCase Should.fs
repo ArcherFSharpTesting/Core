@@ -1,12 +1,12 @@
-﻿module Archer.Arrows.Tests.RawTestObjects.``TestCase Should``
+﻿module Archer.Core.Tests.RawTestObjects.``TestCase Should``
 
 open System
 open Archer
-open Archer.Arrows
-open Archer.Arrows.Internals
+open Archer.Core
+open Archer.Core.Internals
 open Archer.MicroLang
 
-let private container = Arrow.NewFeature (
+let private container = FeatureBuilder.NewFeature (
     TestTags [
         Category "TestCase"
     ]
@@ -40,7 +40,7 @@ let ``has all the data passed to it`` =
 let ``have a decent ToString`` =
     container.Test (
         fun _ ->
-            let feature = Arrow.NewFeature ("TestCase", "ToStringTests")
+            let feature = FeatureBuilder.NewFeature ("TestCase", "ToStringTests")
             let test = feature.Test ((fun _ _ -> TestSuccess), "ToString should")
             
             test.ToString ()

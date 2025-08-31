@@ -1,8 +1,8 @@
-module Archer.Arrows.Tests.IgnoreBuilders
+module Archer.Core.Tests.IgnoreBuilders
 
-open Archer.Arrows
-open Archer.Arrows.Internal.Types
-open Archer.Arrows.Tests.TestBuilders
+open Archer.Core
+open Archer.Core.Internal.Types
+open Archer.Core.Tests.TestBuilders
 open Microsoft.FSharp.Core
 open System.Runtime.InteropServices
 

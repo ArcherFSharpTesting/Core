@@ -1,62 +1,62 @@
 ﻿open Archer
-open Archer.Arrows.Tests
-open Archer.Arrows.Tests.Feature.Ignore
-open Archer.Arrows.Tests.Feature.Ignore.Data
-open Archer.Arrows.Tests.Feature.Ignore.Setup
-open Archer.Arrows.Tests.Feature.Ignore.Setup.Data
-open Archer.Arrows.Tests.Feature.Ignore.Tags
-open Archer.Arrows.Tests.Feature.Ignore.Tags.Data
-open Archer.Arrows.Tests.Feature.Ignore.Tags.Setup
-open Archer.Arrows.Tests.Feature.Ignore.Tags.Setup.Data
-open Archer.Arrows.Tests.Feature.Ignore.TestName
-open Archer.Arrows.Tests.Feature.Ignore.TestName.Data
-open Archer.Arrows.Tests.Feature.Ignore.TestName.Setup
-open Archer.Arrows.Tests.Feature.Ignore.TestName.Setup.Data
-open Archer.Arrows.Tests.Feature.Ignore.TestName.Tags
-open Archer.Arrows.Tests.Feature.Ignore.TestName.Tags.Data
-open Archer.Arrows.Tests.Ignore.TestName.Tags.Setup
-open Archer.Arrows.Tests.Ignore.TestName.Tags.Setup.Data
-open Archer.Arrows.Tests.RawTestObjects
-open Archer.Arrows.Tests.Feature.Test.Data.TestBodyIndicator
-open Archer.Arrows.Tests.Feature.Test.Data.TestBodyIndicator.Teardown
-open Archer.Arrows.Tests.Feature.Test.Data.TestFunction
-open Archer.Arrows.Tests.Feature.Test.Setup.Data.TestBodyIndicator
-open Archer.Arrows.Tests.Feature.Test.Setup.Data.TestBodyIndicator.Teardown
-open Archer.Arrows.Tests.Feature.Test.Setup.TestBodyIndicator
-open Archer.Arrows.Tests.Feature.Test.Setup.TestBodyIndicator.Teardown
-open Archer.Arrows.Tests.Feature.Test.Tags.Data.TestBodyIndicator
-open Archer.Arrows.Tests.Feature.Test.Tags.Data.TestBodyIndicator.Teardown
-open Archer.Arrows.Tests.Feature.Test.Tags.Data.TestFunction
-open Archer.Arrows.Tests.Feature.Test.Tags.Setup.Data.TestBodyIndicator
-open Archer.Arrows.Tests.Feature.Test.Tags.Setup.Data.TestBodyIndicator.Teardown
-open Archer.Arrows.Tests.Feature.Test.Tags.Setup.TestBodyIndicator
-open Archer.Arrows.Tests.Feature.Test.Tags.Setup.TestBodyIndicator.Teardown
-open Archer.Arrows.Tests.Feature.Test.Tags.TestBodyIndicator
-open Archer.Arrows.Tests.Feature.Test.Tags.TestBodyIndicator.Teardown
-open Archer.Arrows.Tests.Feature.Test.Tags.TestFunction
-open Archer.Arrows.Tests.Feature.Test.TestBodyIndicator
-open Archer.Arrows.Tests.Feature.Test.TestBodyIndicator.Teardown
-open Archer.Arrows.Tests.Feature.Test.TestFunction
-open Archer.Arrows.Tests.Feature.Test.TestName.Data.TestBodyIndicator
-open Archer.Arrows.Tests.Feature.Test.TestName.Data.TestBodyIndicator.Teardown
-open Archer.Arrows.Tests.Feature.Test.TestName.Data.TestFunction
-open Archer.Arrows.Tests.Feature.Test.TestName.Setup.Data.TestBodyIndicator
-open Archer.Arrows.Tests.Feature.Test.TestName.Setup.Data.TestBodyIndicator.Teardown
-open Archer.Arrows.Tests.Feature.Test.TestName.Setup.TestBodyIndicator
-open Archer.Arrows.Tests.Feature.Test.TestName.Setup.TestBodyIndicator.Teardown
-open Archer.Arrows.Tests.Feature.Test.TestName.Tags.Data.TestBodyIndicator
-open Archer.Arrows.Tests.Feature.Test.TestName.Tags.Data.TestBodyIndicator.Teardown
-open Archer.Arrows.Tests.Feature.Test.TestName.Tags.Data.TestFunction
-open Archer.Arrows.Tests.Feature.Test.TestName.Tags.Setup.Data.TestBodyIndicator
-open Archer.Arrows.Tests.Feature.Test.TestName.Tags.Setup.Data.TestBodyIndicator.Teardown
-open Archer.Arrows.Tests.Feature.Test.TestName.Tags.Setup.TestBodyIndicator
-open Archer.Arrows.Tests.Feature.Test.TestName.Tags.Setup.TestBodyIndicator.Teardown
-open Archer.Arrows.Tests.Feature.Test.TestName.Tags.TestBodyIndicator
-open Archer.Arrows.Tests.Feature.Test.TestName.Tags.TestBodyIndicator.Teardown
-open Archer.Arrows.Tests.Feature.Test.TestName.Tags.TestFunction
-open Archer.Arrows.Tests.Feature.Test.TestName.TestBodyIndicator
-open Archer.Arrows.Tests.Feature.Test.TestName.TestBodyIndicator.Teardown
-open Archer.Arrows.Tests.Feature.Test.TestName.TestFunction
+open Archer.Core.Tests
+open Archer.Core.Tests.Feature.Ignore
+open Archer.Core.Tests.Feature.Ignore.Data
+open Archer.Core.Tests.Feature.Ignore.Setup
+open Archer.Core.Tests.Feature.Ignore.Setup.Data
+open Archer.Core.Tests.Feature.Ignore.Tags
+open Archer.Core.Tests.Feature.Ignore.Tags.Data
+open Archer.Core.Tests.Feature.Ignore.Tags.Setup
+open Archer.Core.Tests.Feature.Ignore.Tags.Setup.Data
+open Archer.Core.Tests.Feature.Ignore.TestName
+open Archer.Core.Tests.Feature.Ignore.TestName.Data
+open Archer.Core.Tests.Feature.Ignore.TestName.Setup
+open Archer.Core.Tests.Feature.Ignore.TestName.Setup.Data
+open Archer.Core.Tests.Feature.Ignore.TestName.Tags
+open Archer.Core.Tests.Feature.Ignore.TestName.Tags.Data
+open Archer.Core.Tests.Ignore.TestName.Tags.Setup
+open Archer.Core.Tests.Ignore.TestName.Tags.Setup.Data
+open Archer.Core.Tests.RawTestObjects
+open Archer.Core.Tests.Feature.Test.Data.TestBodyIndicator
+open Archer.Core.Tests.Feature.Test.Data.TestBodyIndicator.Teardown
+open Archer.Core.Tests.Feature.Test.Data.TestFunction
+open Archer.Core.Tests.Feature.Test.Setup.Data.TestBodyIndicator
+open Archer.Core.Tests.Feature.Test.Setup.Data.TestBodyIndicator.Teardown
+open Archer.Core.Tests.Feature.Test.Setup.TestBodyIndicator
+open Archer.Core.Tests.Feature.Test.Setup.TestBodyIndicator.Teardown
+open Archer.Core.Tests.Feature.Test.Tags.Data.TestBodyIndicator
+open Archer.Core.Tests.Feature.Test.Tags.Data.TestBodyIndicator.Teardown
+open Archer.Core.Tests.Feature.Test.Tags.Data.TestFunction
+open Archer.Core.Tests.Feature.Test.Tags.Setup.Data.TestBodyIndicator
+open Archer.Core.Tests.Feature.Test.Tags.Setup.Data.TestBodyIndicator.Teardown
+open Archer.Core.Tests.Feature.Test.Tags.Setup.TestBodyIndicator
+open Archer.Core.Tests.Feature.Test.Tags.Setup.TestBodyIndicator.Teardown
+open Archer.Core.Tests.Feature.Test.Tags.TestBodyIndicator
+open Archer.Core.Tests.Feature.Test.Tags.TestBodyIndicator.Teardown
+open Archer.Core.Tests.Feature.Test.Tags.TestFunction
+open Archer.Core.Tests.Feature.Test.TestBodyIndicator
+open Archer.Core.Tests.Feature.Test.TestBodyIndicator.Teardown
+open Archer.Core.Tests.Feature.Test.TestFunction
+open Archer.Core.Tests.Feature.Test.TestName.Data.TestBodyIndicator
+open Archer.Core.Tests.Feature.Test.TestName.Data.TestBodyIndicator.Teardown
+open Archer.Core.Tests.Feature.Test.TestName.Data.TestFunction
+open Archer.Core.Tests.Feature.Test.TestName.Setup.Data.TestBodyIndicator
+open Archer.Core.Tests.Feature.Test.TestName.Setup.Data.TestBodyIndicator.Teardown
+open Archer.Core.Tests.Feature.Test.TestName.Setup.TestBodyIndicator
+open Archer.Core.Tests.Feature.Test.TestName.Setup.TestBodyIndicator.Teardown
+open Archer.Core.Tests.Feature.Test.TestName.Tags.Data.TestBodyIndicator
+open Archer.Core.Tests.Feature.Test.TestName.Tags.Data.TestBodyIndicator.Teardown
+open Archer.Core.Tests.Feature.Test.TestName.Tags.Data.TestFunction
+open Archer.Core.Tests.Feature.Test.TestName.Tags.Setup.Data.TestBodyIndicator
+open Archer.Core.Tests.Feature.Test.TestName.Tags.Setup.Data.TestBodyIndicator.Teardown
+open Archer.Core.Tests.Feature.Test.TestName.Tags.Setup.TestBodyIndicator
+open Archer.Core.Tests.Feature.Test.TestName.Tags.Setup.TestBodyIndicator.Teardown
+open Archer.Core.Tests.Feature.Test.TestName.Tags.TestBodyIndicator
+open Archer.Core.Tests.Feature.Test.TestName.Tags.TestBodyIndicator.Teardown
+open Archer.Core.Tests.Feature.Test.TestName.Tags.TestFunction
+open Archer.Core.Tests.Feature.Test.TestName.TestBodyIndicator
+open Archer.Core.Tests.Feature.Test.TestName.TestBodyIndicator.Teardown
+open Archer.Core.Tests.Feature.Test.TestName.TestFunction
 open Archer.Bow
 open Archer.CoreTypes.InternalTypes
 open Archer.CoreTypes.InternalTypes.RunnerTypes
@@ -92,10 +92,10 @@ runner
     ``TestCaseExecutor Execute Should``.``Test Cases``
     ``TestCaseExecutor Events Should``.``Test Cases``
     ``TestCaseExecutor Event Cancellation Should``.``Test Cases``
-    ``Arrow NewFeature``.``Test Cases``
-    ``Arrow NewFeature With Setup``.``Test Cases``
-    ``Arrow NewFeature With Teardown``.``Test Cases``
-    
+    ``FeatureFactory NewFeature``.``Test Cases``
+    ``FeatureFactory NewFeature With Setup``.``Test Cases``
+    ``FeatureFactory NewFeature With Teardown``.``Test Cases``
+
     // Feature.Test Tests
     ``001 - Feature Test with test name, tags, setup, data, test body indicator three parameters, teardown should``.``Test Cases``
     ``002 - Feature Test with test name, tags, setup, data, test body indicator two parameters, teardown should``.``Test Cases``
@@ -278,7 +278,7 @@ runner
     ``031 - Feature Ignore with test, teardown should``.``Test Cases``
     ``032 - Feature Ignore with test should``.``Test Cases``
     
-    ``Arrow Ignore``.``Test Cases``
+    ``FeatureFactory Ignore``.``Test Cases``
     
     ``Ignore Feature Test should``.``Test Cases``
 ]

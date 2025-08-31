@@ -1,13 +1,13 @@
-module Archer.Arrows.Tests.``Arrow NewFeature With Setup``
+module Archer.Core.Tests.``FeatureFactory NewFeature With Setup``
 
 open Archer
-open Archer.Arrows
-open Archer.Arrows.Internals
+open Archer.Core
+open Archer.Core.Internals
 open Archer.MicroLang.Verification
 
-let private feature = Arrow.NewFeature (
+let private feature = FeatureFactory.NewFeature (
     TestTags [
-        Category "Arrow"
+        Category "FeatureFactory"
         Category "NewFeature"
         Category "Feature"
         Category "Test"
@@ -19,7 +19,7 @@ let ``Should call setup when it is the only thing passed to it`` =
         let monitor = getFeatureMonitor<unit> ()
         let setupValue = ()
             
-        let testFeature = Arrow.NewFeature (
+        let testFeature = FeatureFactory.NewFeature (
             Setup (monitor.FunctionSetupWith setupValue)
         )
         
@@ -38,7 +38,7 @@ let ``Should call setup when name and setup are specified`` =
         let monitor = getFeatureMonitor<unit> ()
         let setupValue = ()
             
-        let testFeature = Arrow.NewFeature (
+        let testFeature = FeatureFactory.NewFeature (
             "My magic feature",
             Setup (monitor.FunctionSetupWith setupValue)
         )
@@ -58,7 +58,7 @@ let ``Should call setup when path, name, and setup are specified`` =
         let monitor = getFeatureMonitor<unit> ()
         let setupValue = ()
             
-        let testFeature = Arrow.NewFeature (
+        let testFeature = FeatureFactory.NewFeature (
             "A Path",
             "My magic feature",
             Setup (monitor.FunctionSetupWith setupValue)
@@ -79,7 +79,7 @@ let ``Should call setup when it is passed with a teardown`` =
         let monitor = getFeatureMonitor<unit> ()
         let setupValue = ()
         
-        let testFeature = Arrow.NewFeature (
+        let testFeature = FeatureFactory.NewFeature (
             Setup (monitor.FunctionSetupWith setupValue),
             emptyTeardown
         )
@@ -99,7 +99,7 @@ let ``Should call setup when name, setup, and teardown are specified`` =
         let monitor = getFeatureMonitor<unit> ()
         let setupValue = ()
         
-        let testFeature = Arrow.NewFeature (
+        let testFeature = FeatureFactory.NewFeature (
             "Hello Feature",
             Setup (monitor.FunctionSetupWith setupValue),
             emptyTeardown
@@ -120,7 +120,7 @@ let ``Should call setup when path, name, setup, and teardown are specified`` =
         let monitor = getFeatureMonitor<unit> ()
         let setupValue = ()
         
-        let testFeature = Arrow.NewFeature (
+        let testFeature = FeatureFactory.NewFeature (
             "Hello Path",
             "Hello Feature",
             Setup (monitor.FunctionSetupWith setupValue),

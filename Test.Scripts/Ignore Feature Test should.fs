@@ -1,15 +1,15 @@
-module Archer.Arrows.Tests.``Ignore Feature Test should``
+module Archer.Core.Tests.``Ignore Feature Test should``
 
 open System
 open Archer
-open Archer.Arrows
-open Archer.Arrows.Internal.Types
-open Archer.Arrows.Tests
-open Archer.Arrows.Tests.TestBuilders
+open Archer.Core
+open Archer.Core.Internal.Types
+open Archer.Core.Tests
+open Archer.Core.Tests.TestBuilders
 open Archer.CoreTypes.InternalTypes
 open Archer.MicroLang.Verification
 
-let private feature = Arrow.NewFeature (
+let private feature = FeatureFactory.NewFeature (
     TestTags [
         Category "IgnoreFeature"
         Category "Test"

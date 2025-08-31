@@ -1,27 +1,27 @@
-﻿module Archer.Arrows.Tests.RawTestObjects.``Arrow NewFeature`` 
+﻿module Archer.Core.Tests.RawTestObjects.``FeatureFactory NewFeature``
 
 open Archer
-open Archer.Arrows
-open Archer.Arrows.Internals
-open Archer.Arrows.Internal.Types
+open Archer.Core
+open Archer.Core.Internals
+open Archer.Core.Internal.Types
 open Archer.MicroLang
 
-let private feature = Arrow.NewFeature (
+let private feature = FeatureFactory.NewFeature (
     TestTags [
-        Category "Arrow"
+        Category "FeatureFactory"
         Category "NewFeature"
     ]
 )
 
-let private exampleWithSetup = Arrow.NewFeature (
+let private exampleWithSetup = FeatureFactory.NewFeature (
     Setup (fun () -> Ok ())
 )
 
-let private exampleWithTeardown = Arrow.NewFeature (
+let private exampleWithTeardown = FeatureFactory.NewFeature (
     emptyTeardown
 )
 
-let private exampleWithBoth = Arrow.NewFeature (
+let private exampleWithBoth = FeatureFactory.NewFeature (
     Setup (fun () -> Ok ()),
     emptyTeardown
 )
@@ -78,8 +78,8 @@ let ``Should Create a Feature with the name and path given to it`` =
         fun _ ->
             let path = "This feature's path"
             let name = "This feature's name"
-            let testFeature = Arrow.NewFeature (path, name)
-            
+            let testFeature = FeatureFactory.NewFeature (path, name)
+
             testFeature.ToString ()
             |> Should.BeEqualTo $"%s{path}.%s{name}"
     )
@@ -89,7 +89,7 @@ let ``Should Create a Feature with the name, path, and setup given to it`` =
         fun _ ->
             let path = "This feature's path"
             let name = "This feature's name"
-            let testFeature = Arrow.NewFeature (
+            let testFeature = FeatureFactory.NewFeature (
                 path,
                 name,
                 Setup (fun () -> Ok ())
@@ -104,7 +104,7 @@ let ``Should Create a Feature with the name, path, and teardown given to it`` =
         fun _ ->
             let path = "This feature's path"
             let name = "This feature's name"
-            let testFeature = Arrow.NewFeature (
+            let testFeature = FeatureFactory.NewFeature (
                 path,
                 name,
                 emptyTeardown
@@ -119,7 +119,7 @@ let ``Should Create a Feature with the name, path, setup and teardown given to i
         fun _ ->
             let path = "This feature's path"
             let name = "This feature's name"
-            let testFeature = Arrow.NewFeature (
+            let testFeature = FeatureFactory.NewFeature (
                 path,
                 name,
                 Setup (fun () -> Ok ()),
@@ -134,8 +134,8 @@ let ``Should Create a feature with the name given to it`` =
     feature.Test (
         fun _ ->
             let name = "A specified name"
-            let testFeature = Arrow.NewFeature name
-            
+            let testFeature = FeatureFactory.NewFeature name
+
             testFeature.ToString ()
             |> Should.PassTestOf <@fun featureName ->
                 featureName.EndsWith $".%s{name}"
@@ -146,7 +146,7 @@ let ``Should Create a feature with the name and setup given to it`` =
     feature.Test (
         fun _ ->
             let name = "A specified name"
-            let testFeature = Arrow.NewFeature (
+            let testFeature = FeatureFactory.NewFeature (
                 name,
                 Setup (fun () -> Ok ())
             )
@@ -161,7 +161,7 @@ let ``Should Create a feature with the name and teardown given to it`` =
     feature.Test (
         fun _ ->
             let name = "A specified name"
-            let testFeature = Arrow.NewFeature (
+            let testFeature = FeatureFactory.NewFeature (
                 name,
                 emptyTeardown
             )
@@ -176,7 +176,7 @@ let ``Should Create a feature with the name, setup and teardown given to it`` =
     feature.Test (
         fun _ ->
             let name = "A specified name"
-            let testFeature = Arrow.NewFeature (
+            let testFeature = FeatureFactory.NewFeature (
                 name,
                 Setup (fun () -> Ok ()),
                 emptyTeardown

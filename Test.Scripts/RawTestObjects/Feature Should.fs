@@ -1,9 +1,9 @@
-﻿module Archer.Arrows.Tests.RawTestObjects.``Feature Should``
+﻿module Archer.Core.Tests.RawTestObjects.``Feature Should``
 
-open Archer.Arrows
-open Archer.Arrows.Internals
-open Archer.Arrows.Internal.Types
-open Archer.Arrows.Helpers
+open Archer.Core
+open Archer.Core.Internals
+open Archer.Core.Internal.Types
+open Archer.Core.Helpers
 open Archer.MicroLang
 
 let private container = suite.Container ()
