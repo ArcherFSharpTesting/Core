@@ -1,9 +1,9 @@
-﻿namespace Archer.Arrows.Internal.Types
+﻿namespace Archer.Core.Internal.Types
 
 open System.Runtime.CompilerServices
 open System.Runtime.InteropServices
 open Archer
-open Archer.Arrows
+open Archer.Core
 open Archer.CoreTypes.InternalTypes
         
 type IFeature<'featureType> =

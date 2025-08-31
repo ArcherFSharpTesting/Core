@@ -1,8 +1,8 @@
-namespace Archer.Arrows.Internal.Types
+namespace Archer.Core.Internal.Types
 
 open Archer
-open Archer.Arrows
-open Archer.Arrows.Internals
+open Archer.Core
+open Archer.Core.Internals
 open Archer.CoreTypes.InternalTypes
 open System.Runtime.CompilerServices
 open System.Runtime.InteropServices

@@ -1,11 +1,11 @@
-﻿namespace Archer.Arrows.Internal.Types
+﻿namespace Archer.Core.Internal.Types
 
 open System
 open System.Runtime.CompilerServices
 open System.Runtime.InteropServices
 open Archer
-open Archer.Arrows
-open Archer.Arrows.Internals
+open Archer.Core
+open Archer.Core.Internals
 open Archer.CoreTypes.InternalTypes
 
 type Feature<'featureType> (featurePath, featureName, featureTags: TestTag list, transformer: TestInternals * ISetupTeardownExecutor<'featureType> -> ITest) =

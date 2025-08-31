@@ -1,11 +1,11 @@
 [<AutoOpen>]
-module Archer.Arrows.ArrowTagsSetup
+module Archer.Core.FeatureTagsSetup
 
 open System.Runtime.CompilerServices
 open System.Runtime.InteropServices
-open Archer.Arrows.Helpers
+open Archer.Core.Helpers
 
-type Arrow with
+type FeatureFactory with
 
     /// <summary>
     /// Creates a new feature with the specified tags, setup, and teardown logic, using the current context for feature name and path.
@@ -15,7 +15,7 @@ type Arrow with
     /// <param name="teardown">The teardown logic to run after the feature.</param>
     static member NewFeature (featureTags: TagsIndicator, setup: SetupIndicator<unit, 'a>, teardown: TeardownIndicator<'a>) =
         let featureName, featurePath = getNames ()
-        Arrow.NewFeature (featurePath, featureName, featureTags, setup, teardown)
+        FeatureFactory.NewFeature (featurePath, featureName, featureTags, setup, teardown)
 
     /// <summary>
     /// Creates an ignored feature with the specified tags, setup, teardown, and source location, using the current context for feature name and path.
@@ -27,7 +27,7 @@ type Arrow with
     /// <param name="lineNumber">The line number in the source file (auto-filled).</param>
     static member Ignore (featureTags: TagsIndicator, setup: SetupIndicator<unit, 'a>, teardown: TeardownIndicator<'a>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
         let featureName, featurePath = getNames ()
-        Arrow.Ignore (featurePath, featureName, featureTags, setup, teardown, fileFullName, lineNumber)
+        FeatureFactory.Ignore (featurePath, featureName, featureTags, setup, teardown, fileFullName, lineNumber)
 
     /// <summary>
     /// Creates a new feature with the specified tags and setup logic, and no teardown, using the current context for feature name and path.
@@ -36,7 +36,7 @@ type Arrow with
     /// <param name="setup">The setup logic to run before the feature.</param>
     static member NewFeature (featureTags: TagsIndicator, setup: SetupIndicator<unit, 'a>) =
         let featureName, featurePath = getNames ()
-        Arrow.NewFeature (featurePath, featureName, featureTags, setup)
+        FeatureFactory.NewFeature (featurePath, featureName, featureTags, setup)
 
     /// <summary>
     /// Creates an ignored feature with the specified tags and setup logic, and no teardown, using the current context for feature name and path, and source location.
@@ -47,4 +47,4 @@ type Arrow with
     /// <param name="lineNumber">The line number in the source file (auto-filled).</param>
     static member Ignore (featureTags: TagsIndicator, setup: SetupIndicator<unit, 'a>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
         let featureName, featurePath = getNames ()
-        Arrow.Ignore (featurePath, featureName, featureTags, setup, fileFullName, lineNumber)
+        FeatureFactory.Ignore (featurePath, featureName, featureTags, setup, fileFullName, lineNumber)

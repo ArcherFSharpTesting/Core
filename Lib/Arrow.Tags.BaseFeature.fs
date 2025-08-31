@@ -1,13 +1,13 @@
 [<AutoOpen>]
-module Archer.Arrows.ArrowTagsBaseFeature
+module Archer.Core.FeatureTagsBaseFeature
 
 open System.Runtime.CompilerServices
 open System.Runtime.InteropServices
-open Archer.Arrows.Helpers
-open Archer.Arrows.Internal.Types
-open Archer.Arrows.Internals
+open Archer.Core.Helpers
+open Archer.Core.Internal.Types
+open Archer.Core.Internals
 
-type Arrow with
+type FeatureFactory with
     /// <summary>
     /// Creates a new feature with the specified path, name, tags, setup, and teardown logic.
     /// </summary>
@@ -47,7 +47,7 @@ type Arrow with
     /// <param name="featureTags">The tags to associate with the feature.</param>
     /// <param name="setup">The setup logic to run before the feature.</param>
     static member NewFeature (featurePath, featureName, featureTags: TagsIndicator, setup: SetupIndicator<unit, 'a>) =
-        Arrow.NewFeature (featurePath, featureName, featureTags, setup, emptyTeardown)
+        FeatureFactory.NewFeature (featurePath, featureName, featureTags, setup, emptyTeardown)
 
     /// <summary>
     /// Creates an ignored feature with the specified path, name, tags, and setup logic, and no teardown, and source location.
@@ -59,7 +59,7 @@ type Arrow with
     /// <param name="fileFullName">The full file path of the source (auto-filled).</param>
     /// <param name="lineNumber">The line number in the source file (auto-filled).</param>
     static member Ignore (featurePath, featureName, featureTags: TagsIndicator, setup: SetupIndicator<unit, 'a>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
-        Arrow.Ignore (featurePath, featureName, featureTags, setup, emptyTeardown, fileFullName, lineNumber)
+        FeatureFactory.Ignore (featurePath, featureName, featureTags, setup, emptyTeardown, fileFullName, lineNumber)
 
     /// <summary>
     /// Creates a new feature with the specified path, name, tags, and teardown logic, and default setup.
@@ -69,7 +69,7 @@ type Arrow with
     /// <param name="featureTags">The tags to associate with the feature.</param>
     /// <param name="teardown">The teardown logic to run after the feature.</param>
     static member NewFeature (featurePath, featureName, featureTags: TagsIndicator, teardown: TeardownIndicator<unit>) =
-        Arrow.NewFeature (featurePath, featureName, featureTags, Setup (fun () -> Ok ()) , teardown)
+        FeatureFactory.NewFeature (featurePath, featureName, featureTags, Setup (fun () -> Ok ()) , teardown)
 
     /// <summary>
     /// Creates an ignored feature with the specified path, name, tags, and teardown logic, and default setup, and source location.
@@ -81,7 +81,7 @@ type Arrow with
     /// <param name="fileFullName">The full file path of the source (auto-filled).</param>
     /// <param name="lineNumber">The line number in the source file (auto-filled).</param>
     static member Ignore (featurePath, featureName, featureTags: TagsIndicator, teardown: TeardownIndicator<unit>, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
-        Arrow.Ignore (featurePath, featureName, featureTags, Setup (fun () -> Ok ()) , teardown, fileFullName, lineNumber)
+        FeatureFactory.Ignore (featurePath, featureName, featureTags, Setup (fun () -> Ok ()) , teardown, fileFullName, lineNumber)
 
     /// <summary>
     /// Creates a new feature with the specified path, name, and tags, and default setup and teardown.
@@ -90,7 +90,7 @@ type Arrow with
     /// <param name="featureName">The name of the feature.</param>
     /// <param name="featureTags">The tags to associate with the feature.</param>
     static member NewFeature (featurePath, featureName, featureTags: TagsIndicator) =
-        Arrow.NewFeature (featurePath, featureName, featureTags, Setup (fun () -> Ok ()), emptyTeardown)
+        FeatureFactory.NewFeature (featurePath, featureName, featureTags, Setup (fun () -> Ok ()), emptyTeardown)
 
     /// <summary>
     /// Creates an ignored feature with the specified path, name, and tags, and default setup and teardown, and source location.
@@ -101,7 +101,7 @@ type Arrow with
     /// <param name="fileFullName">The full file path of the source (auto-filled).</param>
     /// <param name="lineNumber">The line number in the source file (auto-filled).</param>
     static member Ignore (featurePath, featureName, featureTags: TagsIndicator, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
-        Arrow.Ignore (featurePath, featureName, featureTags, Setup (fun () -> Ok ()), emptyTeardown, fileFullName, lineNumber)
+        FeatureFactory.Ignore (featurePath, featureName, featureTags, Setup (fun () -> Ok ()), emptyTeardown, fileFullName, lineNumber)
 
     /// <summary>
     /// Creates an ignored feature from a tuple of feature path and name, with tags, and default setup and teardown, and source location.
@@ -112,4 +112,4 @@ type Arrow with
     /// <param name="lineNumber">The line number in the source file (auto-filled).</param>
     static member Ignore (featureInfo: string * string, featureTags: TagsIndicator, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
         let featurePath, featureName = featureInfo
-        Arrow.Ignore (featurePath, featureName, featureTags, Setup (fun () -> Ok ()), emptyTeardown, fileFullName, lineNumber)
+        FeatureFactory.Ignore (featurePath, featureName, featureTags, Setup (fun () -> Ok ()), emptyTeardown, fileFullName, lineNumber)

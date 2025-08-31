@@ -1,9 +1,9 @@
 [<AutoOpen>]
-module Archer.Arrows.SubBaseFeatureTags
+module Archer.Core.SubBaseFeatureTags
 
 open System.Runtime.CompilerServices
 open System.Runtime.InteropServices
-open Archer.Arrows.Helpers
+open Archer.Core.Helpers
 
 type Sub with
 

@@ -1,11 +1,11 @@
 [<AutoOpen>]
-module Archer.Arrows.SubBaseFeature
+module Archer.Core.SubBaseFeature
 
 open System.Runtime.CompilerServices
 open System.Runtime.InteropServices
-open Archer.Arrows.Helpers
-open Archer.Arrows.Internal.Types
-open Archer.Arrows.Internals
+open Archer.Core.Helpers
+open Archer.Core.Internal.Types
+open Archer.Core.Internals
 open Archer.CoreTypes.InternalTypes
 
 /// <summary>

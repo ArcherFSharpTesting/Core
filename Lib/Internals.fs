@@ -1,10 +1,10 @@
-﻿module Archer.Arrows.Internals
+﻿module Archer.Core.Internals
 
 open System
 open System.ComponentModel
 open System.IO
 open Archer
-open Archer.Arrows
+open Archer.Core
 open Archer.CoreTypes.InternalTypes
     
 let getLocation (fileFullName: string) (lineNumber: int) =
@@ -150,7 +150,7 @@ type TestCaseExecutor(parent: ITest, internals: ISetupTeardownExecutor<unit>) =
         let version = assembly.GetName().Version
         
         {
-            ApiName = "Archer.Arrows"
+            ApiName = "Archer.Core"
             ApiVersion = version
         }
         

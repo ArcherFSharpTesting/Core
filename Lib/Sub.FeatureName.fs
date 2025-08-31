@@ -1,10 +1,10 @@
 [<AutoOpen>]
-module Archer.Arrows.SubFeatureName
+module Archer.Core.SubFeatureName
 
 open System.Runtime.CompilerServices
 open System.Runtime.InteropServices
-open Archer.Arrows.Helpers
-open Archer.Arrows.Internals
+open Archer.Core.Helpers
+open Archer.Core.Internals
 
 type Sub with
 

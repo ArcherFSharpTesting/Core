@@ -1,9 +1,9 @@
 [<AutoOpen>]
-module Archer.Arrows.SubTeardown
+module Archer.Core.SubTeardown
 
 open System.Runtime.CompilerServices
 open System.Runtime.InteropServices
-open Archer.Arrows.Helpers
+open Archer.Core.Helpers
 
 type Sub with
 

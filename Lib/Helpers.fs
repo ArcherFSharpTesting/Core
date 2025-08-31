@@ -2,12 +2,12 @@
 /// Helper functions and types for the Archer testing framework.
 /// Provides utilities for test execution, setup/teardown management, and automatic test discovery.
 /// </summary>
-module Archer.Arrows.Helpers
+module Archer.Core.Helpers
 
 open System
 open System.Diagnostics
 open Archer
-open Archer.Arrows.Internals
+open Archer.Core.Internals
 open Archer.CoreTypes.InternalTypes
 
 /// <summary>

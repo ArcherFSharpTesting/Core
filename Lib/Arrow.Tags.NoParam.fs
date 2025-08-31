@@ -1,11 +1,11 @@
 [<AutoOpen>]
-module Archer.Arrows.ArrowTagsNoParam
+module Archer.Core.FeatureTagsNoParam
 
 open System.Runtime.CompilerServices
 open System.Runtime.InteropServices
-open Archer.Arrows.Helpers
+open Archer.Core.Helpers
 
-type Arrow with
+type FeatureFactory with
 
     /// <summary>
     /// Creates a new feature with the specified tags and no setup or teardown parameters, using the current context for feature name and path.
@@ -13,7 +13,7 @@ type Arrow with
     /// <param name="featureTags">The tags to associate with the feature.</param>
     static member NewFeature (featureTags: TagsIndicator) =
         let featureName, featurePath = getNames ()
-        Arrow.NewFeature (featurePath, featureName, featureTags)
+        FeatureFactory.NewFeature (featurePath, featureName, featureTags)
 
     /// <summary>
     /// Creates an ignored feature with the specified tags and no setup or teardown parameters, using the current context for feature name and path, and source location.
@@ -23,4 +23,4 @@ type Arrow with
     /// <param name="lineNumber">The line number in the source file (auto-filled).</param>
     static member Ignore (featureTags: TagsIndicator, [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int) =
         let featureName, featurePath = getNames ()
-        Arrow.Ignore (featurePath, featureName, featureTags, fileFullName, lineNumber)
+        FeatureFactory.Ignore (featurePath, featureName, featureTags, fileFullName, lineNumber)

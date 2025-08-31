@@ -1,6 +1,6 @@
-namespace Archer.Arrows.Internal.Types
+namespace Archer.Core.Internal.Types
 
-open Archer.Arrows.Internals
+open Archer.Core.Internals
 
 /// <summary>
 /// Defines a builder interface for creating test-related objects with setup and teardown execution capabilities.
