@@ -152,7 +152,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Lib\Archer.Arrow.Lib.fsproj" />
+    <ProjectReference Include="..\Lib\Archer.Core.Lib.fsproj" />
   </ItemGroup>
 
   <ItemGroup>
