@@ -1,6 +1,6 @@
 <!-- (dl
 (section-meta
-    (title Using `IFeature.Ignore` in Archer.Arrow)
+    (title Using `IFeature.Ignore` in Archer.Core)
 )
 ) -->
 

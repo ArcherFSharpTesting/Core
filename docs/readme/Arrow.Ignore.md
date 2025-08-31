@@ -1,11 +1,11 @@
 
 <!-- (dl
 	(section-meta
-	(title Using `FeatureBuilder.Ignore` in Archer.Arrow)
+	(title Using `FeatureBuilder.Ignore` in Archer.Core)
 	)
 ) -->
 
-FeatureBuilder.Ignore lets you temporarily disable features or tests in Archer.Arrow, keeping them visible and organized in your test suite. Use it to mark work-in-progress, pending, or intentionally skipped tests without deleting them.
+FeatureBuilder.Ignore lets you temporarily disable features or tests in Archer.Core, keeping them visible and organized in your test suite. Use it to mark work-in-progress, pending, or intentionally skipped tests without deleting them.
 
 <!-- (dl (# Basic Usage)) -->
 

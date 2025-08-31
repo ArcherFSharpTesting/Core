@@ -1,7 +1,7 @@
 
 <!-- (dl
     (section-meta
-        (title Using `IFeature.Test` in Archer.Arrow)
+    (title Using `IFeature.Test` in Archer.Core)
     )
 ) -->
 

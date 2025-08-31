@@ -1,6 +1,6 @@
 <!-- (dl
 (section-meta
-    (title Using FeatureBuilder.NewFeature in Archer.Arrow)
+    (title Using `FeatureBuilder.NewFeature` in Archer.Core)
 )
 ) -->
 

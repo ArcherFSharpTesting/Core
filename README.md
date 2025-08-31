@@ -4,15 +4,15 @@
 
 <!-- Compiled with doculisp https://www.npmjs.com/package/doculisp -->
 
-# Archer.Arrow F# Testing Language #
+# Archer.Core F# Testing Language #
 
 1. Overview: [Archer Test Framework Overview](#archer-test-framework-overview)
-2. Feature: [Using Arrow.NewFeature in Archer.Arrow](#using-arrownewfeature-in-archerarrow)
-3. Feature: [Using `Arrow.Ignore` in Archer.Arrow](#using-arrowignore-in-archerarrow)
-4. Feature: [Using `Sub.Feature` in Archer.Arrow](#using-subfeature-in-archerarrow)
-5. Feature: [Using `Sub.Ignore` in Archer.Arrow](#using-subignore-in-archerarrow)
-6. Feature: [Using `IFeature.Test` in Archer.Arrow](#using-ifeaturetest-in-archerarrow)
-7. Feature: [Using `IFeature.Ignore` in Archer.Arrow](#using-ifeatureignore-in-archerarrow)
+2. Feature: [Using `FeatureBuilder.NewFeature` in Archer.Core](#using-featurebuildernewfeature-in-archercore)
+3. Feature: [Using `FeatureBuilder.Ignore` in Archer.Core](#using-featurebuilderignore-in-archercore)
+4. Feature: [Using `Sub.Feature` in Archer.Core](#using-subfeature-in-archercore)
+5. Feature: [Using `Sub.Ignore` in Archer.Core](#using-subignore-in-archercore)
+6. Feature: [Using `IFeature.Test` in Archer.Core](#using-ifeaturetest-in-archercore)
+7. Feature: [Using `IFeature.Ignore` in Archer.Core](#using-ifeatureignore-in-archercore)
 
 ## Archer Test Framework Overview ##
 
@@ -30,7 +30,7 @@ Archer is a modern, idiomatic F# test framework designed for clarity, composabil
 ### Basic Example ###
 
 ```fsharp
-let feature = Arrow.NewFeature "Math Feature"
+let feature = FeatureBuilder.NewFeature "Math Feature"
 
 let ``Addition should work`` =
     feature.Test (fun _ ->
@@ -41,7 +41,7 @@ let ``Addition should work`` =
 
 ### Organizing Tests ###
 
-- Use `Arrow.NewFeature` to define a feature.
+- Use `FeatureBuilder.NewFeature` to define a feature.
 - Use `Sub.Feature` to create sub-features under a parent feature.
 - Assign tests to identifiers for automatic naming.
 
@@ -50,7 +50,7 @@ let ``Addition should work`` =
 Setup logic in Archer is run before each test. Instead of relying on global variables, the result of the setup function is passed directly to the test as a parameter. This makes tests more predictable and easier to reason about.
 
 ```fsharp
-let feature = Arrow.NewFeature (
+let feature = FeatureBuilder.NewFeature (
     Setup (fun () -> Ok (setupValue)),
     Teardown (fun setupValue -> Ok ())
 )
@@ -93,23 +93,23 @@ let ``A tagged test`` =
 
 ### Getting Started ###
 
-1. Define a feature with `Arrow.NewFeature`.
+1. Define a feature with `FeatureBuilder.NewFeature`.
 2. Add tests using the `Test` method, assigning them to identifiers.
 3. Use setup, teardown, data, and tags as needed.
 4. Run your tests with your preferred test runner.
 
 For more details, see the API documentation and example files in the repository.
 
-## Using Arrow.NewFeature in Archer.Arrow ##
+## Using `FeatureBuilder.NewFeature` in Archer.Core ##
 
-Arrow.NewFeature is the primary entry point for defining features in Archer.Arrow. It lets you organize tests into logical groups, apply setup/teardown logic, and add tags for filtering. This flexible function supports a variety of overloads, allowing you to specify feature names, paths, setup and teardown logic, and tags.
+FeatureBuilder.NewFeature is the primary entry point for defining features in Archer.FeatureBuilder. It lets you organize tests into logical groups, apply setup/teardown logic, and add tags for filtering. This flexible function supports a variety of overloads, allowing you to specify feature names, paths, setup and teardown logic, and tags.
 
 ### Basic Usage ###
 
 Create a feature with just a name:
 
 ```fsharp
-let feature = Arrow.NewFeature "My Feature Name"
+let feature = FeatureBuilder.NewFeature "My Feature Name"
 ```
 
 ### With Path and Name ###
@@ -117,7 +117,7 @@ let feature = Arrow.NewFeature "My Feature Name"
 Specify both a path and a name for the feature:
 
 ```fsharp
-let feature = Arrow.NewFeature ("MyFeaturePath", "My Feature Name")
+let feature = FeatureBuilder.NewFeature ("MyFeaturePath", "My Feature Name")
 ```
 
 ### With Setup and/or Teardown ###
@@ -125,7 +125,7 @@ let feature = Arrow.NewFeature ("MyFeaturePath", "My Feature Name")
 You can provide setup and teardown functions to run before and after your tests:
 
 ```fsharp
-let feature = Arrow.NewFeature (
+let feature = FeatureBuilder.NewFeature (
     "MyFeaturePath",
     "My Feature Name",
     Setup (fun () -> Ok ()),
@@ -136,7 +136,7 @@ let feature = Arrow.NewFeature (
 Or just setup:
 
 ```fsharp
-let feature = Arrow.NewFeature (
+let feature = FeatureBuilder.NewFeature (
     "MyFeaturePath",
     "My Feature Name",
     Setup (fun () -> Ok ())
@@ -146,7 +146,7 @@ let feature = Arrow.NewFeature (
 Or just teardown:
 
 ```fsharp
-let feature = Arrow.NewFeature (
+let feature = FeatureBuilder.NewFeature (
     "MyFeaturePath",
     "My Feature Name",
     Teardown (fun _ -> Ok ())
@@ -158,7 +158,7 @@ let feature = Arrow.NewFeature (
 You can add tags to your feature for filtering and organization:
 
 ```fsharp
-let feature = Arrow.NewFeature (
+let feature = FeatureBuilder.NewFeature (
     "MyFeaturePath",
     "My Feature Name",
     TestTags [ Category "Integration"; Category "Slow" ]
@@ -168,7 +168,7 @@ let feature = Arrow.NewFeature (
 ### Minimal Example ###
 
 ```fsharp
-let feature = Arrow.NewFeature "Simple Feature"
+let feature = FeatureBuilder.NewFeature "Simple Feature"
 
 feature.Test (fun _ ->
     // Your test code here
@@ -179,7 +179,7 @@ feature.Test (fun _ ->
 ### Advanced Example ###
 
 ```fsharp
-let feature = Arrow.NewFeature (
+let feature = FeatureBuilder.NewFeature (
     "Path",
     "Advanced Feature",
     TestTags [ Category "Unit" ],
@@ -201,16 +201,16 @@ feature.Test (fun _ ->
 
 For more details, see the test scripts in `Test.Scripts/Arrow NewFeature.fs`, `Arrow NewFeature With Setup.fs`, and `Arrow NewFeature With Teardown.fs`.
 
-## Using `Arrow.Ignore` in Archer.Arrow ##
+## Using `FeatureBuilder.Ignore` in Archer.Core ##
 
-Arrow.Ignore lets you temporarily disable features or tests in Archer.Arrow, keeping them visible and organized in your test suite. Use it to mark work-in-progress, pending, or intentionally skipped tests without deleting them.
+FeatureBuilder.Ignore lets you temporarily disable features or tests in Archer.Core, keeping them visible and organized in your test suite. Use it to mark work-in-progress, pending, or intentionally skipped tests without deleting them.
 
 ### Basic Usage ###
 
 Ignore a feature by name:
 
 ```fsharp
-let ignoredFeature = Arrow.Ignore "Feature To Ignore"
+let ignoredFeature = FeatureBuilder.Ignore "Feature To Ignore"
 ```
 
 ### With Path and Name ###
@@ -218,7 +218,7 @@ let ignoredFeature = Arrow.Ignore "Feature To Ignore"
 You can specify both a path and a name:
 
 ```fsharp
-let ignoredFeature = Arrow.Ignore ("FeaturePath", "Feature To Ignore")
+let ignoredFeature = FeatureBuilder.Ignore ("FeaturePath", "Feature To Ignore")
 ```
 
 ### With Setup and/or Teardown ###
@@ -226,7 +226,7 @@ let ignoredFeature = Arrow.Ignore ("FeaturePath", "Feature To Ignore")
 You can provide setup and teardown functions, even for ignored features:
 
 ```fsharp
-let ignoredFeature = Arrow.Ignore (
+let ignoredFeature = FeatureBuilder.Ignore (
 	"FeaturePath",
 	"Feature To Ignore",
 	Setup (fun () -> Ok ()),
@@ -237,7 +237,7 @@ let ignoredFeature = Arrow.Ignore (
 Or just setup:
 
 ```fsharp
-let ignoredFeature = Arrow.Ignore (
+let ignoredFeature = FeatureBuilder.Ignore (
 	"FeaturePath",
 	"Feature To Ignore",
 	Setup (fun () -> Ok ())
@@ -247,7 +247,7 @@ let ignoredFeature = Arrow.Ignore (
 Or just teardown:
 
 ```fsharp
-let ignoredFeature = Arrow.Ignore (
+let ignoredFeature = FeatureBuilder.Ignore (
 	"FeaturePath",
 	"Feature To Ignore",
 	Teardown (fun _ -> Ok ())
@@ -259,7 +259,7 @@ let ignoredFeature = Arrow.Ignore (
 Add tags to ignored features for organization:
 
 ```fsharp
-let ignoredFeature = Arrow.Ignore (
+let ignoredFeature = FeatureBuilder.Ignore (
 	"FeaturePath",
 	"Feature To Ignore",
 	TestTags [ Category "WIP"; Category "Integration" ]
@@ -269,13 +269,13 @@ let ignoredFeature = Arrow.Ignore (
 ### Minimal Example ###
 
 ```fsharp
-let ignoredFeature = Arrow.Ignore "Temporarily Disabled Feature"
+let ignoredFeature = FeatureBuilder.Ignore "Temporarily Disabled Feature"
 ```
 
 ### Advanced Example ###
 
 ```fsharp
-let ignoredFeature = Arrow.Ignore (
+let ignoredFeature = FeatureBuilder.Ignore (
 	"Path",
 	"Ignored Feature",
 	TestTags [ Category "Slow" ],
@@ -284,16 +284,16 @@ let ignoredFeature = Arrow.Ignore (
 )
 ```
 
-### Interchangeability with `Arrow.NewFeature` ###
+### Interchangeability with `FeatureBuilder.NewFeature` ###
 
-`Arrow.Ignore` and `Arrow.NewFeature` share the same call structure and overloads. This means you can swap one for the other with minimal code changes. For example, if you want to temporarily disable a feature, simply replace `Arrow.NewFeature` with `Arrow.Ignore` using the same arguments:
+`FeatureBuilder.Ignore` and `FeatureBuilder.NewFeature` share the same call structure and overloads. This means you can swap one for the other with minimal code changes. For example, if you want to temporarily disable a feature, simply replace `FeatureBuilder.NewFeature` with `FeatureBuilder.Ignore` using the same arguments:
 
 ```fsharp
 // Normal feature
-let feature = Arrow.NewFeature ("Path", "Feature Name", Setup (fun () -> Ok ()), Teardown (fun _ -> Ok ()))
+let feature = FeatureBuilder.NewFeature ("Path", "Feature Name", Setup (fun () -> Ok ()), Teardown (fun _ -> Ok ()))
 
 // Temporarily ignored feature
-let feature = Arrow.Ignore ("Path", "Feature Name", Setup (fun () -> Ok ()), Teardown (fun _ -> Ok ()))
+let feature = FeatureBuilder.Ignore ("Path", "Feature Name", Setup (fun () -> Ok ()), Teardown (fun _ -> Ok ()))
 ```
 
 This design makes it easy to enable or disable features as needed, without changing the structure of your test code.
@@ -301,21 +301,21 @@ This design makes it easy to enable or disable features as needed, without chang
 ---
 
 - Ignored features will not execute their tests.
-- You can use `Arrow.Ignore` with the same overloads as `Arrow.NewFeature` (name, path, setup, teardown, tags).
+- You can use `FeatureBuilder.Ignore` with the same overloads as `FeatureBuilder.NewFeature` (name, path, setup, teardown, tags).
 - Useful for marking features as pending, under development, or temporarily disabled.
 
 For more details, see the test scripts in `Test.Scripts/Arrow Ignore.fs` and related files.
 
-## Using `Sub.Feature` in Archer.Arrow ##
+## Using `Sub.Feature` in Archer.Core ##
 
-Sub.Feature lets you create nested or child features under a root feature, enabling you to organize your Archer.Arrow tests into a clear hierarchy. Use it to group related scenarios, manage complex test suites, and apply setup, teardown, or tags at different levels of your test structure.
+Sub.Feature lets you create nested or child features under a root feature, enabling you to organize your Archer.Core tests into a clear hierarchy. Use it to group related scenarios, manage complex test suites, and apply setup, teardown, or tags at different levels of your test structure.
 
 ### Basic Usage ###
 
 You use `Sub.Feature` by piping a root feature into it:
 
 ```fsharp
-let rootFeature = Arrow.NewFeature "Root Feature"
+let rootFeature = FeatureBuilder.NewFeature "Root Feature"
 
 let subFeature =
     rootFeature
@@ -378,12 +378,12 @@ let subFeature =
 
 - The call pattern is always `rootFeature |> Sub.Feature ...`.
 - Sub-features inherit context from their parent/root feature.
-- You can use the same overloads as with `Arrow.NewFeature` (name, path, setup, teardown, tags).
+- You can use the same overloads as with `FeatureBuilder.NewFeature` (name, path, setup, teardown, tags).
 - Useful for organizing large test suites into logical groups.
 
 For more details, see the test scripts and the implementation in `Lib/Sub.fs`.
 
-## Using `Sub.Ignore` in Archer.Arrow ##
+## Using `Sub.Ignore` in Archer.Core ##
 
 `Sub.Ignore` allows you to define ignored (skipped) sub-features under a root feature in the Archer F# testing framework. This is useful for temporarily disabling specific sub-features or marking them as not yet implemented, while keeping them organized under their parent feature.
 
@@ -392,7 +392,7 @@ For more details, see the test scripts and the implementation in `Lib/Sub.fs`.
 You use `Sub.Ignore` by piping a root feature into it:
 
 ```fsharp
-let rootFeature = Arrow.NewFeature "Root Feature"
+let rootFeature = FeatureBuilder.NewFeature "Root Feature"
 
 let ignoredSubFeature =
     rootFeature
@@ -457,7 +457,7 @@ let ignoredSubFeature =
 
 For more details, see the implementation in `Lib/Sub.fs` and related test scripts.
 
-## Using `IFeature.Test` in Archer.Arrow ##
+## Using `IFeature.Test` in Archer.Core ##
 
 The `IFeature<'featureType>.Test` method is the primary way to define tests for a feature in the Archer F# testing framework. It provides a flexible API for specifying test names, tags, setup/teardown logic, test data, and test bodies.
 
@@ -538,7 +538,7 @@ feature.Test (
 
 ### Writing a Test ###
 
-1. Create a feature (e.g., with `Arrow.NewFeature`).
+1. Create a feature (e.g., with `FeatureBuilder.NewFeature`).
 2. Call `feature.Test` with the desired parameters.
 3. Implement your test logic in the test body function.
 4. Return `TestSuccess` or another result from the test body.
@@ -546,7 +546,7 @@ feature.Test (
 ### Example ###
 
 ```fsharp
-let feature = Arrow.NewFeature "Math Feature"
+let feature = FeatureBuilder.NewFeature "Math Feature"
 
 feature.Test (
     "Addition should work",
@@ -566,7 +566,7 @@ feature.Test (
 - Use tags and setup/teardown as needed for your scenario.
 - See the `Internal.Types.IFeature.fs` file for all available overloads and signatures.
 
-## Using `IFeature.Ignore` in Archer.Arrow ##
+## Using `IFeature.Ignore` in Archer.Core ##
 
 The `IFeature<'featureType>.Ignore` method allows you to define tests that are intentionally skipped or ignored. This is useful for marking tests as pending, under development, or temporarily disabled, while keeping them visible in your test suite.
 

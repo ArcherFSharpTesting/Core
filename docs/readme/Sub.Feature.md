@@ -1,10 +1,10 @@
 <!-- (dl
 (section-meta
-    (title Using `Sub.Feature` in Archer.Arrow)
+    (title Using `Sub.Feature` in Archer.Core)
 )
 ) -->
 
-Sub.Feature lets you create nested or child features under a root feature, enabling you to organize your Archer.Arrow tests into a clear hierarchy. Use it to group related scenarios, manage complex test suites, and apply setup, teardown, or tags at different levels of your test structure.
+Sub.Feature lets you create nested or child features under a root feature, enabling you to organize your Archer.Core tests into a clear hierarchy. Use it to group related scenarios, manage complex test suites, and apply setup, teardown, or tags at different levels of your test structure.
 
 <!-- (dl (# Basic Usage)) -->
 

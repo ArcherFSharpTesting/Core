@@ -1,5 +1,5 @@
 (section-meta
-    (title Archer.Arrow F# Testing Language)
+    (title Archer.Core F# Testing Language)
     (include
         (Overview ./ArcherOverview.md)
         (Feature ./Arrow.NewFeature.md)

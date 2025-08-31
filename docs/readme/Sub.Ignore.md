@@ -1,7 +1,7 @@
 
 <!-- (dl
 (section-meta
-    (title Using `Sub.Ignore` in Archer.Arrow)
+    (title Using `Sub.Ignore` in Archer.Core)
 )
 ) -->
 
