@@ -12,7 +12,7 @@ open Archer.Core.Internals
 /// <summary>
 /// Provides static methods for creating and ignoring features in the Archer Feature test framework.
 /// </summary>
-type FeatureFactory =
+type  =
     /// <summary>
     /// Creates a new feature with the specified setup and teardown logic.
     /// </summary>
