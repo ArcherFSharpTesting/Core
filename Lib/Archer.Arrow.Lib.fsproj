@@ -15,7 +15,7 @@
   <ItemGroup>
     <Compile Include="Types.fs" />
     <Compile Include="Internals.fs" />
-    <Compile Include="InternalTypes.IBuilder.fs" />
+    <Compile Include="Internal.Types.IBuilder.fs" />
     <Compile Include="Internal.Types.IFeature.fs" />
     <Compile Include="Internal.Types.Feature.fs" />
     <Compile Include="Internal.Types.IgnoreFeature.fs" />
