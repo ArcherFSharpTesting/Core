@@ -1,17 +1,17 @@
 <!-- (dl
 (section-meta
-    (title Using `FeatureBuilder.NewFeature` in Archer.Core)
+    (title Using `FeatureFactory.NewFeature` in Archer.Core)
 )
 ) -->
 
-FeatureBuilder.NewFeature is the primary entry point for defining features in Archer.FeatureBuilder. It lets you organize tests into logical groups, apply setup/teardown logic, and add tags for filtering. This flexible function supports a variety of overloads, allowing you to specify feature names, paths, setup and teardown logic, and tags.
+FeatureFactory.NewFeature is the primary entry point for defining features in Archer.FeatureFactory. It lets you organize tests into logical groups, apply setup/teardown logic, and add tags for filtering. This flexible function supports a variety of overloads, allowing you to specify feature names, paths, setup and teardown logic, and tags.
 
 <!-- (dl (# Basic Usage)) -->
 
 Create a feature with just a name:
 
 ```fsharp
-let feature = FeatureBuilder.NewFeature "My Feature Name"
+let feature = FeatureFactory.NewFeature "My Feature Name"
 ```
 
 <!-- (dl (# With Path and Name)) -->
@@ -19,7 +19,7 @@ let feature = FeatureBuilder.NewFeature "My Feature Name"
 Specify both a path and a name for the feature:
 
 ```fsharp
-let feature = FeatureBuilder.NewFeature ("MyFeaturePath", "My Feature Name")
+let feature = FeatureFactory.NewFeature ("MyFeaturePath", "My Feature Name")
 ```
 
 <!-- (dl (# With Setup and/or Teardown)) -->
@@ -27,7 +27,7 @@ let feature = FeatureBuilder.NewFeature ("MyFeaturePath", "My Feature Name")
 You can provide setup and teardown functions to run before and after your tests:
 
 ```fsharp
-let feature = FeatureBuilder.NewFeature (
+let feature = FeatureFactory.NewFeature (
     "MyFeaturePath",
     "My Feature Name",
     Setup (fun () -> Ok ()),
@@ -38,7 +38,7 @@ let feature = FeatureBuilder.NewFeature (
 Or just setup:
 
 ```fsharp
-let feature = FeatureBuilder.NewFeature (
+let feature = FeatureFactory.NewFeature (
     "MyFeaturePath",
     "My Feature Name",
     Setup (fun () -> Ok ())
@@ -48,7 +48,7 @@ let feature = FeatureBuilder.NewFeature (
 Or just teardown:
 
 ```fsharp
-let feature = FeatureBuilder.NewFeature (
+let feature = FeatureFactory.NewFeature (
     "MyFeaturePath",
     "My Feature Name",
     Teardown (fun _ -> Ok ())
@@ -60,7 +60,7 @@ let feature = FeatureBuilder.NewFeature (
 You can add tags to your feature for filtering and organization:
 
 ```fsharp
-let feature = FeatureBuilder.NewFeature (
+let feature = FeatureFactory.NewFeature (
     "MyFeaturePath",
     "My Feature Name",
     TestTags [ Category "Integration"; Category "Slow" ]
@@ -70,7 +70,7 @@ let feature = FeatureBuilder.NewFeature (
 <!-- (dl (# Minimal Example)) -->
 
 ```fsharp
-let feature = FeatureBuilder.NewFeature "Simple Feature"
+let feature = FeatureFactory.NewFeature "Simple Feature"
 
 feature.Test (fun _ ->
     // Your test code here
@@ -81,7 +81,7 @@ feature.Test (fun _ ->
 <!-- (dl (# Advanced Example)) -->
 
 ```fsharp
-let feature = FeatureBuilder.NewFeature (
+let feature = FeatureFactory.NewFeature (
     "Path",
     "Advanced Feature",
     TestTags [ Category "Unit" ],

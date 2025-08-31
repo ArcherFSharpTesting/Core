@@ -11,7 +11,7 @@ Sub.Feature lets you create nested or child features under a root feature, enabl
 You use `Sub.Feature` by piping a root feature into it:
 
 ```fsharp
-let rootFeature = FeatureBuilder.NewFeature "Root Feature"
+let rootFeature = FeatureFactory.NewFeature "Root Feature"
 
 let subFeature =
     rootFeature
@@ -74,7 +74,7 @@ let subFeature =
 <!-- (dl (# Notes)) -->
 - The call pattern is always `rootFeature |> Sub.Feature ...`.
 - Sub-features inherit context from their parent/root feature.
-- You can use the same overloads as with `FeatureBuilder.NewFeature` (name, path, setup, teardown, tags).
+- You can use the same overloads as with `FeatureFactory.NewFeature` (name, path, setup, teardown, tags).
 - Useful for organizing large test suites into logical groups.
 
 For more details, see the test scripts and the implementation in `Lib/Sub.fs`.

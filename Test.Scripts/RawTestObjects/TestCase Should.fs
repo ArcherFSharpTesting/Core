@@ -6,7 +6,7 @@ open Archer.Core
 open Archer.Core.Internals
 open Archer.MicroLang
 
-let private container = FeatureBuilder.NewFeature (
+let private container = FeatureFactory.NewFeature (
     TestTags [
         Category "TestCase"
     ]
@@ -40,7 +40,7 @@ let ``has all the data passed to it`` =
 let ``have a decent ToString`` =
     container.Test (
         fun _ ->
-            let feature = FeatureBuilder.NewFeature ("TestCase", "ToStringTests")
+            let feature = FeatureFactory.NewFeature ("TestCase", "ToStringTests")
             let test = feature.Test ((fun _ _ -> TestSuccess), "ToString should")
             
             test.ToString ()

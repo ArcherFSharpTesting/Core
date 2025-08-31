@@ -63,7 +63,7 @@ open Archer.Types.InternalTypes.RunnerTypes
 open Archer.Reporting.Summaries
 open MicroLang.Lang
 
-let private runner = bow.Runner ()
+let private runner = runnerFactory.Runner ()
 
 runner.RunnerLifecycleEvent
 |> Event.add (fun args ->

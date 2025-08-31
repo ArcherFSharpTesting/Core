@@ -7,7 +7,7 @@ open Archer.Types.InternalTypes
 open Archer.MicroLang
 open Microsoft.FSharp.Control
 
-let private feature = FeatureBuilder.NewFeature (
+let private feature = FeatureFactory.NewFeature (
     TestTags [
         Category "TestCaseExecutor"
         Category "TestLifecycleEvent"
@@ -79,7 +79,7 @@ let ``Trigger all the events in order`` =
 let ``Trigger events with parent`` =
     feature.Test (
         fun _ ->
-            let feature = FeatureBuilder.NewFeature ("Events", "ThatTrigger")
+            let feature = FeatureFactory.NewFeature ("Events", "ThatTrigger")
             let test = feature.Test ((fun _ _ -> TestSuccess), "From a test")
             let executor = test.GetExecutor ()
             

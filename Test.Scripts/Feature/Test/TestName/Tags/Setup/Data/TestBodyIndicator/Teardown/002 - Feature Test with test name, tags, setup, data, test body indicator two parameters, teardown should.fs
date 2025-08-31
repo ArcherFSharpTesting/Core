@@ -9,7 +9,7 @@ open Archer.Core.Tests.TestBuilders
 open Archer.Types.InternalTypes
 open Archer.MicroLang.Verification
 
-let private feature = FeatureBuilder.eBuilder.NewFeature (
+let private feature = FeatureFactory.NewFeature (
     TestTags [
     Category "Feature"
     Category "Test"

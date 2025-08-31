@@ -158,7 +158,7 @@
   <ItemGroup>
   <PackageReference Include="Archer.Runner" Version="0.0.0.1" />
   <PackageReference Include="Archer.Validations" Version="0.0.0.1" />
-    <PackageReference Include="MicroLang" Version="0.0.12.58" />
+    <PackageReference Include="Archer.MicroLang" Version="0.0.0.1" />
     <PackageReference Update="FSharp.Core" Version="7.0.300" />
   </ItemGroup>
 

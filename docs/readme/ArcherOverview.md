@@ -17,7 +17,7 @@ Archer is a modern, idiomatic F# test framework designed for clarity, composabil
 
 <!-- (dl (# Basic Example)) -->
 ```fsharp
-let feature = FeatureBuilder.NewFeature "Math Feature"
+let feature = FeatureFactory.NewFeature "Math Feature"
 
 let ``Addition should work`` =
     feature.Test (fun _ ->
@@ -27,7 +27,7 @@ let ``Addition should work`` =
 ```
 
 <!-- (dl (# Organizing Tests)) -->
-- Use `FeatureBuilder.NewFeature` to define a feature.
+- Use `FeatureFactory.NewFeature` to define a feature.
 - Use `Sub.Feature` to create sub-features under a parent feature.
 - Assign tests to identifiers for automatic naming.
 
@@ -37,7 +37,7 @@ let ``Addition should work`` =
 Setup logic in Archer is run before each test. Instead of relying on global variables, the result of the setup function is passed directly to the test as a parameter. This makes tests more predictable and easier to reason about.
 
 ```fsharp
-let feature = FeatureBuilder.NewFeature (
+let feature = FeatureFactory.NewFeature (
     Setup (fun () -> Ok (setupValue)),
     Teardown (fun setupValue -> Ok ())
 )
@@ -76,7 +76,7 @@ let ``A tagged test`` =
 ```
 
 <!-- (dl (# Getting Started)) -->
-1. Define a feature with `FeatureBuilder.NewFeature`.
+1. Define a feature with `FeatureFactory.NewFeature`.
 2. Add tests using the `Test` method, assigning them to identifiers.
 3. Use setup, teardown, data, and tags as needed.
 4. Run your tests with your preferred test runner.

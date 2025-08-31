@@ -1,18 +1,18 @@
 
 <!-- (dl
 	(section-meta
-	(title Using `FeatureBuilder.Ignore` in Archer.Core)
+	(title Using `FeatureFactory.Ignore` in Archer.Core)
 	)
 ) -->
 
-FeatureBuilder.Ignore lets you temporarily disable features or tests in Archer.Core, keeping them visible and organized in your test suite. Use it to mark work-in-progress, pending, or intentionally skipped tests without deleting them.
+FeatureFactory.Ignore lets you temporarily disable features or tests in Archer.Core, keeping them visible and organized in your test suite. Use it to mark work-in-progress, pending, or intentionally skipped tests without deleting them.
 
 <!-- (dl (# Basic Usage)) -->
 
 Ignore a feature by name:
 
 ```fsharp
-let ignoredFeature = FeatureBuilder.Ignore "Feature To Ignore"
+let ignoredFeature = FeatureFactory.Ignore "Feature To Ignore"
 ```
 
 <!-- (dl (# With Path and Name)) -->
@@ -20,7 +20,7 @@ let ignoredFeature = FeatureBuilder.Ignore "Feature To Ignore"
 You can specify both a path and a name:
 
 ```fsharp
-let ignoredFeature = FeatureBuilder.Ignore ("FeaturePath", "Feature To Ignore")
+let ignoredFeature = FeatureFactory.Ignore ("FeaturePath", "Feature To Ignore")
 ```
 
 <!-- (dl (# With Setup and/or Teardown)) -->
@@ -28,7 +28,7 @@ let ignoredFeature = FeatureBuilder.Ignore ("FeaturePath", "Feature To Ignore")
 You can provide setup and teardown functions, even for ignored features:
 
 ```fsharp
-let ignoredFeature = FeatureBuilder.Ignore (
+let ignoredFeature = FeatureFactory.Ignore (
 	"FeaturePath",
 	"Feature To Ignore",
 	Setup (fun () -> Ok ()),
@@ -39,7 +39,7 @@ let ignoredFeature = FeatureBuilder.Ignore (
 Or just setup:
 
 ```fsharp
-let ignoredFeature = FeatureBuilder.Ignore (
+let ignoredFeature = FeatureFactory.Ignore (
 	"FeaturePath",
 	"Feature To Ignore",
 	Setup (fun () -> Ok ())
@@ -49,7 +49,7 @@ let ignoredFeature = FeatureBuilder.Ignore (
 Or just teardown:
 
 ```fsharp
-let ignoredFeature = FeatureBuilder.Ignore (
+let ignoredFeature = FeatureFactory.Ignore (
 	"FeaturePath",
 	"Feature To Ignore",
 	Teardown (fun _ -> Ok ())
@@ -61,7 +61,7 @@ let ignoredFeature = FeatureBuilder.Ignore (
 Add tags to ignored features for organization:
 
 ```fsharp
-let ignoredFeature = FeatureBuilder.Ignore (
+let ignoredFeature = FeatureFactory.Ignore (
 	"FeaturePath",
 	"Feature To Ignore",
 	TestTags [ Category "WIP"; Category "Integration" ]
@@ -71,13 +71,13 @@ let ignoredFeature = FeatureBuilder.Ignore (
 <!-- (dl (# Minimal Example)) -->
 
 ```fsharp
-let ignoredFeature = FeatureBuilder.Ignore "Temporarily Disabled Feature"
+let ignoredFeature = FeatureFactory.Ignore "Temporarily Disabled Feature"
 ```
 
 <!-- (dl (# Advanced Example)) -->
 
 ```fsharp
-let ignoredFeature = FeatureBuilder.Ignore (
+let ignoredFeature = FeatureFactory.Ignore (
 	"Path",
 	"Ignored Feature",
 	TestTags [ Category "Slow" ],
@@ -87,16 +87,16 @@ let ignoredFeature = FeatureBuilder.Ignore (
 ```
 
 
-<!-- (dl (# Interchangeability with `FeatureBuilder.NewFeature`)) -->
+<!-- (dl (# Interchangeability with `FeatureFactory.NewFeature`)) -->
 
-`FeatureBuilder.Ignore` and `FeatureBuilder.NewFeature` share the same call structure and overloads. This means you can swap one for the other with minimal code changes. For example, if you want to temporarily disable a feature, simply replace `FeatureBuilder.NewFeature` with `FeatureBuilder.Ignore` using the same arguments:
+`FeatureFactory.Ignore` and `FeatureFactory.NewFeature` share the same call structure and overloads. This means you can swap one for the other with minimal code changes. For example, if you want to temporarily disable a feature, simply replace `FeatureFactory.NewFeature` with `FeatureFactory.Ignore` using the same arguments:
 
 ```fsharp
 // Normal feature
-let feature = FeatureBuilder.NewFeature ("Path", "Feature Name", Setup (fun () -> Ok ()), Teardown (fun _ -> Ok ()))
+let feature = FeatureFactory.NewFeature ("Path", "Feature Name", Setup (fun () -> Ok ()), Teardown (fun _ -> Ok ()))
 
 // Temporarily ignored feature
-let feature = FeatureBuilder.Ignore ("Path", "Feature Name", Setup (fun () -> Ok ()), Teardown (fun _ -> Ok ()))
+let feature = FeatureFactory.Ignore ("Path", "Feature Name", Setup (fun () -> Ok ()), Teardown (fun _ -> Ok ()))
 ```
 
 This design makes it easy to enable or disable features as needed, without changing the structure of your test code.
@@ -104,7 +104,7 @@ This design makes it easy to enable or disable features as needed, without chang
 ---
 
 - Ignored features will not execute their tests.
-- You can use `FeatureBuilder.Ignore` with the same overloads as `FeatureBuilder.NewFeature` (name, path, setup, teardown, tags).
+- You can use `FeatureFactory.Ignore` with the same overloads as `FeatureFactory.NewFeature` (name, path, setup, teardown, tags).
 - Useful for marking features as pending, under development, or temporarily disabled.
 
 For more details, see the test scripts in `Test.Scripts/Arrow Ignore.fs` and related files.

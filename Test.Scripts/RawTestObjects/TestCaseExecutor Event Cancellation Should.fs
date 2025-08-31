@@ -7,7 +7,7 @@ open Archer.Types.InternalTypes
 open Archer.MicroLang
 open Microsoft.FSharp.Control
 
-let private feature = FeatureBuilder.NewFeature (
+let private feature = FeatureFactory.NewFeature (
     TestTags [
         Category "TestCaseExecutor"
         Category "TestLifecycleEvent"

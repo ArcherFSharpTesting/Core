@@ -1,9 +1,9 @@
 ﻿module Archer.Core.Tests.RawTestObjects.``FeatureFactory Ignore`` 
 
+open Archer
 open Archer.Core
-// removed, now using Archer.Core
-// removed, now using Archer.Core
-// removed, now using Archer.Core
+open Archer.Core.Internals
+open Archer.Core.Internal.Types
 open Archer.MicroLang
 
 let private feature = FeatureFactory.NewFeature (
