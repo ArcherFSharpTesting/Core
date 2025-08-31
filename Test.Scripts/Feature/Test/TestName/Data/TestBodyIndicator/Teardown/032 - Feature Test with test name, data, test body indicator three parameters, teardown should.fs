@@ -136,7 +136,7 @@ let ``Call Test with test environment when executed`` =
             ListShould.HaveAllValuesPassTestOf <@hasValue@>
 
             ListShould.HaveAllValuesPassAllOf [
-                getValue >> (fun env -> env.ApiEnvironment.ApiName) >> Should.BeEqualTo "Archer.Arrows"
+                getValue >> (fun env -> env.ApiEnvironment.ApiName) >> Should.BeEqualTo "Archer.Core"
                 getValue >> (fun env -> env.TestInfo) >> (fun ti -> tests |> List.map (fun t -> t :> ITestInfo) |> ListShould.Contain ti)
             ]
 
