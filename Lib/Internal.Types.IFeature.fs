@@ -205,13 +205,14 @@ type IFeature<'featureType> =
     (*012*) abstract member Test: testName: string * tags: TagsIndicator * data: DataIndicator<'dataType> * testBody: TestBodyIndicator<TestFunctionThreeParameters<'dataType, 'featureType, TestEnvironment>> * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> ITest list
 
     /// <summary>
-    /// Creates a list of tests with the specified name, tags, data, and test body without teardown.
-    /// This overload supports test functions that take two parameters: data and feature type.
+    /// Creates a list of tests where each test receives one item from the supplied data. Each test will execute the
+    /// test function with the data item and feature-level setup data. The test name can include sprintf parameters 
+    /// that will be replaced with values from the data to create unique test names for each data item.
     /// </summary>
-    /// <param name="testName">The name of the test</param>
+    /// <param name="testName">The name of the test (may include sprintf parameters that will be replaced with data values)</param>
     /// <param name="tags">Tags to be applied to the test for categorization and filtering</param>
     /// <param name="data">Data configuration that provides test data of type 'dataType</param>
-    /// <param name="testBody">The test body indicator containing a test function that accepts data and feature type</param>
+    /// <param name="testBody">The test body indicator containing a test function that accepts data and feature-level setup data</param>
     /// <param name="fileFullName">The full path of the source file (automatically provided by CallerFilePath)</param>
     /// <param name="lineNumber">The line number in the source file (automatically provided by CallerLineNumber)</param>
     /// <returns>A list of ITest instances representing the created tests</returns>
