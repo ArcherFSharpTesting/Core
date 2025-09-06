@@ -555,32 +555,37 @@ type IFeature<'featureType> =
     // -- test name, data, test function
 
     /// <summary>
-    /// Creates a list of tests with the specified name, data, and test function.
-    /// This overload supports test functions that take three parameters: data, feature type, and test environment.
+    /// Creates a list of tests where each test receives one item from the supplied data. Each test will execute the
+    /// test function with the data item, feature-level setup data, and test environment. The test name can include 
+    /// sprintf parameters that will be replaced with values from the data to create unique test names for each data item.
     /// </summary>
-    /// <param name="testName">The name of the test</param>
+    /// <param name="testName">The name of the test (may include sprintf parameters that will be replaced with data values)</param>
     /// <param name="data">Data configuration that provides test data of type 'dataType</param>
-    /// <param name="testBody">The test function that accepts data, feature type, and test environment</param>
+    /// <param name="testBody">The test function that accepts data, feature-level setup data, and test environment</param>
     /// <param name="fileFullName">The full path of the source file (automatically provided by CallerFilePath)</param>
     /// <param name="lineNumber">The line number in the source file (automatically provided by CallerLineNumber)</param>
     /// <returns>A list of ITest instances representing the created tests</returns>
     (*038*) abstract member Test: testName: string * data: DataIndicator<'dataType> * testBody: TestFunctionThreeParameters<'dataType, 'featureType, TestEnvironment> * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> ITest list
+
     /// <summary>
-    /// Creates a list of tests with the specified name, data, and test function.
-    /// This overload supports test functions that take two parameters: data and feature type.
+    /// Creates a list of tests where each test receives one item from the supplied data. Each test will execute the
+    /// test function with the data item and feature-level setup data. The test name can include sprintf parameters 
+    /// that will be replaced with values from the data to create unique test names for each data item.
     /// </summary>
-    /// <param name="testName">The name of the test</param>
+    /// <param name="testName">The name of the test (may include sprintf parameters that will be replaced with data values)</param>
     /// <param name="data">Data configuration that provides test data of type 'dataType</param>
-    /// <param name="testBody">The test function that accepts data and feature type</param>
+    /// <param name="testBody">The test function that accepts data and feature-level setup data</param>
     /// <param name="fileFullName">The full path of the source file (automatically provided by CallerFilePath)</param>
     /// <param name="lineNumber">The line number in the source file (automatically provided by CallerLineNumber)</param>
     /// <returns>A list of ITest instances representing the created tests</returns>
+
     (*039*) abstract member Test: testName: string * data: DataIndicator<'dataType> * testBody: TestFunctionTwoParameters<'dataType, 'featureType> * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> ITest list
     /// <summary>
-    /// Creates a list of tests with the specified name, data, and test function.
-    /// This overload supports test functions that take one parameter: data.
+    /// Creates a list of tests where each test receives one item from the supplied data. Each test will execute the
+    /// test function with the data item. The test name can include sprintf parameters that will be replaced with 
+    /// values from the data to create unique test names for each data item.
     /// </summary>
-    /// <param name="testName">The name of the test</param>
+    /// <param name="testName">The name of the test (may include sprintf parameters that will be replaced with data values)</param>
     /// <param name="data">Data configuration that provides test data of type 'dataType</param>
     /// <param name="testBody">The test function that accepts data</param>
     /// <param name="fileFullName">The full path of the source file (automatically provided by CallerFilePath)</param>
@@ -589,23 +594,24 @@ type IFeature<'featureType> =
     (*040*) abstract member Test: testName: string * data: DataIndicator<'dataType> * testBody: TestFunction<'dataType> * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> ITest list
 
     // -- test name, test body, teardown
+
     /// <summary>
-    /// Creates a test with the specified name, test body, and teardown.
-    /// This overload supports test functions that take two parameters: feature type and test environment.
+    /// Creates a test with the specified name. The test function will execute with feature-level setup data 
+    /// and test environment.
     /// </summary>
     /// <param name="testName">The name of the test</param>
-    /// <param name="testBody">The test body indicator containing a test function that accepts feature type and test environment</param>
+    /// <param name="testBody">The test body indicator containing a test function that accepts feature-level setup data and test environment</param>
     /// <param name="teardown">Teardown configuration that cleans up after test execution</param>
     /// <param name="fileFullName">The full path of the source file (automatically provided by CallerFilePath)</param>
     /// <param name="lineNumber">The line number in the source file (automatically provided by CallerLineNumber)</param>
     /// <returns>An ITest instance representing the created test</returns>
     (*041*) abstract member Test: testName: string * testBody: TestBodyIndicator<TestFunctionTwoParameters<'featureType, TestEnvironment>> * teardown: TeardownIndicator<unit> * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> ITest
+
     /// <summary>
-    /// Creates a test with the specified name, test body, and teardown.
-    /// This overload supports test functions that take one parameter: feature type.
+    /// Creates a test with the specified name. The test function will execute with feature-level setup data.
     /// </summary>
     /// <param name="testName">The name of the test</param>
-    /// <param name="testBody">The test body indicator containing a test function that accepts feature type</param>
+    /// <param name="testBody">The test body indicator containing a test function that accepts feature-level setup data</param>
     /// <param name="teardown">Teardown configuration that cleans up after test execution</param>
     /// <param name="fileFullName">The full path of the source file (automatically provided by CallerFilePath)</param>
     /// <param name="lineNumber">The line number in the source file (automatically provided by CallerLineNumber)</param>
@@ -613,50 +619,53 @@ type IFeature<'featureType> =
     (*042*) abstract member Test: testName: string * testBody: TestBodyIndicator<TestFunction<'featureType>> * teardown: TeardownIndicator<unit> * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> ITest
 
     // -- test name, test body
+
     /// <summary>
-    /// Creates a test with the specified name and test body without teardown.
-    /// This overload supports test functions that take two parameters: feature type and test environment.
+    /// Creates a test with the specified name. The test function will execute with feature-level setup data 
+    /// and test environment.
     /// </summary>
     /// <param name="testName">The name of the test</param>
-    /// <param name="testBody">The test body indicator containing a test function that accepts feature type and test environment</param>
+    /// <param name="testBody">The test body indicator containing a test function that accepts feature-level setup data and test environment</param>
     /// <param name="fileFullName">The full path of the source file (automatically provided by CallerFilePath)</param>
     /// <param name="lineNumber">The line number in the source file (automatically provided by CallerLineNumber)</param>
     /// <returns>An ITest instance representing the created test</returns>
     (*043*) abstract member Test: testName: string * testBody: TestBodyIndicator<TestFunctionTwoParameters<'featureType, TestEnvironment>> * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> ITest
+
     /// <summary>
-    /// Creates a test with the specified name and test body without teardown.
-    /// This overload supports test functions that take one parameter: feature type.
+    /// Creates a test with the specified name. The test function will execute with feature-level setup data.
     /// </summary>
     /// <param name="testName">The name of the test</param>
-    /// <param name="testBody">The test body indicator containing a test function that accepts feature type</param>
+    /// <param name="testBody">The test body indicator containing a test function that accepts feature-level setup data</param>
     /// <param name="fileFullName">The full path of the source file (automatically provided by CallerFilePath)</param>
     /// <param name="lineNumber">The line number in the source file (automatically provided by CallerLineNumber)</param>
     /// <returns>An ITest instance representing the created test</returns>
     (*044*) abstract member Test: testName: string * testBody: TestBodyIndicator<TestFunction<'featureType>> * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> ITest
 
     // -- test name, test function
+
     /// <summary>
-    /// Creates a test with the specified name and test function.
-    /// This overload supports test functions that take two parameters: feature type and test environment.
+    /// Creates a test with the specified name. The test function will execute with feature-level setup data 
+    /// and test environment.
     /// </summary>
     /// <param name="testName">The name of the test</param>
-    /// <param name="testBody">The test function that accepts feature type and test environment</param>
+    /// <param name="testBody">The test function that accepts feature-level setup data and test environment</param>
     /// <param name="fileFullName">The full path of the source file (automatically provided by CallerFilePath)</param>
     /// <param name="lineNumber">The line number in the source file (automatically provided by CallerLineNumber)</param>
     /// <returns>An ITest instance representing the created test</returns>
     (*045*) abstract member Test: testName: string * testBody: TestFunctionTwoParameters<'featureType, TestEnvironment> * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> ITest
+
     /// <summary>
-    /// Creates a test with the specified name and test function.
-    /// This overload supports test functions that take one parameter: feature type.
+    /// Creates a test with the specified name. The test function will execute with feature-level setup data.
     /// </summary>
     /// <param name="testName">The name of the test</param>
-    /// <param name="testBody">The test function that accepts feature type</param>
+    /// <param name="testBody">The test function that accepts feature-level setup data</param>
     /// <param name="fileFullName">The full path of the source file (automatically provided by CallerFilePath)</param>
     /// <param name="lineNumber">The line number in the source file (automatically provided by CallerLineNumber)</param>
     /// <returns>An ITest instance representing the created test</returns>
     (*046*) abstract member Test: testName: string * testBody: TestFunction<'featureType> * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> ITest
 
     // -- tags, setup, data, test body, teardown
+
     /// <summary>
     /// Creates a list of tests with the specified tags, setup, data, test body, and teardown.
     /// This overload supports test functions that take three parameters: data, setup result, and test environment.
