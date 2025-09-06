@@ -27,7 +27,8 @@ type IFeature<'featureType> =
 
     /// <summary>
     /// Creates a list of tests where each test receives one item from the supplied data. Each test will execute the
-    /// test function with the data item, setup result, and test environment. The test name can include sprintf parameters
+    /// test function with the data item, setup result, and test environment. This method allows decorating the test 
+    /// function with the TestBody wrapper to add clarity to tests. The test name can include sprintf parameters
     /// that will be replaced with values from the data to create unique test names for each data item.
     /// </summary>
     /// <param name="testName">The name of the test (may include sprintf parameters that will be replaced with data values)</param>
@@ -43,7 +44,8 @@ type IFeature<'featureType> =
 
     /// <summary>
     /// Creates a list of tests where each test receives one item from the supplied data. Each test will execute the
-    /// test function with the data item and setup result (but not the test environment). The test name can include
+    /// test function with the data item and setup result (but not the test environment). This method allows decorating 
+    /// the test function with the TestBody wrapper to add clarity to tests. The test name can include
     /// sprintf parameters that will be replaced with values from the data to create unique test names for each data item.
     /// </summary>
     /// <param name="testName">The name of the test (may include sprintf parameters that will be replaced with data values)</param>
@@ -61,7 +63,8 @@ type IFeature<'featureType> =
 
     /// <summary>
     /// Creates a list of tests where each test receives one item from the supplied data. Each test will execute the
-    /// test function with the data item, setup result, and test environment without teardown cleanup. The test name
+    /// test function with the data item, setup result, and test environment without teardown cleanup. This method 
+    /// allows decorating the test function with the TestBody wrapper to add clarity to tests. The test name
     /// can include sprintf parameters that will be replaced with values from the data to create unique test names for each data item.
     /// </summary>
     /// <param name="testName">The name of the test (may include sprintf parameters that will be replaced with data values)</param>
@@ -77,6 +80,7 @@ type IFeature<'featureType> =
     /// <summary>
     /// Creates a list of tests where each test receives one item from the supplied data. Each test will execute the
     /// test function with the data item and setup result (but not the test environment) without teardown cleanup.
+    /// This method allows decorating the test function with the TestBody wrapper to add clarity to tests.
     /// The test name can include sprintf parameters that will be replaced with values from the data to create unique test names for each data item.
     /// </summary>
     /// <param name="testName">The name of the test (may include sprintf parameters that will be replaced with data values)</param>
@@ -93,6 +97,7 @@ type IFeature<'featureType> =
 
     /// <summary>
     /// Creates a single test that executes the test function with the setup result and test environment.
+    /// This method allows decorating the test function with the TestBody wrapper to add clarity to tests.
     /// </summary>
     /// <param name="testName">The name of the test</param>
     /// <param name="tags">Tags to be applied to the test for categorization and filtering</param>
@@ -106,6 +111,7 @@ type IFeature<'featureType> =
 
     /// <summary>
     /// Creates a single test that executes the test function with the setup result (but not the test environment).
+    /// This method allows decorating the test function with the TestBody wrapper to add clarity to tests.
     /// </summary>
     /// <param name="testName">The name of the test</param>
     /// <param name="tags">Tags to be applied to the test for categorization and filtering</param>
@@ -121,6 +127,7 @@ type IFeature<'featureType> =
 
     /// <summary>
     /// Creates a single test that executes the test function with the setup result and test environment without teardown cleanup.
+    /// This method allows decorating the test function with the TestBody wrapper to add clarity to tests.
     /// </summary>
     /// <param name="testName">The name of the test</param>
     /// <param name="tags">Tags to be applied to the test for categorization and filtering</param>
@@ -133,6 +140,7 @@ type IFeature<'featureType> =
 
     /// <summary>
     /// Creates a single test that executes the test function with the setup result (but not the test environment) without teardown cleanup.
+    /// This method allows decorating the test function with the TestBody wrapper to add clarity to tests.
     /// </summary>
     /// <param name="testName">The name of the test</param>
     /// <param name="tags">Tags to be applied to the test for categorization and filtering</param>
@@ -149,6 +157,7 @@ type IFeature<'featureType> =
     /// Creates a list of tests where each test receives one item from the supplied data. Each test will execute the
     /// test function with the data item, feature-level setup data, and test environment. The test name can include sprintf parameters
     /// that will be replaced with values from the data to create unique test names for each data item.
+    /// This method allows decorating the test function with the TestBody wrapper to add clarity to tests.
     /// </summary>
     /// <param name="testName">The name of the test (may include sprintf parameters that will be replaced with data values)</param>
     /// <param name="tags">Tags to be applied to the test for categorization and filtering</param>
@@ -164,6 +173,7 @@ type IFeature<'featureType> =
     /// Creates a list of tests where each test receives one item from the supplied data. Each test will execute the
     /// test function with the data item and feature-level setup data (but not the test environment). The test name can include 
     /// sprintf parameters that will be replaced with values from the data to create unique test names for each data item.
+    /// This method allows decorating the test function with the TestBody wrapper to add clarity to tests.
     /// </summary>
     /// <param name="testName">The name of the test (may include sprintf parameters that will be replaced with data values)</param>
     /// <param name="tags">Tags to be applied to the test for categorization and filtering</param>
@@ -179,6 +189,7 @@ type IFeature<'featureType> =
     /// Creates a list of tests where each test receives one item from the supplied data. Each test will execute the
     /// test function with the data item. The test name can include sprintf parameters that will be replaced with 
     /// values from the data to create unique test names for each data item.
+    /// This method allows decorating the test function with the TestBody wrapper to add clarity to tests.
     /// </summary>
     /// <param name="testName">The name of the test (may include sprintf parameters that will be replaced with data values)</param>
     /// <param name="tags">Tags to be applied to the test for categorization and filtering</param>
@@ -196,6 +207,7 @@ type IFeature<'featureType> =
     /// Creates a list of tests where each test receives one item from the supplied data. Each test will execute the
     /// test function with the data item, feature-level setup data, and test environment. The test name can include 
     /// sprintf parameters that will be replaced with values from the data to create unique test names for each data item.
+    /// This method allows decorating the test function with the TestBody wrapper to add clarity to tests.
     /// </summary>
     /// <param name="testName">The name of the test (may include sprintf parameters that will be replaced with data values)</param>
     /// <param name="tags">Tags to be applied to the test for categorization and filtering</param>
