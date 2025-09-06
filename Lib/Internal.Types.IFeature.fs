@@ -1303,9 +1303,10 @@ type IFeature<'featureType> =
     // -- test body, teardown
 
     /// <summary>
-    /// Creates a test with the specified test body and teardown.
-    /// This overload supports test functions that take two parameters: feature type and test environment.
-    /// The test name is automatically derived from the identifier the test was assigned to.
+    /// Creates a test that executes a test function with the result from a feature level setup and a test environment, 
+    /// with teardown cleanup after execution.
+    /// This method allows decorating the test function with the TestBody wrapper to add clarity to tests.
+    /// The test name is derived from the identifier if the name parameter is not supplied.
     /// </summary>
     /// <param name="testBody">The test body indicator containing a test function that accepts feature type and test environment</param>
     /// <param name="teardown">Teardown configuration that cleans up after test execution</param>
@@ -1316,9 +1317,10 @@ type IFeature<'featureType> =
     (*087*) abstract member Test: testBody: TestBodyIndicator<TestFunctionTwoParameters<'featureType, TestEnvironment>> * teardown: TeardownIndicator<unit> * [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> ITest
 
     /// <summary>
-    /// Creates a test with the specified test body and teardown.
-    /// This overload supports test functions that take one parameter: feature type.
-    /// The test name is automatically derived from the identifier the test was assigned to.
+    /// Creates a test that executes a test function with the result from a feature level setup, 
+    /// with teardown cleanup after execution.
+    /// This method allows decorating the test function with the TestBody wrapper to add clarity to tests.
+    /// The test name is derived from the identifier if the name parameter is not supplied.
     /// </summary>
     /// <param name="testBody">The test body indicator containing a test function that accepts feature type</param>
     /// <param name="teardown">Teardown configuration that cleans up after test execution</param>
@@ -1331,9 +1333,10 @@ type IFeature<'featureType> =
     // -- test body
 
     /// <summary>
-    /// Creates a test with the specified test body without teardown.
-    /// This overload supports test functions that take two parameters: feature type and test environment.
-    /// The test name is automatically derived from the identifier the test was assigned to.
+    /// Creates a test that executes a test function with the result from a feature level setup and a test environment, 
+    /// without teardown cleanup.
+    /// This method allows decorating the test function with the TestBody wrapper to add clarity to tests.
+    /// The test name is derived from the identifier if the name parameter is not supplied.
     /// </summary>
     /// <param name="testBody">The test body indicator containing a test function that accepts feature type and test environment</param>
     /// <param name="testName">The name of the test (automatically provided by CallerMemberName)</param>
@@ -1343,9 +1346,10 @@ type IFeature<'featureType> =
     (*089*) abstract member Test: testBody: TestBodyIndicator<TestFunctionTwoParameters<'featureType, TestEnvironment>> * [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> ITest
 
     /// <summary>
-    /// Creates a test with the specified test body without teardown.
-    /// This overload supports test functions that take one parameter: feature type.
-    /// The test name is automatically derived from the identifier the test was assigned to.
+    /// Creates a test that executes a test function with the result from a feature level setup, 
+    /// without teardown cleanup.
+    /// This method allows decorating the test function with the TestBody wrapper to add clarity to tests.
+    /// The test name is derived from the identifier if the name parameter is not supplied.
     /// </summary>
     /// <param name="testBody">The test body indicator containing a test function that accepts feature type</param>
     /// <param name="testName">The name of the test (automatically provided by CallerMemberName)</param>
@@ -1357,9 +1361,8 @@ type IFeature<'featureType> =
     // -- test function
 
     /// <summary>
-    /// Creates a test with the specified test function.
-    /// This overload supports test functions that take two parameters: feature type and test environment.
-    /// The test name is automatically derived from the identifier the test was assigned to.
+    /// Creates a test that executes a test function with the result from a feature level setup and a test environment.
+    /// The test name is derived from the identifier if the name parameter is not supplied.
     /// </summary>
     /// <param name="testBody">The test function that accepts feature type and test environment</param>
     /// <param name="testName">The name of the test (automatically provided by CallerMemberName)</param>
@@ -1369,9 +1372,8 @@ type IFeature<'featureType> =
     (*091*) abstract member Test: testBody: TestFunctionTwoParameters<'featureType, TestEnvironment> * [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> ITest
 
     /// <summary>
-    /// Creates a test with the specified test function.
-    /// This overload supports test functions that take one parameter: feature type.
-    /// The test name is automatically derived from the identifier the test was assigned to.
+    /// Creates a test that executes a test function with the result from a feature level setup.
+    /// The test name is derived from the identifier if the name parameter is not supplied.
     /// </summary>
     /// <param name="testBody">The test function that accepts feature type</param>
     /// <param name="testName">The name of the test (automatically provided by CallerMemberName)</param>
@@ -1386,232 +1388,249 @@ type IFeature<'featureType> =
     //-------------------------------------------------------//
 
     // -- test name, tags, setup, data, test, (teardown)
+
     /// <summary>
-    /// Creates a list of ignored tests with the specified name, tags, setup, data, test body, and teardown.
-    /// The tests will be marked as ignored and will not be executed during test runs.
+    /// Creates a list of ignored tests for each item provided as data. Each ignored test contains only the metadata 
+    /// (name, tags, data item) and will not be executed during test runs. The setup, teardown, and test method are 
+    /// not used and cannot be run. The test name can include sprintf parameters to create unique names for each data item.
     /// </summary>
-    /// <param name="testName">The name of the ignored test</param>
+    /// <param name="testName">The name of the ignored test that may include sprintf parameters to be replaced with data values</param>
     /// <param name="tags">Tags to be applied to the test for categorization and filtering</param>
-    /// <param name="setup">Setup configuration that produces a setup result of type 'setupType</param>
+    /// <param name="setup">Setup configuration (not executed for ignored tests)</param>
     /// <param name="data">Data configuration that provides test data of type 'dataType</param>
-    /// <param name="test">The test body that would be executed if the test were not ignored</param>
-    /// <param name="teardown">Teardown configuration that cleans up the setup result</param>
+    /// <param name="test">The test body (not executed for ignored tests)</param>
+    /// <param name="teardown">Teardown configuration (not executed for ignored tests)</param>
     /// <param name="fileFullName">The full path of the source file (automatically provided by CallerFilePath)</param>
     /// <param name="lineNumber">The line number in the source file (automatically provided by CallerLineNumber)</param>
     /// <returns>A list of ITest instances representing the ignored tests</returns>
     (*001*)abstract member Ignore: testName: string * tags: TagsIndicator * setup: SetupIndicator<'featureType, 'setupType> * data: DataIndicator<'dataType> * test: 'testBodyType * teardown: TeardownIndicator<'setupType> * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> ITest list
 
     /// <summary>
-    /// Creates a list of ignored tests with the specified name, tags, setup, data, and test body without teardown.
-    /// The tests will be marked as ignored and will not be executed during test runs.
+    /// Creates a list of ignored tests for each item provided as data. Each ignored test contains only the metadata 
+    /// (name, tags, data item) and will not be executed during test runs. The setup and test method are 
+    /// not used and cannot be run. The test name can include sprintf parameters to create unique names for each data item.
     /// </summary>
-    /// <param name="testName">The name of the ignored test</param>
+    /// <param name="testName">The name of the ignored test that may include sprintf parameters to be replaced with data values</param>
     /// <param name="tags">Tags to be applied to the test for categorization and filtering</param>
-    /// <param name="setup">Setup configuration that produces a setup result of type 'setupType</param>
+    /// <param name="setup">Setup configuration (not executed for ignored tests)</param>
     /// <param name="data">Data configuration that provides test data of type 'dataType</param>
-    /// <param name="test">The test body that would be executed if the test were not ignored</param>
+    /// <param name="test">The test body (not executed for ignored tests)</param>
     /// <param name="fileFullName">The full path of the source file (automatically provided by CallerFilePath)</param>
     /// <param name="lineNumber">The line number in the source file (automatically provided by CallerLineNumber)</param>
     /// <returns>A list of ITest instances representing the ignored tests</returns>
     (*002*)abstract member Ignore: testName: string * tags: TagsIndicator * setup: SetupIndicator<'featureType, 'setupType> * data: DataIndicator<'dataType> * test: 'testBodyType * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> ITest list
 
     // -- test name, tags, setup, test, (teardown)
+
     /// <summary>
-    /// Creates an ignored test with the specified name, tags, setup, test body, and teardown.
-    /// The test will be marked as ignored and will not be executed during test runs.
+    /// Creates an ignored test that contains only the metadata (name, tags) and will not be executed during test runs. 
+    /// The setup, teardown, and test method are not used and cannot be run.
     /// </summary>
     /// <param name="testName">The name of the ignored test</param>
     /// <param name="tags">Tags to be applied to the test for categorization and filtering</param>
-    /// <param name="setup">Setup configuration that produces a setup result of type 'setupType</param>
-    /// <param name="test">The test body that would be executed if the test were not ignored</param>
-    /// <param name="teardown">Teardown configuration that cleans up the setup result</param>
+    /// <param name="setup">Setup configuration (not executed for ignored tests)</param>
+    /// <param name="test">The test body (not executed for ignored tests)</param>
+    /// <param name="teardown">Teardown configuration (not executed for ignored tests)</param>
     /// <param name="fileFullName">The full path of the source file (automatically provided by CallerFilePath)</param>
     /// <param name="lineNumber">The line number in the source file (automatically provided by CallerLineNumber)</param>
     /// <returns>An ITest instance representing the ignored test</returns>
     (*003*)abstract member Ignore: testName: string * tags: TagsIndicator * setup: SetupIndicator<'featureType, 'setupType> * test: 'testBodyType * teardown: TeardownIndicator<'setupType> * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> ITest
 
     /// <summary>
-    /// Creates an ignored test with the specified name, tags, setup, and test body without teardown.
-    /// The test will be marked as ignored and will not be executed during test runs.
+    /// Creates an ignored test that contains only the metadata (name, tags) and will not be executed during test runs. 
+    /// The setup and test method are not used and cannot be run.
     /// </summary>
     /// <param name="testName">The name of the ignored test</param>
     /// <param name="tags">Tags to be applied to the test for categorization and filtering</param>
-    /// <param name="setup">Setup configuration that produces a setup result of type 'setupType</param>
-    /// <param name="test">The test body that would be executed if the test were not ignored</param>
+    /// <param name="setup">Setup configuration (not executed for ignored tests)</param>
+    /// <param name="test">The test body (not executed for ignored tests)</param>
     /// <param name="fileFullName">The full path of the source file (automatically provided by CallerFilePath)</param>
     /// <param name="lineNumber">The line number in the source file (automatically provided by CallerLineNumber)</param>
     /// <returns>An ITest instance representing the ignored test</returns>
     (*004*)abstract member Ignore: testName: string * tags: TagsIndicator * setup: SetupIndicator<'featureType, 'setupType> * test: 'testBodyType * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> ITest
 
     // -- test name, tags, data, test, (teardown)
+
     /// <summary>
-    /// Creates a list of ignored tests with the specified name, tags, data, test body, and teardown.
-    /// The tests will be marked as ignored and will not be executed during test runs.
+    /// Creates a list of ignored tests for each item provided as data. Each ignored test contains only the metadata 
+    /// (name, tags, data item) and will not be executed during test runs. The teardown and test method are 
+    /// not used and cannot be run. The test name can include sprintf parameters to create unique names for each data item.
     /// </summary>
-    /// <param name="testName">The name of the ignored test</param>
+    /// <param name="testName">The name of the ignored test that may include sprintf parameters to be replaced with data values</param>
     /// <param name="tags">Tags to be applied to the test for categorization and filtering</param>
     /// <param name="data">Data configuration that provides test data of type 'dataType</param>
-    /// <param name="test">The test body that would be executed if the test were not ignored</param>
-    /// <param name="teardown">Teardown configuration that cleans up after test execution</param>
+    /// <param name="test">The test body (not executed for ignored tests)</param>
+    /// <param name="teardown">Teardown configuration (not executed for ignored tests)</param>
     /// <param name="fileFullName">The full path of the source file (automatically provided by CallerFilePath)</param>
     /// <param name="lineNumber">The line number in the source file (automatically provided by CallerLineNumber)</param>
     /// <returns>A list of ITest instances representing the ignored tests</returns>
     (*005*)abstract member Ignore: testName: string * tags: TagsIndicator * data: DataIndicator<'dataType> * test: 'testBodyType * teardown: TeardownIndicator<unit> * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> ITest list
 
     /// <summary>
-    /// Creates a list of ignored tests with the specified name, tags, data, and test body without teardown.
-    /// The tests will be marked as ignored and will not be executed during test runs.
+    /// Creates a list of ignored tests for each item provided as data. Each ignored test contains only the metadata 
+    /// (name, tags, data item) and will not be executed during test runs. The test method is 
+    /// not used and cannot be run. The test name can include sprintf parameters to create unique names for each data item.
     /// </summary>
-    /// <param name="testName">The name of the ignored test</param>
+    /// <param name="testName">The name of the ignored test that may include sprintf parameters to be replaced with data values</param>
     /// <param name="tags">Tags to be applied to the test for categorization and filtering</param>
     /// <param name="data">Data configuration that provides test data of type 'dataType</param>
-    /// <param name="test">The test body that would be executed if the test were not ignored</param>
+    /// <param name="test">The test body (not executed for ignored tests)</param>
     /// <param name="fileFullName">The full path of the source file (automatically provided by CallerFilePath)</param>
     /// <param name="lineNumber">The line number in the source file (automatically provided by CallerLineNumber)</param>
     /// <returns>A list of ITest instances representing the ignored tests</returns>
     (*006*)abstract member Ignore: testName: string * tags: TagsIndicator * data: DataIndicator<'dataType> * test: 'testBodyType * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> ITest list
 
     // -- test name, tags, test, (teardown)
+
     /// <summary>
-    /// Creates an ignored test with the specified name, tags, test body, and teardown.
-    /// The test will be marked as ignored and will not be executed during test runs.
+    /// Creates an ignored test that contains only the metadata (name, tags) and will not be executed during test runs. 
+    /// The teardown and test method are not used and cannot be run.
     /// </summary>
     /// <param name="testName">The name of the ignored test</param>
     /// <param name="tags">Tags to be applied to the test for categorization and filtering</param>
-    /// <param name="test">The test body that would be executed if the test were not ignored</param>
-    /// <param name="teardown">Teardown configuration that cleans up after test execution</param>
+    /// <param name="test">The test body (not executed for ignored tests)</param>
+    /// <param name="teardown">Teardown configuration (not executed for ignored tests)</param>
     /// <param name="fileFullName">The full path of the source file (automatically provided by CallerFilePath)</param>
     /// <param name="lineNumber">The line number in the source file (automatically provided by CallerLineNumber)</param>
     /// <returns>An ITest instance representing the ignored test</returns>
     (*007*)abstract member Ignore: testName: string * tags: TagsIndicator * test: 'testBodyType * teardown: TeardownIndicator<unit> * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> ITest
 
     /// <summary>
-    /// Creates an ignored test with the specified name, tags, and test body without teardown.
-    /// The test will be marked as ignored and will not be executed during test runs.
+    /// Creates an ignored test that contains only the metadata (name, tags) and will not be executed during test runs. 
+    /// The test method is not used and cannot be run.
     /// </summary>
     /// <param name="testName">The name of the ignored test</param>
     /// <param name="tags">Tags to be applied to the test for categorization and filtering</param>
-    /// <param name="test">The test body that would be executed if the test were not ignored</param>
+    /// <param name="test">The test body (not executed for ignored tests)</param>
     /// <param name="fileFullName">The full path of the source file (automatically provided by CallerFilePath)</param>
     /// <param name="lineNumber">The line number in the source file (automatically provided by CallerLineNumber)</param>
     /// <returns>An ITest instance representing the ignored test</returns>
     (*008*)abstract member Ignore: testName: string * tags: TagsIndicator * test: 'testBodyType * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> ITest
 
     // -- test name, setup, data, test, (teardown)
+
     /// <summary>
-    /// Creates a list of ignored tests with the specified name, setup, data, test body, and teardown.
-    /// The tests will be marked as ignored and will not be executed during test runs.
+    /// Creates a list of ignored tests for each item provided as data. Each ignored test contains only the metadata 
+    /// (name, data item) and will not be executed during test runs. The setup, teardown, and test method are 
+    /// not used and cannot be run. The test name can include sprintf parameters to create unique names for each data item.
     /// </summary>
-    /// <param name="testName">The name of the ignored test</param>
-    /// <param name="setup">Setup configuration that produces a setup result of type 'setupType</param>
+    /// <param name="testName">The name of the ignored test that may include sprintf parameters to be replaced with data values</param>
+    /// <param name="setup">Setup configuration (not executed for ignored tests)</param>
     /// <param name="data">Data configuration that provides test data of type 'dataType</param>
-    /// <param name="test">The test body that would be executed if the test were not ignored</param>
-    /// <param name="teardown">Teardown configuration that cleans up the setup result</param>
+    /// <param name="test">The test body (not executed for ignored tests)</param>
+    /// <param name="teardown">Teardown configuration (not executed for ignored tests)</param>
     /// <param name="fileFullName">The full path of the source file (automatically provided by CallerFilePath)</param>
     /// <param name="lineNumber">The line number in the source file (automatically provided by CallerLineNumber)</param>
     /// <returns>A list of ITest instances representing the ignored tests</returns>
     (*009*)abstract member Ignore: testName: string * setup: SetupIndicator<'featureType, 'setupType> * data: DataIndicator<'dataType> * test: 'testBodyType * teardown: TeardownIndicator<'setupType> * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> ITest list
 
     /// <summary>
-    /// Creates a list of ignored tests with the specified name, setup, data, and test body without teardown.
-    /// The tests will be marked as ignored and will not be executed during test runs.
+    /// Creates a list of ignored tests for each item provided as data. Each ignored test contains only the metadata 
+    /// (name, data item) and will not be executed during test runs. The setup and test method are 
+    /// not used and cannot be run. The test name can include sprintf parameters to create unique names for each data item.
     /// </summary>
-    /// <param name="testName">The name of the ignored test</param>
-    /// <param name="setup">Setup configuration that produces a setup result of type 'setupType</param>
+    /// <param name="testName">The name of the ignored test that may include sprintf parameters to be replaced with data values</param>
+    /// <param name="setup">Setup configuration (not executed for ignored tests)</param>
     /// <param name="data">Data configuration that provides test data of type 'dataType</param>
-    /// <param name="test">The test body that would be executed if the test were not ignored</param>
+    /// <param name="test">The test body (not executed for ignored tests)</param>
     /// <param name="fileFullName">The full path of the source file (automatically provided by CallerFilePath)</param>
     /// <param name="lineNumber">The line number in the source file (automatically provided by CallerLineNumber)</param>
     /// <returns>A list of ITest instances representing the ignored tests</returns>
     (*010*)abstract member Ignore: testName: string * setup: SetupIndicator<'featureType, 'setupType> * data: DataIndicator<'dataType> * test: 'testBodyType * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> ITest list
 
     // -- test name, setup, test, (teardown)
+
     /// <summary>
-    /// Creates an ignored test with the specified name, setup, test body, and teardown.
-    /// The test will be marked as ignored and will not be executed during test runs.
+    /// Creates an ignored test that contains only the metadata (name) and will not be executed during test runs. 
+    /// The setup, teardown, and test method are not used and cannot be run.
     /// </summary>
     /// <param name="testName">The name of the ignored test</param>
-    /// <param name="setup">Setup configuration that produces a setup result of type 'setupType</param>
-    /// <param name="test">The test body that would be executed if the test were not ignored</param>
-    /// <param name="teardown">Teardown configuration that cleans up the setup result</param>
+    /// <param name="setup">Setup configuration (not executed for ignored tests)</param>
+    /// <param name="test">The test body (not executed for ignored tests)</param>
+    /// <param name="teardown">Teardown configuration (not executed for ignored tests)</param>
     /// <param name="fileFullName">The full path of the source file (automatically provided by CallerFilePath)</param>
     /// <param name="lineNumber">The line number in the source file (automatically provided by CallerLineNumber)</param>
     /// <returns>An ITest instance representing the ignored test</returns>
     (*011*)abstract member Ignore: testName: string * setup: SetupIndicator<'featureType, 'setupType> * test: 'testBodyType * teardown: TeardownIndicator<'setupType> * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> ITest
 
     /// <summary>
-    /// Creates an ignored test with the specified name, setup, and test body without teardown.
-    /// The test will be marked as ignored and will not be executed during test runs.
+    /// Creates an ignored test that contains only the metadata (name) and will not be executed during test runs. 
+    /// The setup and test method are not used and cannot be run.
     /// </summary>
     /// <param name="testName">The name of the ignored test</param>
-    /// <param name="setup">Setup configuration that produces a setup result of type 'setupType</param>
-    /// <param name="test">The test body that would be executed if the test were not ignored</param>
+    /// <param name="setup">Setup configuration (not executed for ignored tests)</param>
+    /// <param name="test">The test body (not executed for ignored tests)</param>
     /// <param name="fileFullName">The full path of the source file (automatically provided by CallerFilePath)</param>
     /// <param name="lineNumber">The line number in the source file (automatically provided by CallerLineNumber)</param>
     /// <returns>An ITest instance representing the ignored test</returns>
     (*012*)abstract member Ignore: testName: string * setup: SetupIndicator<'featureType, 'setupType> * test: 'testBodyType * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> ITest
 
     // -- test name, data, test, (teardown)
+
     /// <summary>
-    /// Creates a list of ignored tests with the specified name, data, test body, and teardown.
-    /// The tests will be marked as ignored and will not be executed during test runs.
+    /// Creates a list of ignored tests for each item provided as data. Each ignored test contains only the metadata 
+    /// (name, data item) and will not be executed during test runs. The teardown and test method are 
+    /// not used and cannot be run. The test name can include sprintf parameters to create unique names for each data item.
     /// </summary>
-    /// <param name="testName">The name of the ignored test</param>
+    /// <param name="testName">The name of the ignored test that may include sprintf parameters to be replaced with data values</param>
     /// <param name="data">Data configuration that provides test data of type 'dataType</param>
-    /// <param name="test">The test body that would be executed if the test were not ignored</param>
-    /// <param name="teardown">Teardown configuration that cleans up after test execution</param>
+    /// <param name="test">The test body (not executed for ignored tests)</param>
+    /// <param name="teardown">Teardown configuration (not executed for ignored tests)</param>
     /// <param name="fileFullName">The full path of the source file (automatically provided by CallerFilePath)</param>
     /// <param name="lineNumber">The line number in the source file (automatically provided by CallerLineNumber)</param>
     /// <returns>A list of ITest instances representing the ignored tests</returns>
     (*013*)abstract member Ignore: testName: string * data: DataIndicator<'dataType> * test: 'testBodyType * teardown: TeardownIndicator<unit> * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> ITest list
 
     /// <summary>
-    /// Creates a list of ignored tests with the specified name, data, and test body without teardown.
-    /// The tests will be marked as ignored and will not be executed during test runs.
+    /// Creates a list of ignored tests for each item provided as data. Each ignored test contains only the metadata 
+    /// (name, data item) and will not be executed during test runs. The test method is 
+    /// not used and cannot be run. The test name can include sprintf parameters to create unique names for each data item.
     /// </summary>
-    /// <param name="testName">The name of the ignored test</param>
+    /// <param name="testName">The name of the ignored test that may include sprintf parameters to be replaced with data values</param>
     /// <param name="data">Data configuration that provides test data of type 'dataType</param>
-    /// <param name="test">The test body that would be executed if the test were not ignored</param>
+    /// <param name="test">The test body (not executed for ignored tests)</param>
     /// <param name="fileFullName">The full path of the source file (automatically provided by CallerFilePath)</param>
     /// <param name="lineNumber">The line number in the source file (automatically provided by CallerLineNumber)</param>
     /// <returns>A list of ITest instances representing the ignored tests</returns>
     (*014*)abstract member Ignore: testName: string * data: DataIndicator<'dataType> * test: 'testBodyType * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> ITest list
 
     // -- test name, test, (teardown)
+
     /// <summary>
-    /// Creates an ignored test with the specified name, test body, and teardown.
-    /// The test will be marked as ignored and will not be executed during test runs.
+    /// Creates an ignored test that contains only the metadata (name) and will not be executed during test runs. 
+    /// The teardown and test method are not used and cannot be run.
     /// </summary>
     /// <param name="testName">The name of the ignored test</param>
-    /// <param name="test">The test body that would be executed if the test were not ignored</param>
-    /// <param name="teardown">Teardown configuration that cleans up after test execution</param>
+    /// <param name="test">The test body (not executed for ignored tests)</param>
+    /// <param name="teardown">Teardown configuration (not executed for ignored tests)</param>
     /// <param name="fileFullName">The full path of the source file (automatically provided by CallerFilePath)</param>
     /// <param name="lineNumber">The line number in the source file (automatically provided by CallerLineNumber)</param>
     /// <returns>An ITest instance representing the ignored test</returns>
     (*015*)abstract member Ignore: testName: string * test: 'testBodyType * teardown: TeardownIndicator<unit> * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> ITest
 
     /// <summary>
-    /// Creates an ignored test with the specified name and test body without teardown.
-    /// The test will be marked as ignored and will not be executed during test runs.
+    /// Creates an ignored test that contains only the metadata (name) and will not be executed during test runs. 
+    /// The test method is not used and cannot be run.
     /// </summary>
     /// <param name="testName">The name of the ignored test</param>
-    /// <param name="test">The test body that would be executed if the test were not ignored</param>
+    /// <param name="test">The test body (not executed for ignored tests)</param>
     /// <param name="fileFullName">The full path of the source file (automatically provided by CallerFilePath)</param>
     /// <param name="lineNumber">The line number in the source file (automatically provided by CallerLineNumber)</param>
     /// <returns>An ITest instance representing the ignored test</returns>
     (*016*)abstract member Ignore: testName: string * test: 'testBodyType * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> ITest
 
     // -- tags, setup, data, test, (teardown)
+
     /// <summary>
-    /// Creates a list of ignored tests with the specified tags, setup, data, test body, and teardown.
-    /// The tests will be marked as ignored and will not be executed during test runs.
-    /// The test name is automatically derived from the identifier the test was assigned to.
+    /// Creates a list of ignored tests for each item provided as data. Each ignored test contains only the metadata 
+    /// (tags, data item) and will not be executed during test runs. The setup, teardown, and test method are 
+    /// not used and cannot be run. The test name is automatically derived from the identifier the test was assigned to.
     /// </summary>
     /// <param name="tags">Tags to be applied to the test for categorization and filtering</param>
-    /// <param name="setup">Setup configuration that produces a setup result of type 'setupType</param>
+    /// <param name="setup">Setup configuration (not executed for ignored tests)</param>
     /// <param name="data">Data configuration that provides test data of type 'dataType</param>
-    /// <param name="test">The test body that would be executed if the test were not ignored</param>
-    /// <param name="teardown">Teardown configuration that cleans up the setup result</param>
+    /// <param name="test">The test body (not executed for ignored tests)</param>
+    /// <param name="teardown">Teardown configuration (not executed for ignored tests)</param>
     /// <param name="testName">The name of the test (automatically provided by CallerMemberName)</param>
     /// <param name="fileFullName">The full path of the source file (automatically provided by CallerFilePath)</param>
     /// <param name="lineNumber">The line number in the source file (automatically provided by CallerLineNumber)</param>
@@ -1619,14 +1638,14 @@ type IFeature<'featureType> =
     (*017*)abstract member Ignore: tags: TagsIndicator * setup: SetupIndicator<'featureType, 'setupType> * data: DataIndicator<'dataType> * test: 'testBodyType * teardown: TeardownIndicator<'setupType> * [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> ITest list
 
     /// <summary>
-    /// Creates a list of ignored tests with the specified tags, setup, data, and test body without teardown.
-    /// The tests will be marked as ignored and will not be executed during test runs.
-    /// The test name is automatically derived from the identifier the test was assigned to.
+    /// Creates a list of ignored tests for each item provided as data. Each ignored test contains only the metadata 
+    /// (tags, data item) and will not be executed during test runs. The setup and test method are 
+    /// not used and cannot be run. The test name is automatically derived from the identifier the test was assigned to.
     /// </summary>
     /// <param name="tags">Tags to be applied to the test for categorization and filtering</param>
-    /// <param name="setup">Setup configuration that produces a setup result of type 'setupType</param>
+    /// <param name="setup">Setup configuration (not executed for ignored tests)</param>
     /// <param name="data">Data configuration that provides test data of type 'dataType</param>
-    /// <param name="test">The test body that would be executed if the test were not ignored</param>
+    /// <param name="test">The test body (not executed for ignored tests)</param>
     /// <param name="testName">The name of the test (automatically provided by CallerMemberName)</param>
     /// <param name="fileFullName">The full path of the source file (automatically provided by CallerFilePath)</param>
     /// <param name="lineNumber">The line number in the source file (automatically provided by CallerLineNumber)</param>
@@ -1634,15 +1653,16 @@ type IFeature<'featureType> =
     (*018*)abstract member Ignore: tags: TagsIndicator * setup: SetupIndicator<'featureType, 'setupType> * data: DataIndicator<'dataType> * test: 'testBodyType * [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> ITest list
 
     // -- tags, setup, test, (teardown)
+
     /// <summary>
-    /// Creates an ignored test with the specified tags, setup, test body, and teardown.
-    /// The test will be marked as ignored and will not be executed during test runs.
+    /// Creates an ignored test that contains only the metadata (tags) and will not be executed during test runs. 
+    /// The setup, teardown, and test method are not used and cannot be run.
     /// The test name is automatically derived from the identifier the test was assigned to.
     /// </summary>
     /// <param name="tags">Tags to be applied to the test for categorization and filtering</param>
-    /// <param name="setup">Setup configuration that produces a setup result of type 'setupType</param>
-    /// <param name="test">The test body that would be executed if the test were not ignored</param>
-    /// <param name="teardown">Teardown configuration that cleans up the setup result</param>
+    /// <param name="setup">Setup configuration (not executed for ignored tests)</param>
+    /// <param name="test">The test body (not executed for ignored tests)</param>
+    /// <param name="teardown">Teardown configuration (not executed for ignored tests)</param>
     /// <param name="testName">The name of the test (automatically provided by CallerMemberName)</param>
     /// <param name="fileFullName">The full path of the source file (automatically provided by CallerFilePath)</param>
     /// <param name="lineNumber">The line number in the source file (automatically provided by CallerLineNumber)</param>
@@ -1650,13 +1670,13 @@ type IFeature<'featureType> =
     (*019*)abstract member Ignore: tags: TagsIndicator * setup: SetupIndicator<'featureType, 'setupType> * test: 'testBodyType * teardown: TeardownIndicator<'setupType> * [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> ITest
 
     /// <summary>
-    /// Creates an ignored test with the specified tags, setup, and test body without teardown.
-    /// The test will be marked as ignored and will not be executed during test runs.
+    /// Creates an ignored test that contains only the metadata (tags) and will not be executed during test runs. 
+    /// The setup and test method are not used and cannot be run.
     /// The test name is automatically derived from the identifier the test was assigned to.
     /// </summary>
     /// <param name="tags">Tags to be applied to the test for categorization and filtering</param>
-    /// <param name="setup">Setup configuration that produces a setup result of type 'setupType</param>
-    /// <param name="test">The test body that would be executed if the test were not ignored</param>
+    /// <param name="setup">Setup configuration (not executed for ignored tests)</param>
+    /// <param name="test">The test body (not executed for ignored tests)</param>
     /// <param name="testName">The name of the test (automatically provided by CallerMemberName)</param>
     /// <param name="fileFullName">The full path of the source file (automatically provided by CallerFilePath)</param>
     /// <param name="lineNumber">The line number in the source file (automatically provided by CallerLineNumber)</param>
@@ -1664,15 +1684,16 @@ type IFeature<'featureType> =
     (*020*)abstract member Ignore: tags: TagsIndicator * setup: SetupIndicator<'featureType, 'setupType> * test: 'testBodyType * [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> ITest
 
     // -- tags, data, test, (teardown)
+
     /// <summary>
-    /// Creates a list of ignored tests with the specified tags, data, test body, and teardown.
-    /// The tests will be marked as ignored and will not be executed during test runs.
-    /// The test name is automatically derived from the identifier the test was assigned to.
+    /// Creates a list of ignored tests for each item provided as data. Each ignored test contains only the metadata 
+    /// (tags, data item) and will not be executed during test runs. The teardown and test method are 
+    /// not used and cannot be run. The test name is automatically derived from the identifier the test was assigned to.
     /// </summary>
     /// <param name="tags">Tags to be applied to the test for categorization and filtering</param>
     /// <param name="data">Data configuration that provides test data of type 'dataType</param>
-    /// <param name="test">The test body that would be executed if the test were not ignored</param>
-    /// <param name="teardown">Teardown configuration that cleans up after test execution</param>
+    /// <param name="test">The test body (not executed for ignored tests)</param>
+    /// <param name="teardown">Teardown configuration (not executed for ignored tests)</param>
     /// <param name="testName">The name of the test (automatically provided by CallerMemberName)</param>
     /// <param name="fileFullName">The full path of the source file (automatically provided by CallerFilePath)</param>
     /// <param name="lineNumber">The line number in the source file (automatically provided by CallerLineNumber)</param>
@@ -1680,13 +1701,13 @@ type IFeature<'featureType> =
     (*021*)abstract member Ignore: tags: TagsIndicator * data: DataIndicator<'dataType> * test: 'testBodyType * teardown: TeardownIndicator<unit> * [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> ITest list
 
     /// <summary>
-    /// Creates a list of ignored tests with the specified tags, data, and test body without teardown.
-    /// The tests will be marked as ignored and will not be executed during test runs.
-    /// The test name is automatically derived from the identifier the test was assigned to.
+    /// Creates a list of ignored tests for each item provided as data. Each ignored test contains only the metadata 
+    /// (tags, data item) and will not be executed during test runs. The test method is 
+    /// not used and cannot be run. The test name is automatically derived from the identifier the test was assigned to.
     /// </summary>
     /// <param name="tags">Tags to be applied to the test for categorization and filtering</param>
     /// <param name="data">Data configuration that provides test data of type 'dataType</param>
-    /// <param name="test">The test body that would be executed if the test were not ignored</param>
+    /// <param name="test">The test body (not executed for ignored tests)</param>
     /// <param name="testName">The name of the test (automatically provided by CallerMemberName)</param>
     /// <param name="fileFullName">The full path of the source file (automatically provided by CallerFilePath)</param>
     /// <param name="lineNumber">The line number in the source file (automatically provided by CallerLineNumber)</param>
@@ -1694,14 +1715,15 @@ type IFeature<'featureType> =
     (*022*)abstract member Ignore: tags: TagsIndicator * data: DataIndicator<'dataType> * test: 'testBodyType * [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> ITest list
 
     // -- tags, test, (teardown)
+
     /// <summary>
-    /// Creates an ignored test with the specified tags, test body, and teardown.
-    /// The test will be marked as ignored and will not be executed during test runs.
+    /// Creates an ignored test that contains only the metadata (tags) and will not be executed during test runs. 
+    /// The teardown and test method are not used and cannot be run.
     /// The test name is automatically derived from the identifier the test was assigned to.
     /// </summary>
     /// <param name="tags">Tags to be applied to the test for categorization and filtering</param>
-    /// <param name="test">The test body that would be executed if the test were not ignored</param>
-    /// <param name="teardown">Teardown configuration that cleans up after test execution</param>
+    /// <param name="test">The test body (not executed for ignored tests)</param>
+    /// <param name="teardown">Teardown configuration (not executed for ignored tests)</param>
     /// <param name="testName">The name of the test (automatically provided by CallerMemberName)</param>
     /// <param name="fileFullName">The full path of the source file (automatically provided by CallerFilePath)</param>
     /// <param name="lineNumber">The line number in the source file (automatically provided by CallerLineNumber)</param>
@@ -1709,12 +1731,12 @@ type IFeature<'featureType> =
     (*023*)abstract member Ignore: tags: TagsIndicator * test: 'testBodyType * teardown: TeardownIndicator<unit> * [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> ITest
 
     /// <summary>
-    /// Creates an ignored test with the specified tags and test body without teardown.
-    /// The test will be marked as ignored and will not be executed during test runs.
+    /// Creates an ignored test that contains only the metadata (tags) and will not be executed during test runs. 
+    /// The test method is not used and cannot be run.
     /// The test name is automatically derived from the identifier the test was assigned to.
     /// </summary>
     /// <param name="tags">Tags to be applied to the test for categorization and filtering</param>
-    /// <param name="test">The test body that would be executed if the test were not ignored</param>
+    /// <param name="test">The test body (not executed for ignored tests)</param>
     /// <param name="testName">The name of the test (automatically provided by CallerMemberName)</param>
     /// <param name="fileFullName">The full path of the source file (automatically provided by CallerFilePath)</param>
     /// <param name="lineNumber">The line number in the source file (automatically provided by CallerLineNumber)</param>
@@ -1722,15 +1744,16 @@ type IFeature<'featureType> =
     (*024*)abstract member Ignore: tags: TagsIndicator * test: 'testBodyType * [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> ITest
 
     // -- setup, data, test, (teardown)
+
     /// <summary>
-    /// Creates a list of ignored tests with the specified setup, data, test body, and teardown.
-    /// The tests will be marked as ignored and will not be executed during test runs.
-    /// The test name is automatically derived from the identifier the test was assigned to.
+    /// Creates a list of ignored tests for each item provided as data. Each ignored test contains only the metadata 
+    /// (test name and data item) and will not be executed during test runs. The setup, teardown, and test method are 
+    /// not used and cannot be run. The test name is automatically derived from the identifier the test was assigned to.
     /// </summary>
-    /// <param name="setup">Setup configuration that produces a setup result of type 'setupType</param>
+    /// <param name="setup">Setup configuration (not executed for ignored tests)</param>
     /// <param name="data">Data configuration that provides test data of type 'dataType</param>
-    /// <param name="test">The test body that would be executed if the test were not ignored</param>
-    /// <param name="teardown">Teardown configuration that cleans up the setup result</param>
+    /// <param name="test">The test body (not executed for ignored tests)</param>
+    /// <param name="teardown">Teardown configuration (not executed for ignored tests)</param>
     /// <param name="testName">The name of the test (automatically provided by CallerMemberName)</param>
     /// <param name="fileFullName">The full path of the source file (automatically provided by CallerFilePath)</param>
     /// <param name="lineNumber">The line number in the source file (automatically provided by CallerLineNumber)</param>
@@ -1738,13 +1761,13 @@ type IFeature<'featureType> =
     (*025*)abstract member Ignore: setup: SetupIndicator<'featureType, 'setupType> * data: DataIndicator<'dataType> * test: 'testBodyType * teardown: TeardownIndicator<'setupType> * [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> ITest list
 
     /// <summary>
-    /// Creates a list of ignored tests with the specified setup, data, and test body without teardown.
-    /// The tests will be marked as ignored and will not be executed during test runs.
-    /// The test name is automatically derived from the identifier the test was assigned to.
+    /// Creates a list of ignored tests for each item provided as data. Each ignored test contains only the metadata 
+    /// (test name and data item) and will not be executed during test runs. The setup and test method are 
+    /// not used and cannot be run. The test name is automatically derived from the identifier the test was assigned to.
     /// </summary>
-    /// <param name="setup">Setup configuration that produces a setup result of type 'setupType</param>
+    /// <param name="setup">Setup configuration (not executed for ignored tests)</param>
     /// <param name="data">Data configuration that provides test data of type 'dataType</param>
-    /// <param name="test">The test body that would be executed if the test were not ignored</param>
+    /// <param name="test">The test body (not executed for ignored tests)</param>
     /// <param name="testName">The name of the test (automatically provided by CallerMemberName)</param>
     /// <param name="fileFullName">The full path of the source file (automatically provided by CallerFilePath)</param>
     /// <param name="lineNumber">The line number in the source file (automatically provided by CallerLineNumber)</param>
@@ -1752,14 +1775,15 @@ type IFeature<'featureType> =
     (*026*)abstract member Ignore: setup: SetupIndicator<'featureType, 'setupType> * data: DataIndicator<'dataType> * test: 'testBodyType * [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> ITest list
 
     // -- setup, test, (teardown)
+
     /// <summary>
-    /// Creates an ignored test with the specified setup, test body, and teardown.
-    /// The test will be marked as ignored and will not be executed during test runs.
+    /// Creates an ignored test that contains only the metadata (test name) and will not be executed during test runs. 
+    /// The setup, teardown, and test method are not used and cannot be run.
     /// The test name is automatically derived from the identifier the test was assigned to.
     /// </summary>
-    /// <param name="setup">Setup configuration that produces a setup result of type 'setupType</param>
-    /// <param name="test">The test body that would be executed if the test were not ignored</param>
-    /// <param name="teardown">Teardown configuration that cleans up the setup result</param>
+    /// <param name="setup">Setup configuration (not executed for ignored tests)</param>
+    /// <param name="test">The test body (not executed for ignored tests)</param>
+    /// <param name="teardown">Teardown configuration (not executed for ignored tests)</param>
     /// <param name="testName">The name of the test (automatically provided by CallerMemberName)</param>
     /// <param name="fileFullName">The full path of the source file (automatically provided by CallerFilePath)</param>
     /// <param name="lineNumber">The line number in the source file (automatically provided by CallerLineNumber)</param>
@@ -1767,12 +1791,12 @@ type IFeature<'featureType> =
     (*027*)abstract member Ignore: setup: SetupIndicator<'featureType, 'setupType> * test: 'testBodyType * teardown: TeardownIndicator<'setupType> * [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> ITest
 
     /// <summary>
-    /// Creates an ignored test with the specified setup and test body without teardown.
-    /// The test will be marked as ignored and will not be executed during test runs.
+    /// Creates an ignored test that contains only the metadata (test name) and will not be executed during test runs. 
+    /// The setup and test method are not used and cannot be run.
     /// The test name is automatically derived from the identifier the test was assigned to.
     /// </summary>
-    /// <param name="setup">Setup configuration that produces a setup result of type 'setupType</param>
-    /// <param name="test">The test body that would be executed if the test were not ignored</param>
+    /// <param name="setup">Setup configuration (not executed for ignored tests)</param>
+    /// <param name="test">The test body (not executed for ignored tests)</param>
     /// <param name="testName">The name of the test (automatically provided by CallerMemberName)</param>
     /// <param name="fileFullName">The full path of the source file (automatically provided by CallerFilePath)</param>
     /// <param name="lineNumber">The line number in the source file (automatically provided by CallerLineNumber)</param>
@@ -1780,41 +1804,47 @@ type IFeature<'featureType> =
     (*028*)abstract member Ignore: setup: SetupIndicator<'featureType, 'setupType> * test: 'testBodyType * [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> ITest
 
     // -- data, test, (teardown)
+
     /// <summary>
-    /// Creates a list of ignored tests with the specified data, test body, and teardown.
-    /// The tests will be marked as ignored and will not be executed during test runs.
-    /// The test name is automatically derived from the identifier the test was assigned to.
+    /// Creates a list of ignored tests where each ignored test receives one item from the supplied data. 
+    /// Each ignored test contains only metadata (test name and data item) and will not be executed during test runs.
+    /// The setup, teardown, and test method are not used and cannot be run. The test name is automatically 
+    /// derived from the identifier the test was assigned to and can include sprintf parameters that will be 
+    /// replaced with values from the data to create unique test names for each data item.
     /// </summary>
-    /// <param name="data">Data configuration that provides test data of type 'dataType</param>
-    /// <param name="test">The test body that would be executed if the test were not ignored</param>
-    /// <param name="teardown">Teardown configuration that cleans up after test execution</param>
-    /// <param name="testName">The name of the test (automatically provided by CallerMemberName)</param>
+    /// <param name="data">Data configuration that provides test data of type 'dataType (included in ignored test metadata)</param>
+    /// <param name="test">The test body (not executed for ignored tests)</param>
+    /// <param name="teardown">Teardown configuration (not executed for ignored tests)</param>
+    /// <param name="testName">The name of the test (automatically provided by CallerMemberName) that may include sprintf parameters to be replaced with data values</param>
     /// <param name="fileFullName">The full path of the source file (automatically provided by CallerFilePath)</param>
     /// <param name="lineNumber">The line number in the source file (automatically provided by CallerLineNumber)</param>
     /// <returns>A list of ITest instances representing the ignored tests</returns>
     (*029*)abstract member Ignore: data: DataIndicator<'dataType> * test: 'testBodyType * teardown: TeardownIndicator<unit> * [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> ITest list
 
     /// <summary>
-    /// Creates a list of ignored tests with the specified data and test body without teardown.
-    /// The tests will be marked as ignored and will not be executed during test runs.
-    /// The test name is automatically derived from the identifier the test was assigned to.
+    /// Creates a list of ignored tests where each ignored test receives one item from the supplied data.
+    /// Each ignored test contains only metadata (test name and data item) and will not be executed during test runs.
+    /// The test method is not used and cannot be run. The test name is automatically derived from the identifier 
+    /// the test was assigned to and can include sprintf parameters that will be replaced with values from the 
+    /// data to create unique test names for each data item.
     /// </summary>
-    /// <param name="data">Data configuration that provides test data of type 'dataType</param>
-    /// <param name="test">The test body that would be executed if the test were not ignored</param>
-    /// <param name="testName">The name of the test (automatically provided by CallerMemberName)</param>
+    /// <param name="data">Data configuration that provides test data of type 'dataType (included in ignored test metadata)</param>
+    /// <param name="test">The test body (not executed for ignored tests)</param>
+    /// <param name="testName">The name of the test (automatically provided by CallerMemberName) that may include sprintf parameters to be replaced with data values</param>
     /// <param name="fileFullName">The full path of the source file (automatically provided by CallerFilePath)</param>
     /// <param name="lineNumber">The line number in the source file (automatically provided by CallerLineNumber)</param>
     /// <returns>A list of ITest instances representing the ignored tests</returns>
     (*030*)abstract member Ignore: data: DataIndicator<'dataType> * test: 'testBodyType * [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> ITest list
 
     // -- test, (teardown)
+
     /// <summary>
-    /// Creates an ignored test with the specified test body and teardown.
-    /// The test will be marked as ignored and will not be executed during test runs.
-    /// The test name is automatically derived from the identifier the test was assigned to.
+    /// Creates an ignored test that contains only metadata (test name) and will not be executed during test runs.
+    /// The teardown and test method are not used and cannot be run. The test name is automatically derived 
+    /// from the identifier the test was assigned to.
     /// </summary>
-    /// <param name="test">The test body that would be executed if the test were not ignored</param>
-    /// <param name="teardown">Teardown configuration that cleans up after test execution</param>
+    /// <param name="test">The test body (not executed for ignored tests)</param>
+    /// <param name="teardown">Teardown configuration (not executed for ignored tests)</param>
     /// <param name="testName">The name of the test (automatically provided by CallerMemberName)</param>
     /// <param name="fileFullName">The full path of the source file (automatically provided by CallerFilePath)</param>
     /// <param name="lineNumber">The line number in the source file (automatically provided by CallerLineNumber)</param>
@@ -1822,11 +1852,11 @@ type IFeature<'featureType> =
     (*031*)abstract member Ignore: test: 'testBodyType * teardown: TeardownIndicator<unit> * [<CallerMemberName; Optional; DefaultParameterValue("")>] testName: string * [<CallerFilePath; Optional; DefaultParameterValue("")>] fileFullName: string * [<CallerLineNumber; Optional; DefaultParameterValue(-1)>] lineNumber: int -> ITest
 
     /// <summary>
-    /// Creates an ignored test with the specified test body without teardown.
-    /// The test will be marked as ignored and will not be executed during test runs.
-    /// The test name is automatically derived from the identifier the test was assigned to.
+    /// Creates an ignored test that contains only metadata (test name) and will not be executed during test runs.
+    /// The test method is not used and cannot be run. The test name is automatically derived from the 
+    /// identifier the test was assigned to.
     /// </summary>
-    /// <param name="test">The test body that would be executed if the test were not ignored</param>
+    /// <param name="test">The test body (not executed for ignored tests)</param>
     /// <param name="testName">The name of the test (automatically provided by CallerMemberName)</param>
     /// <param name="fileFullName">The full path of the source file (automatically provided by CallerFilePath)</param>
     /// <param name="lineNumber">The line number in the source file (automatically provided by CallerLineNumber)</param>
