@@ -7,8 +7,8 @@
 # Archer.Core F# Testing Language #
 
 1. Overview: [Archer Test Framework Overview](#archer-test-framework-overview)
-2. Feature: [Using `FeatureFactory.NewFeature` in Archer.Core](#using-FeatureFactorynewfeature-in-archercore)
-3. Feature: [Using `FeatureFactory.Ignore` in Archer.Core](#using-FeatureFactoryignore-in-archercore)
+2. Feature: [Using `FeatureFactory.NewFeature` in Archer.Core](#using-featurefactorynewfeature-in-archercore)
+3. Feature: [Using `FeatureFactory.Ignore` in Archer.Core](#using-featurefactoryignore-in-archercore)
 4. Feature: [Using `Sub.Feature` in Archer.Core](#using-subfeature-in-archercore)
 5. Feature: [Using `Sub.Ignore` in Archer.Core](#using-subignore-in-archercore)
 6. Feature: [Using `IFeature.Test` in Archer.Core](#using-ifeaturetest-in-archercore)
